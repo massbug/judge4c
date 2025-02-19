@@ -27,7 +27,8 @@
     "tailwind-merge": "^3.0.1",
     "tailwindcss-animate": "^1.0.7",
     "vscode-languageclient": "^9.0.1",
-    "vscode-ws-jsonrpc": "^3.4.0"
+    "vscode-ws-jsonrpc": "^3.4.0",
+    "zustand": "^5.0.3"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
