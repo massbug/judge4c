@@ -89,7 +89,7 @@ export default function CodeEditor() {
           console.log("onValidate:", marker.message)
         );
       }}
-      loading={<Skeleton className="h-full w-full p-4" />}
+      loading={<Skeleton className="h-full w-full" />}
     />
   );
 }
