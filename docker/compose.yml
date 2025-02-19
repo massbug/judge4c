@@ -1,0 +1,20 @@
+services:
+  lsp-c:
+    image: clangd:latest
+    build:
+      context: ./lsp/clangd
+      dockerfile: Dockerfile
+    container_name: lsp-c
+    restart: always
+    ports:
+      - "4594:3000"
+
+  lsp-cpp:
+    image: clangd:latest
+    build:
+      context: ./lsp/clangd
+      dockerfile: Dockerfile
+    container_name: lsp-cpp
+    restart: always
+    ports:
+      - "4595:3000"

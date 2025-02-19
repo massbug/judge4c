@@ -1,0 +1,5 @@
+langservers:
+  clangd:
+    - /usr/bin/clangd
+    - --log=verbose
+    - --background-index
