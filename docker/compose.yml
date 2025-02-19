@@ -1,6 +1,5 @@
 services:
   lsp-c:
-    image: clangd:latest
     build:
       context: ./lsp/clangd
       dockerfile: Dockerfile
@@ -10,7 +9,6 @@ services:
       - "4594:3000"
 
   lsp-cpp:
-    image: clangd:latest
     build:
       context: ./lsp/clangd
       dockerfile: Dockerfile
