@@ -12,6 +12,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 const DynamicEditor = dynamic(
   async () => {
+    await import("vscode")
+
     const monaco = await import("monaco-editor");
     const { loader, Editor } = await import("@monaco-editor/react");
 
