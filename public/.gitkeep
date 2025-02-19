@@ -1,0 +1,7 @@
+This is a placeholder file to ensure the 'public' folder is not empty. 
+
+The 'public' folder is required by the Dockerfile in order to copy static assets from the builder stage during the Docker build process. Specifically, the following line in the Dockerfile copies the contents of the 'public' folder from the builder stage to the production container:
+
+COPY --from=builder /app/public ./public
+
+Without this folder, the build process may fail as the folder is expected to exist in the container.
