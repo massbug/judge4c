@@ -1,4 +1,13 @@
 services:
+  monaco-editor-lsp-next:
+    build:
+      context: ../
+      dockerfile: Dockerfile
+    container_name: monaco-editor-lsp-next
+    restart: always
+    ports:
+      - "3000:3000"
+
   lsp-c:
     build:
       context: ./lsp/clangd
