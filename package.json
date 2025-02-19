@@ -20,7 +20,9 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "tailwind-merge": "^3.0.1",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "vscode-languageclient": "^9.0.1",
+    "vscode-ws-jsonrpc": "^3.4.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
