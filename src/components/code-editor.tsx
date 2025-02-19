@@ -1,20 +1,17 @@
 "use client";
 
-import {
-  toSocket,
-  WebSocketMessageReader,
-  WebSocketMessageWriter,
-} from "vscode-ws-jsonrpc";
 import { useEffect } from "react";
 import dynamic from "next/dynamic";
+import { useTheme } from "next-themes";
 import normalizeUrl from "normalize-url";
-import { createHighlighter } from 'shiki';
-import { shikiToMonaco } from '@shikijs/monaco';
+import { highlighter } from "@/lib/shiki";
+import { shikiToMonaco } from "@shikijs/monaco";
 import { Skeleton } from "@/components/ui/skeleton";
+import { toSocket, WebSocketMessageReader, WebSocketMessageWriter } from "vscode-ws-jsonrpc";
 
 const DynamicEditor = dynamic(
   async () => {
-    await import("vscode")
+    await import("vscode");
 
     const monaco = await import("monaco-editor");
     const { loader, Editor } = await import("@monaco-editor/react");
@@ -27,6 +24,8 @@ const DynamicEditor = dynamic(
 );
 
 export default function CodeEditor() {
+  const { resolvedTheme } = useTheme();
+
   useEffect(() => {
     const url = normalizeUrl("ws://localhost:4594/clangd");
     const webSocket = new WebSocket(url);
@@ -37,9 +36,7 @@ export default function CodeEditor() {
       const writer = new WebSocketMessageWriter(socket);
 
       const { MonacoLanguageClient } = await import("monaco-languageclient");
-      const { ErrorAction, CloseAction } = await import(
-        "vscode-languageclient"
-      );
+      const { ErrorAction, CloseAction } = await import("vscode-languageclient");
 
       const languageClient = new MonacoLanguageClient({
         name: "C Language Client",
@@ -75,16 +72,16 @@ export default function CodeEditor() {
   return (
     <div className="h-screen flex flex-col">
       <DynamicEditor
-        theme="vs-dark"
+        theme={
+          resolvedTheme === "light"
+            ? "github-light-default"
+            : "github-dark-default"
+        }
         defaultLanguage="c"
         defaultValue="# include<stdio.h>"
         path="file:///main.c"
-        beforeMount={async (monaco) => {
-          const highlighter = await createHighlighter({
-            themes: ["github-light-default", "github-dark-default"],
-            langs: ["c"]
-          })
-          shikiToMonaco(highlighter, monaco)
+        beforeMount={(monaco) => {
+          shikiToMonaco(highlighter, monaco);
         }}
         onValidate={(markers) => {
           markers.forEach((marker) =>
