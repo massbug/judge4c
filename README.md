@@ -1,30 +1,39 @@
+<div align="center">
+
 # monaco-editor-lsp-next
 
-A demo project demonstrating LSP integration using Nextjs + @monaco-editor/react + monaco-languageclient.
+✨ A Next.js integration of Monaco Editor with LSP support, free from SSR issues.
 
-## Quick Start
+</div>
 
-1. **Start LSP Containers**
-   ```bash
-   cd docker
-   docker compose up -d
-   cd ..
-   ```
+## 🚀 Quick Start
 
-2. **Install Dependencies**
-   ```bash
-   bun install
-   ```
+### 🐳 Using Docker (Recommended)
 
-3. **Start Development Server**
-   ```bash
-   bun run dev
-   ```
+```sh
+# Clone repository
+git clone https://github.com/cfngc4594/monaco-editor-lsp-next
+cd monaco-editor-lsp-next
 
-## LSP Configuration
+# Start containers in detached mode
+docker compose -f ./docker/compose.yml up -d
+```
 
-The project includes preconfigured LSP servers for:
-- C (port 4594)
-- C++ (port 4595)
+## 🔧 Development Setup
 
-Using [jsonrpc-ws-proxy](https://github.com/wylieconlon/jsonrpc-ws-proxy) to bridge Monaco Editor with clangd.
+```sh
+git clone https://github.com/cfngc4594/monaco-editor-lsp-next
+cd monaco-editor-lsp-next
+docker compose -f ./docker/compose.yml up -d lsp-c lsp-cpp
+bun install
+bun run dev
+```
+
+## ⚙️ Configuration
+
+### LSP Server Settings
+
+|  **Language**  |  **LSP Server**  |  **Port**  |
+|----------------|------------------|------------|
+| `C`            | `clangd`         | `4594`     |
+| `C++`          | `clangd`         | `4595`     |
