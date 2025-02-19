@@ -8,6 +8,8 @@ import {
 import { useEffect } from "react";
 import dynamic from "next/dynamic";
 import normalizeUrl from "normalize-url";
+import { createHighlighter } from 'shiki';
+import { shikiToMonaco } from '@shikijs/monaco';
 import { Skeleton } from "@/components/ui/skeleton";
 
 const DynamicEditor = dynamic(
@@ -77,6 +79,13 @@ export default function CodeEditor() {
         defaultLanguage="c"
         defaultValue="# include<stdio.h>"
         path="file:///main.c"
+        beforeMount={async (monaco) => {
+          const highlighter = await createHighlighter({
+            themes: ["github-light-default", "github-dark-default"],
+            langs: ["c"]
+          })
+          shikiToMonaco(highlighter, monaco)
+        }}
         onValidate={(markers) => {
           markers.forEach((marker) =>
             console.log("onValidate:", marker.message)
