@@ -70,27 +70,26 @@ export default function CodeEditor() {
   }, []);
 
   return (
-    <div className="h-screen flex flex-col">
-      <DynamicEditor
-        theme={
-          resolvedTheme === "light"
-            ? "github-light-default"
-            : "github-dark-default"
-        }
-        defaultLanguage="c"
-        defaultValue="# include<stdio.h>"
-        path="file:///main.c"
-        beforeMount={(monaco) => {
-          shikiToMonaco(highlighter, monaco);
-        }}
-        onValidate={(markers) => {
-          markers.forEach((marker) =>
-            console.log("onValidate:", marker.message)
-          );
-        }}
-        options={{ automaticLayout: true }}
-        loading={<Skeleton className="h-full w-full p-4" />}
-      />
-    </div>
+    <DynamicEditor
+      defaultLanguage="c"
+      defaultValue="# include<stdio.h>"
+      path="file:///main.c"
+      theme={
+        resolvedTheme === "light"
+          ? "github-light-default"
+          : "github-dark-default"
+      }
+      height="100%"
+      options={{ automaticLayout: true }}
+      beforeMount={(monaco) => {
+        shikiToMonaco(highlighter, monaco);
+      }}
+      onValidate={(markers) => {
+        markers.forEach((marker) =>
+          console.log("onValidate:", marker.message)
+        );
+      }}
+      loading={<Skeleton className="h-full w-full p-4" />}
+    />
   );
 }
