@@ -2,7 +2,7 @@
 
 # Upgrade to Node.js v20 to fix `ReferenceError: File is not defined` issue
 # Reference: https://github.com/vercel/next.js/discussions/56032
-FROM node:20-alpine AS base
+FROM node:22-alpine AS base
 
 # Install dependencies only when needed
 FROM base AS deps
