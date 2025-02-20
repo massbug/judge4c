@@ -7,6 +7,7 @@ import normalizeUrl from "normalize-url";
 import { highlighter } from "@/lib/shiki";
 import { shikiToMonaco } from "@shikijs/monaco";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useCodeEditorState } from "@/store/useCodeEditor";
 import { CODE_EDITOR_OPTIONS } from "@/constants/code-editor-options";
 import { toSocket, WebSocketMessageReader, WebSocketMessageWriter } from "vscode-ws-jsonrpc";
 
@@ -26,6 +27,7 @@ const DynamicEditor = dynamic(
 
 export default function CodeEditor() {
   const { resolvedTheme } = useTheme();
+  const { language } = useCodeEditorState();
 
   useEffect(() => {
     const lspUrl = process.env.NEXT_PUBLIC_LSP_C_URL || "ws://localhost:4594/clangd";
@@ -73,14 +75,10 @@ export default function CodeEditor() {
 
   return (
     <DynamicEditor
-      defaultLanguage="c"
+      defaultLanguage={language}
       defaultValue="# include<stdio.h>"
       path="file:///main.c"
-      theme={
-        resolvedTheme === "light"
-          ? "github-light-default"
-          : "github-dark-default"
-      }
+      theme={resolvedTheme === "light" ? "github-light-default" : "github-dark-default"}
       height="100%"
       options={CODE_EDITOR_OPTIONS}
       beforeMount={(monaco) => {
