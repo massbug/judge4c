@@ -4,6 +4,7 @@
     "": {
       "name": "monaco-editor-lsp-next",
       "dependencies": {
+        "@fontsource/fira-code": "^5.1.1",
         "@monaco-editor/react": "^4.7.0",
         "@radix-ui/react-dropdown-menu": "^2.1.6",
         "@radix-ui/react-slot": "^1.1.2",
@@ -68,6 +69,8 @@
     "@floating-ui/react-dom": ["@floating-ui/react-dom@2.1.2", "https://registry.npmmirror.com/@floating-ui/react-dom/-/react-dom-2.1.2.tgz", { "dependencies": { "@floating-ui/dom": "^1.0.0" }, "peerDependencies": { "react": ">=16.8.0", "react-dom": ">=16.8.0" } }, "sha512-06okr5cgPzMNBy+Ycse2A6udMi4bqwW/zgBF/rwjcNqWkyr82Mcg8b0vjX8OJpZFy/FKjJmw6wV7t44kK6kW7A=="],
 
     "@floating-ui/utils": ["@floating-ui/utils@0.2.9", "https://registry.npmmirror.com/@floating-ui/utils/-/utils-0.2.9.tgz", {}, "sha512-MDWhGtE+eHw5JW7lq4qhc5yRLS11ERl1c7Z6Xd0a58DozHES6EnNNwUWbMiG4J9Cgj053Bhk8zvlhFYKVhULwg=="],
+
+    "@fontsource/fira-code": ["@fontsource/fira-code@5.1.1", "https://registry.npmmirror.com/@fontsource/fira-code/-/fira-code-5.1.1.tgz", {}, "sha512-w9b1CtWyfdyZP2Y/j7Z86SNYtLXMZ4yGtxrtw0qejjrGuzoasEoMhgdLJOwX9exrpKRVFaecKjcAuWkvmvOITw=="],
 
     "@humanfs/core": ["@humanfs/core@0.19.1", "https://registry.npmmirror.com/@humanfs/core/-/core-0.19.1.tgz", {}, "sha512-5DyQ4+1JEUzejeK1JGICcideyfUbGixgS9jNgex5nqkW+cY7WZhxBigmieN5Qnw9ZosSNVC9KQKyb+GUaGyKUA=="],
 
