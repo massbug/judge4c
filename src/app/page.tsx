@@ -1,10 +1,5 @@
-import dynamic from "next/dynamic";
-import { Skeleton } from "@/components/ui/skeleton";
+import CodeEditor from "@/components/code-editor";
 import { ModeToggle } from "@/components/mode-toggle";
-
-const CodeEditor = dynamic(() => import("@/components/code-editor"), {
-  loading: () => <Skeleton className="h-full w-full" />,
-});
 
 export default function Home() {
   return (
