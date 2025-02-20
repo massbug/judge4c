@@ -23,7 +23,10 @@ const DynamicEditor = dynamic(
 
     return Editor;
   },
-  { ssr: false }
+  {
+    ssr: false,
+    loading: () => <Skeleton className="h-full w-full" />,
+  }
 );
 
 export default function CodeEditor() {
