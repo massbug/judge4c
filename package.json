@@ -18,6 +18,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "devicons-react": "^1.4.0",
+    "github-markdown-css": "^5.8.1",
     "lucide-react": "^0.475.0",
     "monaco-editor": "0.36.1",
     "monaco-languageclient": "5.0.1",
