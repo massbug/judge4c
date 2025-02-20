@@ -4,9 +4,7 @@
 
 ✨ A Next.js integration of Monaco Editor with LSP support, free from SSR issues.
 
-![alt text](demo.png)
-
-<p>The demo shown above is currently in its final stages of development and will be available soon!</p>
+![demo](demo.png)
 
 </div>
 
