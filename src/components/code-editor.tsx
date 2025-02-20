@@ -7,6 +7,7 @@ import normalizeUrl from "normalize-url";
 import { highlighter } from "@/lib/shiki";
 import { shikiToMonaco } from "@shikijs/monaco";
 import { Skeleton } from "@/components/ui/skeleton";
+import { CODE_EDITOR_OPTIONS } from "@/constants/code-editor-options";
 import { toSocket, WebSocketMessageReader, WebSocketMessageWriter } from "vscode-ws-jsonrpc";
 
 const DynamicEditor = dynamic(
@@ -81,7 +82,7 @@ export default function CodeEditor() {
           : "github-dark-default"
       }
       height="100%"
-      options={{ automaticLayout: true }}
+      options={CODE_EDITOR_OPTIONS}
       beforeMount={(monaco) => {
         shikiToMonaco(highlighter, monaco);
       }}
