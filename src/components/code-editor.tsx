@@ -27,7 +27,8 @@ export default function CodeEditor() {
   const { resolvedTheme } = useTheme();
 
   useEffect(() => {
-    const url = normalizeUrl("ws://localhost:4594/clangd");
+    const lspUrl = process.env.NEXT_PUBLIC_LSP_C_URL || "ws://localhost:4594/clangd";
+    const url = normalizeUrl(lspUrl);
     const webSocket = new WebSocket(url);
 
     webSocket.onopen = async () => {
