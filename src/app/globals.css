@@ -1,3 +1,5 @@
+@import "@fontsource/fira-code";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -66,5 +68,6 @@
 
   body {
     @apply bg-background text-foreground;
+    font-family: "Fira Code";
   }
 }
