@@ -79,6 +79,15 @@
   max-width: 980px;
   margin: 0 auto;
   padding: 45px;
+  font-family: "Fira Code";
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.markdown-body pre,
+.markdown-body code {
+  font-family: "Fira Code" !important;
 }
 
 @media (max-width: 768px) {
