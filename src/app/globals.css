@@ -1,4 +1,4 @@
-@import "@fontsource/fira-code";
+@import "@fontsource/fira-code/500.css";
 
 @tailwind base;
 @tailwind components;
