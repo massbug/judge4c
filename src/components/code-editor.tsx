@@ -86,11 +86,11 @@ export default function CodeEditor() {
       beforeMount={(monaco) => {
         shikiToMonaco(highlighter, monaco);
       }}
-      onValidate={(markers) => {
-        markers.forEach((marker) =>
-          console.log("onValidate:", marker.message)
-        );
-      }}
+      // onValidate={(markers) => {
+      //   markers.forEach((marker) =>
+      //     console.log("onValidate:", marker.message)
+      //   );
+      // }}
       loading={<Skeleton className="h-full w-full" />}
     />
   );
