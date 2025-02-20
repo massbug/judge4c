@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import { useTheme } from "next-themes";
 import normalizeUrl from "normalize-url";
 import { highlighter } from "@/lib/shiki";
+import { DEFAULT_VALUE } from "@/config/value";
 import { shikiToMonaco } from "@shikijs/monaco";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useCodeEditorState } from "@/store/useCodeEditor";
@@ -76,7 +77,7 @@ export default function CodeEditor() {
   return (
     <DynamicEditor
       defaultLanguage={language}
-      defaultValue="# include<stdio.h>"
+      defaultValue={DEFAULT_VALUE[language]}
       path="file:///main.c"
       theme={resolvedTheme === "light" ? "github-light-default" : "github-dark-default"}
       height="100%"
