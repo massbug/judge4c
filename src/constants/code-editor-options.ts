@@ -14,7 +14,7 @@ export const CODE_EDITOR_OPTIONS: monaco.editor.IEditorConstructionOptions = {
     enabled: false
   },
   padding: {
-    top: 8
+    top: 56
   },
   readOnly: false,
   scrollbar: {
