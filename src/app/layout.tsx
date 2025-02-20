@@ -1,6 +1,6 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import { ModeToggle } from "@/components/mode-toggle";
+import { Banner } from "@/components/banner";
 import { ThemeProvider } from "@/components/theme-provider";
 
 export const metadata: Metadata = {
@@ -22,9 +22,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <header className="h-14 flex items-center justify-end px-8 border-b">
-            <ModeToggle />
-          </header>
+          <Banner className="h-12 flex items-center justify-center bg-muted text-foreground" />
           <main className="flex-1">
             {children}
           </main>
