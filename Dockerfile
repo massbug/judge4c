@@ -1,6 +1,6 @@
 # syntax=docker.io/docker/dockerfile:1
 
-# Upgrade to Node.js v20 to fix `ReferenceError: File is not defined` issue
+# Upgrade to Node.js v20 or higher to resolve the `ReferenceError: File is not defined` issue
 # Reference: https://github.com/vercel/next.js/discussions/56032
 FROM node:22-alpine AS base
 
