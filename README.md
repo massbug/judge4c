@@ -19,7 +19,7 @@ cd monaco-editor-lsp-next
 docker compose -f ./docker/compose.yml up -d
 ```
 
-## 🔧 Development Setup
+### 🔧 Manual Setup
 
 ```sh
 # Clone repository
