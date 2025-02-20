@@ -1,5 +1,6 @@
 "use client";
 
+import "@/style/mdx.css";
 import remarkGfm from "remark-gfm";
 import { useTheme } from "next-themes";
 import rehypePretty from "rehype-pretty-code";
