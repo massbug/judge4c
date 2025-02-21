@@ -87,7 +87,10 @@
 
 .markdown-body pre,
 .markdown-body code {
-  font-family: "Fira Code" !important;
+  font-family: "Fira Code";
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
 }
 
 @media (max-width: 768px) {
