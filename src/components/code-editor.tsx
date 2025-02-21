@@ -83,7 +83,7 @@ export default function CodeEditor() {
       defaultValue={DEFAULT_VALUE[language]}
       path="file:///main.c"
       theme={resolvedTheme === "light" ? "github-light-default" : "github-dark-default"}
-      height="100%"
+      className="h-[calc(100vh-56px)]"
       options={CODE_EDITOR_OPTIONS}
       beforeMount={(monaco) => {
         shikiToMonaco(highlighter, monaco);
