@@ -2,7 +2,7 @@ import CodeEditor from "@/components/code-editor";
 import { DEFAULT_PROBLEM } from "@/config/problem";
 import MdxPreview from "@/components/problem-description";
 
-export default function Home() {
+export default function HomePage() {
   return (
     <div className="h-full flex items-center">
       <div className="h-full w-1/2">
@@ -12,5 +12,5 @@ export default function Home() {
         <CodeEditor />
       </div>
     </div>
-  )
+  );
 }
