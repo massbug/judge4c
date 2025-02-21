@@ -8,6 +8,23 @@
 
 </div>
 
+## ⚠️ Important Notice for WSL Users!
+
+If you're using Windows Subsystem for Linux (WSL), it's **crucial** to switch your network mode to "Mirrored".
+
+Otherwise, the Monaco Editor might fail to connect to the LSP language servers.
+
+This is typically due to IPv6 configuration issues.
+
+To change your WSL network mode, follow these steps:
+
+1. Open WSL settings. ⚙️
+2. Navigate to the "Network" section. 🌐
+3. Change the network mode to "Mirrored". 🔄
+4. Restart WSL. 💻
+
+After completing these steps, the Monaco Editor should be able to connect to the LSP language servers without any problems. 🎉
+
 ## 🚀 Quick Start
 
 ### 🐳 Using Docker (Recommended)
@@ -42,11 +59,7 @@ bun run dev
 
 ### LSP Server Settings
 
-<div align="center">
-
 |  **Language**  |  **LSP Server**  |  **Port**  |
 |----------------|------------------|------------|
 | `C`            | `clangd`         | `4594`     |
 | `C++`          | `clangd`         | `4595`     |
-
-</div>
