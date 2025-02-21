@@ -18,7 +18,7 @@ export default function PlaygroundLayout({
       <ResizablePanel defaultSize={50}>
         {problemDescription}
       </ResizablePanel>
-      <ResizableHandle withHandle />
+      <ResizableHandle withHandle className="w-0.5 hover:bg-blue-500" />
       <ResizablePanel defaultSize={50}>
         {children}
       </ResizablePanel>
