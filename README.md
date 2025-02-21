@@ -35,7 +35,7 @@ git clone https://github.com/cfngc4594/monaco-editor-lsp-next
 cd monaco-editor-lsp-next
 
 # Start containers in detached mode
-docker compose -f ./docker/compose.yml up -d
+docker compose up -d
 ```
 
 ### 🔧 Manual Setup
@@ -46,7 +46,7 @@ git clone https://github.com/cfngc4594/monaco-editor-lsp-next
 cd monaco-editor-lsp-next
 
 # Start specific containers (lsp-c and lsp-cpp) in detached mode
-docker compose -f ./docker/compose.yml up -d lsp-c lsp-cpp
+docker compose up -d lsp-c lsp-cpp
 
 # Install project dependencies using Bun package manager
 bun install

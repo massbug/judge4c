@@ -1,7 +1,7 @@
 services:
   monaco-editor-lsp-next:
     build:
-      context: ../
+      context: ./
       dockerfile: Dockerfile
     container_name: monaco-editor-lsp-next
     restart: always
@@ -10,7 +10,7 @@ services:
 
   lsp-c:
     build:
-      context: ./lsp/clangd
+      context: ./docker/lsp/clangd
       dockerfile: Dockerfile
     container_name: lsp-c
     restart: always
@@ -19,7 +19,7 @@ services:
 
   lsp-cpp:
     build:
-      context: ./lsp/clangd
+      context: ./docker/lsp/clangd
       dockerfile: Dockerfile
     container_name: lsp-cpp
     restart: always
