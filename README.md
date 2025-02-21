@@ -42,7 +42,11 @@ bun run dev
 
 ### LSP Server Settings
 
+<div align="center">
+
 |  **Language**  |  **LSP Server**  |  **Port**  |
 |----------------|------------------|------------|
 | `C`            | `clangd`         | `4594`     |
 | `C++`          | `clangd`         | `4595`     |
+
+</div>
