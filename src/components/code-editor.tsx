@@ -12,16 +12,15 @@ import { useCodeEditorState } from "@/store/useCodeEditor";
 import { CODE_EDITOR_OPTIONS } from "@/constants/code-editor-options";
 import { toSocket, WebSocketMessageReader, WebSocketMessageWriter } from "vscode-ws-jsonrpc";
 
-const DynamicEditor = dynamic(
+const Editor = dynamic(
   async () => {
     await import("vscode");
 
     const monaco = await import("monaco-editor");
-    const { loader, Editor } = await import("@monaco-editor/react");
-
+    const { loader } = await import("@monaco-editor/react");
     loader.config({ monaco });
 
-    return Editor;
+    return (await import("@monaco-editor/react")).Editor;
   },
   {
     ssr: false,
@@ -78,7 +77,7 @@ export default function CodeEditor() {
   }, []);
 
   return (
-    <DynamicEditor
+    <Editor
       defaultLanguage={language}
       defaultValue={DEFAULT_VALUE[language]}
       path="file:///main.c"
