@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import { useTheme } from "next-themes";
 import normalizeUrl from "normalize-url";
 import { highlighter } from "@/lib/shiki";
+import { DEFAULT_PATH } from "@/config/path";
 import { DEFAULT_VALUE } from "@/config/value";
 import { shikiToMonaco } from "@shikijs/monaco";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -99,7 +100,7 @@ export default function CodeEditor() {
     <Editor
       defaultLanguage={language}
       defaultValue={DEFAULT_VALUE[language]}
-      path="file:///main.c"
+      path={DEFAULT_PATH[language]}
       theme={resolvedTheme === "light" ? "github-light-default" : "github-dark-default"}
       className="h-[calc(100vh-56px)]"
       options={mergeOptions}
