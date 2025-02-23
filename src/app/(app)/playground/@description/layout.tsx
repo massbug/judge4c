@@ -25,7 +25,7 @@ export default function DescriptionLayout({ children }: DescriptionLayoutProps) 
         </TabsList>
         <ScrollBar orientation="horizontal" />
       </ScrollArea>
-      <TabsContent value="description" className="mt-0 border-t">
+      <TabsContent value="description" className="mt-0 border-t border-muted">
         {children}
       </TabsContent>
     </Tabs>

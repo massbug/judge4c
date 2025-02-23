@@ -25,7 +25,7 @@ export default function WorkspaceLayout({ children }: WorkspaceLayoutProps) {
         </TabsList>
         <ScrollBar orientation="horizontal" />
       </ScrollArea>
-      <TabsContent value="code" className="mt-0 border-t">
+      <TabsContent value="code" className="mt-0 border-t border-muted">
         {children}
       </TabsContent>
     </Tabs>
