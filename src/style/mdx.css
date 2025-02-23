@@ -10,7 +10,7 @@
   counter-reset: line;
 }
 
-[data-rehype-pretty-code-figure] code[data-line-numbers]>[data-line]::before {
+[data-rehype-pretty-code-figure] code[data-line-numbers] > [data-line]::before {
   counter-increment: line;
   content: counter(line);
   @apply mr-4 inline-block w-4 text-right text-gray-500;
@@ -32,4 +32,8 @@
 
 [data-rehype-pretty-code-figure] [data-chars-id] {
   @apply border-b-2 p-1 shadow-none;
+}
+
+.subheading-anchor {
+  @apply no-underline hover:underline;
 }
