@@ -9,7 +9,7 @@ interface WorkspaceLayoutProps {
 export default function WorkspaceLayout({ children }: WorkspaceLayoutProps) {
   return (
     <Tabs defaultValue="code">
-      <ScrollArea className="h-11 flex items-center pt-1 px-1">
+      <ScrollArea className="h-11 flex items-center pt-1 px-1 bg-muted">
         <TabsList className="gap-1 bg-transparent">
           <TabsTrigger
             value="code"

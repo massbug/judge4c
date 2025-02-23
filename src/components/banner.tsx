@@ -17,7 +17,7 @@ export function Banner({
   return (
     <header
       {...props}
-      className={cn("h-12 flex items-center justify-center bg-muted text-foreground", className)}
+      className={cn("h-12 flex items-center justify-center text-foreground", className)}
     >
       <p className="flex justify-center text-sm">
         <a href={link} className="group">

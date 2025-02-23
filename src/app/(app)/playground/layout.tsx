@@ -14,7 +14,7 @@ export default function PlaygroundLayout({
   workspace,
 }: PlaygroundLayoutProps) {
   return (
-    <ResizablePanelGroup direction="horizontal" className="p-2.5">
+    <ResizablePanelGroup direction="horizontal" className="p-2.5 pt-0">
       <ResizablePanel defaultSize={50} className="border border-muted rounded-2xl">
         {description}
       </ResizablePanel>
