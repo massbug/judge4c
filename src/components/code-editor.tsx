@@ -100,9 +100,14 @@ export default function CodeEditor() {
         shikiToMonaco(highlighter, monaco);
       }}
       // onValidate={(markers) => {
-      //   markers.forEach((marker) =>
-      //     console.log("onValidate:", marker.message)
-      //   );
+      //   markers.forEach((marker) => {
+      //     console.log(marker.severity);
+      //     console.log(marker.startLineNumber);
+      //     console.log(marker.startColumn);
+      //     console.log(marker.endLineNumber);
+      //     console.log(marker.endColumn);
+      //     console.log(marker.message);
+      //   });
       // }}
       loading={<Skeleton className="h-full w-full" />}
     />
