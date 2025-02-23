@@ -13,15 +13,15 @@ interface RootLayoutProps {
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className="min-h-svh antialiased">
+    <html lang="en" className="h-full" suppressHydrationWarning>
+      <body className="flex min-h-full antialiased">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
-          <div className="relative flex min-h-svh flex-col">
+          <div className="w-full">
             {children}
           </div>
         </ThemeProvider>

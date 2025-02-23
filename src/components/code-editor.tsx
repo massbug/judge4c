@@ -102,7 +102,7 @@ export default function CodeEditor() {
       defaultValue={DEFAULT_VALUE[language]}
       path={DEFAULT_PATH[language]}
       theme={resolvedTheme === "light" ? "github-light-default" : "github-dark-default"}
-      className="h-[calc(100vh-56px)]"
+      className="h-[calc(100vh-112px)]"
       options={mergeOptions}
       beforeMount={(monaco) => {
         shikiToMonaco(highlighter, monaco);
