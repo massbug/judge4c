@@ -13,6 +13,7 @@ export const CODE_EDITOR_OPTIONS: monaco.editor.IEditorConstructionOptions = {
   minimap: {
     enabled: false
   },
+  wordWrap: "on",
   padding: {
     top: 18
   },
