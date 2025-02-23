@@ -8,7 +8,7 @@ import { highlighter } from "@/lib/shiki";
 import { DEFAULT_VALUE } from "@/config/value";
 import { shikiToMonaco } from "@shikijs/monaco";
 import { Skeleton } from "@/components/ui/skeleton";
-import { CODE_EDITOR_OPTIONS } from "@/constants/code-editor-options";
+import { CODE_EDITOR_OPTIONS } from "@/constants/option";
 import { SUPPORTED_LANGUAGE_SERVERS } from "@/config/language-server";
 import { useCodeEditorOption, useCodeEditorState } from "@/store/useCodeEditor";
 import { toSocket, WebSocketMessageReader, WebSocketMessageWriter } from "vscode-ws-jsonrpc";

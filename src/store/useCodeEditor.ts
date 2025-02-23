@@ -1,9 +1,9 @@
 import { create } from "zustand";
 import * as monaco from "monaco-editor";
 import { DEFAULT_LANGUAGE } from "@/config/language";
+import { CODE_EDITOR_OPTIONS } from "@/constants/option";
 import { SupportedLanguage } from "@/constants/language";
 import { MonacoLanguageClient } from "monaco-languageclient";
-import { CODE_EDITOR_OPTIONS } from "@/constants/code-editor-options";
 
 interface CodeEditorState {
   language: SupportedLanguage;
