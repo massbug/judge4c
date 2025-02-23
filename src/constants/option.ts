@@ -22,8 +22,8 @@ export const CODE_EDITOR_OPTIONS: monaco.editor.IEditorConstructionOptions = {
   },
   readOnly: false,
   scrollbar: {
-    horizontalSliderSize: 4,
-    verticalSliderSize: 18
+    horizontalSliderSize: 10,
+    verticalSliderSize: 10
   },
   showFoldingControls: "always",
   wordWrap: "on",
