@@ -1,5 +1,5 @@
 import CodeEditor from "@/components/code-editor";
 
-export default function PlaygroundPage() {
+export default function WorkspacePage() {
   return <CodeEditor />;
 }
