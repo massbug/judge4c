@@ -2,12 +2,14 @@
 
 import "@/style/mdx.css";
 import remarkGfm from "remark-gfm";
+import rehypeSlug from "rehype-slug";
 import { useTheme } from "next-themes";
 import rehypePretty from "rehype-pretty-code";
 import { Skeleton } from "@/components/ui/skeleton";
 import { serialize } from "next-mdx-remote/serialize";
 import { useCallback, useEffect, useState } from "react";
 import { CircleAlert, TriangleAlert } from "lucide-react";
+import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { MDXRemote, MDXRemoteSerializeResult } from "next-mdx-remote";
 
@@ -35,6 +37,17 @@ export default function MdxPreview({ source }: MdxPreviewProps) {
       const mdxSource = await serialize(source, {
         mdxOptions: {
           rehypePlugins: [
+            rehypeSlug,
+            [
+              rehypeAutolinkHeadings,
+              {
+                behavior: "wrap",
+                properties: {
+                  className: ["subheading-anchor"],
+                  ariaLabel: "Link to section",
+                },
+              }
+            ],
             [
               rehypePretty,
               {
