@@ -10,6 +10,7 @@ import { shikiToMonaco } from "@shikijs/monaco";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useCodeEditorState } from "@/store/useCodeEditor";
 import { CODE_EDITOR_OPTIONS } from "@/constants/code-editor-options";
+import { SUPPORTED_LANGUAGE_SERVERS } from "@/config/language-server";
 import { toSocket, WebSocketMessageReader, WebSocketMessageWriter } from "vscode-ws-jsonrpc";
 
 const Editor = dynamic(
@@ -30,51 +31,62 @@ const Editor = dynamic(
 
 export default function CodeEditor() {
   const { resolvedTheme } = useTheme();
-  const { language } = useCodeEditorState();
+  const { language, languageClient, setLanguageClient } = useCodeEditorState();
 
   useEffect(() => {
-    const lspUrl = process.env.NEXT_PUBLIC_LSP_C_URL || "ws://localhost:4594/clangd";
-    const url = normalizeUrl(lspUrl);
-    const webSocket = new WebSocket(url);
+    if (languageClient) {
+      languageClient.dispose();
+      setLanguageClient(null);
+    }
 
-    webSocket.onopen = async () => {
-      const socket = toSocket(webSocket);
-      const reader = new WebSocketMessageReader(socket);
-      const writer = new WebSocketMessageWriter(socket);
+    const serverConfig = SUPPORTED_LANGUAGE_SERVERS.find((s) => s.id === language);
 
-      const { MonacoLanguageClient } = await import("monaco-languageclient");
-      const { ErrorAction, CloseAction } = await import("vscode-languageclient");
+    if (serverConfig) {
+      const lspUrl = `${serverConfig.protocol}://${serverConfig.hostname}${serverConfig.port ? `:${serverConfig.port}` : ''}${serverConfig.path || ''}`
+      const url = normalizeUrl(lspUrl);
+      const webSocket = new WebSocket(url);
 
-      const languageClient = new MonacoLanguageClient({
-        name: "C Language Client",
-        clientOptions: {
-          documentSelector: ["c"],
-          errorHandler: {
-            error: () => ({ action: ErrorAction.Continue }),
-            closed: () => ({ action: CloseAction.DoNotRestart }),
+      webSocket.onopen = async () => {
+        const socket = toSocket(webSocket);
+        const reader = new WebSocketMessageReader(socket);
+        const writer = new WebSocketMessageWriter(socket);
+
+        const { MonacoLanguageClient } = await import("monaco-languageclient");
+        const { ErrorAction, CloseAction } = await import("vscode-languageclient");
+
+        const languageClient = new MonacoLanguageClient({
+          name: `${serverConfig.label} Language Client`,
+          clientOptions: {
+            documentSelector: [serverConfig.id],
+            errorHandler: {
+              error: () => ({ action: ErrorAction.Continue }),
+              closed: () => ({ action: CloseAction.DoNotRestart }),
+            },
           },
-        },
-        connectionProvider: {
-          get: () => Promise.resolve({ reader, writer }),
-        },
-      });
+          connectionProvider: {
+            get: () => Promise.resolve({ reader, writer }),
+          },
+        });
 
-      languageClient.start();
-      reader.onClose(() => languageClient.stop());
-    };
+        languageClient.start();
+        reader.onClose(() => languageClient.stop());
 
-    webSocket.onerror = (event) => {
-      console.error("WebSocket error observed:", event);
-    };
+        setLanguageClient(languageClient);
+      };
 
-    webSocket.onclose = (event) => {
-      console.log("WebSocket closed:", event);
-    };
+      webSocket.onerror = (event) => {
+        console.error("WebSocket error observed:", event);
+      };
 
-    return () => {
-      webSocket.close();
-    };
-  }, []);
+      webSocket.onclose = (event) => {
+        console.log("WebSocket closed:", event);
+      };
+
+      return () => {
+        webSocket.close();
+      };
+    }
+  }, [language]);
 
   return (
     <Editor
