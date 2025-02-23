@@ -13,17 +13,17 @@ export const SUPPORTED_LANGUAGE_SERVERS: LanguageServerConfig[] = [
   {
     id: "c",
     label: "C",
-    protocol: "http",
-    hostname: "localhost",
-    port: 4594,
-    path: "/clangd"
+    protocol: process.env.LSP_C_PROTOCOL || "http",
+    hostname: process.env.LSP_C_HOSTNAME || "localhost",
+    port: process.env.LSP_C_PORT ? parseInt(process.env.LSP_C_PORT, 10) : 4594,
+    path: process.env.LSP_C_PATH || "/clangd"
   },
   {
     id: "cpp",
     label: "C++",
-    protocol: "http",
-    hostname: "localhost",
-    port: 4595,
-    path: "/clangd"
+    protocol: process.env.LSP_CPP_PROTOCOL || "http",
+    hostname: process.env.LSP_CPP_HOSTNAME || "localhost",
+    port: process.env.LSP_CPP_PORT ? parseInt(process.env.LSP_CPP_PORT, 10) : 4595,
+    path: process.env.LSP_CPP_PATH || "/clangd"
   }
 ]
