@@ -8,9 +8,9 @@ import { highlighter } from "@/lib/shiki";
 import { DEFAULT_VALUE } from "@/config/value";
 import { shikiToMonaco } from "@shikijs/monaco";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useCodeEditorState } from "@/store/useCodeEditor";
 import { CODE_EDITOR_OPTIONS } from "@/constants/code-editor-options";
 import { SUPPORTED_LANGUAGE_SERVERS } from "@/config/language-server";
+import { useCodeEditorOption, useCodeEditorState } from "@/store/useCodeEditor";
 import { toSocket, WebSocketMessageReader, WebSocketMessageWriter } from "vscode-ws-jsonrpc";
 
 const Editor = dynamic(
@@ -31,6 +31,7 @@ const Editor = dynamic(
 
 export default function CodeEditor() {
   const { resolvedTheme } = useTheme();
+  const { fontSize, lineHeight } = useCodeEditorOption();
   const { language, languageClient, setLanguageClient } = useCodeEditorState();
 
   useEffect(() => {
@@ -88,6 +89,12 @@ export default function CodeEditor() {
     }
   }, [language]);
 
+  const mergeOptions = {
+    ...CODE_EDITOR_OPTIONS,
+    fontSize,
+    lineHeight,
+  };
+
   return (
     <Editor
       defaultLanguage={language}
@@ -95,7 +102,7 @@ export default function CodeEditor() {
       path="file:///main.c"
       theme={resolvedTheme === "light" ? "github-light-default" : "github-dark-default"}
       className="h-[calc(100vh-56px)]"
-      options={CODE_EDITOR_OPTIONS}
+      options={mergeOptions}
       beforeMount={(monaco) => {
         shikiToMonaco(highlighter, monaco);
       }}
