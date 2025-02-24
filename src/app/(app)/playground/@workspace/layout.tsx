@@ -1,4 +1,5 @@
 import { CodeXmlIcon } from "lucide-react";
+import WorkspaceFooter from "./components/footer";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -28,6 +29,7 @@ export default function WorkspaceLayout({ children }: WorkspaceLayoutProps) {
       <TabsContent value="code" className="grow mt-0">
         {children}
       </TabsContent>
+      <WorkspaceFooter />
     </Tabs>
   );
 }
