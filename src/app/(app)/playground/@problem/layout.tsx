@@ -3,10 +3,10 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface ProblemLayoutProps {
-  children: React.ReactNode;
+  description: React.ReactNode;
 }
 
-export default function ProblemLayout({ children }: ProblemLayoutProps) {
+export default function ProblemLayout({ description }: ProblemLayoutProps) {
   return (
     <Tabs defaultValue="description" className="h-full flex flex-col">
       <ScrollArea className="h-9 flex-none bg-muted px-1">
@@ -26,7 +26,7 @@ export default function ProblemLayout({ children }: ProblemLayoutProps) {
         <ScrollBar orientation="horizontal" />
       </ScrollArea>
       <TabsContent value="description" className="grow mt-0">
-        {children}
+        {description}
       </TabsContent>
     </Tabs>
   );
