@@ -8,8 +8,8 @@ interface DescriptionLayoutProps {
 
 export default function DescriptionLayout({ children }: DescriptionLayoutProps) {
   return (
-    <Tabs defaultValue="description">
-      <ScrollArea className="h-11 flex items-center pt-1 px-1 bg-muted">
+    <Tabs defaultValue="description" className="h-full flex flex-col">
+      <ScrollArea className="h-9 flex-none bg-muted">
         <TabsList className="gap-1 bg-transparent">
           <TabsTrigger
             value="description"
@@ -25,7 +25,7 @@ export default function DescriptionLayout({ children }: DescriptionLayoutProps) 
         </TabsList>
         <ScrollBar orientation="horizontal" />
       </ScrollArea>
-      <TabsContent value="description" className="mt-0 border-t border-muted">
+      <TabsContent value="description" className="grow mt-0">
         {children}
       </TabsContent>
     </Tabs>

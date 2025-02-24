@@ -8,8 +8,8 @@ interface WorkspaceLayoutProps {
 
 export default function WorkspaceLayout({ children }: WorkspaceLayoutProps) {
   return (
-    <Tabs defaultValue="code">
-      <ScrollArea className="h-11 flex items-center pt-1 px-1 bg-muted">
+    <Tabs defaultValue="code" className="h-full flex flex-col">
+      <ScrollArea className="h-9 flex-none bg-muted">
         <TabsList className="gap-1 bg-transparent">
           <TabsTrigger
             value="code"
@@ -25,7 +25,7 @@ export default function WorkspaceLayout({ children }: WorkspaceLayoutProps) {
         </TabsList>
         <ScrollBar orientation="horizontal" />
       </ScrollArea>
-      <TabsContent value="code" className="mt-0 border-t border-muted">
+      <TabsContent value="code" className="grow mt-0">
         {children}
       </TabsContent>
     </Tabs>
