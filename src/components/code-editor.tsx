@@ -33,7 +33,7 @@ const Editor = dynamic(
 export default function CodeEditor() {
   const { resolvedTheme } = useTheme();
   const { fontSize, lineHeight } = useCodeEditorOption();
-  const { language, languageClient, setLanguageClient } = useCodeEditorState();
+  const { language, languageClient, setEditor, setLanguageClient } = useCodeEditorState();
 
   useEffect(() => {
     if (languageClient) {
@@ -44,7 +44,9 @@ export default function CodeEditor() {
     const serverConfig = SUPPORTED_LANGUAGE_SERVERS.find((s) => s.id === language);
 
     if (serverConfig) {
-      const lspUrl = `${serverConfig.protocol}://${serverConfig.hostname}${serverConfig.port ? `:${serverConfig.port}` : ''}${serverConfig.path || ''}`
+      const lspUrl = `${serverConfig.protocol}://${serverConfig.hostname}${
+        serverConfig.port ? `:${serverConfig.port}` : ""
+      }${serverConfig.path || ""}`;
       const url = normalizeUrl(lspUrl);
       const webSocket = new WebSocket(url);
 
@@ -106,6 +108,9 @@ export default function CodeEditor() {
       options={mergeOptions}
       beforeMount={(monaco) => {
         shikiToMonaco(highlighter, monaco);
+      }}
+      onMount={(editor, monaco) => {
+        setEditor(editor);
       }}
       // onValidate={(markers) => {
       //   markers.forEach((marker) => {
