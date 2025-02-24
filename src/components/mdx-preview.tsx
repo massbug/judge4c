@@ -109,7 +109,7 @@ export default function MdxPreview({ source }: MdxPreviewProps) {
   }
 
   return (
-    <ScrollArea className="[&>[data-radix-scroll-area-viewport]]:max-h-[calc(100vh-112px)]">
+    <ScrollArea className="[&>[data-radix-scroll-area-viewport]]:max-h-[calc(100vh-130px)]">
       <div className="markdown-body">
         <MDXRemote {...mdxSource!} components={components} />
       </div>
