@@ -79,7 +79,7 @@ export default function MdxPreview({ source }: MdxPreviewProps) {
   }, [getMdxSource]);
 
   if (isLoading) {
-    return <Skeleton className="h-full w-full rounded-xl" />;
+    return <Skeleton className="h-full w-full" />;
   }
 
   if (error) {
@@ -109,7 +109,7 @@ export default function MdxPreview({ source }: MdxPreviewProps) {
   }
 
   return (
-    <ScrollArea className="[&>[data-radix-scroll-area-viewport]]:max-h-[calc(100vh-130px)]">
+    <ScrollArea className="[&>[data-radix-scroll-area-viewport]]:max-h-[calc(100vh-131px)]">
       <div className="markdown-body">
         <MDXRemote {...mdxSource!} components={components} />
       </div>
