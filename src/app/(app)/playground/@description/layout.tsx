@@ -9,7 +9,7 @@ interface DescriptionLayoutProps {
 export default function DescriptionLayout({ children }: DescriptionLayoutProps) {
   return (
     <Tabs defaultValue="description" className="h-full flex flex-col">
-      <ScrollArea className="h-9 flex-none bg-muted">
+      <ScrollArea className="h-9 flex-none bg-muted px-1">
         <TabsList className="gap-1 bg-transparent">
           <TabsTrigger
             value="description"
