@@ -2,11 +2,11 @@ import { FileTextIcon } from "lucide-react";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-interface DescriptionLayoutProps {
+interface ProblemLayoutProps {
   children: React.ReactNode;
 }
 
-export default function DescriptionLayout({ children }: DescriptionLayoutProps) {
+export default function ProblemLayout({ children }: ProblemLayoutProps) {
   return (
     <Tabs defaultValue="description" className="h-full flex flex-col">
       <ScrollArea className="h-9 flex-none bg-muted px-1">

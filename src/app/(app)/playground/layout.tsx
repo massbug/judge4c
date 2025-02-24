@@ -5,18 +5,18 @@ import {
 } from "@/components/ui/resizable";
 
 interface PlaygroundLayoutProps {
-  description: React.ReactNode;
+  problem: React.ReactNode;
   workspace: React.ReactNode;
 }
 
 export default function PlaygroundLayout({
-  description,
+  problem,
   workspace,
 }: PlaygroundLayoutProps) {
   return (
     <ResizablePanelGroup direction="horizontal" className="p-2.5 pt-0">
       <ResizablePanel defaultSize={50} className="border border-muted rounded-2xl">
-        {description}
+        {problem}
       </ResizablePanel>
       <ResizableHandle
         withHandle
