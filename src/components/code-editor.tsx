@@ -109,7 +109,7 @@ export default function CodeEditor() {
       beforeMount={(monaco) => {
         shikiToMonaco(highlighter, monaco);
       }}
-      onMount={(editor, monaco) => {
+      onMount={(editor, _monaco) => {
         setEditor(editor);
       }}
       // onValidate={(markers) => {
