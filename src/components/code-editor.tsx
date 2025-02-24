@@ -44,9 +44,8 @@ export default function CodeEditor() {
     const serverConfig = SUPPORTED_LANGUAGE_SERVERS.find((s) => s.id === language);
 
     if (serverConfig) {
-      const lspUrl = `${serverConfig.protocol}://${serverConfig.hostname}${
-        serverConfig.port ? `:${serverConfig.port}` : ""
-      }${serverConfig.path || ""}`;
+      const lspUrl = `${serverConfig.protocol}://${serverConfig.hostname}${serverConfig.port ? `:${serverConfig.port}` : ""
+        }${serverConfig.path || ""}`;
       const url = normalizeUrl(lspUrl);
       const webSocket = new WebSocket(url);
 
@@ -109,7 +108,7 @@ export default function CodeEditor() {
       beforeMount={(monaco) => {
         shikiToMonaco(highlighter, monaco);
       }}
-      onMount={(editor, _monaco) => {
+      onMount={(editor) => {
         setEditor(editor);
       }}
       // onValidate={(markers) => {
