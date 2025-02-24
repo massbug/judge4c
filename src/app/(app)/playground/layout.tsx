@@ -20,7 +20,7 @@ export default function PlaygroundLayout({
       </ResizablePanel>
       <ResizableHandle
         withHandle
-        className="w-0.5 bg-transparent hover:bg-blue-500 mx-0.5"
+        className="w-0.5 bg-transparent hover:bg-blue-500 mx-1"
       />
       <ResizablePanel defaultSize={50} className="border border-muted rounded-2xl">
         {workspace}
