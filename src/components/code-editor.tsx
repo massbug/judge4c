@@ -1,15 +1,16 @@
 "use client";
 
-import { useEffect } from "react";
 import dynamic from "next/dynamic";
 import { useTheme } from "next-themes";
 import normalizeUrl from "normalize-url";
 import { highlighter } from "@/lib/shiki";
+import { useEffect, useRef } from "react";
 import { shikiToMonaco } from "@shikijs/monaco";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CODE_EDITOR_OPTIONS } from "@/constants/option";
 import { DEFAULT_EDITOR_PATH } from "@/config/editor/path";
 import { DEFAULT_EDITOR_VALUE } from "@/config/editor/value";
+import type { MonacoLanguageClient } from "monaco-languageclient";
 import { SUPPORTED_LANGUAGE_SERVERS } from "@/config/lsp/language-server";
 import { useCodeEditorOption, useCodeEditorState } from "@/store/useCodeEditor";
 import { toSocket, WebSocketMessageReader, WebSocketMessageWriter } from "vscode-ws-jsonrpc";
@@ -30,35 +31,108 @@ const Editor = dynamic(
   }
 );
 
+type ConnectionHandle = {
+  client: MonacoLanguageClient | null;
+  socket: WebSocket | null;
+  controller: AbortController;
+};
+
 export default function CodeEditor() {
   const { resolvedTheme } = useTheme();
+  const connectionRef = useRef<ConnectionHandle>({
+    client: null,
+    socket: null,
+    controller: new AbortController(),
+  });
   const { fontSize, lineHeight } = useCodeEditorOption();
-  const { language, languageClient, setEditor, setLanguageClient } = useCodeEditorState();
+  const { language, setEditor } = useCodeEditorState();
 
   useEffect(() => {
-    if (languageClient) {
-      languageClient.dispose();
-      setLanguageClient(null);
-    }
+    const currentHandle: ConnectionHandle = {
+      client: null,
+      socket: null,
+      controller: new AbortController(),
+    };
+    const signal = currentHandle.controller.signal;
+    connectionRef.current = currentHandle;
 
-    const serverConfig = SUPPORTED_LANGUAGE_SERVERS.find((s) => s.id === language);
+    const cleanupConnection = async (handle: ConnectionHandle) => {
+      try {
+        // Cleanup Language Client
+        if (handle.client) {
+          console.log("Stopping language client...");
+          await handle.client.stop(250).catch(() => { });
+          handle.client.dispose();
+        }
+      } catch (e) {
+        console.log("Client cleanup error:", e);
+      } finally {
+        handle.client = null;
+      }
 
-    if (serverConfig) {
-      const lspUrl = `${serverConfig.protocol}://${serverConfig.hostname}${serverConfig.port ? `:${serverConfig.port}` : ""
-        }${serverConfig.path || ""}`;
-      const url = normalizeUrl(lspUrl);
-      const webSocket = new WebSocket(url);
+      // Cleanup WebSocket
+      if (handle.socket) {
+        console.log("Closing WebSocket...");
+        const socket = handle.socket;
+        socket.onopen = null;
+        socket.onerror = null;
+        socket.onclose = null;
+        socket.onmessage = null;
 
-      webSocket.onopen = async () => {
-        const socket = toSocket(webSocket);
-        const reader = new WebSocketMessageReader(socket);
-        const writer = new WebSocketMessageWriter(socket);
+        try {
+          if (
+            [WebSocket.OPEN, WebSocket.CONNECTING].includes(
+              socket.readyState as WebSocket["OPEN"] | WebSocket["CONNECTING"]
+            )
+          ) {
+            socket.close(1000, "Connection replaced");
+          }
+        } catch (e) {
+          console.log("Socket close error:", e);
+        } finally {
+          handle.socket = null;
+        }
+      }
+    };
 
+    const initialize = async () => {
+      try {
+        // Cleanup old connection
+        await cleanupConnection(connectionRef.current);
+
+        const serverConfig = SUPPORTED_LANGUAGE_SERVERS.find((s) => s.id === language);
+        if (!serverConfig || signal.aborted) return;
+
+        // Create WebSocket connection
+        const lspUrl = `${serverConfig.protocol}://${serverConfig.hostname}${serverConfig.port ? `:${serverConfig.port}` : ""
+          }${serverConfig.path || ""}`;
+        const webSocket = new WebSocket(normalizeUrl(lspUrl));
+        currentHandle.socket = webSocket;
+
+        // Wait for connection to establish or timeout
+        await Promise.race([
+          new Promise<void>((resolve, reject) => {
+            webSocket.onopen = () => {
+              if (signal.aborted) reject(new Error("Connection aborted"));
+              else resolve();
+            };
+            webSocket.onerror = () => reject(new Error("WebSocket error"));
+          }),
+          new Promise((_, reject) => setTimeout(() => reject(new Error("Connection timeout")), 5000)),
+        ]);
+
+        if (signal.aborted) {
+          webSocket.close(1001, "Connection aborted");
+          return;
+        }
+
+        // Initialize Language Client
         const { MonacoLanguageClient } = await import("monaco-languageclient");
         const { ErrorAction, CloseAction } = await import("vscode-languageclient");
 
-        const languageClient = new MonacoLanguageClient({
-          name: `${serverConfig.label} Language Client`,
+        const socket = toSocket(webSocket);
+        const client = new MonacoLanguageClient({
+          name: `${serverConfig.label} Client`,
           clientOptions: {
             documentSelector: [serverConfig.id],
             errorHandler: {
@@ -67,28 +141,39 @@ export default function CodeEditor() {
             },
           },
           connectionProvider: {
-            get: () => Promise.resolve({ reader, writer }),
+            get: () =>
+              Promise.resolve({
+                reader: new WebSocketMessageReader(socket),
+                writer: new WebSocketMessageWriter(socket),
+              }),
           },
         });
 
-        languageClient.start();
-        reader.onClose(() => languageClient.stop());
+        client.start();
+        currentHandle.client = client;
 
-        setLanguageClient(languageClient);
-      };
+        // Bind WebSocket close event
+        webSocket.onclose = (event) => {
+          if (!signal.aborted) {
+            console.log("WebSocket closed:", event);
+            client.stop();
+          }
+        };
+      } catch (error) {
+        if (!signal.aborted) {
+          console.error("Connection failed:", error);
+        }
+        cleanupConnection(currentHandle);
+      }
+    };
 
-      webSocket.onerror = (event) => {
-        console.error("WebSocket error observed:", event);
-      };
+    initialize();
 
-      webSocket.onclose = (event) => {
-        console.log("WebSocket closed:", event);
-      };
-
-      return () => {
-        webSocket.close();
-      };
-    }
+    return () => {
+      console.log("Cleanup triggered");
+      currentHandle.controller.abort();
+      cleanupConnection(currentHandle);
+    };
   }, [language]);
 
   const mergeOptions = {
