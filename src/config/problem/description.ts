@@ -1,12 +1,12 @@
 export const DEFAULT_PROBLEM_DESCRIPTION = `
 
-# Two Sum
+# 1. Two Sum
 
-Given an array of integers \`nums\` and an integer \`target\`, return *indices* of the **two numbers** such that they add up to \`target\`.
+Given an array of integers \`nums\` and an integer \`target\`, return *indices of the two numbers such that they add up to \`target\`*.
 
-You **must not** use the same element twice, and you are guaranteed to have **exactly one solution** for each input.
+You may assume that each input would have ***exactly* one solution**, and you may not use the same element twice.
 
-The order of the indices you return does not matter.
+You can return the answer in any order.
 
 ## Examples
 
@@ -23,7 +23,6 @@ Explanation: Because nums[0] + nums[1] == 9, we return [0, 1].
 \`\`\`bash
 Input: nums = [3,2,4], target = 6
 Output: [1,2]
-Explanation: Because nums[1] + nums[2] == 6, we return [1, 2].
 \`\`\`
 
 ### Example 3
@@ -31,19 +30,30 @@ Explanation: Because nums[1] + nums[2] == 6, we return [1, 2].
 \`\`\`bash
 Input: nums = [3,3], target = 6
 Output: [0,1]
-Explanation: Because nums[0] + nums[1] == 6, we return [0, 1].
 \`\`\`
 
 ## Constraints
 
-*   \`2 <= nums.length <= 10^4\`
+\`\`\`math
+2 <= nums.length <= 10^4
+\`\`\`
 
-*   \`-10^9 <= nums[i] <= 10^9\`
+\`\`\`math
+-10^9 <= nums[i] <= 10^9
+\`\`\`
 
-*   \`-10^9 <= target <= 10^9\`
+\`\`\`math
+-10^9 <= target <= 10^9
+\`\`\`
 
-*   **It is guaranteed that only one valid answer exists.**
+<div align="center">
 
-**Follow-up:** Can you devise an algorithm with a time complexity less than \`O(n^2)\`?
+Only one valid answer exists.
+
+</div>
+
+---
+
+**Follow-up:** Can you come up with an algorithm that is less than $O(n^2)$ time complexity?
 
 `;
