@@ -8,7 +8,10 @@ interface WorkspaceEditorFooterProps {
   className?: string;
 }
 
-export default function WorkspaceEditorFooter({ className, ...props }: WorkspaceEditorFooterProps) {
+export default function WorkspaceEditorFooter({
+  className,
+  ...props
+}: WorkspaceEditorFooterProps) {
   const { editor } = useCodeEditorState();
   const [position, setPosition] = useState<{ lineNumber: number; column: number } | null>(null);
 
@@ -34,9 +37,14 @@ export default function WorkspaceEditorFooter({ className, ...props }: Workspace
   }, [editor]);
 
   return (
-    <footer {...props} className={cn("h-9 flex-none bg-muted px-3 py-2", className)}>
-      <div className="flex justify-end">
-        {position ? `Row ${position.lineNumber}, Column ${position.column}` : "Row -, Column -"}
+    <footer
+      {...props}
+      className={cn("h-9 flex items-center bg-muted px-3 py-2", className)}
+    >
+      <div className="w-full flex items-center justify-end">
+        {position
+          ? `Row ${position.lineNumber}, Column ${position.column}`
+          : "Row -, Column -"}
       </div>
     </footer>
   );
