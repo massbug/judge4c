@@ -46,7 +46,7 @@ export default function MdxPreview({ source }: MdxPreviewProps) {
                   className: ["subheading-anchor"],
                   ariaLabel: "Link to section",
                 },
-              }
+              },
             ],
             [
               rehypePretty,

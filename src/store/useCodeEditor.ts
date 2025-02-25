@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import * as monaco from "monaco-editor";
-import { DEFAULT_LANGUAGE } from "@/config/language";
+import { DEFAULT_EDITOR_LANGUAGE } from "@/config/editor/language";
 import { CODE_EDITOR_OPTIONS } from "@/constants/option";
 import { SupportedLanguage } from "@/constants/language";
 import { MonacoLanguageClient } from "monaco-languageclient";
@@ -16,7 +16,7 @@ interface CodeEditorState {
 
 export const useCodeEditorState = create<CodeEditorState>((set) => ({
   editor: null,
-  language: DEFAULT_LANGUAGE,
+  language: DEFAULT_EDITOR_LANGUAGE,
   languageClient: null,
   setEditor: (editor) => set({ editor }),
   setLanguage: (language) => set({ language }),

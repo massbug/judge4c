@@ -5,12 +5,12 @@ import dynamic from "next/dynamic";
 import { useTheme } from "next-themes";
 import normalizeUrl from "normalize-url";
 import { highlighter } from "@/lib/shiki";
-import { DEFAULT_PATH } from "@/config/path";
-import { DEFAULT_VALUE } from "@/config/value";
 import { shikiToMonaco } from "@shikijs/monaco";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CODE_EDITOR_OPTIONS } from "@/constants/option";
-import { SUPPORTED_LANGUAGE_SERVERS } from "@/config/language-server";
+import { DEFAULT_EDITOR_PATH } from "@/config/editor/path";
+import { DEFAULT_EDITOR_VALUE } from "@/config/editor/value";
+import { SUPPORTED_LANGUAGE_SERVERS } from "@/config/lsp/language-server";
 import { useCodeEditorOption, useCodeEditorState } from "@/store/useCodeEditor";
 import { toSocket, WebSocketMessageReader, WebSocketMessageWriter } from "vscode-ws-jsonrpc";
 
@@ -100,8 +100,8 @@ export default function CodeEditor() {
   return (
     <Editor
       defaultLanguage={language}
-      defaultValue={DEFAULT_VALUE[language]}
-      path={DEFAULT_PATH[language]}
+      defaultValue={DEFAULT_EDITOR_VALUE[language]}
+      path={DEFAULT_EDITOR_PATH[language]}
       theme={resolvedTheme === "light" ? "github-light-default" : "github-dark-default"}
       className="h-full"
       options={mergeOptions}
