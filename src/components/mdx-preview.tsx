@@ -1,8 +1,11 @@
 "use client";
 
 import "@/style/mdx.css";
+import "katex/dist/katex.min.css";
 import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
 import rehypeSlug from "rehype-slug";
+import rehypeKatex from "rehype-katex";
 import { useTheme } from "next-themes";
 import rehypePretty from "rehype-pretty-code";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -55,8 +58,9 @@ export default function MdxPreview({ source }: MdxPreviewProps) {
                 keepBackground: false,
               },
             ],
+            rehypeKatex,
           ],
-          remarkPlugins: [remarkGfm],
+          remarkPlugins: [remarkGfm, remarkMath],
         },
       });
       setMdxSource(mdxSource);
