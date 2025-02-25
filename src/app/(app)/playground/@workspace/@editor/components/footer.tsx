@@ -4,11 +4,11 @@ import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { useCodeEditorState } from "@/store/useCodeEditor";
 
-interface WorkspaceFooterProps {
+interface WorkspaceEditorFooterProps {
   className?: string;
 }
 
-export default function WorkspaceFooter({ className, ...props }: WorkspaceFooterProps) {
+export default function WorkspaceEditorFooter({ className, ...props }: WorkspaceEditorFooterProps) {
   const { editor } = useCodeEditorState();
   const [position, setPosition] = useState<{ lineNumber: number; column: number } | null>(null);
 
