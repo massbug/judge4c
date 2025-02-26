@@ -14,7 +14,9 @@ export default function ProblemSolutionFooter({
       className={cn("h-9 flex flex-none items-center bg-muted", className)}
     >
       <div className="w-full flex items-center justify-center">
-        Solution of Two Sum
+        <span className="truncate">
+          Solution of Two Sum
+        </span>
       </div>
     </footer>
   );
