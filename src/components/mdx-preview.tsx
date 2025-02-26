@@ -85,7 +85,11 @@ export default function MdxPreview({ source }: MdxPreviewProps) {
   }, [getMdxSource]);
 
   if (isLoading) {
-    return <Skeleton className="h-full w-full" />;
+    return (
+      <div className="h-full w-full p-10">
+        <Skeleton className="h-full w-full rounded-3xl" />
+      </div>
+    );
   }
 
   if (error) {
