@@ -25,7 +25,7 @@ export default function WorkspaceLayout({ editor }: WorkspaceLayoutProps) {
         </TabsList>
         <ScrollBar orientation="horizontal" />
       </ScrollArea>
-      <TabsContent value="editor" className="grow mt-0">
+      <TabsContent value="editor" className="flex-1 mt-0">
         {editor}
       </TabsContent>
     </Tabs>

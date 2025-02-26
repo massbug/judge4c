@@ -39,7 +39,7 @@ export default function WorkspaceEditorFooter({
   return (
     <footer
       {...props}
-      className={cn("h-9 flex items-center bg-muted px-3 py-2", className)}
+      className={cn("h-9 flex flex-none items-center bg-muted px-3 py-2", className)}
     >
       <div className="w-full flex items-center justify-end">
         {position
