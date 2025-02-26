@@ -45,6 +45,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@shikijs/monaco": "2.5.0",
+    "@types/dockerode": "^3.3.35",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
