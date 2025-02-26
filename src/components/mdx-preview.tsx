@@ -4,7 +4,7 @@ import "@/style/mdx.css";
 import "katex/dist/katex.min.css";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
-import rehypeSlug from "rehype-slug";
+// import rehypeSlug from "rehype-slug";
 import rehypeKatex from "rehype-katex";
 import { useTheme } from "next-themes";
 import rehypePretty from "rehype-pretty-code";
@@ -12,7 +12,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { serialize } from "next-mdx-remote/serialize";
 import { useCallback, useEffect, useState } from "react";
 import { CircleAlert, TriangleAlert } from "lucide-react";
-import rehypeAutolinkHeadings from "rehype-autolink-headings";
+// import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { MDXRemote, MDXRemoteSerializeResult } from "next-mdx-remote";
 
@@ -40,17 +40,17 @@ export default function MdxPreview({ source }: MdxPreviewProps) {
       const mdxSource = await serialize(source, {
         mdxOptions: {
           rehypePlugins: [
-            rehypeSlug,
-            [
-              rehypeAutolinkHeadings,
-              {
-                behavior: "wrap",
-                properties: {
-                  className: ["subheading-anchor"],
-                  ariaLabel: "Link to section",
-                },
-              },
-            ],
+            // rehypeSlug,
+            // [
+            //   rehypeAutolinkHeadings,
+            //   {
+            //     behavior: "wrap",
+            //     properties: {
+            //       className: ["subheading-anchor"],
+            //       ariaLabel: "Link to section",
+            //     },
+            //   },
+            // ],
             [
               rehypePretty,
               {
@@ -113,7 +113,7 @@ export default function MdxPreview({ source }: MdxPreviewProps) {
   }
 
   return (
-    <ScrollArea className="[&>[data-radix-scroll-area-viewport]]:max-h-[calc(100vh-130px)]">
+    <ScrollArea className="[&>[data-radix-scroll-area-viewport]]:max-h-[calc(100vh-132px)]">
       <div className="markdown-body">
         <MDXRemote {...mdxSource!} components={components} />
       </div>
