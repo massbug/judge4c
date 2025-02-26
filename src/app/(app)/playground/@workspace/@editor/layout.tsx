@@ -11,7 +11,9 @@ export default function WorkspaceEditorLayout({
   return (
     <div className="h-full flex flex-col">
       <WorkspaceEditorHeader />
-      {children}
+      <div className="flex-1">
+        {children}
+      </div>
       <WorkspaceEditorFooter />
     </div>
   );
