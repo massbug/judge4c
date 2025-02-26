@@ -28,7 +28,7 @@ const Editor = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="h-full w-full p-10 pt-2">
+      <div className="h-full w-full p-4">
         <Skeleton className="h-full w-full rounded-3xl" />
       </div>
     ),
@@ -210,7 +210,11 @@ export default function CodeEditor() {
       //     console.log(marker.message);
       //   });
       // }}
-      loading={<Skeleton className="h-full w-full" />}
+      loading={
+        <div className="h-full w-full p-4">
+          <Skeleton className="h-full w-full rounded-3xl" />
+        </div>
+      }
     />
   );
 }
