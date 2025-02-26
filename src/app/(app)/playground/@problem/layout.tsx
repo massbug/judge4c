@@ -40,10 +40,10 @@ export default function ProblemLayout({
         </TabsList>
         <ScrollBar orientation="horizontal" />
       </ScrollArea>
-      <TabsContent value="description" className="grow mt-0">
+      <TabsContent value="description" className="flex-1 mt-0">
         {description}
       </TabsContent>
-      <TabsContent value="solution" className="grow mt-0">
+      <TabsContent value="solution" className="flex-1 mt-0">
         {solution}
       </TabsContent>
     </Tabs>
