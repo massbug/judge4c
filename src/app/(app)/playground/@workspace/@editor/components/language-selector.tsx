@@ -7,11 +7,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useCodeEditorState } from "@/store/useCodeEditor";
 import { SUPPORTED_LANGUAGES } from "@/constants/language";
 
 export default function LanguageSelector() {
-  const { language, setLanguage } = useCodeEditorState();
+  const { loading, language, setLanguage } = useCodeEditorState();
+
+  if (loading) {
+    return <Skeleton className="h-6 w-16 rounded-2xl" />;
+  }
 
   return (
     <Select value={language} onValueChange={setLanguage}>
