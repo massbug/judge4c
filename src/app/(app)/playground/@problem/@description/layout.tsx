@@ -1,3 +1,5 @@
+import ProblemDescriptionFooter from "./components/footer";
+
 interface ProblemDescriptionLayoutProps {
   children: React.ReactNode;
 }
@@ -7,7 +9,10 @@ export default function ProblemDescriptionLayout({
 }: ProblemDescriptionLayoutProps) {
   return (
     <div className="h-full flex flex-col">
-      {children}
+      <div className="flex-1">
+        {children}
+      </div>
+      <ProblemDescriptionFooter />
     </div>
   );
 }
