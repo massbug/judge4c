@@ -14,11 +14,14 @@ services:
       - lsp-c
       - lsp-cpp
     healthcheck:
-      test: ["CMD-SHELL", "curl --fail http://localhost:3000 || exit 1"]
+      test: [ "CMD-SHELL", "curl --fail http://localhost:3000 || exit 1" ]
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 10s
+    user: root
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
 
   lsp-c:
     build:
@@ -32,7 +35,7 @@ services:
     networks:
       - monaco-editor-lsp-next
     healthcheck:
-      test: ["CMD-SHELL", "nc -zv localhost 3000"]
+      test: [ "CMD-SHELL", "nc -zv localhost 3000" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -49,7 +52,7 @@ services:
     networks:
       - monaco-editor-lsp-next
     healthcheck:
-      test: ["CMD-SHELL", "nc -zv localhost 3000"]
+      test: [ "CMD-SHELL", "nc -zv localhost 3000" ]
       interval: 10s
       timeout: 5s
       retries: 5
