@@ -1,5 +1,10 @@
 "use client";
 
+import {
+  toSocket,
+  WebSocketMessageReader,
+  WebSocketMessageWriter,
+} from "vscode-ws-jsonrpc";
 import dynamic from "next/dynamic";
 import { useTheme } from "next-themes";
 import normalizeUrl from "normalize-url";
@@ -13,7 +18,6 @@ import { DEFAULT_EDITOR_VALUE } from "@/config/editor/value";
 import type { MonacoLanguageClient } from "monaco-languageclient";
 import { SUPPORTED_LANGUAGE_SERVERS } from "@/config/lsp/language-server";
 import { useCodeEditorOption, useCodeEditorState } from "@/store/useCodeEditor";
-import { toSocket, WebSocketMessageReader, WebSocketMessageWriter } from "vscode-ws-jsonrpc";
 
 const Editor = dynamic(
   async () => {
@@ -104,7 +108,9 @@ export default function CodeEditor() {
         // Cleanup old connection
         await cleanupConnection(connectionRef.current);
 
-        const serverConfig = SUPPORTED_LANGUAGE_SERVERS.find((s) => s.id === language);
+        const serverConfig = SUPPORTED_LANGUAGE_SERVERS.find(
+          (s) => s.id === language
+        );
         if (!serverConfig || signal.aborted) return;
 
         // Create WebSocket connection
@@ -122,7 +128,9 @@ export default function CodeEditor() {
             };
             webSocket.onerror = () => reject(new Error("WebSocket error"));
           }),
-          new Promise((_, reject) => setTimeout(() => reject(new Error("Connection timeout")), 5000)),
+          new Promise((_, reject) =>
+            setTimeout(() => reject(new Error("Connection timeout")), 5000)
+          ),
         ]);
 
         if (signal.aborted) {
@@ -132,7 +140,9 @@ export default function CodeEditor() {
 
         // Initialize Language Client
         const { MonacoLanguageClient } = await import("monaco-languageclient");
-        const { ErrorAction, CloseAction } = await import("vscode-languageclient");
+        const { ErrorAction, CloseAction } = await import(
+          "vscode-languageclient"
+        );
 
         const socket = toSocket(webSocket);
         const client = new MonacoLanguageClient({
@@ -186,12 +196,26 @@ export default function CodeEditor() {
     lineHeight,
   };
 
+  function handleEditorChange(value: string | undefined) {
+    localStorage.setItem(`code-editor-value-${language}`, value ?? "");
+  }
+
+  const editorValue =
+    typeof window !== "undefined"
+      ? localStorage.getItem(`code-editor-value-${language}`) ||
+      DEFAULT_EDITOR_VALUE[language]
+      : DEFAULT_EDITOR_VALUE[language];
+
   return (
     <Editor
       defaultLanguage={language}
-      defaultValue={DEFAULT_EDITOR_VALUE[language]}
+      value={editorValue}
       path={DEFAULT_EDITOR_PATH[language]}
-      theme={resolvedTheme === "light" ? "github-light-default" : "github-dark-default"}
+      theme={
+        resolvedTheme === "light"
+          ? "github-light-default"
+          : "github-dark-default"
+      }
       className="h-full"
       options={mergeOptions}
       beforeMount={(monaco) => {
@@ -200,6 +224,7 @@ export default function CodeEditor() {
       onMount={(editor) => {
         setEditor(editor);
       }}
+      onChange={handleEditorChange}
       // onValidate={(markers) => {
       //   markers.forEach((marker) => {
       //     console.log(marker.severity);
