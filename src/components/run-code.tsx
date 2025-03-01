@@ -15,7 +15,7 @@ export default function RunCode({
   className,
   ...props
 }: RunCodeProps) {
-  const { language, editor } = useCodeEditorState();
+  const { language, editor, setResult } = useCodeEditorState();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleJudge = async () => {
@@ -25,8 +25,8 @@ export default function RunCode({
     setIsLoading(true);
 
     try {
-      const judgeResult = await judge(language, code);
-      console.log(judgeResult);
+      const result = await judge(language, code);
+      setResult(result);
     } catch (error) {
       console.error("Error occurred while judging the code:");
       console.error(error);
