@@ -7,6 +7,7 @@ export interface LanguageConfig {
   tag: string;
   workingDir: string;
   timeout: number;
+  memoryLimit: number;
 }
 
 export const LanguageConfigs: Record<string, LanguageConfig> = {
@@ -19,6 +20,7 @@ export const LanguageConfigs: Record<string, LanguageConfig> = {
     tag: "latest",
     workingDir: "/src",
     timeout: 1000,
+    memoryLimit: 128,
   },
   cpp: {
     id: "cpp",
@@ -29,5 +31,6 @@ export const LanguageConfigs: Record<string, LanguageConfig> = {
     tag: "latest",
     workingDir: "/src",
     timeout: 1000,
+    memoryLimit: 128,
   },
 };
