@@ -8,7 +8,7 @@ export default function ProblemSubmissionPage() {
   const { result } = useCodeEditorState();
 
   const template = useMemo(() => {
-    return `\`\`\`bash\n${result || ""}\`\`\``;
+    return `\`\`\`bash\n${result || ""}\n\`\`\``;
   }, [result]);
 
   return <MdxPreview source={template} />;
