@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import * as monaco from "monaco-editor";
+import { type editor } from "monaco-editor";
 import { CODE_EDITOR_OPTIONS } from "@/constants/option";
 import { SupportedLanguage } from "@/constants/language";
 import { MonacoLanguageClient } from "monaco-languageclient";
@@ -7,12 +7,12 @@ import { persist, createJSONStorage } from "zustand/middleware";
 import { DEFAULT_EDITOR_LANGUAGE } from "@/config/editor/language";
 
 interface CodeEditorState {
-  editor: monaco.editor.IStandaloneCodeEditor | null;
+  editor: editor.IStandaloneCodeEditor | null;
   language: SupportedLanguage;
   languageClient: MonacoLanguageClient | null;
   loading: boolean;
   result: string | null;
-  setEditor: (editor: monaco.editor.IStandaloneCodeEditor | null) => void;
+  setEditor: (editor: editor.IStandaloneCodeEditor | null) => void;
   setLanguage: (language: SupportedLanguage) => void;
   setLanguageClient: (languageClient: MonacoLanguageClient | null) => void;
   setLoading: (loading: boolean) => void;
@@ -41,7 +41,7 @@ export const useCodeEditorState = create<CodeEditorState>()(
   )
 );
 
-export const useCodeEditorOption = create<monaco.editor.IEditorConstructionOptions>((set) => ({
+export const useCodeEditorOption = create<editor.IEditorConstructionOptions>((set) => ({
   fontSize: CODE_EDITOR_OPTIONS.fontSize,
   lineHeight: CODE_EDITOR_OPTIONS.lineHeight,
   setFontSize: (fontSize: number) => set({ fontSize }),
