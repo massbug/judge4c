@@ -2,7 +2,7 @@
 
 import tar from "tar-stream";
 import Docker from "dockerode";
-import { Readable } from "stream";
+import { Readable, Writable } from "stream";
 import { LanguageConfigs } from "@/config/judge";
 
 const docker = new Docker({ socketPath: "/var/run/docker.sock" });
@@ -20,7 +20,7 @@ async function prepareEnvironment(image: string, tag: string) {
 async function createContainer(image: string, tag: string, workingDir: string) {
   const container = await docker.createContainer({
     Image: `${image}:${tag}`,
-    Tty: true,
+    Cmd: ["tail", "-f", "/dev/null"],
     WorkingDir: workingDir,
   });
 
@@ -51,9 +51,36 @@ async function compileCode(container: Docker.Container, filePath: string, fileNa
         return reject(new Error("Stream is undefined"));
       }
 
-      let data = "";
-      stream.on("data", (chunk) => (data += chunk.toString()));
-      stream.on("end", () => resolve(data));
+      let stdoutChunks: string[] = [];
+      let stderrChunks: string[] = [];
+
+      const stdoutStream = new Writable({
+        write(chunk, encoding, callback) {
+          stdoutChunks.push(chunk.toString());
+          callback();
+        }
+      });
+
+      const stderrStream = new Writable({
+        write(chunk, encoding, callback) {
+          stderrChunks.push(chunk.toString());
+          callback();
+        }
+      });
+
+      docker.modem.demuxStream(stream, stdoutStream, stderrStream);
+
+      stream.on("end", () => {
+        const stdout = stdoutChunks.join("");
+        const stderr = stderrChunks.join("");
+
+        if (stderr) {
+          resolve(stdout + stderr);
+        } else {
+          resolve(stdout);
+        }
+      });
+
       stream.on("error", (error) => reject(error));
     });
   });
@@ -75,9 +102,35 @@ async function runCode(container: Docker.Container, fileName: string) {
         return reject(new Error("Stream is undefined"));
       }
 
-      let data = "";
-      stream.on("data", (chunk) => (data += chunk.toString()));
-      stream.on("end", () => resolve(data));
+      let stdoutChunks: string[] = [];
+      let stderrChunks: string[] = [];
+
+      const stdoutStream = new Writable({
+        write(chunk, encoding, callback) {
+          stdoutChunks.push(chunk.toString());
+          callback();
+        }
+      });
+
+      const stderrStream = new Writable({
+        write(chunk, encoding, callback) {
+          stderrChunks.push(chunk.toString());
+          callback();
+        }
+      });
+
+      docker.modem.demuxStream(stream, stdoutStream, stderrStream);
+
+      stream.on("end", () => {
+        const stdout = stdoutChunks.join("");
+        const stderr = stderrChunks.join("");
+        if (stderr) {
+          resolve(stdout + stderr);
+        } else {
+          resolve(stdout);
+        }
+      });
+
       stream.on("error", (error) => reject(error));
     });
   });
@@ -116,7 +169,7 @@ export async function judge(language: string, value: string) {
     throw error;
   } finally {
     if (container) {
-      cleanupContainer(container).catch(() => {});
+      cleanupContainer(container).catch(() => { });
     }
   }
 }
