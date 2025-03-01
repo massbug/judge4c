@@ -81,7 +81,35 @@ async function compileCode(container: Docker.Container, filePath: string, fileNa
   });
 }
 
-async function runCode(container: Docker.Container, fileName: string, timeout: number) {
+async function monitorMemoryUsage(container: Docker.Container, memoryLimit: number, timeoutHandle: NodeJS.Timeout) {
+  return new Promise<void>((resolve, reject) => {
+    const interval = setInterval(async () => {
+      try {
+        const stats = await container.stats({ stream: false });
+        const memoryUsage = stats.memory_stats.usage / (1024 * 1024); // Convert to MB
+
+        console.log(`Memory usage: ${memoryUsage.toFixed(2)} MB`);
+
+        if (memoryUsage > memoryLimit) {
+          console.warn(`Memory limit exceeded: ${memoryUsage.toFixed(2)} MB > ${memoryLimit} MB`);
+          clearInterval(interval);
+          clearTimeout(timeoutHandle); // Clear the timeout timer
+          await container.stop({ t: 0 });
+          await container.remove();
+          reject(new Error("Memory limit exceeded, container stopped and removed"));
+        }
+      } catch (error) {
+        console.error("Error monitoring memory:", error);
+        clearInterval(interval);
+        reject(error);
+      }
+    }, 500); // Check every 500ms
+
+    resolve();
+  });
+}
+
+async function runCode(container: Docker.Container, fileName: string, timeout: number, memoryLimit: number) {
   const runExec = await container.exec({
     Cmd: [`./${fileName}`],
     AttachStdout: true,
@@ -90,6 +118,7 @@ async function runCode(container: Docker.Container, fileName: string, timeout: n
 
   return new Promise<string>((resolve, reject) => {
     let timeoutHandle: NodeJS.Timeout;
+    let memoryMonitor: Promise<void>;
 
     runExec.start({}, async (error, stream) => {
       if (error) {
@@ -118,23 +147,29 @@ async function runCode(container: Docker.Container, fileName: string, timeout: n
 
       docker.modem.demuxStream(stream, stdoutStream, stderrStream);
 
+      // Timeout monitoring
       timeoutHandle = setTimeout(async () => {
+        console.warn("Execution timed out, stopping container...");
         try {
-          console.warn("Execution timed out, stopping container...");
           await container.stop({ t: 0 });
-          console.warn("Container stopped, removing...");
           await container.remove();
           reject(new Error("Execution timed out and container was removed"));
         } catch (stopError) {
+          console.error('Error stopping/removing container:', stopError);
           reject(new Error("Execution timed out, but failed to stop/remove container"));
         }
-      }, timeout);
+      }, timeout); // Use the configured timeout
+
+      // Memory monitoring
+      memoryMonitor = monitorMemoryUsage(container, memoryLimit, timeoutHandle);
 
       stream.on("end", () => {
         clearTimeout(timeoutHandle);
-        const stdout = stdoutChunks.join("");
-        const stderr = stderrChunks.join("");
-        resolve(stderr ? stdout + stderr : stdout);
+        memoryMonitor.then(() => {
+          const stdout = stdoutChunks.join("");
+          const stderr = stderrChunks.join("");
+          resolve(stderr ? stdout + stderr : stdout);
+        }).catch(reject);
       });
 
       stream.on("error", (error) => {
@@ -157,7 +192,7 @@ async function cleanupContainer(container: Docker.Container) {
 }
 
 export async function judge(language: string, value: string) {
-  const { image, tag, fileName, extension, workingDir, timeout } = LanguageConfigs[language];
+  const { image, tag, fileName, extension, workingDir, timeout, memoryLimit } = LanguageConfigs[language];
   const filePath = `${fileName}.${extension}`;
   let container: Docker.Container | undefined;
 
@@ -173,7 +208,7 @@ export async function judge(language: string, value: string) {
       return compileOutput;
     }
 
-    return await runCode(container, fileName, timeout);
+    return await runCode(container, fileName, timeout, memoryLimit);
   } catch (error) {
     console.error("Error during judging:", error);
     throw error;
