@@ -10,10 +10,12 @@ interface CodeEditorState {
   language: SupportedLanguage;
   languageClient: MonacoLanguageClient | null;
   loading: boolean;
+  result: string | null;
   setEditor: (editor: monaco.editor.IStandaloneCodeEditor | null) => void;
   setLanguage: (language: SupportedLanguage) => void;
   setLanguageClient: (languageClient: MonacoLanguageClient | null) => void;
   setLoading: (loading: boolean) => void;
+  setResult: (result: string) => void;
 }
 
 export const useCodeEditorState = create<CodeEditorState>((set) => ({
@@ -21,10 +23,12 @@ export const useCodeEditorState = create<CodeEditorState>((set) => ({
   language: DEFAULT_EDITOR_LANGUAGE,
   languageClient: null,
   loading: true,
+  result: null,
   setEditor: (editor) => set({ editor }),
   setLanguage: (language) => set({ language }),
   setLanguageClient: (languageClient) => set({ languageClient }),
   setLoading: (loading) => set({ loading }),
+  setResult: (result) => set({ result }),
 }));
 
 export const useCodeEditorOption = create<monaco.editor.IEditorConstructionOptions>((set) => ({
