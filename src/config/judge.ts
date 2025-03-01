@@ -6,6 +6,7 @@ export interface LanguageConfig {
   image: string;
   tag: string;
   workingDir: string;
+  timeout: number;
 }
 
 export const LanguageConfigs: Record<string, LanguageConfig> = {
@@ -17,6 +18,7 @@ export const LanguageConfigs: Record<string, LanguageConfig> = {
     image: "gcc",
     tag: "latest",
     workingDir: "/src",
+    timeout: 1000,
   },
   cpp: {
     id: "cpp",
@@ -26,5 +28,6 @@ export const LanguageConfigs: Record<string, LanguageConfig> = {
     image: "gcc",
     tag: "latest",
     workingDir: "/src",
+    timeout: 1000,
   },
 };
