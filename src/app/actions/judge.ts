@@ -51,8 +51,8 @@ async function compileCode(container: Docker.Container, filePath: string, fileNa
         return reject(new Error("Stream is undefined"));
       }
 
-      let stdoutChunks: string[] = [];
-      let stderrChunks: string[] = [];
+      const stdoutChunks: string[] = [];
+      const stderrChunks: string[] = [];
 
       const stdoutStream = new Writable({
         write(chunk, encoding, callback) {
@@ -102,8 +102,8 @@ async function runCode(container: Docker.Container, fileName: string) {
         return reject(new Error("Stream is undefined"));
       }
 
-      let stdoutChunks: string[] = [];
-      let stderrChunks: string[] = [];
+      const stdoutChunks: string[] = [];
+      const stderrChunks: string[] = [];
 
       const stdoutStream = new Writable({
         write(chunk, encoding, callback) {
