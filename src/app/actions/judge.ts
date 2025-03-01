@@ -73,20 +73,15 @@ async function compileCode(container: Docker.Container, filePath: string, fileNa
       stream.on("end", () => {
         const stdout = stdoutChunks.join("");
         const stderr = stderrChunks.join("");
-
-        if (stderr) {
-          resolve(stdout + stderr);
-        } else {
-          resolve(stdout);
-        }
+        resolve(stderr ? stdout + stderr : stdout);
       });
 
-      stream.on("error", (error) => reject(error));
+      stream.on("error", reject);
     });
   });
 }
 
-async function runCode(container: Docker.Container, fileName: string) {
+async function runCode(container: Docker.Container, fileName: string, timeout: number) {
   const runExec = await container.exec({
     Cmd: [`./${fileName}`],
     AttachStdout: true,
@@ -94,7 +89,9 @@ async function runCode(container: Docker.Container, fileName: string) {
   });
 
   return new Promise<string>((resolve, reject) => {
-    runExec.start({}, (error, stream) => {
+    let timeoutHandle: NodeJS.Timeout;
+
+    runExec.start({}, async (error, stream) => {
       if (error) {
         return reject(error);
       }
@@ -121,24 +118,38 @@ async function runCode(container: Docker.Container, fileName: string) {
 
       docker.modem.demuxStream(stream, stdoutStream, stderrStream);
 
+      timeoutHandle = setTimeout(async () => {
+        try {
+          console.warn("Execution timed out, stopping container...");
+          await container.stop({ t: 0 });
+          console.warn("Container stopped, removing...");
+          await container.remove();
+          reject(new Error("Execution timed out and container was removed"));
+        } catch (stopError) {
+          reject(new Error("Execution timed out, but failed to stop/remove container"));
+        }
+      }, timeout);
+
       stream.on("end", () => {
+        clearTimeout(timeoutHandle);
         const stdout = stdoutChunks.join("");
         const stderr = stderrChunks.join("");
-        if (stderr) {
-          resolve(stdout + stderr);
-        } else {
-          resolve(stdout);
-        }
+        resolve(stderr ? stdout + stderr : stdout);
       });
 
-      stream.on("error", (error) => reject(error));
+      stream.on("error", (error) => {
+        clearTimeout(timeoutHandle);
+        reject(error);
+      });
     });
   });
 }
 
 async function cleanupContainer(container: Docker.Container) {
   try {
+    console.log("Stopping container...");
     await container.stop({ t: 0 });
+    console.log("Removing container...");
     await container.remove();
   } catch (error) {
     console.error("Container cleanup failed:", error);
@@ -146,7 +157,7 @@ async function cleanupContainer(container: Docker.Container) {
 }
 
 export async function judge(language: string, value: string) {
-  const { image, tag, fileName, extension, workingDir } = LanguageConfigs[language];
+  const { image, tag, fileName, extension, workingDir, timeout } = LanguageConfigs[language];
   const filePath = `${fileName}.${extension}`;
   let container: Docker.Container | undefined;
 
@@ -162,8 +173,7 @@ export async function judge(language: string, value: string) {
       return compileOutput;
     }
 
-    const runOutput = await runCode(container, fileName);
-    return runOutput;
+    return await runCode(container, fileName, timeout);
   } catch (error) {
     console.error("Error during judging:", error);
     throw error;
