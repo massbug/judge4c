@@ -8,73 +8,102 @@
 
 </div>
 
-## ⚠️ Important Notice for WSL Users
+## ⚠️ WSL Users: Critical Configuration
 
-### 🐧 WSL Network Configuration
+### 🐧 Network Mode Requirement
 
-If you are using Windows Subsystem for Linux (WSL), it is **essential** to switch your network mode to **Mirrored**. Failing to do so may prevent the Monaco Editor from connecting to the LSP language servers due to potential IPv6 configuration conflicts.
+When using Windows Subsystem for Linux (WSL), you **must** configure your network mode as **Mirrored** to ensure proper LSP server connectivity. Standard WSL network configurations may create IPv6 conflicts that block Monaco-LSP communication.
 
-#### Steps to Switch to "Mirrored" Mode:
-1. Open your WSL settings. ⚙️  
-2. Navigate to the **Network** section. 🌐  
-3. Change the network mode to **Mirrored**. 🔄  
-4. Restart WSL. 💻  
+#### 🔧 Mirror Mode Setup:
+1. Open WSL settings ⚙️  
+2. Navigate to **Network** section 🌐  
+3. Select **Mirrored** mode 🔄  
+4. Restart WSL instance 💻  
 
-Once these steps are completed, the Monaco Editor should connect smoothly to the LSP language servers. Enjoy! 🎉
+Complete these steps before launching the editor for seamless LSP integration! 🎉
 
-## 🚀 Quick Start Guide
+## 🚀 Getting Started
 
-### 🐳 Using Docker (Recommended)
+### 🐳 Docker Deployment (Recommended)
 
 ```sh
-# Clone the repository
+# Clone repository
 git clone https://github.com/cfngc4594/monaco-editor-lsp-next
 cd monaco-editor-lsp-next
 
-# Build and start containers in detached mode
+# Build and launch containers
 docker compose up -d --build
 ```
 
-### 🔧 Manual Setup
+### 🔨 Manual Installation
 
 ```sh
-# Clone the repository
+# Clone repository
 git clone https://github.com/cfngc4594/monaco-editor-lsp-next
 cd monaco-editor-lsp-next
 
-# Build and start specific containers (lsp-c and lsp-cpp) in detached mode
+# Start core LSP containers
 docker compose up -d --build lsp-c lsp-cpp
 
-# Install project dependencies using the Bun package manager
+# Install dependencies (using Bun)
 bun install
 
-# Launch the development server
+# Launch development server
 bun run dev
 ```
 
-## ⚙️ Configuration
+## ⚙️ Technical Configuration
 
-### LSP Server Settings
+### LSP Server Mapping
 
 | **Language** | **LSP Server** | **Port** |
 |--------------|----------------|----------|
 | `C`          | `clangd`       | `4594`   |
 | `C++`        | `clangd`       | `4595`   |
 
-## 📦 Package Compatibility
+## 📦 Dependency Management
 
-### 🎨 Shiki API Deprecation Notice
+### 🔒 Version Lock Requirements
 
-The syntax highlighting feature relies on `rehype-pretty-code`, which uses the deprecated `getHighlighter` API from `shiki`. This API was removed as of `shiki@3.0.0+`.
+**Critical Pairing**:  
+| Package                 | Max Version | Reference |  
+|-------------------------|-------------|-----------|  
+| `monaco-editor`         | ≤0.36.1     | [Compatibility Matrix](https://github.com/TypeFox/monaco-languageclient/blob/main/docs/versions-and-history.md#monaco-editor--codingamemonaco-vscode-api-compatibility-table) |  
+| `monaco-languageclient` | ≤5.0.1      |           |  
 
-**Key Details:**
-- **Affected Component:** `src/components/mdx-preview.tsx`
+**Version Lock Rationale**:  
+1. **API Stability**  
+   - Newer `monaco-editor` (≥0.40.0) breaks `monaco-languageclient` integration  
+   - v0.36.1 matches `@codingame/monaco-vscode-api@1.76.9` requirements  
+
+2. **LSP Feature Breakdown**  
+   - Version mismatches disable:  
+     - Auto `textDocument/didOpen` events  
+     - `textDocument/inlayHint` resolution  
+     - `textDocument/documentLink` functionality  
+
+3. **Version Conflict**  
+   - `@codingame` package versioning (e.g., `11.1.2`) ≠ `monaco-editor` versions (e.g., `0.36.1`)  
+   - `@monaco-editor/react` depends on `monaco-editor` versioning scheme  
+
+**Failure Indicators**:  
+- ✔️ WebSocket connection established  
+- ❌ Missing syntax highlighting  
+- ❌ No autocomplete suggestions  
+- ❌ Silent LSP initialization failures  
+
+### 🎨 Shiki Compatibility Notice
+
+Syntax highlighting depends on `rehype-pretty-code`'s deprecated `getHighlighter` API from `shiki@legacy`.
+
+**Key Points**:
+- **Affected File:** `src/components/mdx-preview.tsx`
 - **Dependency Chain:** `rehype-pretty-code` → `shiki@legacy`
-- **Version Constraints:**
+- **Version Constraints**:
   ```bash
   "shiki": "<=2.5.0"
   "@shikijs/monaco": "<=2.5.0"
   ```
 
-**Developer Note:**  
-Although newer shiki versions (3.0.0+) have introduced `createHighlighter` and `getSingletonHighlighter` APIs, upgrading manually may disrupt functionality until `rehype-pretty-code` adapts to these changes. For updates, please monitor the [rehype-pretty-code repository](https://github.com/atomiks/rehype-pretty-code).
+**Maintenance Note**:  
+While `shiki@3.0.0+` introduces modern APIs (`createHighlighter`/`getSingletonHighlighter`), upgrading requires `rehype-pretty-code` updates. Track progress [here](https://github.com/atomiks/rehype-pretty-code).
