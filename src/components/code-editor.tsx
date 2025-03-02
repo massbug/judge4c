@@ -197,7 +197,9 @@ export default function CodeEditor() {
   };
 
   function handleEditorChange(value: string | undefined) {
-    localStorage.setItem(`code-editor-value-${language}`, value ?? "");
+    if (typeof window !== "undefined") {
+      localStorage.setItem(`code-editor-value-${language}`, value ?? "");
+    }
   }
 
   const editorValue =
