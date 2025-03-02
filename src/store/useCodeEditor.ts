@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { type editor } from "monaco-editor";
+import { JudgeResult } from "@/config/judge";
 import { CODE_EDITOR_OPTIONS } from "@/constants/option";
 import { SupportedLanguage } from "@/constants/language";
 import { MonacoLanguageClient } from "monaco-languageclient";
@@ -11,12 +12,12 @@ interface CodeEditorState {
   language: SupportedLanguage;
   languageClient: MonacoLanguageClient | null;
   loading: boolean;
-  result: string | null;
+  result: JudgeResult | null;
   setEditor: (editor: editor.IStandaloneCodeEditor | null) => void;
   setLanguage: (language: SupportedLanguage) => void;
   setLanguageClient: (languageClient: MonacoLanguageClient | null) => void;
   setLoading: (loading: boolean) => void;
-  setResult: (result: string) => void;
+  setResult: (result: JudgeResult) => void;
 }
 
 export const useCodeEditorState = create<CodeEditorState>()(
