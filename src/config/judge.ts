@@ -1,15 +1,13 @@
 // Result type definitions
 export enum ExitCode {
-  AC  = 0,  // Accepted
-  WA  = 1,  // Wrong Answer
-  TLE = 2,  // Time Limit Exceeded
-  MLE = 3,  // Memory Limit Exceeded
-  RE  = 4,  // Runtime Error
-  CE  = 5,  // Compilation Error
-  PE  = 6,  // Presentation Error
-  OLE = 7,  // Output Limit Exceeded
-  SE  = 8,  // System Error
-  SV  = 9   // Security Violation
+  SE = 0,  // System Error
+  CS = 1,  // Compilation Success
+  CE = 2,  // Compilation Error
+  TLE = 3, // Time Limit Exceeded
+  MLE = 4, // Memory Limit Exceeded
+  RE = 5,  // Runtime Error
+  AC = 6,  // Accepted
+  WA = 7,  // Wrong Answer
 }
 
 export type JudgeResult = {
@@ -23,12 +21,14 @@ export interface LanguageConfig {
   id: string;
   label: string;
   fileName: string;
-  extension: string;
+  fileExtension: string;
   image: string;
   tag: string;
   workingDir: string;
-  timeout: number;
+  timeLimit: number;
   memoryLimit: number;
+  compileOutputLimit: number;
+  runOutputLimit: number;
 }
 
 export const LanguageConfigs: Record<string, LanguageConfig> = {
@@ -36,22 +36,26 @@ export const LanguageConfigs: Record<string, LanguageConfig> = {
     id: "c",
     label: "C",
     fileName: "main",
-    extension: "c",
+    fileExtension: "c",
     image: "gcc",
     tag: "latest",
     workingDir: "/src",
-    timeout: 1000,
+    timeLimit: 10000,
     memoryLimit: 128,
+    compileOutputLimit: 1 * 1024 * 1024,
+    runOutputLimit: 1 * 1024 * 1024,
   },
   cpp: {
     id: "cpp",
     label: "C++",
     fileName: "main",
-    extension: "cpp",
+    fileExtension: "cpp",
     image: "gcc",
     tag: "latest",
     workingDir: "/src",
-    timeout: 1000,
+    timeLimit: 10000,
     memoryLimit: 128,
+    compileOutputLimit: 1 * 1024 * 1024,
+    runOutputLimit: 1 * 1024 * 1024,
   },
 };
