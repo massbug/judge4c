@@ -36,7 +36,17 @@ export const useCodeEditorState = create<CodeEditorState>()(
     }),
     {
       name: "code-editor-language",
-      storage: createJSONStorage(() => localStorage),
+      storage: createJSONStorage(() => {
+        if (typeof window !== "undefined") {
+          return localStorage;
+        } else {
+          return {
+            getItem: () => null,
+            setItem: () => { },
+            removeItem: () => { },
+          };
+        }
+      }),
       partialize: (state) => ({ language: state.language }),
     }
   )
