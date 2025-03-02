@@ -3,10 +3,12 @@
 import tar from "tar-stream";
 import Docker from "dockerode";
 import { Readable, Writable } from "stream";
-import { LanguageConfigs } from "@/config/judge";
+import { ExitCode, JudgeResult, LanguageConfigs } from "@/config/judge";
 
+// Docker client initialization
 const docker = new Docker({ socketPath: "/var/run/docker.sock" });
 
+// Prepare Docker image environment
 async function prepareEnvironment(image: string, tag: string) {
   const reference = `${image}:${tag}`;
   const filters = { reference: [reference] };
@@ -17,10 +19,11 @@ async function prepareEnvironment(image: string, tag: string) {
   }
 }
 
+// Create Docker container with keep-alive
 async function createContainer(image: string, tag: string, workingDir: string) {
   const container = await docker.createContainer({
     Image: `${image}:${tag}`,
-    Cmd: ["tail", "-f", "/dev/null"],
+    Cmd: ["tail", "-f", "/dev/null"],  // Keep container alive
     WorkingDir: workingDir,
   });
 
@@ -28,6 +31,7 @@ async function createContainer(image: string, tag: string, workingDir: string) {
   return container;
 }
 
+// Create tar stream for code submission
 function createTarStream(filePath: string, value: string) {
   const pack = tar.pack();
   pack.entry({ name: filePath }, value);
@@ -35,21 +39,22 @@ function createTarStream(filePath: string, value: string) {
   return Readable.from(pack);
 }
 
-async function compileCode(container: Docker.Container, filePath: string, fileName: string) {
+// Compilation process handler
+async function compileCode(
+  container: Docker.Container,
+  filePath: string,
+  fileName: string
+): Promise<JudgeResult> {
   const compileExec = await container.exec({
     Cmd: ["gcc", filePath, "-o", fileName],
     AttachStdout: true,
     AttachStderr: true,
   });
 
-  return new Promise<string>((resolve, reject) => {
+  return new Promise<JudgeResult>((resolve, reject) => {
     compileExec.start({}, (error, stream) => {
-      if (error) {
-        return reject(error);
-      }
-      if (!stream) {
-        return reject(new Error("Stream is undefined"));
-      }
+      if (error) return reject({ output: error.message, exitCode: ExitCode.SE });
+      if (!stream) return reject({ output: "No stream", exitCode: ExitCode.SE });
 
       const stdoutChunks: string[] = [];
       const stderrChunks: string[] = [];
@@ -70,63 +75,77 @@ async function compileCode(container: Docker.Container, filePath: string, fileNa
 
       docker.modem.demuxStream(stream, stdoutStream, stderrStream);
 
-      stream.on("end", () => {
+      stream.on("end", async () => {
         const stdout = stdoutChunks.join("");
         const stderr = stderrChunks.join("");
-        resolve(stderr ? stdout + stderr : stdout);
+        const details = await compileExec.inspect();
+
+        resolve({
+          output: stderr || stdout,
+          exitCode: details.ExitCode === 0 ? ExitCode.AC : ExitCode.CE
+        });
       });
 
-      stream.on("error", reject);
+      stream.on("error", (error) => {
+        reject({ output: error.message, exitCode: ExitCode.SE });
+      });
     });
   });
 }
 
-async function monitorMemoryUsage(container: Docker.Container, memoryLimit: number, timeoutHandle: NodeJS.Timeout) {
-  return new Promise<void>((resolve, reject) => {
+// Memory monitoring utility
+async function monitorMemoryUsage(
+  container: Docker.Container,
+  memoryLimit: number,
+  timeoutHandle: NodeJS.Timeout
+): Promise<void> {
+  return new Promise((resolve, reject) => {
     const interval = setInterval(async () => {
       try {
         const stats = await container.stats({ stream: false });
-        const memoryUsage = stats.memory_stats.usage / (1024 * 1024); // Convert to MB
-
-        console.log(`Memory usage: ${memoryUsage.toFixed(2)} MB`);
+        const memoryUsage = stats.memory_stats.usage / (1024 * 1024);
 
         if (memoryUsage > memoryLimit) {
-          console.warn(`Memory limit exceeded: ${memoryUsage.toFixed(2)} MB > ${memoryLimit} MB`);
           clearInterval(interval);
-          clearTimeout(timeoutHandle); // Clear the timeout timer
+          clearTimeout(timeoutHandle);
           await container.stop({ t: 0 });
           await container.remove();
-          reject(new Error("Memory limit exceeded, container stopped and removed"));
+          reject({
+            output: `Memory limit exceeded (${memoryUsage.toFixed(2)}MB)`,
+            exitCode: ExitCode.MLE
+          });
         }
       } catch (error) {
-        console.error("Error monitoring memory:", error);
         clearInterval(interval);
-        reject(error);
+        reject({
+          output: `Memory monitoring failed: ${error}`,
+          exitCode: ExitCode.SE
+        });
       }
-    }, 500); // Check every 500ms
-
-    resolve();
+    }, 500);
   });
 }
 
-async function runCode(container: Docker.Container, fileName: string, timeout: number, memoryLimit: number) {
+// Code execution handler
+async function runCode(
+  container: Docker.Container,
+  fileName: string,
+  timeout: number,
+  memoryLimit: number
+): Promise<JudgeResult> {
+  const startTime = Date.now();
   const runExec = await container.exec({
     Cmd: [`./${fileName}`],
     AttachStdout: true,
     AttachStderr: true,
   });
 
-  return new Promise<string>((resolve, reject) => {
+  return new Promise<JudgeResult>((resolve, reject) => {
     let timeoutHandle: NodeJS.Timeout;
-    let memoryMonitor: Promise<void>;
 
     runExec.start({}, async (error, stream) => {
-      if (error) {
-        return reject(error);
-      }
-      if (!stream) {
-        return reject(new Error("Stream is undefined"));
-      }
+      if (error) return reject({ output: error.message, exitCode: ExitCode.SE });
+      if (!stream) return reject({ output: "No stream", exitCode: ExitCode.SE });
 
       const stdoutChunks: string[] = [];
       const stderrChunks: string[] = [];
@@ -147,72 +166,94 @@ async function runCode(container: Docker.Container, fileName: string, timeout: n
 
       docker.modem.demuxStream(stream, stdoutStream, stderrStream);
 
-      // Timeout monitoring
+      // Timeout control
       timeoutHandle = setTimeout(async () => {
-        console.warn("Execution timed out, stopping container...");
         try {
           await container.stop({ t: 0 });
           await container.remove();
-          reject(new Error("Execution timed out and container was removed"));
-        } catch (stopError) {
-          console.error('Error stopping/removing container:', stopError);
-          reject(new Error("Execution timed out, but failed to stop/remove container"));
+          reject({
+            output: `Timeout after ${timeout}ms`,
+            exitCode: ExitCode.TLE
+          });
+        } catch (error) {
+          reject({
+            output: `Timeout handling failed: ${error}`,
+            exitCode: ExitCode.SE
+          });
         }
-      }, timeout); // Use the configured timeout
+      }, timeout);
 
       // Memory monitoring
-      memoryMonitor = monitorMemoryUsage(container, memoryLimit, timeoutHandle);
+      monitorMemoryUsage(container, memoryLimit, timeoutHandle)
+        .catch(reject);
 
-      stream.on("end", () => {
+      stream.on("end", async () => {
         clearTimeout(timeoutHandle);
-        memoryMonitor.then(() => {
-          const stdout = stdoutChunks.join("");
-          const stderr = stderrChunks.join("");
-          resolve(stderr ? stdout + stderr : stdout);
-        }).catch(reject);
+        const stdout = stdoutChunks.join("");
+        const stderr = stderrChunks.join("");
+        const details = await runExec.inspect();
+
+        resolve({
+          output: stderr ? `${stdout}\n${stderr}` : stdout,
+          exitCode: details.ExitCode === 0 ? ExitCode.AC : ExitCode.RE,
+          executionTime: Date.now() - startTime
+        });
       });
 
       stream.on("error", (error) => {
-        clearTimeout(timeoutHandle);
-        reject(error);
+        reject({ output: error.message, exitCode: ExitCode.SE });
       });
     });
   });
 }
 
+// Cleanup resources
 async function cleanupContainer(container: Docker.Container) {
   try {
-    console.log("Stopping container...");
     await container.stop({ t: 0 });
-    console.log("Removing container...");
     await container.remove();
   } catch (error) {
-    console.error("Container cleanup failed:", error);
+    console.error("Cleanup failed:", error);
   }
 }
 
-export async function judge(language: string, value: string) {
-  const { image, tag, fileName, extension, workingDir, timeout, memoryLimit } = LanguageConfigs[language];
-  const filePath = `${fileName}.${extension}`;
+// Main judge function
+export async function judge(
+  language: string,
+  value: string
+): Promise<JudgeResult> {
+  const config = LanguageConfigs[language];
+  const filePath = `${config.fileName}.${config.extension}`;
   let container: Docker.Container | undefined;
 
   try {
-    await prepareEnvironment(image, tag);
-    container = await createContainer(image, tag, workingDir);
+    await prepareEnvironment(config.image, config.tag);
+    container = await createContainer(config.image, config.tag, config.workingDir);
 
+    // Inject code into container
     const tarStream = createTarStream(filePath, value);
-    await container.putArchive(tarStream, { path: workingDir });
+    await container.putArchive(tarStream, { path: config.workingDir });
 
-    const compileOutput = await compileCode(container, filePath, fileName);
-    if (compileOutput) {
-      return compileOutput;
+    // Compilation phase
+    const compileResult = await compileCode(container, filePath, config.fileName);
+    if (compileResult.exitCode !== ExitCode.AC) {
+      return compileResult;
     }
 
-    return await runCode(container, fileName, timeout, memoryLimit);
+    // Execution phase
+    return await runCode(container, config.fileName, config.timeout, config.memoryLimit);
   } catch (error) {
-    console.error("Error during judging:", error);
-    throw error;
+    // Error handling
+    console.error(error);
+
+    const result: JudgeResult = {
+      output: "Unknow Error",
+      exitCode: ExitCode.SE,
+    };
+
+    return result;
   } finally {
+    // Resource cleanup
     if (container) {
       cleanupContainer(container).catch(() => { });
     }
