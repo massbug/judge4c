@@ -190,7 +190,7 @@ async function run(container: Docker.Container, fileName: string, timeLimit?: nu
     });
 
     // Start the exec stream
-    runExec.start({}, async (error, stream) => {
+    runExec.start({}, (error, stream) => {
       if (error || !stream) {
         return reject({ output: "System Error", exitCode: ExitCode.SE });
       }
@@ -198,9 +198,7 @@ async function run(container: Docker.Container, fileName: string, timeLimit?: nu
       docker.modem.demuxStream(stream, stdoutStream, stderrStream);
 
       // Timeout mechanism
-      const timeoutId = setTimeout(() => {
-        // Timeout reached, kill the container
-        container.kill();
+      const timeoutId = setTimeout(async () => {
         resolve({
           output: "Time Limit Exceeded",
           exitCode: ExitCode.TLE,
