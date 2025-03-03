@@ -2,29 +2,6 @@
 
 import * as React from "react";
 import {
-  Bell,
-  Check,
-  Globe,
-  Home,
-  Keyboard,
-  Link,
-  Lock,
-  Menu,
-  MessageCircle,
-  Paintbrush,
-  Settings,
-  Video,
-} from "lucide-react";
-
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -40,22 +17,23 @@ import {
   SidebarMenuItem,
   SidebarProvider,
 } from "@/components/ui/sidebar";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useSettingNavStore } from "@/store/useSettingNavStore";
+import { CodeXml, Globe, Paintbrush, Settings } from "lucide-react";
 
 const data = {
   nav: [
-    { name: "Notifications", icon: Bell },
-    { name: "Navigation", icon: Menu },
-    { name: "Home", icon: Home },
     { name: "Appearance", icon: Paintbrush },
-    { name: "Messages & media", icon: MessageCircle },
     { name: "Language & region", icon: Globe },
-    { name: "Accessibility", icon: Keyboard },
-    { name: "Mark as read", icon: Check },
-    { name: "Audio & video", icon: Video },
-    { name: "Connected accounts", icon: Link },
-    { name: "Privacy & visibility", icon: Lock },
+    { name: "Code Editor", icon: CodeXml },
     { name: "Advanced", icon: Settings },
   ],
 };
