@@ -1,5 +1,10 @@
 import { cn } from "@/lib/utils";
 import LanguageSelector from "./language-selector";
+import FormatButton from "./format-button";
+import CopyButton from "./copy-button";
+import RedoButton from "./redo-button";
+import UndoButton from "./undo-button";
+import ResetButton from "./reset-button";
 
 interface WorkspaceEditorHeaderProps {
   className?: string;
@@ -14,9 +19,16 @@ export default function WorkspaceEditorHeader({
       {...props}
       className={cn("h-8 flex flex-none items-center px-2 border-b", className)}
     >
-      <div className="w-full flex items-center">
+      <div className="w-full flex items-center justify-between">
         <div className="flex items-center gap-x-2">
           <LanguageSelector />
+        </div>
+        <div className="flex items-center gap-x-2">
+          <ResetButton />
+          <UndoButton />
+          <RedoButton />
+          <FormatButton />
+          <CopyButton />
         </div>
       </div>
     </header>
