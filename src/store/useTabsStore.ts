@@ -22,15 +22,17 @@ export const useTabsStore = create<TabsState>()(
     }),
     {
       name: "tabs-active",
-      onRehydrateStorage:
-        () =>
-          (state, error) => {
-            if (error) {
-              console.error("hydrate error", error);
-            } else if (state) {
-              state.setHydrated(true);
-            }
-          },
+      partialize: (state) => ({
+        problemTab: state.problemTab,
+        workspaceTab: state.workspaceTab,
+      }),
+      onRehydrateStorage: () => (state, error) => {
+        if (error) {
+          console.error("hydrate error", error);
+        } else if (state) {
+          state.setHydrated(true);
+        }
+      },
     }
   )
 );
