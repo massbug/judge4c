@@ -1,3 +1,7 @@
+"use client";
+
+import { Skeleton } from "@/components/ui/skeleton";
+import { useTabsStore } from "@/store/useTabsStore";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CircleCheckBigIcon, FileTextIcon, FlaskConicalIcon } from "lucide-react";
@@ -13,8 +17,22 @@ export default function ProblemLayout({
   solution,
   submission,
 }: ProblemLayoutProps) {
+  const { hydrated, problemTab, setProblemTab } = useTabsStore();
+
+  if (!hydrated) return (
+    <div className="h-9 w-full flex items-center px-2 py-1 bg-muted gap-1">
+      <Skeleton className="h-full w-[136px] rounded-3xl" />
+      <Skeleton className="h-full w-[111px] rounded-3xl" />
+      <Skeleton className="h-full w-32 rounded-3xl" />
+    </div>
+  )
+
+  const handleTabChange = (value: string) => {
+    setProblemTab(value);
+  };
+
   return (
-    <Tabs defaultValue="description" className="h-full flex flex-col">
+    <Tabs value={problemTab} onValueChange={handleTabChange} className="h-full flex flex-col">
       <ScrollArea className="h-9 flex-none bg-muted px-1">
         <TabsList className="gap-1 bg-transparent">
           <TabsTrigger
