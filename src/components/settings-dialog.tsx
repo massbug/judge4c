@@ -40,6 +40,7 @@ import {
   SidebarMenuItem,
   SidebarProvider,
 } from "@/components/ui/sidebar";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const data = {
   nav: [
@@ -111,14 +112,16 @@ export function SettingsDialog({ open, onClose }: SettingsDialogProps) {
                 </Breadcrumb>
               </div>
             </header>
-            <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-4 pt-0">
-              {Array.from({ length: 10 }).map((_, i) => (
-                <div
-                  key={i}
-                  className="aspect-video max-w-3xl rounded-xl bg-muted/50"
-                />
-              ))}
-            </div>
+            <ScrollArea className="flex-1 overflow-y-auto p-4 pt-0">
+              <div className="flex flex-col gap-4">
+                {Array.from({ length: 10 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="aspect-video max-w-3xl rounded-xl bg-muted/50"
+                  />
+                ))}
+              </div>
+            </ScrollArea>
           </main>
         </SidebarProvider>
       </DialogContent>
