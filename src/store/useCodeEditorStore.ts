@@ -1,66 +1,58 @@
 import { create } from "zustand";
 import { type editor } from "monaco-editor";
+import { persist } from "zustand/middleware";
 import { JudgeResult } from "@/config/judge";
 import { CODE_EDITOR_OPTIONS } from "@/constants/option";
 import { SupportedLanguage } from "@/constants/language";
 import { MonacoLanguageClient } from "monaco-languageclient";
-import { persist, createJSONStorage } from "zustand/middleware";
 import { DEFAULT_EDITOR_LANGUAGE } from "@/config/editor/language";
 
 interface CodeEditorState {
   editor: editor.IStandaloneCodeEditor | null;
   language: SupportedLanguage;
   languageClient: MonacoLanguageClient | null;
-  loading: boolean;
+  hydrated: boolean;
   result: JudgeResult | null;
   setEditor: (editor: editor.IStandaloneCodeEditor | null) => void;
   setLanguage: (language: SupportedLanguage) => void;
   setLanguageClient: (languageClient: MonacoLanguageClient | null) => void;
-  setLoading: (loading: boolean) => void;
+  setHydrated: (value: boolean) => void;
   setResult: (result: JudgeResult) => void;
 }
 
-export const useCodeEditorState = create<CodeEditorState>()(
+export const useCodeEditorStore = create<CodeEditorState>()(
   persist(
     (set) => ({
       editor: null,
       language: DEFAULT_EDITOR_LANGUAGE,
       languageClient: null,
-      loading: true,
+      hydrated: false,
       result: null,
       setEditor: (editor) => set({ editor }),
       setLanguage: (language) => set({ language }),
       setLanguageClient: (languageClient) => set({ languageClient }),
-      setLoading: (loading) => set({ loading }),
+      setHydrated: (value) => set({ hydrated: value }),
       setResult: (result) => set({ result }),
     }),
     {
       name: "code-editor-language",
-      storage: createJSONStorage(() => {
-        if (typeof window !== "undefined") {
-          return localStorage;
-        } else {
-          return {
-            getItem: () => null,
-            setItem: () => { },
-            removeItem: () => { },
-          };
-        }
+      partialize: (state) => ({
+        language: state.language,
       }),
-      partialize: (state) => ({ language: state.language }),
+      onRehydrateStorage: () => (state, error) => {
+        if (error) {
+          console.error("hydrate error", error);
+        } else if (state) {
+          state.setHydrated(true);
+        }
+      },
     }
   )
 );
 
-export const useCodeEditorOption = create<editor.IEditorConstructionOptions>((set) => ({
+export const useCodeEditorOptionStore = create<editor.IEditorConstructionOptions>((set) => ({
   fontSize: CODE_EDITOR_OPTIONS.fontSize,
   lineHeight: CODE_EDITOR_OPTIONS.lineHeight,
   setFontSize: (fontSize: number) => set({ fontSize }),
   setLineHeight: (lineHeight: number) => set({ lineHeight }),
 }));
-
-async function initializeEditor() {
-  useCodeEditorState.getState().setLoading(false);
-}
-
-initializeEditor();
