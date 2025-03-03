@@ -1,6 +1,10 @@
+"use client";
+
 import { cn } from "@/lib/utils";
+import { useState } from "react";
 import RunCode from "./run-code";
 import SettingsButton from "./settings-button";
+import { SettingsDialog } from "./settings-dialog";
 
 interface HeaderProps {
   className?: string;
@@ -10,6 +14,12 @@ export function Header({
   className,
   ...props
 }: HeaderProps) {
+  const [isDialogOpen, setDialogOpen] = useState(false);
+
+  const toggleDialog = () => {
+    setDialogOpen(!isDialogOpen);
+  };
+
   return (
     <header
       {...props}
@@ -20,7 +30,7 @@ export function Header({
           <div className="w-full flex items-center justify-between">
             <div className="flex items-center"></div>
             <div className="relative flex items-center gap-2">
-              <SettingsButton />
+              <SettingsButton onClick={toggleDialog} />
             </div>
           </div>
         </div>
@@ -32,6 +42,7 @@ export function Header({
           </div>
         </div>
       </div>
+      <SettingsDialog open={isDialogOpen} onClose={toggleDialog} />
     </header>
   );
 }

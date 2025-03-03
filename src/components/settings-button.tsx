@@ -1,16 +1,23 @@
 "use client";
 
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./ui/tooltip";
 import { cn } from "@/lib/utils";
 import { SettingsIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 
 interface SettingsButtonProps {
   className?: string;
+  onClick: () => void;
 }
 
 export default function SettingsButton({
   className,
+  onClick,
   ...props
 }: SettingsButtonProps) {
   return (
@@ -19,7 +26,8 @@ export default function SettingsButton({
         <TooltipTrigger asChild>
           <Button
             variant="ghost"
-            className={cn("h-8 w-auto p-2",className)}
+            className={cn("h-8 w-auto p-2", className)}
+            onClick={onClick}
             {...props}
           >
             <SettingsIcon size={16} aria-hidden="true" />

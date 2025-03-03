@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 import {
   Bell,
   Check,
@@ -14,7 +14,7 @@ import {
   Paintbrush,
   Settings,
   Video,
-} from "lucide-react"
+} from "lucide-react";
 
 import {
   Breadcrumb,
@@ -23,15 +23,13 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
-import { Button } from "@/components/ui/button"
+} from "@/components/ui/breadcrumb";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
+} from "@/components/ui/dialog";
 import {
   Sidebar,
   SidebarContent,
@@ -41,7 +39,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarProvider,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
 
 const data = {
   nav: [
@@ -58,16 +56,16 @@ const data = {
     { name: "Privacy & visibility", icon: Lock },
     { name: "Advanced", icon: Settings },
   ],
+};
+
+interface SettingsDialogProps {
+  open: boolean;
+  onClose: () => void;
 }
 
-export function SettingsDialog() {
-  const [open, setOpen] = React.useState(true)
-
+export function SettingsDialog({ open, onClose }: SettingsDialogProps) {
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button size="sm">Open Dialog</Button>
-      </DialogTrigger>
+    <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="overflow-hidden p-0 md:max-h-[500px] md:max-w-[700px] lg:max-w-[800px]">
         <DialogTitle className="sr-only">Settings</DialogTitle>
         <DialogDescription className="sr-only">
@@ -125,5 +123,5 @@ export function SettingsDialog() {
         </SidebarProvider>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
