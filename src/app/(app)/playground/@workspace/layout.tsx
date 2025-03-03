@@ -1,4 +1,8 @@
+"use client";
+
 import { SquarePenIcon } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useTabsStore } from "@/store/useTabsStore";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -7,8 +11,20 @@ interface WorkspaceLayoutProps {
 }
 
 export default function WorkspaceLayout({ editor }: WorkspaceLayoutProps) {
+  const { hydrated, workspaceTab, setWorkspaceTab } = useTabsStore();
+
+  if (!hydrated) return (
+    <div className="h-9 w-full flex items-center px-2 py-1 bg-muted">
+      <Skeleton className="h-full w-[94px] rounded-3xl" />
+    </div>
+  )
+
+  const handleTabChange = (value: string) => {
+    setWorkspaceTab(value);
+  };
+
   return (
-    <Tabs defaultValue="editor" className="h-full flex flex-col">
+    <Tabs value={workspaceTab} onValueChange={handleTabChange} className="h-full flex flex-col">
       <ScrollArea className="h-9 flex-none bg-muted px-1">
         <TabsList className="gap-1 bg-transparent">
           <TabsTrigger
