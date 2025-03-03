@@ -41,6 +41,7 @@ import {
   SidebarProvider,
 } from "@/components/ui/sidebar";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useSettingNavStore } from "@/store/useSettingNavStore";
 
 const data = {
   nav: [
@@ -65,6 +66,8 @@ interface SettingsDialogProps {
 }
 
 export function SettingsDialog({ open, onClose }: SettingsDialogProps) {
+  const { activeNav, setActiveNav } = useSettingNavStore();
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="overflow-hidden p-0 md:max-h-[500px] md:max-w-[700px] lg:max-w-[800px]">
@@ -82,7 +85,8 @@ export function SettingsDialog({ open, onClose }: SettingsDialogProps) {
                       <SidebarMenuItem key={item.name}>
                         <SidebarMenuButton
                           asChild
-                          isActive={item.name === "Messages & media"}
+                          isActive={item.name === activeNav}
+                          onClick={() => setActiveNav(item.name)}
                         >
                           <a href="#">
                             <item.icon />
@@ -106,7 +110,7 @@ export function SettingsDialog({ open, onClose }: SettingsDialogProps) {
                     </BreadcrumbItem>
                     <BreadcrumbSeparator className="hidden md:block" />
                     <BreadcrumbItem>
-                      <BreadcrumbPage>Messages & media</BreadcrumbPage>
+                      <BreadcrumbPage>{activeNav}</BreadcrumbPage>
                     </BreadcrumbItem>
                   </BreadcrumbList>
                 </Breadcrumb>
