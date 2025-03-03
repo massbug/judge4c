@@ -2,7 +2,7 @@
 
 import { RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useCodeEditorState } from "@/store/useCodeEditor";
+import { useCodeEditorStore } from "@/store/useCodeEditorStore";
 import {
   Tooltip,
   TooltipContent,
@@ -12,7 +12,7 @@ import {
 import { DEFAULT_EDITOR_VALUE } from "@/config/editor/value";
 
 export default function ResetButton() {
-  const { editor, language } = useCodeEditorState();
+  const { editor, language } = useCodeEditorStore();
 
   return (
     <TooltipProvider delayDuration={0}>

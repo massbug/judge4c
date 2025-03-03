@@ -8,10 +8,10 @@ import {
 } from "@/components/ui/tooltip";
 import { Redo2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useCodeEditorState } from "@/store/useCodeEditor";
+import { useCodeEditorStore } from "@/store/useCodeEditorStore";
 
 export default function RedoButton() {
-  const { editor } = useCodeEditorState();
+  const { editor } = useCodeEditorStore();
 
   return (
     <TooltipProvider delayDuration={0}>

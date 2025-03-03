@@ -5,7 +5,7 @@ import { useState } from "react";
 import { judge } from "@/app/actions/judge";
 import { Button } from "@/components/ui/button";
 import { LoaderCircleIcon, PlayIcon } from "lucide-react";
-import { useCodeEditorState } from "@/store/useCodeEditor";
+import { useCodeEditorStore } from "@/store/useCodeEditorStore";
 
 interface RunCodeProps {
   className?: string;
@@ -15,7 +15,7 @@ export default function RunCode({
   className,
   ...props
 }: RunCodeProps) {
-  const { language, editor, setResult } = useCodeEditorState();
+  const { language, editor, setResult } = useCodeEditorStore();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleJudge = async () => {

@@ -8,13 +8,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useCodeEditorState } from "@/store/useCodeEditor";
+import { useCodeEditorStore } from "@/store/useCodeEditorStore";
 import { SUPPORTED_LANGUAGES } from "@/constants/language";
 
 export default function LanguageSelector() {
-  const { loading, language, setLanguage } = useCodeEditorState();
+  const { hydrated, language, setLanguage } = useCodeEditorStore();
 
-  if (loading) {
+  if (!hydrated) {
     return <Skeleton className="h-6 w-16 rounded-2xl" />;
   }
 

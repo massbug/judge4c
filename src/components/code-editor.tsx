@@ -17,7 +17,7 @@ import { DEFAULT_EDITOR_PATH } from "@/config/editor/path";
 import { DEFAULT_EDITOR_VALUE } from "@/config/editor/value";
 import type { MonacoLanguageClient } from "monaco-languageclient";
 import { SUPPORTED_LANGUAGE_SERVERS } from "@/config/lsp/language-server";
-import { useCodeEditorOption, useCodeEditorState } from "@/store/useCodeEditor";
+import { useCodeEditorOptionStore, useCodeEditorStore } from "@/store/useCodeEditorStore";
 
 const Editor = dynamic(
   async () => {
@@ -52,8 +52,8 @@ export default function CodeEditor() {
     socket: null,
     controller: new AbortController(),
   });
-  const { fontSize, lineHeight } = useCodeEditorOption();
-  const { language, setEditor } = useCodeEditorState();
+  const { fontSize, lineHeight } = useCodeEditorOptionStore();
+  const { language, setEditor } = useCodeEditorStore();
 
   useEffect(() => {
     const currentHandle: ConnectionHandle = {
@@ -114,8 +114,7 @@ export default function CodeEditor() {
         if (!serverConfig || signal.aborted) return;
 
         // Create WebSocket connection
-        const lspUrl = `${serverConfig.protocol}://${serverConfig.hostname}${serverConfig.port ? `:${serverConfig.port}` : ""
-          }${serverConfig.path || ""}`;
+        const lspUrl = `${serverConfig.protocol}://${serverConfig.hostname}${serverConfig.port ? `:${serverConfig.port}` : ""}${serverConfig.path || ""}`;
         const webSocket = new WebSocket(normalizeUrl(lspUrl));
         currentHandle.socket = webSocket;
 
@@ -140,9 +139,7 @@ export default function CodeEditor() {
 
         // Initialize Language Client
         const { MonacoLanguageClient } = await import("monaco-languageclient");
-        const { ErrorAction, CloseAction } = await import(
-          "vscode-languageclient"
-        );
+        const { ErrorAction, CloseAction } = await import("vscode-languageclient");
 
         const socket = toSocket(webSocket);
         const client = new MonacoLanguageClient({
@@ -213,11 +210,7 @@ export default function CodeEditor() {
       defaultLanguage={language}
       value={editorValue}
       path={DEFAULT_EDITOR_PATH[language]}
-      theme={
-        resolvedTheme === "light"
-          ? "github-light-default"
-          : "github-dark-default"
-      }
+      theme={resolvedTheme === "light" ? "github-light-default" : "github-dark-default"}
       className="h-full"
       options={mergeOptions}
       beforeMount={(monaco) => {
