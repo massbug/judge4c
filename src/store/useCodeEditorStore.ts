@@ -2,9 +2,9 @@ import { create } from "zustand";
 import { type editor } from "monaco-editor";
 import { persist } from "zustand/middleware";
 import { JudgeResult } from "@/config/judge";
-import { CODE_EDITOR_OPTIONS } from "@/constants/option";
 import { SupportedLanguage } from "@/constants/language";
 import { MonacoLanguageClient } from "monaco-languageclient";
+import { DefaultEditorOptionConfig } from "@/config/editor-option";
 import { DEFAULT_EDITOR_LANGUAGE } from "@/config/editor/language";
 
 interface CodeEditorState {
@@ -51,8 +51,8 @@ export const useCodeEditorStore = create<CodeEditorState>()(
 );
 
 export const useCodeEditorOptionStore = create<editor.IEditorConstructionOptions>((set) => ({
-  fontSize: CODE_EDITOR_OPTIONS.fontSize,
-  lineHeight: CODE_EDITOR_OPTIONS.lineHeight,
+  fontSize: DefaultEditorOptionConfig.fontSize,
+  lineHeight: DefaultEditorOptionConfig.lineHeight,
   setFontSize: (fontSize: number) => set({ fontSize }),
   setLineHeight: (lineHeight: number) => set({ lineHeight }),
 }));

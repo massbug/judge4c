@@ -1,6 +1,6 @@
 import { type editor } from "monaco-editor";
 
-export const CODE_EDITOR_OPTIONS: editor.IEditorConstructionOptions = {
+export const DefaultEditorOptionConfig: editor.IEditorConstructionOptions = {
   autoIndent: "full",
   automaticLayout: true,
   contextmenu: true,

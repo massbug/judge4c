@@ -11,11 +11,11 @@ import { highlighter } from "@/lib/shiki";
 import { useEffect, useRef } from "react";
 import { shikiToMonaco } from "@shikijs/monaco";
 import { Skeleton } from "@/components/ui/skeleton";
-import { CODE_EDITOR_OPTIONS } from "@/constants/option";
 import { useMonacoTheme } from "@/hooks/use-monaco-theme";
 import { DEFAULT_EDITOR_PATH } from "@/config/editor/path";
 import { DEFAULT_EDITOR_VALUE } from "@/config/editor/value";
 import type { MonacoLanguageClient } from "monaco-languageclient";
+import { DefaultEditorOptionConfig } from "@/config/editor-option";
 import { SUPPORTED_LANGUAGE_SERVERS } from "@/config/lsp/language-server";
 import { useCodeEditorOptionStore, useCodeEditorStore } from "@/store/useCodeEditorStore";
 
@@ -188,7 +188,7 @@ export default function CodeEditor() {
   }, [language]);
 
   const mergeOptions = {
-    ...CODE_EDITOR_OPTIONS,
+    ...DefaultEditorOptionConfig,
     fontSize,
     lineHeight,
   };
