@@ -1,240 +1,123 @@
 "use client";
 
-import {
-  toSocket,
-  WebSocketMessageReader,
-  WebSocketMessageWriter,
-} from "vscode-ws-jsonrpc";
 import dynamic from "next/dynamic";
-import normalizeUrl from "normalize-url";
+import { Skeleton } from "./ui/skeleton";
 import { highlighter } from "@/lib/shiki";
-import { useEffect, useRef } from "react";
+import type { editor } from "monaco-editor";
 import { shikiToMonaco } from "@shikijs/monaco";
-import { Skeleton } from "@/components/ui/skeleton";
+import type { Monaco } from "@monaco-editor/react";
+import { useCallback, useEffect, useRef } from "react";
 import { useMonacoTheme } from "@/hooks/use-monaco-theme";
-import { DEFAULT_EDITOR_PATH } from "@/config/editor/path";
-import { DEFAULT_EDITOR_VALUE } from "@/config/editor/value";
+import { connectToLanguageServer } from "@/lib/language-server";
+import { useCodeEditorStore } from "@/store/useCodeEditorStore";
 import type { MonacoLanguageClient } from "monaco-languageclient";
-import { DefaultEditorOptionConfig } from "@/config/editor-option";
-import { SUPPORTED_LANGUAGE_SERVERS } from "@/config/lsp/language-server";
-import { useCodeEditorOptionStore, useCodeEditorStore } from "@/store/useCodeEditorStore";
 
+// Skeleton component for loading state
+const CodeEditorLoadingSkeleton = () => (
+  <div className="h-full w-full p-2">
+    <Skeleton className="h-full w-full rounded-3xl" />
+  </div>
+);
+
+// Dynamically import Monaco Editor with SSR disabled
 const Editor = dynamic(
   async () => {
     await import("vscode");
-
     const monaco = await import("monaco-editor");
     const { loader } = await import("@monaco-editor/react");
     loader.config({ monaco });
-
     return (await import("@monaco-editor/react")).Editor;
   },
   {
     ssr: false,
-    loading: () => (
-      <div className="h-full w-full p-4">
-        <Skeleton className="h-full w-full rounded-3xl" />
-      </div>
-    ),
+    loading: () => <CodeEditorLoadingSkeleton />,
   }
 );
 
-type ConnectionHandle = {
-  client: MonacoLanguageClient | null;
-  socket: WebSocket | null;
-  controller: AbortController;
-};
-
 export default function CodeEditor() {
+  const {
+    hydrated,
+    language,
+    path,
+    value,
+    lspConfig,
+    editorConfig,
+    isLspEnabled,
+    setEditor,
+  } = useCodeEditorStore();
   const { monacoTheme } = useMonacoTheme();
-  const connectionRef = useRef<ConnectionHandle>({
-    client: null,
-    socket: null,
-    controller: new AbortController(),
-  });
-  const { fontSize, lineHeight } = useCodeEditorOptionStore();
-  const { language, setEditor } = useCodeEditorStore();
+  const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
+  const monacoLanguageClientRef = useRef<MonacoLanguageClient | null>(null);
 
-  useEffect(() => {
-    const currentHandle: ConnectionHandle = {
-      client: null,
-      socket: null,
-      controller: new AbortController(),
-    };
-    const signal = currentHandle.controller.signal;
-    connectionRef.current = currentHandle;
+  // Connect to LSP only if enabled
+  const connectLSP = useCallback(async () => {
+    if (!(isLspEnabled && language && lspConfig && editorRef.current)) return;
 
-    const cleanupConnection = async (handle: ConnectionHandle) => {
-      try {
-        // Cleanup Language Client
-        if (handle.client) {
-          console.log("Stopping language client...");
-          await handle.client.stop(250).catch(() => { });
-          handle.client.dispose();
-        }
-      } catch (e) {
-        console.log("Client cleanup error:", e);
-      } finally {
-        handle.client = null;
-      }
-
-      // Cleanup WebSocket
-      if (handle.socket) {
-        console.log("Closing WebSocket...");
-        const socket = handle.socket;
-        socket.onopen = null;
-        socket.onerror = null;
-        socket.onclose = null;
-        socket.onmessage = null;
-
-        try {
-          if (
-            [WebSocket.OPEN, WebSocket.CONNECTING].includes(
-              socket.readyState as WebSocket["OPEN"] | WebSocket["CONNECTING"]
-            )
-          ) {
-            socket.close(1000, "Connection replaced");
-          }
-        } catch (e) {
-          console.log("Socket close error:", e);
-        } finally {
-          handle.socket = null;
-        }
-      }
-    };
-
-    const initialize = async () => {
-      try {
-        // Cleanup old connection
-        await cleanupConnection(connectionRef.current);
-
-        const serverConfig = SUPPORTED_LANGUAGE_SERVERS.find(
-          (s) => s.id === language
-        );
-        if (!serverConfig || signal.aborted) return;
-
-        // Create WebSocket connection
-        const lspUrl = `${serverConfig.protocol}://${serverConfig.hostname}${serverConfig.port ? `:${serverConfig.port}` : ""}${serverConfig.path || ""}`;
-        const webSocket = new WebSocket(normalizeUrl(lspUrl));
-        currentHandle.socket = webSocket;
-
-        // Wait for connection to establish or timeout
-        await Promise.race([
-          new Promise<void>((resolve, reject) => {
-            webSocket.onopen = () => {
-              if (signal.aborted) reject(new Error("Connection aborted"));
-              else resolve();
-            };
-            webSocket.onerror = () => reject(new Error("WebSocket error"));
-          }),
-          new Promise((_, reject) =>
-            setTimeout(() => reject(new Error("Connection timeout")), 5000)
-          ),
-        ]);
-
-        if (signal.aborted) {
-          webSocket.close(1001, "Connection aborted");
-          return;
-        }
-
-        // Initialize Language Client
-        const { MonacoLanguageClient } = await import("monaco-languageclient");
-        const { ErrorAction, CloseAction } = await import("vscode-languageclient");
-
-        const socket = toSocket(webSocket);
-        const client = new MonacoLanguageClient({
-          name: `${serverConfig.label} Client`,
-          clientOptions: {
-            documentSelector: [serverConfig.id],
-            errorHandler: {
-              error: () => ({ action: ErrorAction.Continue }),
-              closed: () => ({ action: CloseAction.DoNotRestart }),
-            },
-          },
-          connectionProvider: {
-            get: () =>
-              Promise.resolve({
-                reader: new WebSocketMessageReader(socket),
-                writer: new WebSocketMessageWriter(socket),
-              }),
-          },
-        });
-
-        client.start();
-        currentHandle.client = client;
-
-        // Bind WebSocket close event
-        webSocket.onclose = (event) => {
-          if (!signal.aborted) {
-            console.log("WebSocket closed:", event);
-            client.stop();
-          }
-        };
-      } catch (error) {
-        if (!signal.aborted) {
-          console.error("Connection failed:", error);
-        }
-        cleanupConnection(currentHandle);
-      }
-    };
-
-    initialize();
-
-    return () => {
-      console.log("Cleanup triggered");
-      currentHandle.controller.abort();
-      cleanupConnection(currentHandle);
-    };
-  }, [language]);
-
-  const mergeOptions = {
-    ...DefaultEditorOptionConfig,
-    fontSize,
-    lineHeight,
-  };
-
-  function handleEditorChange(value: string | undefined) {
-    if (typeof window !== "undefined") {
-      localStorage.setItem(`code-editor-value-${language}`, value ?? "");
+    // If there's an existing language client, stop it first
+    if (monacoLanguageClientRef.current) {
+      monacoLanguageClientRef.current.stop();
+      monacoLanguageClientRef.current = null;
     }
+
+    // Create a new language client
+    try {
+      const monacoLanguageClient = await connectToLanguageServer(
+        lspConfig.protocol,
+        lspConfig.hostname,
+        lspConfig.port,
+        lspConfig.path,
+        lspConfig.lang
+      );
+      monacoLanguageClientRef.current = monacoLanguageClient;
+    } catch (error) {
+      console.error("Failed to connect to LSP:", error);
+    }
+  }, [isLspEnabled, language, lspConfig]);
+
+  // Connect to LSP once the editor has mounted
+  const handleEditorDidMount = useCallback(
+    async (editor: editor.IStandaloneCodeEditor) => {
+      editorRef.current = editor;
+      await connectLSP();
+      setEditor(editor);
+    },
+    [connectLSP]
+  );
+
+  // Reconnect to the LSP whenever language or lspConfig changes
+  useEffect(() => {
+    connectLSP();
+  }, [connectLSP]);
+
+  // Cleanup the LSP connection when the component unmounts
+  useEffect(() => {
+    return () => {
+      if (monacoLanguageClientRef.current) {
+        monacoLanguageClientRef.current.stop();
+        monacoLanguageClientRef.current = null;
+      }
+    };
+  }, []);
+
+  if (!hydrated) {
+    return <CodeEditorLoadingSkeleton />;
   }
 
-  const editorValue =
-    typeof window !== "undefined"
-      ? localStorage.getItem(`code-editor-value-${language}`) ||
-      DEFAULT_EDITOR_VALUE[language]
-      : DEFAULT_EDITOR_VALUE[language];
+  function handleEditorWillMount(monaco: Monaco) {
+    shikiToMonaco(highlighter, monaco);
+  }
 
   return (
     <Editor
-      defaultLanguage={language}
-      value={editorValue}
-      path={DEFAULT_EDITOR_PATH[language]}
-      theme={monacoTheme}
-      className="h-full"
-      options={mergeOptions}
-      beforeMount={(monaco) => {
-        shikiToMonaco(highlighter, monaco);
-      }}
-      onMount={(editor) => {
-        setEditor(editor);
-      }}
-      onChange={handleEditorChange}
-      // onValidate={(markers) => {
-      //   markers.forEach((marker) => {
-      //     console.log(marker.severity);
-      //     console.log(marker.startLineNumber);
-      //     console.log(marker.startColumn);
-      //     console.log(marker.endLineNumber);
-      //     console.log(marker.endColumn);
-      //     console.log(marker.message);
-      //   });
-      // }}
-      loading={
-        <div className="h-full w-full p-4">
-          <Skeleton className="h-full w-full rounded-3xl" />
-        </div>
-      }
+      language={language}
+      theme={monacoTheme.id}
+      path={path}
+      value={value}
+      beforeMount={handleEditorWillMount}
+      onMount={handleEditorDidMount}
+      options={editorConfig}
+      loading={<CodeEditorLoadingSkeleton />}
+      className="h-full w-full py-2"
     />
   );
 }
