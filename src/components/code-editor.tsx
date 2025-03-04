@@ -6,13 +6,13 @@ import {
   WebSocketMessageWriter,
 } from "vscode-ws-jsonrpc";
 import dynamic from "next/dynamic";
-import { useTheme } from "next-themes";
 import normalizeUrl from "normalize-url";
 import { highlighter } from "@/lib/shiki";
 import { useEffect, useRef } from "react";
 import { shikiToMonaco } from "@shikijs/monaco";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CODE_EDITOR_OPTIONS } from "@/constants/option";
+import { useMonacoTheme } from "@/hooks/use-monaco-theme";
 import { DEFAULT_EDITOR_PATH } from "@/config/editor/path";
 import { DEFAULT_EDITOR_VALUE } from "@/config/editor/value";
 import type { MonacoLanguageClient } from "monaco-languageclient";
@@ -46,7 +46,7 @@ type ConnectionHandle = {
 };
 
 export default function CodeEditor() {
-  const { resolvedTheme } = useTheme();
+  const { monacoTheme } = useMonacoTheme();
   const connectionRef = useRef<ConnectionHandle>({
     client: null,
     socket: null,
@@ -210,7 +210,7 @@ export default function CodeEditor() {
       defaultLanguage={language}
       value={editorValue}
       path={DEFAULT_EDITOR_PATH[language]}
-      theme={resolvedTheme === "light" ? "github-light-default" : "github-dark-default"}
+      theme={monacoTheme}
       className="h-full"
       options={mergeOptions}
       beforeMount={(monaco) => {
