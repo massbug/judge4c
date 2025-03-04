@@ -1,4 +1,4 @@
-FROM alpine:latest AS builder
+FROM dockerp.com/alpine:latest AS builder
 
 RUN sed -i 's#https\?://dl-cdn.alpinelinux.org/alpine#https://mirror.nju.edu.cn/alpine#g' /etc/apk/repositories&& \
     apk add --no-cache git npm
@@ -17,7 +17,7 @@ COPY servers.yml .
 # 合并命令减少镜像层
 RUN npm install --registry=https://repo.nju.edu.cn/repository/npm/ && npm run prepare
 
-FROM alpine:latest
+FROM dockerp.com/alpine:latest
 
 RUN sed -i 's#https\?://dl-cdn.alpinelinux.org/alpine#https://mirror.nju.edu.cn/alpine#g' /etc/apk/repositories&& \
     apk add --no-cache build-base clang-extra-tools nodejs

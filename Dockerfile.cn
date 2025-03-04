@@ -1,5 +1,5 @@
 # syntax=docker.io/docker/dockerfile:1
-FROM node:22-alpine AS base
+FROM dockerp.com/node:22-alpine AS base
 
 FROM base AS deps
 RUN sed -i 's#https\?://dl-cdn.alpinelinux.org/alpine#https://mirror.nju.edu.cn/alpine#g' /etc/apk/repositories && \
@@ -10,21 +10,22 @@ COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* bun.lock* .npmrc
 
 # 统一配置所有包管理器使用淘宝源
 RUN \
+    npm config set registry https://registry.npmmirror.com && \
     if [ -f yarn.lock ]; then \
-        yarn config set registry https://registry.npmmirror.com && \
+        # yarn config set registry https://registry.npmmirror.com && \
         yarn --frozen-lockfile; \
     elif [ -f package-lock.json ]; then \
         npm ci --registry=https://registry.npmmirror.com; \
     elif [ -f pnpm-lock.yaml ]; then \
         corepack enable pnpm && \
-        pnpm config set registry https://registry.npmmirror.com && \
+        # pnpm config set registry https://registry.npmmirror.com && \
         pnpm i --frozen-lockfile; \
     elif [ -f bun.lock ]; then \
+        sed -i 's#https\?://dl-cdn.alpinelinux.org/alpine#https://mirror.nju.edu.cn/alpine#g' /etc/apk/repositories && \
         apk add --no-cache curl bash && \
-        curl -fsSL https://bun.sh/install | bash && \
+        npm install -g bun && \
         export BUN_INSTALL="$HOME/.bun" && \
         export PATH="$BUN_INSTALL/bin:$PATH" && \
-        bun config set registry https://registry.npmmirror.com && \
         bun install --frozen-lockfile; \
     else echo "Lockfile not found." && exit 1; \
     fi
@@ -38,12 +39,14 @@ ENV NEXT_TELEMETRY_DISABLED=1
 
 # 合并构建命令
 RUN \
+    npm config set registry https://registry.npmmirror.com && \
     if [ -f yarn.lock ]; then yarn run build; \
         elif [ -f package-lock.json ]; then npm run build; \
         elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm run build; \
         elif [ -f bun.lock ]; then \
+        sed -i 's#https\?://dl-cdn.alpinelinux.org/alpine#https://mirror.nju.edu.cn/alpine#g' /etc/apk/repositories && \
         apk add --no-cache curl bash && \
-        curl -fsSL https://bun.sh/install | bash && \
+        npm install -g bun && \
         export BUN_INSTALL="$HOME/.bun" && \
         export PATH="$BUN_INSTALL/bin:$PATH" && \
         bun run build; \
