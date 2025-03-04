@@ -1,58 +1,77 @@
 import { create } from "zustand";
-import { type editor } from "monaco-editor";
-import { persist } from "zustand/middleware";
+import { getPath } from "@/lib/utils";
+import type { editor } from "monaco-editor";
 import { JudgeResult } from "@/config/judge";
-import { SupportedLanguage } from "@/constants/language";
-import { MonacoLanguageClient } from "monaco-languageclient";
+import { EditorLanguage } from "@/types/editor-language";
+import LanguageServerConfig from "@/config/language-server";
+import { createJSONStorage, persist } from "zustand/middleware";
+import { LanguageServerMetadata } from "@/types/language-server";
 import { DefaultEditorOptionConfig } from "@/config/editor-option";
-import { DEFAULT_EDITOR_LANGUAGE } from "@/config/editor/language";
+import { DefaultEditorLanguageConfig } from "@/config/editor-language";
 
 interface CodeEditorState {
-  editor: editor.IStandaloneCodeEditor | null;
-  language: SupportedLanguage;
-  languageClient: MonacoLanguageClient | null;
   hydrated: boolean;
+  language: EditorLanguage;
+  path: string;
+  value: string;
+  lspConfig: LanguageServerMetadata;
+  isLspEnabled: boolean;
+  editorConfig: editor.IEditorConstructionOptions;
+  editor: editor.IStandaloneCodeEditor | null;
   result: JudgeResult | null;
-  setEditor: (editor: editor.IStandaloneCodeEditor | null) => void;
-  setLanguage: (language: SupportedLanguage) => void;
-  setLanguageClient: (languageClient: MonacoLanguageClient | null) => void;
   setHydrated: (value: boolean) => void;
+  setLanguage: (language: EditorLanguage) => void;
+  setPath: (path: string) => void;
+  setValue: (value: string) => void;
+  setLspConfig: (lspConfig: LanguageServerMetadata) => void;
+  setIsLspEnabled: (enabled: boolean) => void;
+  setEditorConfig: (editorConfig: editor.IEditorConstructionOptions) => void;
+  setEditor: (editor: editor.IStandaloneCodeEditor) => void;
   setResult: (result: JudgeResult) => void;
 }
 
 export const useCodeEditorStore = create<CodeEditorState>()(
   persist(
     (set) => ({
-      editor: null,
-      language: DEFAULT_EDITOR_LANGUAGE,
-      languageClient: null,
       hydrated: false,
+      language: DefaultEditorLanguageConfig.id,
+      path: getPath(DefaultEditorLanguageConfig.id),
+      value: "#include<stdio.h>",
+      lspConfig: LanguageServerConfig[DefaultEditorLanguageConfig.id],
+      isLspEnabled: true,
+      editorConfig: DefaultEditorOptionConfig,
+      editor: null,
       result: null,
-      setEditor: (editor) => set({ editor }),
-      setLanguage: (language) => set({ language }),
-      setLanguageClient: (languageClient) => set({ languageClient }),
       setHydrated: (value) => set({ hydrated: value }),
+      setLanguage: (language) => set({ language }),
+      setPath: (path) => set({ path }),
+      setValue: (value) => set({ value }),
+      setLspConfig: (lspConfig) => set({ lspConfig }),
+      setIsLspEnabled: (enabled) => set({ isLspEnabled: enabled }),
+      setEditorConfig: (editorConfig) => set({ editorConfig }),
+      setEditor: (editor) => set({ editor: editor }),
       setResult: (result) => set({ result }),
     }),
     {
-      name: "code-editor-language",
+      name: "code-editor-store",
+      storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         language: state.language,
+        path: state.path,
+        value: state.value,
+        lspConfig: state.lspConfig,
+        isLspEnabled: state.isLspEnabled,
+        editorConfig: state.editorConfig,
       }),
-      onRehydrateStorage: () => (state, error) => {
-        if (error) {
-          console.error("hydrate error", error);
-        } else if (state) {
-          state.setHydrated(true);
-        }
+      onRehydrateStorage: () => {
+        return (state, error) => {
+          if (error) {
+            console.error("An error happened during hydration", error);
+          } else if (state) {
+            state.setHydrated(true);
+          }
+        };
       },
     }
   )
 );
-
-export const useCodeEditorOptionStore = create<editor.IEditorConstructionOptions>((set) => ({
-  fontSize: DefaultEditorOptionConfig.fontSize,
-  lineHeight: DefaultEditorOptionConfig.lineHeight,
-  setFontSize: (fontSize: number) => set({ fontSize }),
-  setLineHeight: (lineHeight: number) => set({ lineHeight }),
-}));
