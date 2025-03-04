@@ -15,16 +15,13 @@ export const DefaultEditorOptionConfig: editor.IEditorConstructionOptions = {
   lineHeight: 20,
   matchBrackets: "always",
   minimap: {
-    enabled: false
-  },
-  padding: {
-    top: 8
+    enabled: false,
   },
   readOnly: false,
   scrollbar: {
     horizontalSliderSize: 10,
-    verticalSliderSize: 10
+    verticalSliderSize: 10,
   },
   showFoldingControls: "always",
   wordWrap: "on",
-}
+};
