@@ -11,6 +11,7 @@ import { connectToLanguageServer } from "@/lib/language-server";
 import { LanguageServerMetadata } from "@/types/language-server";
 import type { MonacoLanguageClient } from "monaco-languageclient";
 
+// Dynamically import Monaco Editor with SSR disabled
 const Editor = dynamic(
   async () => {
     await import("vscode");
@@ -21,7 +22,11 @@ const Editor = dynamic(
   },
   {
     ssr: false,
-    loading: () => <Skeleton className="h-full w-full rounded-3xl" />
+    loading: () => (
+      <div className="h-full w-full p-2">
+        <Skeleton className="h-full w-full rounded-3xl" />
+      </div>
+    ),
   }
 );
 
@@ -112,7 +117,11 @@ export default function CoreEditorLsp({
       beforeMount={handleEditorWillMount}
       onMount={handleEditorDidMount}
       options={editorConfig}
-      loading={<Skeleton className="h-full w-full rounded-3xl" />}
+      loading={
+        <div className="h-full w-full p-2">
+          <Skeleton className="h-full w-full rounded-3xl" />
+        </div>
+      }
     />
   );
 }
