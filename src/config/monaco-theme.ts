@@ -2,8 +2,14 @@ import { MonacoTheme } from "@/types/monaco-theme";
 
 // Define theme configurations
 const MonacoThemeConfig = {
-    light: MonacoTheme.GitHubLightDefault,  // Light theme
-    dark: MonacoTheme.GitHubDarkDefault,    // Dark theme
+  [MonacoTheme.GitHubLightDefault]: {
+    id: MonacoTheme.GitHubLightDefault,
+    label: "Github Light Default",
+  },
+  [MonacoTheme.GitHubDarkDefault]: {
+    id: MonacoTheme.GitHubDarkDefault,
+    label: "Github Dark Default",
+  },
 };
 
 export { MonacoThemeConfig };
