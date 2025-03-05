@@ -1,6 +1,9 @@
 services:
   monaco-editor-lsp-next:
-    image: cfngc4594/monaco-editor-lsp-next:latest
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    image: monaco-editor-lsp-next:latest
     container_name: monaco-editor-lsp-next
     restart: always
     ports:
@@ -21,7 +24,10 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
 
   lsp-c:
-    image: cfngc4594/lsp-c:latest
+    build:
+      context: ./docker/lsp/clangd
+      dockerfile: Dockerfile
+    image: lsp-c:latest
     container_name: lsp-c
     restart: always
     ports:
@@ -35,7 +41,10 @@ services:
       retries: 5
 
   lsp-cpp:
-    image: cfngc4594/lsp-cpp:latest
+    build:
+      context: ./docker/lsp/clangd
+      dockerfile: Dockerfile
+    image: lsp-cpp:latest
     container_name: lsp-cpp
     restart: always
     ports:
