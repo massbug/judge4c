@@ -3,7 +3,6 @@ import { getPath } from "@/lib/utils";
 import type { editor } from "monaco-editor";
 import { JudgeResultMetadata } from "@/types/judge";
 import { EditorLanguage } from "@/types/editor-language";
-import LanguageServerConfig from "@/config/language-server";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { LanguageServerMetadata } from "@/types/language-server";
 import { DefaultEditorOptionConfig } from "@/config/editor-option";
@@ -14,7 +13,7 @@ interface CodeEditorState {
   language: EditorLanguage;
   path: string;
   value: string;
-  lspConfig: LanguageServerMetadata;
+  lspConfig: LanguageServerMetadata | null;
   isLspEnabled: boolean;
   editorConfig: editor.IEditorConstructionOptions;
   editor: editor.IStandaloneCodeEditor | null;
@@ -37,7 +36,7 @@ export const useCodeEditorStore = create<CodeEditorState>()(
       language: DefaultEditorLanguageConfig.id,
       path: getPath(DefaultEditorLanguageConfig.id),
       value: "#include<stdio.h>",
-      lspConfig: LanguageServerConfig[DefaultEditorLanguageConfig.id],
+      lspConfig: null,
       isLspEnabled: true,
       editorConfig: DefaultEditorOptionConfig,
       editor: null,
@@ -59,7 +58,6 @@ export const useCodeEditorStore = create<CodeEditorState>()(
         language: state.language,
         path: state.path,
         value: state.value,
-        lspConfig: state.lspConfig,
         isLspEnabled: state.isLspEnabled,
         editorConfig: state.editorConfig,
       }),

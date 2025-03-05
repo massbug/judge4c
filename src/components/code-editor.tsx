@@ -8,6 +8,7 @@ import { shikiToMonaco } from "@shikijs/monaco";
 import type { Monaco } from "@monaco-editor/react";
 import { useCallback, useEffect, useRef } from "react";
 import { useMonacoTheme } from "@/hooks/use-monaco-theme";
+import LanguageServerConfig from "@/config/language-server";
 import { connectToLanguageServer } from "@/lib/language-server";
 import { useCodeEditorStore } from "@/store/useCodeEditorStore";
 import type { MonacoLanguageClient } from "monaco-languageclient";
@@ -40,7 +41,6 @@ export default function CodeEditor() {
     language,
     path,
     value,
-    lspConfig,
     editorConfig,
     isLspEnabled,
     setEditor,
@@ -51,7 +51,11 @@ export default function CodeEditor() {
 
   // Connect to LSP only if enabled
   const connectLSP = useCallback(async () => {
-    if (!(isLspEnabled && language && lspConfig && editorRef.current)) return;
+    if (!(isLspEnabled && language && editorRef.current)) return;
+
+    const lspConfig = LanguageServerConfig[language];
+
+    if (!lspConfig) return;
 
     // If there's an existing language client, stop it first
     if (monacoLanguageClientRef.current) {
@@ -72,7 +76,7 @@ export default function CodeEditor() {
     } catch (error) {
       console.error("Failed to connect to LSP:", error);
     }
-  }, [isLspEnabled, language, lspConfig]);
+  }, [isLspEnabled, language]);
 
   // Connect to LSP once the editor has mounted
   const handleEditorDidMount = useCallback(
@@ -81,7 +85,7 @@ export default function CodeEditor() {
       await connectLSP();
       setEditor(editor);
     },
-    [connectLSP]
+    [connectLSP, setEditor]
   );
 
   // Reconnect to the LSP whenever language or lspConfig changes
