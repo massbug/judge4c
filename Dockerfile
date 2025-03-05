@@ -16,7 +16,7 @@ RUN \
     if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
     elif [ -f package-lock.json ]; then npm ci; \
     elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm i --frozen-lockfile; \
-    elif [ -f bun.lock ]; then \
+    elif [ -f bun.lock ] || [ -f bun.lockb ]; then \
     apk add --no-cache curl bash && \
     curl -fsSL https://bun.sh/install | bash && \
     export BUN_INSTALL="$HOME/.bun" && \
@@ -24,7 +24,6 @@ RUN \
     bun install --frozen-lockfile; \
     else echo "Lockfile not found." && exit 1; \
     fi
-
 
 # Rebuild the source code only when needed
 FROM base AS builder
@@ -41,7 +40,7 @@ RUN \
     if [ -f yarn.lock ]; then yarn run build; \
     elif [ -f package-lock.json ]; then npm run build; \
     elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm run build; \
-    elif [ -f bun.lock ]; then \
+    elif [ -f bun.lock ] || [ -f bun.lockb ]; then \
     apk add --no-cache curl bash && \
     curl -fsSL https://bun.sh/install | bash && \
     export BUN_INSTALL="$HOME/.bun" && \
