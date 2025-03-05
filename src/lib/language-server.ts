@@ -6,9 +6,7 @@ import { toSocket, WebSocketMessageReader, WebSocketMessageWriter } from "vscode
 
 // Create the WebSocket URL based on the protocol and port
 function createUrl(protocol: string, hostname: string, port: number | null, path: string | null): string {
-  const formattedPort = port !== null ? `:${port}` : "";
-  const formattedPath = path ? (path.startsWith("/") ? path : `/${path}`) : "";
-  return normalizeUrl(`${protocol}://${hostname}${formattedPort}${formattedPath}`);
+  return normalizeUrl(`${protocol}://${hostname}${port ? `:${port}` : ""}${path || ""}`);
 }
 
 // Create the language client with the given transports
