@@ -26,7 +26,7 @@ jobs:
       - name: Build and push monaco-editor-lsp-next
         uses: docker/build-push-action@v6
         with:
-          context: ./
+          context: .
           file: Dockerfile
           push: true
           tags: ${{ vars.DOCKERHUB_USERNAME }}/monaco-editor-lsp-next:latest
