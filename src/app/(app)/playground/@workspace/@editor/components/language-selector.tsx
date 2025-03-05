@@ -7,19 +7,28 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { getPath } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
+import { EditorLanguage } from "@/types/editor-language";
+import LanguageServerConfig from "@/config/language-server";
 import { EditorLanguageConfig } from "@/config/editor-language";
 import { useCodeEditorStore } from "@/store/useCodeEditorStore";
 
 export default function LanguageSelector() {
-  const { hydrated, language, setLanguage } = useCodeEditorStore();
+  const { hydrated, language, setLanguage, setPath, setLspConfig } = useCodeEditorStore();
 
   if (!hydrated) {
     return <Skeleton className="h-6 w-16 rounded-2xl" />;
   }
 
+  const handleValueChange = (lang: EditorLanguage) => {
+    setLanguage(lang);
+    setPath(getPath(lang));
+    setLspConfig(LanguageServerConfig[lang]);
+  };
+
   return (
-    <Select value={language} onValueChange={setLanguage}>
+    <Select value={language} onValueChange={handleValueChange}>
       <SelectTrigger className="h-6 px-1.5 py-0.5 border-none focus:ring-0 hover:bg-muted [&>span]:flex [&>span]:items-center [&>span]:gap-2 [&>span_svg]:shrink-0 [&>span_svg]:text-muted-foreground/80">
         <SelectValue placeholder="Select language" />
       </SelectTrigger>
