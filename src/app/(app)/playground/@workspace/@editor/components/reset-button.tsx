@@ -1,17 +1,22 @@
 "use client";
 
-import { RotateCcw } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useCodeEditorStore } from "@/store/useCodeEditorStore";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { DEFAULT_EDITOR_VALUE } from "@/config/editor/value";
+import { RotateCcw } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useCodeEditorStore } from "@/store/useCodeEditorStore";
 
-export default function ResetButton() {
+interface ResetButtonProps {
+  value: string;
+}
+
+export default function ResetButton({
+  value
+}: ResetButtonProps) {
   const { editor, language } = useCodeEditorStore();
 
   return (
@@ -24,7 +29,6 @@ export default function ResetButton() {
             aria-label="Reset Code"
             onClick={() => {
               if (editor) {
-                const value = DEFAULT_EDITOR_VALUE[language];
                 const model = editor.getModel();
                 if (model) {
                   const fullRange = model.getFullModelRange();

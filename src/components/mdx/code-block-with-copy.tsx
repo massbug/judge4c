@@ -1,9 +1,9 @@
 "use client";
 
+import { cn } from "@/lib/utils";
 import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CheckIcon, CopyIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 interface CodeBlockWithCopyProps {
   children: React.ReactNode;
