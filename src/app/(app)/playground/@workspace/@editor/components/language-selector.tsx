@@ -8,8 +8,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
+import { EditorLanguageConfig } from "@/config/editor-language";
 import { useCodeEditorStore } from "@/store/useCodeEditorStore";
-import { SUPPORTED_LANGUAGES } from "@/constants/language";
 
 export default function LanguageSelector() {
   const { hydrated, language, setLanguage } = useCodeEditorStore();
@@ -24,11 +24,11 @@ export default function LanguageSelector() {
         <SelectValue placeholder="Select language" />
       </SelectTrigger>
       <SelectContent className="[&_*[role=option]>span>svg]:shrink-0 [&_*[role=option]>span>svg]:text-muted-foreground/80 [&_*[role=option]>span]:end-2 [&_*[role=option]>span]:start-auto [&_*[role=option]>span]:flex [&_*[role=option]>span]:items-center [&_*[role=option]>span]:gap-2 [&_*[role=option]]:pe-8 [&_*[role=option]]:ps-2">
-        {SUPPORTED_LANGUAGES.map((lang) => (
-          <SelectItem key={lang.id} value={lang.id}>
-            {lang.icon}
+        {Object.values(EditorLanguageConfig).map((langConfig) => (
+          <SelectItem key={langConfig.id} value={langConfig.id}>
+            <langConfig.icon size={16} aria-hidden="true" />
             <span className="truncate text-sm font-semibold mr-2">
-              {lang.label}
+              {langConfig.label}
             </span>
           </SelectItem>
         ))}
