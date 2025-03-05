@@ -3,7 +3,6 @@
 .next
 node_modules
 .dockerignore
-.env*
 .gitignore
 **/*compose*
 demo.png
