@@ -26,29 +26,46 @@ Complete these steps before launching the editor for seamless LSP integration! �
 
 ### 🐳 Docker Deployment (Recommended)
 
+Deploy the project quickly using pre-built Docker images:  
+
 ```sh
-# Clone repository
+# Clone the repository
 git clone https://github.com/cfngc4594/monaco-editor-lsp-next
 cd monaco-editor-lsp-next
 
-# Build and launch containers
-docker compose up -d --build
+# Start the application with pre-built images
+docker compose up -d
 ```
 
-### 🔨 Manual Installation
+### 🔨 Local Manual Build
+
+Build the images locally and start the containers:  
 
 ```sh
-# Clone repository
+# Clone the repository
 git clone https://github.com/cfngc4594/monaco-editor-lsp-next
 cd monaco-editor-lsp-next
 
-# Start core LSP containers
-docker compose up -d --build lsp-c lsp-cpp
+# Build and start containers using the local configuration
+docker compose -f compose.local.yml up -d --build
+```
 
-# Install dependencies (using Bun)
+### 🛠 Development Mode
+
+Set up a development environment with hot-reloading:  
+
+```sh
+# Clone the repository
+git clone https://github.com/cfngc4594/monaco-editor-lsp-next
+cd monaco-editor-lsp-next
+
+# Start only the LSP containers
+docker compose up -d lsp-c lsp-cpp
+# Or use the local configuration
+# docker compose -f compose.local.yml up -d --build lsp-c lsp-cpp
+
+# Install dependencies and start the development server
 bun install
-
-# Launch development server
 bun run dev
 ```
 
@@ -97,10 +114,12 @@ bun run dev
 Syntax highlighting depends on `rehype-pretty-code`'s deprecated `getHighlighter` API from `shiki@legacy`.
 
 **Key Points**:
+
 - **Affected File:** `src/components/mdx-preview.tsx`
 - **Dependency Chain:** `rehype-pretty-code` → `shiki@legacy`
 - **Version Constraints**:
-  ```bash
+
+  ```sh
   "shiki": "<=2.5.0"
   "@shikijs/monaco": "<=2.5.0"
   ```
