@@ -1,10 +1,14 @@
+"use client";
+
 import { cn } from "@/lib/utils";
-import LanguageSelector from "./language-selector";
-import FormatButton from "./format-button";
 import CopyButton from "./copy-button";
 import RedoButton from "./redo-button";
 import UndoButton from "./undo-button";
 import ResetButton from "./reset-button";
+import FormatButton from "./format-button";
+import LanguageSelector from "./language-selector";
+import { useCodeEditorStore } from "@/store/useCodeEditorStore";
+import { TEMP_DEFAULT_EDITOR_VALUE } from "@/config/problem/value";
 
 interface WorkspaceEditorHeaderProps {
   className?: string;
@@ -14,6 +18,8 @@ export default function WorkspaceEditorHeader({
   className,
   ...props
 }: WorkspaceEditorHeaderProps) {
+  const { language } = useCodeEditorStore();
+
   return (
     <header
       {...props}
@@ -24,7 +30,7 @@ export default function WorkspaceEditorHeader({
           <LanguageSelector />
         </div>
         <div className="flex items-center gap-x-2">
-          <ResetButton />
+          <ResetButton value={TEMP_DEFAULT_EDITOR_VALUE[language]} />
           <UndoButton />
           <RedoButton />
           <FormatButton />
