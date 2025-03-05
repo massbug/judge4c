@@ -8,6 +8,11 @@ on:
 jobs:
   docker-build-and-push:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        image: [monaco-editor-lsp-next, lsp-c, lsp-cpp]
+        context: [., ./docker/lsp/clangd, ./docker/lsp/clangd]
+        file: [Dockerfile, ./docker/lsp/clangd/Dockerfile, ./docker/lsp/clangd/Dockerfile]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -21,34 +26,16 @@ jobs:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
         with:
-          platforms: amd64,arm64
+          platforms: amd64
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build and push monaco-editor-lsp-next
+      - name: Build and push ${{ matrix.image }}
         uses: docker/build-push-action@v6
         with:
-          context: .
-          file: Dockerfile
+          context: ${{ matrix.context }}
+          file: ${{ matrix.file }}
           push: true
-          tags: ${{ vars.DOCKERHUB_USERNAME }}/monaco-editor-lsp-next:latest
-          platforms: linux/amd64,linux/arm64
-
-      - name: Build and push lsp-c
-        uses: docker/build-push-action@v6
-        with:
-          context: ./docker/lsp/clangd
-          file: Dockerfile
-          push: true
-          tags: ${{ vars.DOCKERHUB_USERNAME }}/lsp-c:latest
-          platforms: linux/amd64,linux/arm64
-
-      - name: Build and push lsp-cpp
-        uses: docker/build-push-action@v6
-        with:
-          context: ./docker/lsp/clangd
-          file: Dockerfile
-          push: true
-          tags: ${{ vars.DOCKERHUB_USERNAME }}/lsp-cpp:latest
-          platforms: linux/amd64,linux/arm64
+          tags: ${{ vars.DOCKERHUB_USERNAME }}/${{ matrix.image }}:latest
+          platforms: linux/amd64
