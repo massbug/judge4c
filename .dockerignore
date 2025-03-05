@@ -1,6 +1,12 @@
 .git
+.github
 .next
 node_modules
 .dockerignore
+.env*
 .gitignore
-Dockerfile
+**/*compose*
+demo.png
+**/*Dockerfile*
+LICENSE
+README.md
