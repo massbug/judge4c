@@ -27,7 +27,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: ./
-          dockerfile: Dockerfile
+          file: Dockerfile
           push: true
           tags: ${{ vars.DOCKERHUB_USERNAME }}/monaco-editor-lsp-next:latest
           platforms: linux/amd64,linux/arm64
@@ -36,7 +36,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: ./docker/lsp/clangd
-          dockerfile: Dockerfile
+          file: Dockerfile
           push: true
           tags: ${{ vars.DOCKERHUB_USERNAME }}/lsp-c:latest
           platforms: linux/amd64,linux/arm64
@@ -45,7 +45,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: ./docker/lsp/clangd
-          dockerfile: Dockerfile
+          file: Dockerfile
           push: true
           tags: ${{ vars.DOCKERHUB_USERNAME }}/lsp-cpp:latest
           platforms: linux/amd64,linux/arm64
