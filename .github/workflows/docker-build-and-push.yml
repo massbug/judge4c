@@ -10,9 +10,17 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        image: [monaco-editor-lsp-next, lsp-c, lsp-cpp]
-        context: [., ./docker/lsp/clangd, ./docker/lsp/clangd]
-        file: [Dockerfile, ./docker/lsp/clangd/Dockerfile, ./docker/lsp/clangd/Dockerfile]
+        include:
+          - image: monaco-editor-lsp-next
+            context: .
+            file: Dockerfile
+          - image: lsp-c
+            context: ./docker/lsp/clangd
+            file: ./docker/lsp/clangd/Dockerfile
+          - image: lsp-cpp
+            context: ./docker/lsp/clangd
+            file: ./docker/lsp/clangd/Dockerfile
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
