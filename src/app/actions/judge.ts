@@ -3,7 +3,9 @@
 import tar from "tar-stream";
 import Docker from "dockerode";
 import { Readable, Writable } from "stream";
-import { ExitCode, JudgeResult, LanguageConfigs } from "@/config/judge";
+import { JudgeConfig } from "@/config/judge";
+import { EditorLanguage } from "@/types/editor-language";
+import { ExitCode, JudgeResultMetadata } from "@/types/judge";
 
 // Docker client initialization
 const docker = new Docker({ socketPath: "/var/run/docker.sock" });
@@ -41,10 +43,11 @@ function createTarStream(file: string, value: string) {
 }
 
 export async function judge(
-  language: string,
+  language: EditorLanguage,
   value: string
-): Promise<JudgeResult> {
-  const { fileName, fileExtension, image, tag, workingDir, memoryLimit, timeLimit, compileOutputLimit, runOutputLimit } = LanguageConfigs[language];
+): Promise<JudgeResultMetadata> {
+  const { fileName, fileExtension } = JudgeConfig[language].editorLanguageMetadata;
+  const { image, tag, workingDir, memoryLimit, timeLimit, compileOutputLimit, runOutputLimit } = JudgeConfig[language].dockerMetadata;
   const file = `${fileName}.${fileExtension}`;
   let container: Docker.Container | undefined;
 
@@ -70,14 +73,14 @@ export async function judge(
   }
 }
 
-async function compile(container: Docker.Container, file: string, fileName: string, maxOutput: number = 1 * 1024 * 1024): Promise<JudgeResult> {
+async function compile(container: Docker.Container, file: string, fileName: string, maxOutput: number = 1 * 1024 * 1024): Promise<JudgeResultMetadata> {
   const compileExec = await container.exec({
     Cmd: ["gcc", "-O2", file, "-o", fileName],
     AttachStdout: true,
     AttachStderr: true,
   });
 
-  return new Promise<JudgeResult>((resolve, reject) => {
+  return new Promise<JudgeResultMetadata>((resolve, reject) => {
     compileExec.start({}, (error, stream) => {
       if (error || !stream) {
         return reject({ output: "System Error", exitCode: ExitCode.SE });
@@ -126,7 +129,7 @@ async function compile(container: Docker.Container, file: string, fileName: stri
         const stderr = stderrChunks.join("");
         const exitCode = (await compileExec.inspect()).ExitCode;
 
-        let result: JudgeResult;
+        let result: JudgeResultMetadata;
 
         if (exitCode !== 0 || stderr) {
           result = { output: stderr || "Compilation Error", exitCode: ExitCode.CE };
@@ -145,14 +148,14 @@ async function compile(container: Docker.Container, file: string, fileName: stri
 }
 
 // Run code and implement timeout
-async function run(container: Docker.Container, fileName: string, timeLimit?: number, maxOutput: number = 1 * 1024 * 1024): Promise<JudgeResult> {
+async function run(container: Docker.Container, fileName: string, timeLimit?: number, maxOutput: number = 1 * 1024 * 1024): Promise<JudgeResultMetadata> {
   const runExec = await container.exec({
     Cmd: [`./${fileName}`],
     AttachStdout: true,
     AttachStderr: true,
   });
 
-  return new Promise<JudgeResult>((resolve, reject) => {
+  return new Promise<JudgeResultMetadata>((resolve, reject) => {
     const stdoutChunks: string[] = [];
     let stdoutLength = 0;
     const stdoutStream = new Writable({
@@ -211,7 +214,7 @@ async function run(container: Docker.Container, fileName: string, timeLimit?: nu
         const stderr = stderrChunks.join("");
         const exitCode = (await runExec.inspect()).ExitCode;
 
-        let result: JudgeResult;
+        let result: JudgeResultMetadata;
 
         // Exit code 0 means successful execution
         if (exitCode === 0) {

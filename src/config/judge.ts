@@ -1,42 +1,9 @@
-// Result type definitions
-export enum ExitCode {
-  SE  = 0,  // System Error
-  CS  = 1,  // Compilation Success
-  CE  = 2,  // Compilation Error
-  TLE = 3,  // Time Limit Exceeded
-  MLE = 4,  // Memory Limit Exceeded
-  RE  = 5,  // Runtime Error
-  AC  = 6,  // Accepted
-  WA  = 7,  // Wrong Answer
-}
+import { EditorLanguage } from "@/types/editor-language";
+import { EditorLanguageConfig } from "./editor-language";
+import { DockerMetadata, JudgeMetadata } from "@/types/judge";
 
-export type JudgeResult = {
-  output: string;
-  exitCode: ExitCode;
-  executionTime?: number;
-  memoryUsage?: number;
-};
-
-export interface LanguageConfig {
-  id: string;
-  label: string;
-  fileName: string;
-  fileExtension: string;
-  image: string;
-  tag: string;
-  workingDir: string;
-  timeLimit: number;
-  memoryLimit: number;
-  compileOutputLimit: number;
-  runOutputLimit: number;
-}
-
-export const LanguageConfigs: Record<string, LanguageConfig> = {
-  c: {
-    id: "c",
-    label: "C",
-    fileName: "main",
-    fileExtension: "c",
+export const DockerConfig: Record<EditorLanguage, DockerMetadata> = {
+  [EditorLanguage.C]: {
     image: "gcc",
     tag: "latest",
     workingDir: "/src",
@@ -45,11 +12,7 @@ export const LanguageConfigs: Record<string, LanguageConfig> = {
     compileOutputLimit: 1 * 1024 * 1024,
     runOutputLimit: 1 * 1024 * 1024,
   },
-  cpp: {
-    id: "cpp",
-    label: "C++",
-    fileName: "main",
-    fileExtension: "cpp",
+  [EditorLanguage.CPP]: {
     image: "gcc",
     tag: "latest",
     workingDir: "/src",
@@ -57,5 +20,16 @@ export const LanguageConfigs: Record<string, LanguageConfig> = {
     memoryLimit: 128,
     compileOutputLimit: 1 * 1024 * 1024,
     runOutputLimit: 1 * 1024 * 1024,
+  }
+}
+
+export const JudgeConfig: Record<EditorLanguage, JudgeMetadata> = {
+  [EditorLanguage.C]: {
+    editorLanguageMetadata: EditorLanguageConfig[EditorLanguage.C],
+    dockerMetadata: DockerConfig[EditorLanguage.C],
+  },
+  [EditorLanguage.CPP]: {
+    editorLanguageMetadata: EditorLanguageConfig[EditorLanguage.CPP],
+    dockerMetadata: DockerConfig[EditorLanguage.CPP],
   },
 };
