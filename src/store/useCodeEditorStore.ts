@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { getPath } from "@/lib/utils";
 import type { editor } from "monaco-editor";
-import { JudgeResult } from "@/config/judge";
+import { JudgeResultMetadata } from "@/types/judge";
 import { EditorLanguage } from "@/types/editor-language";
 import LanguageServerConfig from "@/config/language-server";
 import { createJSONStorage, persist } from "zustand/middleware";
@@ -18,7 +18,7 @@ interface CodeEditorState {
   isLspEnabled: boolean;
   editorConfig: editor.IEditorConstructionOptions;
   editor: editor.IStandaloneCodeEditor | null;
-  result: JudgeResult | null;
+  result: JudgeResultMetadata | null;
   setHydrated: (value: boolean) => void;
   setLanguage: (language: EditorLanguage) => void;
   setPath: (path: string) => void;
@@ -27,7 +27,7 @@ interface CodeEditorState {
   setIsLspEnabled: (enabled: boolean) => void;
   setEditorConfig: (editorConfig: editor.IEditorConstructionOptions) => void;
   setEditor: (editor: editor.IStandaloneCodeEditor) => void;
-  setResult: (result: JudgeResult) => void;
+  setResult: (result: JudgeResultMetadata) => void;
 }
 
 export const useCodeEditorStore = create<CodeEditorState>()(

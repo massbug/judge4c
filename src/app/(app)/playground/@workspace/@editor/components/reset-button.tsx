@@ -9,16 +9,10 @@ import {
 import { RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCodeEditorStore } from "@/store/useCodeEditorStore";
+import { TEMP_DEFAULT_EDITOR_VALUE } from "@/config/problem/value";
 
-interface ResetButtonProps {
-  value: string;
-}
-
-export default function ResetButton({
-  value
-}: ResetButtonProps) {
+export default function ResetButton() {
   const { editor, language } = useCodeEditorStore();
-
   return (
     <TooltipProvider delayDuration={0}>
       <Tooltip>
@@ -29,6 +23,7 @@ export default function ResetButton({
             aria-label="Reset Code"
             onClick={() => {
               if (editor) {
+                const value = TEMP_DEFAULT_EDITOR_VALUE[language];
                 const model = editor.getModel();
                 if (model) {
                   const fullRange = model.getFullModelRange();
