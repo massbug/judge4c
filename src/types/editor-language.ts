@@ -8,4 +8,5 @@ export type EditorLanguageMetadata = {
   label: string;
   fileName: string;
   fileExtension: string;
+  icon: React.FunctionComponent<React.SVGProps<SVGElement> & { size?: number | string }>;
 };

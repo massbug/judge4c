@@ -1,3 +1,4 @@
+import { COriginal, CplusplusOriginal } from "devicons-react";
 import { EditorLanguage, EditorLanguageMetadata } from "@/types/editor-language";
 
 // Define language configurations
@@ -7,12 +8,14 @@ const EditorLanguageConfig: Record<EditorLanguage, EditorLanguageMetadata> = {
     label: "C",
     fileName: "main",
     fileExtension: ".c",
+    icon: COriginal,
   },
   [EditorLanguage.CPP]: {
     id: EditorLanguage.CPP,
     label: "C++",
     fileName: "main",
     fileExtension: ".cpp",
+    icon: CplusplusOriginal,
   },
 };
 
