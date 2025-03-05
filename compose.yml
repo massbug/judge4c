@@ -16,7 +16,6 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
-    user: root
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 
