@@ -53,6 +53,7 @@
         "eslint": "^9",
         "eslint-config-next": "15.1.7",
         "postcss": "^8",
+        "postcss-github-markdown-css": "^0.0.3",
         "prisma": "^6.4.1",
         "rehype-autolink-headings": "^7.1.0",
         "rehype-pretty-code": "^0.14.0",
@@ -1156,6 +1157,8 @@
     "possible-typed-array-names": ["possible-typed-array-names@1.1.0", "https://registry.npmmirror.com/possible-typed-array-names/-/possible-typed-array-names-1.1.0.tgz", {}, "sha512-/+5VFTchJDoVj3bhoqi6UeymcD00DAwb1nJwamzPvHEszJ4FpF6SNNbUbOS8yI56qHzdV8eK0qEfOSiodkTdxg=="],
 
     "postcss": ["postcss@8.5.3", "https://registry.npmmirror.com/postcss/-/postcss-8.5.3.tgz", { "dependencies": { "nanoid": "^3.3.8", "picocolors": "^1.1.1", "source-map-js": "^1.2.1" } }, "sha512-dle9A3yYxlBSrt8Fu+IpjGT8SY8hN0mlaA6GY8t0P5PjIOZemULz/E2Bnm/2dcUOena75OTNkHI76uZBNUUq3A=="],
+
+    "postcss-github-markdown-css": ["postcss-github-markdown-css@0.0.3", "https://registry.npmmirror.com/postcss-github-markdown-css/-/postcss-github-markdown-css-0.0.3.tgz", { "peerDependencies": { "postcss": "^8.4.27" } }, "sha512-HKMAIha9UMp3pJYDiVL+K9+2LasUZSq84PMUgcgaZsob+sIXJvTd998DCZ9gO7HiDua4SNrQO1zDN3t9ZOeBZQ=="],
 
     "postcss-import": ["postcss-import@15.1.0", "https://registry.npmmirror.com/postcss-import/-/postcss-import-15.1.0.tgz", { "dependencies": { "postcss-value-parser": "^4.0.0", "read-cache": "^1.0.0", "resolve": "^1.1.7" }, "peerDependencies": { "postcss": "^8.0.0" } }, "sha512-hpr+J05B2FVYUAXHeK1YyI267J/dDDhMU6B6civm8hSY1jYJnBXxzKDKDswzJmtLHryrjhnDjqqp/49t8FALew=="],
 
