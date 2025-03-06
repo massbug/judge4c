@@ -9,11 +9,14 @@ interface SettingNavState {
 export const useSettingNavStore = create<SettingNavState>()(
   persist(
     (set) => ({
-      activeNav: "Messages & media",
+      activeNav: "Appearance",
       setActiveNav: (nav) => set({ activeNav: nav }),
     }),
     {
       name: "setting-nav-active",
+      partialize: (state) => ({
+        activeNav: state.activeNav,
+      }),
     }
   )
 );
