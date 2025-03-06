@@ -5,13 +5,13 @@ import "katex/dist/katex.min.css";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
-import { useTheme } from "next-themes";
 // import rehypeSlug from "rehype-slug";
 import rehypePretty from "rehype-pretty-code";
 import { Skeleton } from "@/components/ui/skeleton";
 import { serialize } from "next-mdx-remote/serialize";
 import { useCallback, useEffect, useState } from "react";
 import { CircleAlert, TriangleAlert } from "lucide-react";
+import { useMonacoTheme } from "@/hooks/use-monaco-theme";
 import { CodeBlockWithCopy } from "./mdx/code-block-with-copy";
 // import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
@@ -22,7 +22,7 @@ interface MdxPreviewProps {
 }
 
 export default function MdxPreview({ source }: MdxPreviewProps) {
-  const { resolvedTheme } = useTheme();
+  const { monacoTheme } = useMonacoTheme();
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [mdxSource, setMdxSource] = useState<MDXRemoteSerializeResult | null>(null);
@@ -56,7 +56,7 @@ export default function MdxPreview({ source }: MdxPreviewProps) {
             [
               rehypePretty,
               {
-                theme: resolvedTheme === "light" ? "github-light-default" : "github-dark-default",
+                theme: monacoTheme.id,
                 keepBackground: false,
               },
             ],
@@ -72,7 +72,7 @@ export default function MdxPreview({ source }: MdxPreviewProps) {
     } finally {
       setIsLoading(false);
     }
-  }, [source, resolvedTheme]);
+  }, [source, monacoTheme]);
 
   // Delay the serialize process to the next event loop to avoid flickering
   // when copying code to the editor and the MDX preview shrinks.
