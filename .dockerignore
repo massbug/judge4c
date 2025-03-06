@@ -2,6 +2,7 @@
 .github
 .next
 node_modules
+prisma
 .dockerignore
 .gitignore
 **/*compose*
