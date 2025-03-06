@@ -3,6 +3,7 @@
 .next
 node_modules
 prisma
+!prisma/schema.prisma
 .dockerignore
 .gitignore
 **/*compose*
