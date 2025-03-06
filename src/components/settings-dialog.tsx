@@ -25,6 +25,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import AppearanceSettings from "./appearance-settings";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useSettingNavStore } from "@/store/useSettingNavStore";
 import { CodeXml, Globe, Paintbrush, Settings } from "lucide-react";
@@ -58,7 +59,7 @@ export function SettingsDialog({ open, onClose }: SettingsDialogProps) {
             <SidebarContent>
               <SidebarGroup>
                 <SidebarGroupContent>
-                  <SidebarMenu>
+                  <SidebarMenu className="pt-2">
                     {data.nav.map((item) => (
                       <SidebarMenuItem key={item.name}>
                         <SidebarMenuButton
@@ -96,12 +97,16 @@ export function SettingsDialog({ open, onClose }: SettingsDialogProps) {
             </header>
             <ScrollArea className="flex-1 overflow-y-auto p-4 pt-0">
               <div className="flex flex-col gap-4">
-                {Array.from({ length: 10 }).map((_, i) => (
-                  <div
-                    key={i}
-                    className="aspect-video max-w-3xl rounded-xl bg-muted/50"
-                  />
-                ))}
+                {activeNav === "Appearance" ? (
+                  <AppearanceSettings />
+                ) : (
+                  Array.from({ length: 10 }).map((_, i) => (
+                    <div
+                      key={i}
+                      className="aspect-video max-w-3xl rounded-xl bg-muted/50"
+                    />
+                  ))
+                )}
               </div>
             </ScrollArea>
           </main>
