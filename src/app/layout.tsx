@@ -4,7 +4,8 @@ import { ThemeProvider } from "@/components/theme-provider";
 
 export const metadata: Metadata = {
   title: "monaco-editor-lsp-next",
-  description: "A Next.js integration of Monaco Editor with LSP support, free from SSR issues",
+  description:
+    "A Next.js integration of Monaco Editor with LSP support, free from SSR issues",
 };
 
 interface RootLayoutProps {
@@ -13,17 +14,15 @@ interface RootLayoutProps {
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang="en" className="h-full" suppressHydrationWarning>
-      <body className="flex min-h-full antialiased">
+    <html lang="en" suppressHydrationWarning>
+      <body className="flex min-h-screen antialiased">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
-          <div className="w-full">
-            {children}
-          </div>
+          <div className="w-full">{children}</div>
         </ThemeProvider>
       </body>
     </html>
