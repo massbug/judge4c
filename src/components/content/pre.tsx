@@ -1,18 +1,20 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CheckIcon, CopyIcon } from "lucide-react";
+import { ReactNode, useRef, useState } from "react";
 
-interface CodeBlockWithCopyProps {
-  children: React.ReactNode;
+interface PreProps {
+  children?: ReactNode,
+  className?: string;
 }
 
-export function CodeBlockWithCopy({
+export function Pre({
   children,
+  className,
   ...props
-}: CodeBlockWithCopyProps) {
+}: PreProps) {
   const preRef = useRef<HTMLPreElement>(null);
   const [copied, setCopied] = useState<boolean>(false);
   const [hovered, setHovered] = useState<boolean>(false);
@@ -65,7 +67,7 @@ export function CodeBlockWithCopy({
           <CopyIcon size={16} aria-hidden="true" />
         </div>
       </Button>
-      <pre ref={preRef} {...props}>
+      <pre ref={preRef} className={className} {...props}>
         {children}
       </pre>
     </div>
