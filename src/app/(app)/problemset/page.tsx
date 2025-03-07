@@ -1,3 +1,4 @@
+import Link from "next/link";
 import {
   Table,
   TableBody,
@@ -29,9 +30,25 @@ export default async function ProblemsetPage() {
             key={problem.id}
             className="odd:bg-muted/50 odd:hover:bg-muted/50 border-none hover:bg-transparent"
           >
-            <TableCell className="py-2.5">{problem.id}</TableCell>
-            <TableCell className="py-2.5">{problem.title}</TableCell>
-            <TableCell className="py-2.5">{problem.difficulty}</TableCell>
+            <TableCell className="py-2.5">
+              <Link
+                href={`/problems/${problem.id}`}
+                className="hover:text-blue-500"
+              >
+                {problem.id}
+              </Link>
+            </TableCell>
+            <TableCell className="py-2.5">
+              <Link
+                href={`/problems/${problem.id}`}
+                className="hover:text-blue-500"
+              >
+                {problem.title}
+              </Link>
+            </TableCell>
+            <TableCell className="py-2.5">
+              {problem.difficulty}
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>
