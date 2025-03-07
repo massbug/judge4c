@@ -12,4 +12,8 @@ const MonacoThemeConfig = {
   },
 };
 
-export { MonacoThemeConfig };
+// Default Light and Dark theme configurations
+const DefaultLightThemeConfig = MonacoThemeConfig[MonacoTheme.GitHubLightDefault];
+const DefaultDarkThemeConfig = MonacoThemeConfig[MonacoTheme.GitHubDarkDefault];
+
+export { MonacoThemeConfig, DefaultLightThemeConfig, DefaultDarkThemeConfig };
