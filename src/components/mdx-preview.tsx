@@ -7,12 +7,12 @@ import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 // import rehypeSlug from "rehype-slug";
 import rehypePretty from "rehype-pretty-code";
+import { Pre } from "@/components/content/pre";
 import { Skeleton } from "@/components/ui/skeleton";
 import { serialize } from "next-mdx-remote/serialize";
 import { useCallback, useEffect, useState } from "react";
 import { CircleAlert, TriangleAlert } from "lucide-react";
 import { useMonacoTheme } from "@/hooks/use-monaco-theme";
-import { CodeBlockWithCopy } from "./mdx/code-block-with-copy";
 // import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { MDXRemote, MDXRemoteSerializeResult } from "next-mdx-remote";
@@ -31,7 +31,7 @@ export default function MdxPreview({ source }: MdxPreviewProps) {
     // Define your custom components here
     // For example:
     // Test: ({ name }: { name: string }) => <p>Test Component: {name}</p>,
-    pre: CodeBlockWithCopy,
+    pre: Pre,
   };
 
   const getMdxSource = useCallback(async () => {
