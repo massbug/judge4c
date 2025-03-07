@@ -8,6 +8,20 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import prisma from "@/lib/prisma";
+import { Difficulty } from "@prisma/client";
+
+const getDifficultyColor = (difficulty: Difficulty) => {
+  switch (difficulty) {
+    case "EASY":
+      return "text-green-500";
+    case "MEDIUM":
+      return "text-yellow-500";
+    case "HARD":
+      return "text-red-500";
+    default:
+      return "text-gray-500";
+  }
+};
 
 export default async function ProblemsetPage() {
   const problems = await prisma.problem.findMany({
@@ -46,7 +60,9 @@ export default async function ProblemsetPage() {
                 {problem.title}
               </Link>
             </TableCell>
-            <TableCell className="py-2.5">
+            <TableCell
+              className={`py-2.5 ${getDifficultyColor(problem.difficulty)}`}
+            >
               {problem.difficulty}
             </TableCell>
           </TableRow>
