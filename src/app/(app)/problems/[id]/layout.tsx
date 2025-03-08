@@ -1,17 +1,17 @@
 import { WorkspaceHeader } from "@/components/workspace-header";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 
-interface WorkspaceLayoutProps {
+interface PlaygroundLayoutProps {
   problem: React.ReactNode;
-  editor: React.ReactNode;
+  workspace: React.ReactNode;
   terminal: React.ReactNode;
 }
 
-export default function WorkspaceLayout({
+export default function PlaygroundLayout({
   problem,
-  editor,
+  workspace,
   terminal,
-}: WorkspaceLayoutProps) {
+}: PlaygroundLayoutProps) {
   return (
     <div className="h-screen flex flex-col">
       <WorkspaceHeader />
@@ -24,7 +24,7 @@ export default function WorkspaceLayout({
           <ResizablePanel defaultSize={50}>
             <ResizablePanelGroup direction="vertical">
               <ResizablePanel defaultSize={75} className="border border-muted rounded-3xl">
-                {editor}
+                {workspace}
               </ResizablePanel>
               <ResizableHandle className="my-1 bg-transparent hover:bg-blue-500" />
               <ResizablePanel defaultSize={25} className="border border-muted rounded-3xl">
