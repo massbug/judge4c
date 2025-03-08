@@ -1,5 +1,6 @@
+import { EditorLanguage } from "@prisma/client";
 import { COriginal, CplusplusOriginal } from "devicons-react";
-import { EditorLanguage, EditorLanguageMetadata } from "@/types/editor-language";
+import { EditorLanguageMetadata } from "@/types/editor-language";
 
 // Define language configurations
 const EditorLanguageConfig: Record<EditorLanguage, EditorLanguageMetadata> = {
