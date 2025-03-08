@@ -6,14 +6,14 @@ import RunCode from "./run-code";
 import SettingsButton from "./settings-button";
 import { SettingsDialog } from "./settings-dialog";
 
-interface HeaderProps {
+interface WorkspaceHeaderProps {
   className?: string;
 }
 
-export function Header({
+export function WorkspaceHeader({
   className,
   ...props
-}: HeaderProps) {
+}: WorkspaceHeaderProps) {
   const [isDialogOpen, setDialogOpen] = useState(false);
 
   const toggleDialog = () => {
