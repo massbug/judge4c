@@ -36,7 +36,7 @@ model Problem {
   published   Boolean    @default(false)
   authorId    Int
   author      User       @relation(fields: [authorId], references: [id])
-  Template    Template[]
+  templates   Template[]
 }
 
 enum EditorLanguage {
