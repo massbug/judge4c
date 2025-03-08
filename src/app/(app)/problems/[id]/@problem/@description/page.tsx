@@ -25,7 +25,7 @@ export default async function ProblemPage({
 
   return (
     <ScrollArea className="[&>[data-radix-scroll-area-viewport]]:max-h-[calc(100vh-130px)]">
-      <MdxRenderer source={problem.content} />
+      <MdxRenderer source={problem.description} />
     </ScrollArea>
   );
 }
