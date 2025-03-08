@@ -14,7 +14,7 @@ export default function ProblemLayout({
   submission,
 }: ProblemLayoutProps) {
   return (
-    <Tabs defaultValue="description" className="h-full">
+    <Tabs defaultValue="description" className="h-full flex flex-col">
       <ScrollArea className="bg-muted">
         <TabsList>
           <TabsTrigger value="description">
