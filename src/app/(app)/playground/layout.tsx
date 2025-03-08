@@ -3,7 +3,7 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import { Header } from "@/components/header";
+import { WorkspaceHeader } from "@/components/workspace-header";
 
 interface PlaygroundLayoutProps {
   problem: React.ReactNode;
@@ -16,7 +16,7 @@ export default function PlaygroundLayout({
 }: PlaygroundLayoutProps) {
   return (
     <div className="h-full flex flex-col">
-      <Header />
+      <WorkspaceHeader />
       <ResizablePanelGroup direction="horizontal" className="p-2.5 pt-0">
         <ResizablePanel
           defaultSize={50}
