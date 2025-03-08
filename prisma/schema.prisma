@@ -29,11 +29,11 @@ enum Difficulty {
 }
 
 model Problem {
-  id         Int        @id @default(autoincrement())
-  title      String
-  content    String
-  difficulty Difficulty @default(EASY)
-  published  Boolean    @default(false)
-  authorId   Int
-  author     User       @relation(fields: [authorId], references: [id])
+  id          Int        @id @default(autoincrement())
+  title       String
+  description String
+  difficulty  Difficulty @default(EASY)
+  published   Boolean    @default(false)
+  authorId    Int
+  author      User       @relation(fields: [authorId], references: [id])
 }
