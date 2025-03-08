@@ -2,18 +2,18 @@
 
 import { cn } from "@/lib/utils";
 import { useState } from "react";
-import RunCode from "./run-code";
-import SettingsButton from "./settings-button";
-import { SettingsDialog } from "./settings-dialog";
+import RunCode from "@/components/run-code";
+import SettingsButton from "@/components/settings-button";
+import { SettingsDialog } from "@/components/settings-dialog";
 
-interface WorkspaceHeaderProps {
+interface PlaygroundHeaderProps {
   className?: string;
 }
 
-export function WorkspaceHeader({
+export function PlaygroundHeader({
   className,
   ...props
-}: WorkspaceHeaderProps) {
+}: PlaygroundHeaderProps) {
   const [isDialogOpen, setDialogOpen] = useState(false);
 
   const toggleDialog = () => {

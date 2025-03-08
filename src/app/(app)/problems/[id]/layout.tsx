@@ -1,4 +1,4 @@
-import { WorkspaceHeader } from "@/components/workspace-header";
+import { PlaygroundHeader } from "@/features/playground/header";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 
 interface PlaygroundLayoutProps {
@@ -14,7 +14,7 @@ export default function PlaygroundLayout({
 }: PlaygroundLayoutProps) {
   return (
     <div className="h-screen flex flex-col">
-      <WorkspaceHeader />
+      <PlaygroundHeader />
       <main className="flex flex-grow overflow-y-hidden p-2.5 pt-0">
         <ResizablePanelGroup direction="horizontal" className="relative h-full flex">
           <ResizablePanel defaultSize={50} className="border border-muted rounded-3xl">
