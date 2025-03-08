@@ -1,10 +1,7 @@
-export enum EditorLanguage {
-  C = "c",
-  CPP = "cpp",
-}
+import { EditorLanguage } from "@prisma/client";
 
 export type EditorLanguageMetadata = {
-  id: EditorLanguage;
+  id: EditorLanguage,
   label: string;
   fileName: string;
   fileExtension: string;
