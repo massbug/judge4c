@@ -8,8 +8,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { getPath } from "@/lib/utils";
+import { EditorLanguage } from "@prisma/client";
 import { Skeleton } from "@/components/ui/skeleton";
-import { EditorLanguage } from "@/types/editor-language";
 import LanguageServerConfig from "@/config/language-server";
 import { EditorLanguageConfig } from "@/config/editor-language";
 import { useCodeEditorStore } from "@/store/useCodeEditorStore";

@@ -1,6 +1,6 @@
+import { EditorLanguage } from "@prisma/client";
 import { MonacoTheme } from "@/types/monaco-theme";
 import { createHighlighter, Highlighter } from "shiki";
-import { EditorLanguage } from "@/types/editor-language";
 
 // Get all values from the ProgrammingLanguage and Theme enums
 const themes = Object.values(MonacoTheme);

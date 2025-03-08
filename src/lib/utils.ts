@@ -1,6 +1,6 @@
 import { twMerge } from "tailwind-merge";
 import { clsx, type ClassValue } from "clsx";
-import { EditorLanguage } from "@/types/editor-language";
+import { EditorLanguage } from "@prisma/client";
 import LanguageServerConfig from "@/config/language-server";
 
 export function cn(...inputs: ClassValue[]) {

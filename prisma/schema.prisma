@@ -40,8 +40,8 @@ model Problem {
 }
 
 enum EditorLanguage {
-  C
-  CPP
+  c
+  cpp
 }
 
 model Template {

@@ -1,9 +1,9 @@
-import { EditorLanguage } from "@/types/editor-language";
+import { EditorLanguage } from "@prisma/client";
 import { EditorLanguageConfig } from "./editor-language";
 import { DockerMetadata, JudgeMetadata } from "@/types/judge";
 
 export const DockerConfig: Record<EditorLanguage, DockerMetadata> = {
-  [EditorLanguage.C]: {
+  [EditorLanguage.c]: {
     image: "gcc",
     tag: "latest",
     workingDir: "/src",
@@ -12,7 +12,7 @@ export const DockerConfig: Record<EditorLanguage, DockerMetadata> = {
     compileOutputLimit: 1 * 1024 * 1024,
     runOutputLimit: 1 * 1024 * 1024,
   },
-  [EditorLanguage.CPP]: {
+  [EditorLanguage.cpp]: {
     image: "gcc",
     tag: "latest",
     workingDir: "/src",
@@ -24,12 +24,12 @@ export const DockerConfig: Record<EditorLanguage, DockerMetadata> = {
 }
 
 export const JudgeConfig: Record<EditorLanguage, JudgeMetadata> = {
-  [EditorLanguage.C]: {
-    editorLanguageMetadata: EditorLanguageConfig[EditorLanguage.C],
-    dockerMetadata: DockerConfig[EditorLanguage.C],
+  [EditorLanguage.c]: {
+    editorLanguageMetadata: EditorLanguageConfig[EditorLanguage.c],
+    dockerMetadata: DockerConfig[EditorLanguage.c],
   },
-  [EditorLanguage.CPP]: {
-    editorLanguageMetadata: EditorLanguageConfig[EditorLanguage.CPP],
-    dockerMetadata: DockerConfig[EditorLanguage.CPP],
+  [EditorLanguage.cpp]: {
+    editorLanguageMetadata: EditorLanguageConfig[EditorLanguage.cpp],
+    dockerMetadata: DockerConfig[EditorLanguage.cpp],
   },
 };

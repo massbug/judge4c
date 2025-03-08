@@ -4,7 +4,7 @@ import tar from "tar-stream";
 import Docker from "dockerode";
 import { Readable, Writable } from "stream";
 import { JudgeConfig } from "@/config/judge";
-import { EditorLanguage } from "@/types/editor-language";
+import { EditorLanguage } from "@prisma/client";
 import { ExitCode, JudgeResultMetadata } from "@/types/judge";
 
 // Docker client initialization

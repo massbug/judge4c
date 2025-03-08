@@ -1,8 +1,8 @@
 import { create } from "zustand";
 import { getPath } from "@/lib/utils";
 import type { editor } from "monaco-editor";
+import { EditorLanguage } from "@prisma/client";
 import { JudgeResultMetadata } from "@/types/judge";
-import { EditorLanguage } from "@/types/editor-language";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { LanguageServerMetadata } from "@/types/language-server";
 import { DefaultEditorOptionConfig } from "@/config/editor-option";

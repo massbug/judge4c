@@ -4,15 +4,15 @@ import { EditorLanguageMetadata } from "@/types/editor-language";
 
 // Define language configurations
 const EditorLanguageConfig: Record<EditorLanguage, EditorLanguageMetadata> = {
-  [EditorLanguage.C]: {
-    id: EditorLanguage.C,
+  [EditorLanguage.c]: {
+    id: EditorLanguage.c,
     label: "C",
     fileName: "main",
     fileExtension: ".c",
     icon: COriginal,
   },
-  [EditorLanguage.CPP]: {
-    id: EditorLanguage.CPP,
+  [EditorLanguage.cpp]: {
+    id: EditorLanguage.cpp,
     label: "C++",
     fileName: "main",
     fileExtension: ".cpp",
@@ -21,6 +21,6 @@ const EditorLanguageConfig: Record<EditorLanguage, EditorLanguageMetadata> = {
 };
 
 // Default language configuration
-const DefaultEditorLanguageConfig = EditorLanguageConfig[EditorLanguage.C]; // Default to C language
+const DefaultEditorLanguageConfig = EditorLanguageConfig[EditorLanguage.c]; // Default to C language
 
 export { EditorLanguageConfig, DefaultEditorLanguageConfig };
