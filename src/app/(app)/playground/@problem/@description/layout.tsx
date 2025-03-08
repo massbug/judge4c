@@ -1,4 +1,4 @@
-import ProblemDescriptionFooter from "./components/footer";
+import ProblemDescriptionFooter from "@/features/workspace/problem/description/footer";
 
 interface ProblemDescriptionLayoutProps {
   children: React.ReactNode;
