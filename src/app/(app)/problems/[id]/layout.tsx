@@ -17,17 +17,17 @@ export default function PlaygroundLayout({
       <PlaygroundHeader />
       <main className="flex flex-grow overflow-y-hidden p-2.5 pt-0">
         <ResizablePanelGroup direction="horizontal" className="relative h-full flex">
-          <ResizablePanel defaultSize={50} className="border border-muted rounded-3xl">
+          <ResizablePanel defaultSize={50} className="border border-muted rounded-xl">
             {problem}
           </ResizablePanel>
           <ResizableHandle className="mx-1 bg-transparent hover:bg-blue-500" />
           <ResizablePanel defaultSize={50}>
             <ResizablePanelGroup direction="vertical">
-              <ResizablePanel defaultSize={50} className="border border-muted rounded-3xl">
+              <ResizablePanel defaultSize={50} className="border border-muted rounded-xl">
                 {workspace}
               </ResizablePanel>
               <ResizableHandle className="my-1 bg-transparent hover:bg-blue-500" />
-              <ResizablePanel defaultSize={50} className="border border-muted rounded-3xl">
+              <ResizablePanel defaultSize={50} className="border border-muted rounded-xl">
                 {terminal}
               </ResizablePanel>
             </ResizablePanelGroup>
