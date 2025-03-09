@@ -29,14 +29,14 @@ export function PlaygroundHeader({
         <div className="w-full flex justify-between">
           <div className="w-full flex items-center justify-between">
             <div className="flex items-center"></div>
-            <div className="relative flex items-center gap-2">
+            <div className="relative z-10 flex items-center gap-2">
               <SettingsButton onClick={toggleDialog} />
             </div>
           </div>
         </div>
       </nav>
-      <div className="z-10 absolute left-1/2 top-0 h-full -translate-x-1/2 py-2">
-        <div className="relative flex">
+      <div className="absolute left-0 right-0 top-0 h-full mx-auto py-2">
+        <div className="relative flex justify-center">
           <div className="relative flex overflow-hidden rounded">
             <RunCode />
           </div>
