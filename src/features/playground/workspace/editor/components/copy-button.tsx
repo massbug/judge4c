@@ -33,7 +33,7 @@ export default function CopyButton() {
           <Button
             variant="outline"
             size="icon"
-            className="h-6 w-6 border-none px-1.5 py-0.5 disabled:opacity-100 hover:bg-muted"
+            className="h-6 w-6 border-none shadow-none px-1.5 py-0.5 disabled:opacity-100 hover:bg-muted"
             onClick={handleCopy}
             aria-label={copied ? "Copied" : "Copy to clipboard"}
             disabled={copied}

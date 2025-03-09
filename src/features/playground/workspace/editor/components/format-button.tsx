@@ -24,7 +24,7 @@ export default function FormatButton() {
             onClick={() => {
               editor?.trigger("format", "editor.action.formatDocument", null);
             }}
-            className="h-6 w-6 px-1.5 py-0.5 border-none hover:bg-muted"
+            className="h-6 w-6 px-1.5 py-0.5 border-none shadow-none hover:bg-muted"
           >
             <Paintbrush size={16} strokeWidth={2} aria-hidden="true" />
           </Button>
