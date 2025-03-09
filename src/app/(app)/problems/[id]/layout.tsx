@@ -23,11 +23,11 @@ export default function PlaygroundLayout({
           <ResizableHandle className="mx-1 bg-transparent hover:bg-blue-500" />
           <ResizablePanel defaultSize={50}>
             <ResizablePanelGroup direction="vertical">
-              <ResizablePanel defaultSize={75} className="border border-muted rounded-3xl">
+              <ResizablePanel defaultSize={50} className="border border-muted rounded-3xl">
                 {workspace}
               </ResizablePanel>
               <ResizableHandle className="my-1 bg-transparent hover:bg-blue-500" />
-              <ResizablePanel defaultSize={25} className="border border-muted rounded-3xl">
+              <ResizablePanel defaultSize={50} className="border border-muted rounded-3xl">
                 {terminal}
               </ResizablePanel>
             </ResizablePanelGroup>
