@@ -35,7 +35,7 @@ export const useCodeEditorStore = create<CodeEditorState>()(
       hydrated: false,
       language: DefaultEditorLanguageConfig.id,
       path: getPath(DefaultEditorLanguageConfig.id),
-      value: "#include<stdio.h>",
+      value: "",
       lspConfig: null,
       isLspEnabled: true,
       editorConfig: DefaultEditorOptionConfig,
