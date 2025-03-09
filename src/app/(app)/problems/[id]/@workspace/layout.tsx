@@ -9,7 +9,7 @@ interface WorkspaceLayoutProps {
 export default function WorkspaceLayout({ editor }: WorkspaceLayoutProps) {
   return (
     <Tabs defaultValue="editor" className="h-full flex flex-col">
-      <ScrollArea className="bg-muted">
+      <ScrollArea className="h-9 flex-none bg-muted">
         <TabsList>
           <TabsTrigger value="editor">
             <SquarePenIcon

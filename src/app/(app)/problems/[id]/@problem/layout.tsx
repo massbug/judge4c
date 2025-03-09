@@ -15,7 +15,7 @@ export default function ProblemLayout({
 }: ProblemLayoutProps) {
   return (
     <Tabs defaultValue="description" className="h-full flex flex-col">
-      <ScrollArea className="bg-muted">
+      <ScrollArea className="h-9 flex-none bg-muted">
         <TabsList>
           <TabsTrigger value="description">
             <FileTextIcon
