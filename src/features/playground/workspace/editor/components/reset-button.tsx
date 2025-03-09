@@ -47,7 +47,6 @@ export default function ResetButton({
                 }
               }
             }}
-            disabled={templates.length === 0}
             className="h-6 w-6 px-1.5 py-0.5 border-none hover:bg-muted"
           >
             <RotateCcw size={16} strokeWidth={2} aria-hidden="true" />
