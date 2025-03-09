@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { EditorLanguage } from "@prisma/client";
 import CopyButton from "./components/copy-button";
 import RedoButton from "./components/redo-button";
 import UndoButton from "./components/undo-button";
@@ -7,10 +8,12 @@ import FormatButton from "./components/format-button";
 import LanguageSelector from "./components/language-selector";
 
 interface WorkspaceEditorHeaderProps {
+  templates: { language: EditorLanguage; template: string }[];
   className?: string;
 }
 
 export default function WorkspaceEditorHeader({
+  templates,
   className,
   ...props
 }: WorkspaceEditorHeaderProps) {
@@ -24,7 +27,7 @@ export default function WorkspaceEditorHeader({
           <LanguageSelector />
         </div>
         <div className="flex items-center gap-x-2">
-          <ResetButton />
+          <ResetButton templates={templates} />
           <UndoButton />
           <RedoButton />
           <FormatButton />
