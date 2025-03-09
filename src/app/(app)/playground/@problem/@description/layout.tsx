@@ -1,4 +1,4 @@
-import ProblemDescriptionFooter from "@/features/playground/problem/description/footer";
+// import ProblemDescriptionFooter from "@/features/playground/problem/description/footer";
 
 interface ProblemDescriptionLayoutProps {
   children: React.ReactNode;
@@ -12,7 +12,7 @@ export default function ProblemDescriptionLayout({
       <div className="flex-1">
         {children}
       </div>
-      <ProblemDescriptionFooter />
+      {/* <ProblemDescriptionFooter /> */}
     </div>
   );
 }
