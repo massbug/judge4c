@@ -1,7 +1,7 @@
 import prisma from "@/lib/prisma";
 import { notFound } from "next/navigation";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { MdxRenderer } from "@/components/content/mdx-renderer";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 interface ProblemPageProps {
   params: Promise<{ id: string }>
@@ -26,6 +26,7 @@ export default async function ProblemPage({
   return (
     <ScrollArea className="[&>[data-radix-scroll-area-viewport]]:max-h-[calc(100vh-130px)]">
       <MdxRenderer source={problem.description} />
+      <ScrollBar orientation="horizontal" />
     </ScrollArea>
   );
 }
