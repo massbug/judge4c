@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { Skeleton } from "./ui/skeleton";
 import { highlighter } from "@/lib/shiki";
 import type { editor } from "monaco-editor";
+import { EditorLanguage } from "@prisma/client";
 import { shikiToMonaco } from "@shikijs/monaco";
 import type { Monaco } from "@monaco-editor/react";
 import { useCallback, useEffect, useRef } from "react";
@@ -35,7 +36,15 @@ const Editor = dynamic(
   }
 );
 
-export default function CodeEditor() {
+interface CodeEditorProps {
+  problemId: string;
+  templates: { language: EditorLanguage; template: string }[];
+}
+
+export default function CodeEditor({
+  problemId,
+  templates,
+}: CodeEditorProps) {
   const {
     hydrated,
     language,
@@ -44,10 +53,29 @@ export default function CodeEditor() {
     editorConfig,
     isLspEnabled,
     setEditor,
+    setValue,
   } = useCodeEditorStore();
   const { monacoTheme } = useMonacoTheme();
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
   const monacoLanguageClientRef = useRef<MonacoLanguageClient | null>(null);
+
+  const valueStorageKey = `value_${problemId}_${language}`;
+
+  useEffect(() => {
+    const storedValue = localStorage.getItem(valueStorageKey);
+    if (storedValue !== null) {
+      setValue(storedValue);
+    } else {
+      const template = templates.find((t) => t.language === language);
+      if (template) setValue(template.template);
+    }
+  }, [valueStorageKey, setValue, templates, language])
+
+  const handleEditorChange = (value: string | undefined, event: editor.IModelContentChangedEvent) => {
+    if (value === undefined) return;
+    setValue(value);
+    localStorage.setItem(valueStorageKey, value);
+  }
 
   // Connect to LSP only if enabled
   const connectLSP = useCallback(async () => {
@@ -119,6 +147,7 @@ export default function CodeEditor() {
       value={value}
       beforeMount={handleEditorWillMount}
       onMount={handleEditorDidMount}
+      onChange={handleEditorChange}
       options={editorConfig}
       loading={<CodeEditorLoadingSkeleton />}
       className="h-full w-full py-2"
