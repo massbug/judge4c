@@ -71,7 +71,7 @@ export default function CodeEditor({
     }
   }, [valueStorageKey, setValue, templates, language])
 
-  const handleEditorChange = (value: string | undefined, event: editor.IModelContentChangedEvent) => {
+  const handleEditorChange = (value: string | undefined) => {
     if (value === undefined) return;
     setValue(value);
     localStorage.setItem(valueStorageKey, value);
@@ -135,7 +135,7 @@ export default function CodeEditor({
     return <CodeEditorLoadingSkeleton />;
   }
 
-  function handleEditorWillMount(monaco: Monaco) {
+  const handleEditorWillMount = (monaco: Monaco) => {
     shikiToMonaco(highlighter, monaco);
   }
 
