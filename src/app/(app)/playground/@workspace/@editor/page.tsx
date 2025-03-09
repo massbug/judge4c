@@ -1,5 +1,6 @@
-import CodeEditor from "@/components/code-editor";
+// import CodeEditor from "@/components/code-editor";
 
 export default function WorkspaceEditorPage() {
-  return <CodeEditor />;
+  // return <CodeEditor />;
+  return null;
 }
