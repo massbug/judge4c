@@ -35,6 +35,7 @@ export default function ResetButton({
                 const model = editor.getModel();
                 if (model) {
                   const fullRange = model.getFullModelRange();
+                  editor.pushUndoStop();
                   editor.executeEdits("reset-code", [
                     {
                       range: fullRange,
@@ -42,6 +43,7 @@ export default function ResetButton({
                       forceMoveMarkers: true,
                     },
                   ]);
+                  editor.pushUndoStop();
                 }
               }
             }}
