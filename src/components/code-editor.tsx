@@ -66,8 +66,8 @@ export default function CodeEditor({
     if (storedValue !== null) {
       setValue(storedValue);
     } else {
-      const template = templates.find((t) => t.language === language);
-      if (template) setValue(template.template);
+      const currentTemplate = templates.find((t) => t.language === language)?.template ?? "";
+      setValue(currentTemplate);
     }
   }, [valueStorageKey, setValue, templates, language])
 
