@@ -47,10 +47,10 @@ export default function ProblemLayout({
       <TabsContent value="description" className="h-full mt-0">
         {description}
       </TabsContent>
-      <TabsContent value="solution">
+      <TabsContent value="solution" className="h-full mt-0">
         {solution}
       </TabsContent>
-      <TabsContent value="submission">
+      <TabsContent value="submission" className="h-full mt-0">
         {submission}
       </TabsContent>
     </Tabs>

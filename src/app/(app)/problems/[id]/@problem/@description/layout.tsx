@@ -1,5 +1,5 @@
-import ProblemDescriptionFooter from "@/features/playground/problem/description/footer";
 import prisma from "@/lib/prisma";
+import ProblemDescriptionFooter from "@/features/playground/problem/description/footer";
 
 interface ProblemDescriptionLayoutProps {
   params: Promise<{ id: string }>;

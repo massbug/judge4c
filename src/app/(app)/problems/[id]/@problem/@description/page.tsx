@@ -3,20 +3,20 @@ import { notFound } from "next/navigation";
 import { MdxRenderer } from "@/components/content/mdx-renderer";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
-interface ProblemPageProps {
+interface ProblemDescriptionPageProps {
   params: Promise<{ id: string }>
 }
 
-export default async function ProblemPage({
+export default async function ProblemDescriptionPage({
   params
-}: ProblemPageProps) {
+}: ProblemDescriptionPageProps) {
   const { id } = await params;
 
   const problem = await prisma.problem.findUnique({
     where: { id: parseInt(id) },
-    include: {
-      author: true,
-    },
+    select: {
+      description: true,
+    }
   });
 
   if (!problem) {
