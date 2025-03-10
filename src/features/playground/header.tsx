@@ -38,7 +38,7 @@ export function PlaygroundHeader({
       <div className="absolute left-0 right-0 top-0 h-full mx-auto py-2">
         <div className="relative flex justify-center">
           <div className="relative flex overflow-hidden rounded">
-            <RunCode />
+            <RunCode className="bg-muted text-muted-foreground hover:bg-muted/50" />
           </div>
         </div>
       </div>
