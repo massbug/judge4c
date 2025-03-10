@@ -21,13 +21,23 @@
 }
 
 [data-rehype-pretty-code-figure] [data-highlighted-line] {
+  background: rgba(219, 234, 254, 0.5);
+  @apply border-l-blue-400;
+}
+
+.dark [data-rehype-pretty-code-figure] [data-highlighted-line] {
   background: rgba(200, 200, 255, 0.1);
   @apply border-l-blue-400;
 }
 
 [data-rehype-pretty-code-figure] [data-highlighted-chars] {
-  @apply rounded bg-zinc-600/50;
-  box-shadow: 0 0 0 4px rgb(82 82 91 / 0.5);
+  @apply rounded bg-zinc-400/50;
+  box-shadow: 0 0 0 4px rgb(161 161 170 / 0.5);
+}
+
+.dark [data-rehype-pretty-code-figure] [data-highlighted-chars] {
+  @apply rounded bg-zinc-500/50;
+  box-shadow: 0 0 0 4px rgb(113 113 122 / 0.5);
 }
 
 [data-rehype-pretty-code-figure] [data-chars-id] {
