@@ -8,6 +8,23 @@
 
 </div>
 
+## ⚠️ LSP Configuration and Environment Variable Limitations
+
+**Warning: Pre-built Image LSP Configuration Limitations**
+
+The pre-built Docker image `cfngc4594/monaco-editor-lsp-next` is configured to connect exclusively to `ws://localhost:4594/clangd` and `ws://localhost:4595/clangd`. This is due to the LSP configuration being set via `NEXT_PUBLIC` environment variables during the image build process.
+
+* **Build-Time Freezing:** As per the Next.js [official documentation](https://nextjs.org/docs/pages/building-your-application/configuring/environment-variables#bundling-environment-variables-for-the-browser), `NEXT_PUBLIC` variables are frozen at build time, and subsequent changes are ineffective.
+* **Local LSP Server Dependency:** Therefore, the pre-built image can only connect to the specified local LSP servers.
+* **Custom Configuration Requirement:** If you wish to define your own LSP configuration via environment variables, you **cannot** use the pre-built image. Instead, you must:
+    * Clone the source code.
+    * Set your desired environment variables.
+    * Manually build the Docker image.
+
+**Upcoming Improvements (v0.0.1):**
+
+To address these limitations, v0.0.1 will implement the officially recommended API approach for retrieving LSP configurations, enabling runtime dynamic LSP server configuration without image rebuilding.
+
 ## ⚠️ WSL Users: Critical Configuration
 
 ### 🐧 Network Mode Requirement
@@ -15,10 +32,11 @@
 When using Windows Subsystem for Linux (WSL), you **must** configure your network mode as **Mirrored** to ensure proper LSP server connectivity. Standard WSL network configurations may create IPv6 conflicts that block Monaco-LSP communication.
 
 #### 🔧 Mirror Mode Setup:
-1. Open WSL settings ⚙️  
-2. Navigate to **Network** section 🌐  
-3. Select **Mirrored** mode 🔄  
-4. Restart WSL instance 💻  
+
+1.  Open WSL settings ⚙️
+2.  Navigate to **Network** section 🌐
+3.  Select **Mirrored** mode 🔄
+4.  Restart WSL instance 💻
 
 Complete these steps before launching the editor for seamless LSP integration! 🎉
 
@@ -26,7 +44,7 @@ Complete these steps before launching the editor for seamless LSP integration! �
 
 ### 🐳 Docker Deployment (Recommended)
 
-Deploy the project quickly using pre-built Docker images:  
+Deploy the project quickly using pre-built Docker images:
 
 ```sh
 # Clone the repository
@@ -39,7 +57,7 @@ docker compose up -d
 
 ### 🔨 Local Manual Build
 
-Build the images locally and start the containers:  
+Build the images locally and start the containers:
 
 ```sh
 # Clone the repository
@@ -52,7 +70,7 @@ docker compose -f compose.local.yml up -d --build
 
 ### 🛠 Development Mode
 
-Set up a development environment with hot-reloading:  
+Set up a development environment with hot-reloading:
 
 ```sh
 # Clone the repository
