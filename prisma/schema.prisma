@@ -32,6 +32,7 @@ model Problem {
   id          Int        @id @default(autoincrement())
   title       String
   description String
+  solution    String
   difficulty  Difficulty @default(EASY)
   published   Boolean    @default(false)
   authorId    Int
