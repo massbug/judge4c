@@ -1,0 +1,48 @@
+name: Build & Push LSP Docker Images
+
+on:
+  push:
+    paths:
+      - docker/lsp/**
+    branches:
+      - main
+
+jobs:
+  build-and-push-lsp-docker-images:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - image: lsp-c
+            context: ./docker/lsp/clangd
+            file: ./docker/lsp/clangd/Dockerfile
+          - image: lsp-cpp
+            context: ./docker/lsp/clangd
+            file: ./docker/lsp/clangd/Dockerfile
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # - name: Set up QEMU
+      #   uses: docker/setup-qemu-action@v3
+      #   with:
+      #     platforms: amd64,arm64
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push ${{ matrix.image }}
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.context }}
+          file: ${{ matrix.file }}
+          push: true
+          tags: ${{ vars.DOCKERHUB_USERNAME }}/${{ matrix.image }}:latest
+          # platforms: linux/amd64,linux/arm64
