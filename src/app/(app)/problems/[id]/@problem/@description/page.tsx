@@ -14,7 +14,7 @@ export default async function ProblemDescriptionPage({
   const { id } = await params;
 
   const problem = await prisma.problem.findUnique({
-    where: { id: parseInt(id) },
+    where: { id },
     select: {
       title: true,
       description: true,
