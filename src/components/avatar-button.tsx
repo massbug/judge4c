@@ -17,7 +17,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { auth, signIn, signOut } from "@/auth";
+import { auth, signIn, signOut } from "@/lib/auth";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SettingsButton } from "@/components/settings-button";
 
