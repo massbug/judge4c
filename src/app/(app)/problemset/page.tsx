@@ -26,6 +26,9 @@ const getDifficultyColor = (difficulty: Difficulty) => {
 export default async function ProblemsetPage() {
   const problems = await prisma.problem.findMany({
     where: { published: true },
+    orderBy: {
+      id: "asc",
+    },
   });
 
   return (
@@ -60,9 +63,7 @@ export default async function ProblemsetPage() {
                 {problem.title}
               </Link>
             </TableCell>
-            <TableCell
-              className={`py-2.5 ${getDifficultyColor(problem.difficulty)}`}
-            >
+            <TableCell className={`py-2.5 ${getDifficultyColor(problem.difficulty)}`}>
               {problem.difficulty}
             </TableCell>
           </TableRow>
