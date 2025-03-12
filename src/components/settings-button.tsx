@@ -9,17 +9,18 @@ import {
 import { cn } from "@/lib/utils";
 import { SettingsIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useSettingsStore } from "@/store/useSettingsStore";
 
 interface SettingsButtonProps {
   className?: string;
-  onClick: () => void;
 }
 
 export default function SettingsButton({
   className,
-  onClick,
   ...props
 }: SettingsButtonProps) {
+  const { setDialogOpen } = useSettingsStore();
+
   return (
     <TooltipProvider delayDuration={0}>
       <Tooltip>
@@ -27,7 +28,7 @@ export default function SettingsButton({
           <Button
             variant="ghost"
             className={cn("h-8 w-auto p-2", className)}
-            onClick={onClick}
+            onClick={() => setDialogOpen(true)}
             {...props}
           >
             <SettingsIcon size={16} aria-hidden="true" />
