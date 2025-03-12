@@ -1,6 +1,7 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { ThemeProvider } from "@/components/theme-provider";
+import { SettingsDialog } from "@/components/settings-dialog";
 
 export const metadata: Metadata = {
   title: "monaco-editor-lsp-next",
@@ -23,6 +24,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           disableTransitionOnChange
         >
           <div className="w-full">{children}</div>
+          <SettingsDialog/>
         </ThemeProvider>
       </body>
     </html>
