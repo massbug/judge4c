@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import AppearanceSettings from "./appearance-settings";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useSettingNavStore } from "@/store/useSettingNavStore";
+import { useSettingsStore } from "@/store/useSettingsStore";
 import { CodeXml, Globe, Paintbrush, Settings } from "lucide-react";
 
 const data = {
@@ -39,16 +39,11 @@ const data = {
   ],
 };
 
-interface SettingsDialogProps {
-  open: boolean;
-  onClose: () => void;
-}
-
-export function SettingsDialog({ open, onClose }: SettingsDialogProps) {
-  const { activeNav, setActiveNav } = useSettingNavStore();
+export function SettingsDialog() {
+  const { isDialogOpen, activeSetting, setDialogOpen, setActiveSetting } = useSettingsStore();
 
   return (
-    <Dialog open={open} onOpenChange={onClose}>
+    <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
       <DialogContent className="overflow-hidden p-0 md:max-h-[500px] md:max-w-[700px] lg:max-w-[800px]">
         <DialogTitle className="sr-only">Settings</DialogTitle>
         <DialogDescription className="sr-only">
@@ -64,8 +59,8 @@ export function SettingsDialog({ open, onClose }: SettingsDialogProps) {
                       <SidebarMenuItem key={item.name}>
                         <SidebarMenuButton
                           asChild
-                          isActive={item.name === activeNav}
-                          onClick={() => setActiveNav(item.name)}
+                          isActive={item.name === activeSetting}
+                          onClick={() => setActiveSetting(item.name)}
                         >
                           <a href="#">
                             <item.icon />
@@ -89,7 +84,7 @@ export function SettingsDialog({ open, onClose }: SettingsDialogProps) {
                     </BreadcrumbItem>
                     <BreadcrumbSeparator className="hidden md:block" />
                     <BreadcrumbItem>
-                      <BreadcrumbPage>{activeNav}</BreadcrumbPage>
+                      <BreadcrumbPage>{activeSetting}</BreadcrumbPage>
                     </BreadcrumbItem>
                   </BreadcrumbList>
                 </Breadcrumb>
@@ -97,7 +92,7 @@ export function SettingsDialog({ open, onClose }: SettingsDialogProps) {
             </header>
             <ScrollArea className="flex-1 overflow-y-auto p-4 pt-0">
               <div className="flex flex-col gap-4">
-                {activeNav === "Appearance" ? (
+                {activeSetting === "Appearance" ? (
                   <AppearanceSettings />
                 ) : (
                   Array.from({ length: 10 }).map((_, i) => (
