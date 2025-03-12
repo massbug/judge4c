@@ -15,11 +15,21 @@ enum Role {
 }
 
 model User {
-  id       Int       @id @default(autoincrement())
-  name     String    @unique
-  email    String    @unique
+  id            String          @id @default(cuid())
+  name          String
+  email         String          @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  // Optional for WebAuthn support
+  Authenticator Authenticator[]
+
   role     Role      @default(GUEST)
   problems Problem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum Difficulty {
@@ -29,15 +39,18 @@ enum Difficulty {
 }
 
 model Problem {
-  id          Int        @id @default(autoincrement())
+  id          String     @id @default(cuid())
   title       String
   description String
   solution    String
   difficulty  Difficulty @default(EASY)
   published   Boolean    @default(false)
-  authorId    Int
-  author      User       @relation(fields: [authorId], references: [id])
+  userId      String
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   templates   Template[]
+
+  @@index([userId])
+  @@index([difficulty])
 }
 
 enum EditorLanguage {
@@ -46,9 +59,65 @@ enum EditorLanguage {
 }
 
 model Template {
-  id        Int            @id @default(autoincrement())
   language  EditorLanguage
   template  String
-  problemId Int
-  problem   Problem        @relation(fields: [problemId], references: [id])
+  problemId String
+  problem   Problem        @relation(fields: [problemId], references: [id], onDelete: Cascade)
+
+  @@id([problemId, language])
+}
+
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
+}
+
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
+}
+
+// Optional for WebAuthn support
+model Authenticator {
+  credentialID         String  @unique
+  userId               String
+  providerAccountId    String
+  credentialPublicKey  String
+  counter              Int
+  credentialDeviceType String
+  credentialBackedUp   Boolean
+  transports           String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, credentialID])
 }
