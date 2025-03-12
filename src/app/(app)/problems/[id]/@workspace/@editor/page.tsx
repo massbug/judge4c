@@ -1,5 +1,7 @@
 import prisma from "@/lib/prisma";
 import CodeEditor from "@/components/code-editor";
+import WorkspaceEditorHeader from "@/features/playground/workspace/editor/header";
+import WorkspaceEditorFooter from "@/features/playground/workspace/editor/footer";
 
 interface WorkspaceEditorProps {
   params: Promise<{ id: string }>
@@ -24,5 +26,13 @@ export default async function WorkspaceEditorPage({
 
   const templates = problem?.templates ?? [];
 
-  return <CodeEditor problemId={id} templates={templates} />;
+  return (
+    <>
+      <WorkspaceEditorHeader templates={templates} />
+      <div className="flex-1">
+        <CodeEditor problemId={id} templates={templates} />
+      </div>
+      <WorkspaceEditorFooter />
+    </>
+  )
 }

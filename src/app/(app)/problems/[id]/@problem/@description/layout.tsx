@@ -1,30 +1,18 @@
-import prisma from "@/lib/prisma";
-import ProblemDescriptionFooter from "@/features/playground/problem/description/footer";
+import { Suspense } from "react";
+import { Loading } from "@/components/loading";
 
 interface ProblemDescriptionLayoutProps {
-  params: Promise<{ id: string }>;
   children: React.ReactNode;
 }
 
-export default async function ProblemDescriptionLayout({
-  params,
+export default function ProblemDescriptionLayout({
   children,
 }: ProblemDescriptionLayoutProps) {
-  const { id } = await params;
-
-  const problem = await prisma.problem.findUnique({
-    where: { id: parseInt(id) },
-    select: {
-      title: true,
-    }
-  });
-
-  const title = problem?.title ?? "";
-
   return (
     <div className="h-full flex flex-col">
-      <div className="flex-1">{children}</div>
-      <ProblemDescriptionFooter title={title} />
+      <Suspense fallback={<Loading />}>
+        {children}
+      </Suspense>
     </div>
   );
 }
