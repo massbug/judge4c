@@ -1,8 +1,7 @@
 import { cn } from "@/lib/utils";
 import RunCode from "@/components/run-code";
 import BackButton from "@/components/back-button";
-import SettingsButton from "@/components/settings-button";
-import { SettingsDialog } from "@/components/settings-dialog";
+import { AvatarButton } from "@/components/avatar-button";
 
 interface PlaygroundHeaderProps {
   className?: string;
@@ -24,7 +23,7 @@ export function PlaygroundHeader({
               <BackButton href="/problemset" />
             </div>
             <div className="z-10 flex items-center gap-2">
-              <SettingsButton />
+              <AvatarButton />
             </div>
           </div>
         </div>
@@ -36,7 +35,6 @@ export function PlaygroundHeader({
           </div>
         </div>
       </div>
-      <SettingsDialog />
     </header>
   );
 }
