@@ -10,6 +10,8 @@ import {
 import prisma from "@/lib/prisma";
 import { Difficulty } from "@prisma/client";
 
+export const dynamic = "force-dynamic";
+
 const getDifficultyColor = (difficulty: Difficulty) => {
   switch (difficulty) {
     case "EASY":
