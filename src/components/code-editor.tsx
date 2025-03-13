@@ -1,9 +1,9 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { Skeleton } from "./ui/skeleton";
 import { highlighter } from "@/lib/shiki";
 import type { editor } from "monaco-editor";
+import { Loading } from "@/components/loading";
 import { EditorLanguage } from "@prisma/client";
 import { shikiToMonaco } from "@shikijs/monaco";
 import type { Monaco } from "@monaco-editor/react";
@@ -13,13 +13,6 @@ import LanguageServerConfig from "@/config/language-server";
 import { connectToLanguageServer } from "@/lib/language-server";
 import { useCodeEditorStore } from "@/store/useCodeEditorStore";
 import type { MonacoLanguageClient } from "monaco-languageclient";
-
-// Skeleton component for loading state
-const CodeEditorLoadingSkeleton = () => (
-  <div className="h-full w-full p-2">
-    <Skeleton className="h-full w-full rounded-3xl" />
-  </div>
-);
 
 // Dynamically import Monaco Editor with SSR disabled
 const Editor = dynamic(
@@ -32,7 +25,7 @@ const Editor = dynamic(
   },
   {
     ssr: false,
-    loading: () => <CodeEditorLoadingSkeleton />,
+    loading: () => <Loading />,
   }
 );
 
@@ -132,7 +125,7 @@ export default function CodeEditor({
   }, []);
 
   if (!hydrated) {
-    return <CodeEditorLoadingSkeleton />;
+    return <Loading />;
   }
 
   const handleEditorWillMount = (monaco: Monaco) => {
@@ -149,7 +142,7 @@ export default function CodeEditor({
       onMount={handleEditorDidMount}
       onChange={handleEditorChange}
       options={editorConfig}
-      loading={<CodeEditorLoadingSkeleton />}
+      loading={<Loading />}
       className="h-full w-full py-2"
     />
   );
