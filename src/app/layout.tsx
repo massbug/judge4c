@@ -1,4 +1,5 @@
-import "./globals.css";
+import "@/app/globals.css";
+import { Toaster } from "sonner";
 import type { Metadata } from "next";
 import { ThemeProvider } from "@/components/theme-provider";
 import { SettingsDialog } from "@/components/settings-dialog";
@@ -24,7 +25,8 @@ export default function RootLayout({ children }: RootLayoutProps) {
           disableTransitionOnChange
         >
           <div className="w-full">{children}</div>
-          <SettingsDialog/>
+          <SettingsDialog />
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>
