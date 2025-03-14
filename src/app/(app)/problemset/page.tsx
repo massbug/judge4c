@@ -31,6 +31,11 @@ export default async function ProblemsetPage() {
     orderBy: {
       id: "asc",
     },
+    select: {
+      id: true,
+      title: true,
+      difficulty: true,
+    },
   });
 
   return (
