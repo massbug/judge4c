@@ -10,6 +10,8 @@ FROM base AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
+# Copy the .env file
+COPY .env ./
 # Copy the prisma folder before installing dependencies
 COPY prisma ./prisma
 
