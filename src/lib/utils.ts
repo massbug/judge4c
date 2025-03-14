@@ -7,7 +7,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function getPath(lang: EditorLanguage): string {
+export function getPath(lang: EditorLanguage) {
   const config = LanguageServerConfig[lang];
   return `file:///${config.lang.fileName}${config.lang.fileExtension}`;
 }
