@@ -52,6 +52,7 @@
       "devDependencies": {
         "@eslint/eslintrc": "^3",
         "@shikijs/monaco": "<=2.5.0",
+        "@types/bcrypt": "^5.0.2",
         "@types/dockerode": "^3.3.35",
         "@types/node": "^20",
         "@types/react": "^19",
@@ -406,6 +407,8 @@
     "@swc/helpers": ["@swc/helpers@0.5.15", "https://registry.npmmirror.com/@swc/helpers/-/helpers-0.5.15.tgz", { "dependencies": { "tslib": "^2.8.0" } }, "sha512-JQ5TuMi45Owi4/BIMAJBoSQoOJu12oOk/gADqlcUL9JEdHB8vyjUSsxqeNXnmXHjYKMi2WcYtezGEEhqUI/E2g=="],
 
     "@types/acorn": ["@types/acorn@4.0.6", "https://registry.npmmirror.com/@types/acorn/-/acorn-4.0.6.tgz", { "dependencies": { "@types/estree": "*" } }, "sha512-veQTnWP+1D/xbxVrPC3zHnCZRjSrKfhbMUlEA43iMZLu7EsnTtkJklIuwrCPbOi8YkvDQAiW05VQQFvvz9oieQ=="],
+
+    "@types/bcrypt": ["@types/bcrypt@5.0.2", "https://registry.npmmirror.com/@types/bcrypt/-/bcrypt-5.0.2.tgz", { "dependencies": { "@types/node": "*" } }, "sha512-6atioO8Y75fNcbmj0G7UjI9lXN2pQ/IGJ2FWT4a/btd0Lk9lQalHLKhkgKVZ3r+spnmWUKfbMi1GEe9wyHQfNQ=="],
 
     "@types/cookie": ["@types/cookie@0.6.0", "https://registry.npmmirror.com/@types/cookie/-/cookie-0.6.0.tgz", {}, "sha512-4Kh9a6B2bQciAhf7FSuMRRkUWecJgJu9nPnx3yzpsfXX/c50REIqpHY4C82bXP90qrLtXtkDxTZosYO3UpOwlA=="],
 
