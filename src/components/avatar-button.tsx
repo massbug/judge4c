@@ -17,7 +17,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { auth, signIn, signOut } from "@/lib/auth";
+import { auth, signOut } from "@/lib/auth";
+import { redirect } from "next/navigation";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SettingsButton } from "@/components/settings-button";
 
@@ -30,7 +31,7 @@ const UserAvatar = ({ image, name }: { image: string; name: string }) => (
 
 async function handleSignIn() {
   "use server";
-  await signIn("github");
+  redirect("/sign-in");
 }
 
 async function handleSignOut() {
