@@ -44,48 +44,80 @@ Complete these steps before launching the editor for seamless LSP integration! �
 
 ### 🐳 Docker Deployment (Recommended)
 
-Deploy the project quickly using pre-built Docker images:
+Deploy the project quickly using Docker. Follow the steps below:
 
-```sh
-# Clone the repository
+#### Step 1: Clone the Repository
+
+```shell
 git clone https://github.com/cfngc4594/monaco-editor-lsp-next
 cd monaco-editor-lsp-next
-
-# Start the application with pre-built images
-docker compose up -d
 ```
 
-### 🔨 Local Manual Build
+#### Step 2: Install Dependencies
 
-Build the images locally and start the containers:
+This project uses `bun` as the default package manager, but you can also use other package managers like `npm`, `yarn`, or `pnpm` if you prefer.
 
-```sh
-# Clone the repository
-git clone https://github.com/cfngc4594/monaco-editor-lsp-next
-cd monaco-editor-lsp-next
+If you choose to use a package manager other than `bun`, you should delete the `bun.lock` file from your project directory.
 
-# Build and start containers using the local configuration
-docker compose -f compose.local.yml up -d --build
-```
+The `Dockerfile` is designed to dynamically detect and adapt to the package manager you are using, ensuring compatibility with your preferred tool.
 
-### 🛠 Development Mode
-
-Set up a development environment with hot-reloading:
-
-```sh
-# Clone the repository
-git clone https://github.com/cfngc4594/monaco-editor-lsp-next
-cd monaco-editor-lsp-next
-
-# Start only the LSP containers
-docker compose up -d lsp-c lsp-cpp
-# Or use the local configuration
-# docker compose -f compose.local.yml up -d --build lsp-c lsp-cpp
-
-# Install dependencies and start the development server
+```shell
 bun install
-bun run dev
 ```
+
+#### Step 3: Configure Environment Variables
+
+1. Copy the example environment file:
+
+   ```sh
+   cp .env.example .env
+   ```
+
+2. Open the `.env` file and set the following variables:
+
+   - **PostgreSQL Credentials**:
+     ```sh
+     POSTGRES_USER="your_postgres_user"
+     POSTGRES_PASSWORD="your_postgres_password"
+     POSTGRES_DB="your_postgres_db"
+     ```
+
+   - **Authentication Secret**:
+     Generate a secure secret key using:
+     ```sh
+     bunx auth secret
+     ```
+     Then, set the `AUTH_SECRET` variable:
+     ```sh
+     AUTH_SECRET="your_auth_secret"
+     ```
+
+   - **GitHub OAuth** (Optional):
+     If you need GitHub OAuth, replace the following variables with your GitHub OAuth credentials:
+     ```sh
+     AUTH_GITHUB_ID="your_github_client_id"
+     AUTH_GITHUB_SECRET="your_github_client_secret"
+     ```
+
+#### Step 4: Start the Application
+
+Once the environment variables are configured, start the application using Docker Compose:
+
+```sh
+docker compose up -d --build
+```
+
+#### Step 5: Access the Application
+
+The application should now be running. You can access it at:
+
+- **Web Interface**: `http://localhost:3000`
+- **LSP Service (C Language)**: `ws://localhost:4594/clangd`
+- **LSP Service (C++ Language)**: `ws://localhost:4595/clangd`
+
+#### 📁 `.env.example` File
+
+For reference, you can see the content of the `.env.example` file.
 
 ## ⚙️ Technical Configuration
 
