@@ -59,6 +59,14 @@ enum EditorLanguage {
   cpp
 }
 
+model EditorLanguageConfig {
+  id            String         @id @default(cuid())
+  language      EditorLanguage
+  label         String
+  fileName      String
+  fileExtension String
+}
+
 model Template {
   language  EditorLanguage
   template  String
