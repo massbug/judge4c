@@ -1,11 +1,65 @@
-import { PrismaClient, Prisma } from "@prisma/client";
+import { PrismaClient, Prisma, EditorLanguage } from "@prisma/client";
 
 const prisma = new PrismaClient();
+
+const editorLanguageConfigData: Prisma.EditorLanguageConfigCreateInput[] = [
+  {
+    language: EditorLanguage.c,
+    label: "C",
+    fileName: "main",
+    fileExtension: ".c",
+    languageServerConfig: {
+      create: {
+        protocol: "ws",
+        hostname: "localhost",
+        port: 4594,
+        path: "/clangd",
+      },
+    },
+    dockerConfig: {
+      create: {
+        image: "gcc",
+        tag: "latest",
+        workingDir: "/src",
+        timeLimit: 1000,
+        memoryLimit: 128,
+        compileOutputLimit: 1 * 1024 * 1024,
+        runOutputLimit: 1 * 1024 * 1024,
+      },
+    },
+  },
+  {
+    language: EditorLanguage.cpp,
+    label: "C++",
+    fileName: "main",
+    fileExtension: ".cpp",
+    languageServerConfig: {
+      create: {
+        protocol: "ws",
+        hostname: "localhost",
+        port: 4595,
+        path: "/clangd",
+      },
+    },
+    dockerConfig: {
+      create: {
+        image: "gcc",
+        tag: "latest",
+        workingDir: "/src",
+        timeLimit: 1000,
+        memoryLimit: 128,
+        compileOutputLimit: 1 * 1024 * 1024,
+        runOutputLimit: 1 * 1024 * 1024,
+      },
+    },
+  },
+];
 
 const userData: Prisma.UserCreateInput[] = [
   {
     name: "cfngc4594",
     email: "cfngc4594@gmail.com",
+    password: "$2b$10$edWXpq2TOiiGQkPOXWKGlO4EKnp2YyV7OoS2qqk/W0E6GyiVQIC66",
     role: "ADMIN",
     problems: {
       create: [
@@ -429,6 +483,7 @@ public:
   {
     name: "fly6516",
     email: "fly6516@outlook.com",
+    password: "$2b$10$SD1T/dYvKTArGdTmf8ERxuBKIONxY01/wSboRNaNsHnKZzDhps/0u",
     role: "TEACHER",
     problems: {
       create: [
@@ -599,6 +654,10 @@ public:
 ];
 
 export async function main() {
+  for (const e of editorLanguageConfigData) {
+    await prisma.editorLanguageConfig.create({ data: e });
+  }
+
   for (const u of userData) {
     await prisma.user.create({ data: u });
   }
