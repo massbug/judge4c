@@ -98,6 +98,17 @@ model Template {
   @@id([problemId, language])
 }
 
+enum ExitCode {
+  SE  // System Error
+  CS  // Compilation Success
+  CE  // Compilation Error
+  TLE // Time Limit Exceeded
+  MLE // Memory Limit Exceeded
+  RE  // Runtime Error
+  AC  // Accepted
+  WA  // Wrong Answer
+}
+
 model Account {
   userId            String
   type              String
