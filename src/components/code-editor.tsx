@@ -4,15 +4,14 @@ import dynamic from "next/dynamic";
 import { highlighter } from "@/lib/shiki";
 import type { editor } from "monaco-editor";
 import { Loading } from "@/components/loading";
-import { EditorLanguage } from "@prisma/client";
 import { shikiToMonaco } from "@shikijs/monaco";
 import type { Monaco } from "@monaco-editor/react";
 import { useCallback, useEffect, useRef } from "react";
 import { useMonacoTheme } from "@/hooks/use-monaco-theme";
-import LanguageServerConfig from "@/config/language-server";
 import { connectToLanguageServer } from "@/lib/language-server";
 import { useCodeEditorStore } from "@/store/useCodeEditorStore";
 import type { MonacoLanguageClient } from "monaco-languageclient";
+import { EditorLanguage, EditorLanguageConfig, LanguageServerConfig } from "@prisma/client";
 
 // Dynamically import Monaco Editor with SSR disabled
 const Editor = dynamic(
@@ -32,11 +31,15 @@ const Editor = dynamic(
 interface CodeEditorProps {
   problemId: string;
   templates: { language: EditorLanguage; template: string }[];
+  editorLanguageConfigs: EditorLanguageConfig[];
+  languageServerConfigs: LanguageServerConfig[];
 }
 
 export default function CodeEditor({
   problemId,
   templates,
+  editorLanguageConfigs,
+  languageServerConfigs,
 }: CodeEditorProps) {
   const {
     hydrated,
@@ -74,24 +77,26 @@ export default function CodeEditor({
   const connectLSP = useCallback(async () => {
     if (!(isLspEnabled && language && editorRef.current)) return;
 
-    const lspConfig = LanguageServerConfig[language];
-
-    if (!lspConfig) return;
-
     // If there's an existing language client, stop it first
     if (monacoLanguageClientRef.current) {
       monacoLanguageClientRef.current.stop();
       monacoLanguageClientRef.current = null;
     }
 
+    const selectedEditorLanguageConfig = editorLanguageConfigs.find(
+      (config) => config.language === language
+    );
+    const selectedLanguageServerConfig = languageServerConfigs.find(
+      (config) => config.language === language
+    );
+
+    if (!selectedEditorLanguageConfig || !selectedLanguageServerConfig) return;
+
     // Create a new language client
     try {
       const monacoLanguageClient = await connectToLanguageServer(
-        lspConfig.protocol,
-        lspConfig.hostname,
-        lspConfig.port,
-        lspConfig.path,
-        lspConfig.lang
+        selectedEditorLanguageConfig,
+        selectedLanguageServerConfig,
       );
       monacoLanguageClientRef.current = monacoLanguageClient;
     } catch (error) {
