@@ -1,11 +1,11 @@
 import { cn } from "@/lib/utils";
 import { EditorLanguage } from "@prisma/client";
-import CopyButton from "./components/copy-button";
-import RedoButton from "./components/redo-button";
-import UndoButton from "./components/undo-button";
-import ResetButton from "./components/reset-button";
-import FormatButton from "./components/format-button";
-import LanguageSelector from "./components/language-selector";
+import CopyButton from "./copy-button";
+import RedoButton from "./redo-button";
+import UndoButton from "./undo-button";
+import ResetButton from "./reset-button";
+import FormatButton from "./format-button";
+import LanguageSelector from "./language-selector";
 
 interface WorkspaceEditorHeaderProps {
   templates: { language: EditorLanguage; template: string }[];

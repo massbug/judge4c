@@ -2,7 +2,7 @@ import prisma from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { MdxRenderer } from "@/components/content/mdx-renderer";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import ProblemSolutionFooter from "@/features/playground/problem/solution/footer";
+import ProblemSolutionFooter from "@/components/features/playground/problem/solution/footer";
 
 interface ProblemSolutionPageProps {
   params: Promise<{ id: string }>;

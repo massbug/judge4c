@@ -1,7 +1,7 @@
 import prisma from "@/lib/prisma";
 import CodeEditor from "@/components/code-editor";
-import WorkspaceEditorHeader from "@/features/playground/workspace/editor/header";
-import WorkspaceEditorFooter from "@/features/playground/workspace/editor/footer";
+import WorkspaceEditorHeader from "@/components/features/playground/workspace/editor/components/header";
+import WorkspaceEditorFooter from "@/components/features/playground/workspace/editor/components/footer";
 
 interface WorkspaceEditorProps {
   params: Promise<{ id: string }>

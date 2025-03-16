@@ -1,4 +1,4 @@
-import { PlaygroundHeader } from "@/features/playground/header";
+import { PlaygroundHeader } from "@/components/features/playground/header";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 
 interface PlaygroundLayoutProps {
