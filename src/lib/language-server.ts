@@ -1,24 +1,31 @@
 import normalizeUrl from "normalize-url";
 import type { MessageTransports } from "vscode-languageclient";
-import { EditorLanguageMetadata } from "@/types/editor-language";
 import type { MonacoLanguageClient } from "monaco-languageclient";
+import { EditorLanguageConfig, LanguageServerConfig } from "@prisma/client";
 import { toSocket, WebSocketMessageReader, WebSocketMessageWriter } from "vscode-ws-jsonrpc";
 
 // Create the WebSocket URL based on the protocol and port
-function createUrl(protocol: string, hostname: string, port: number | null, path: string | null): string {
-  return normalizeUrl(`${protocol}://${hostname}${port ? `:${port}` : ""}${path || ""}`);
+function createUrl(languageServerConfig: LanguageServerConfig): string {
+  return normalizeUrl(
+    `${languageServerConfig.protocol}://${languageServerConfig.hostname}${
+      languageServerConfig.port ? `:${languageServerConfig.port}` : ""
+    }${languageServerConfig.path || ""}`
+  );
 }
 
 // Create the language client with the given transports
-async function createLanguageClient(transports: MessageTransports, lang: EditorLanguageMetadata): Promise<MonacoLanguageClient> {
+async function createLanguageClient(
+  transports: MessageTransports,
+  editorLanguageConfig: EditorLanguageConfig
+): Promise<MonacoLanguageClient> {
   const { MonacoLanguageClient } = await import("monaco-languageclient");
   const { CloseAction, ErrorAction } = await import("vscode-languageclient");
 
   return new MonacoLanguageClient({
-    name: `${lang.label} Language Client`,
+    name: `${editorLanguageConfig.label} Language Client`,
     clientOptions: {
       // use a language id as a document selector
-      documentSelector: [lang.id],
+      documentSelector: [editorLanguageConfig.language],
       // disable the default error handler
       errorHandler: {
         error: () => ({ action: ErrorAction.Continue }),
@@ -29,14 +36,17 @@ async function createLanguageClient(transports: MessageTransports, lang: EditorL
     connectionProvider: {
       get: () => {
         return Promise.resolve(transports);
-      }
-    }
+      },
+    },
   });
 }
 
 // Connect to the WebSocket and create the language client
-export function connectToLanguageServer(protocol: string, hostname: string, port: number | null, path: string | null, lang: EditorLanguageMetadata): Promise<MonacoLanguageClient> {
-  const url = createUrl(protocol, hostname, port, path);
+export function connectToLanguageServer(
+  editorLanguageConfig: EditorLanguageConfig,
+  languageServerConfig: LanguageServerConfig
+): Promise<MonacoLanguageClient> {
+  const url = createUrl(languageServerConfig);
   const webSocket = new WebSocket(url);
 
   return new Promise((resolve, reject) => {
@@ -47,7 +57,7 @@ export function connectToLanguageServer(protocol: string, hostname: string, port
       const writer = new WebSocketMessageWriter(socket);
 
       try {
-        const languageClient = await createLanguageClient({ reader, writer }, lang);
+        const languageClient = await createLanguageClient({ reader, writer }, editorLanguageConfig);
         // Start the language client
         languageClient.start();
 
