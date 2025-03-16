@@ -60,8 +60,7 @@ enum EditorLanguage {
 }
 
 model EditorLanguageConfig {
-  id            String         @id @default(cuid())
-  language      EditorLanguage
+  language      EditorLanguage @unique
   label         String
   fileName      String
   fileExtension String
