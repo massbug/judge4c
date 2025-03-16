@@ -65,6 +65,7 @@ model EditorLanguageConfig {
   fileName             String
   fileExtension        String
   languageServerConfig LanguageServerConfig? @relation
+  dockerConfig         DockerConfig?         @relation
 }
 
 model LanguageServerConfig {
@@ -73,6 +74,18 @@ model LanguageServerConfig {
   hostname             String
   port                 Int?
   path                 String?
+  editorLanguageConfig EditorLanguageConfig @relation(fields: [language], references: [language])
+}
+
+model DockerConfig {
+  language             EditorLanguage       @unique
+  image                String
+  tag                  String
+  workingDir           String
+  timeLimit            Int
+  memoryLimit          Int
+  compileOutputLimit   Int
+  runOutputLimit       Int
   editorLanguageConfig EditorLanguageConfig @relation(fields: [language], references: [language])
 }
 
