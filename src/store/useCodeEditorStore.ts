@@ -1,10 +1,9 @@
 import { create } from "zustand";
 import type { editor } from "monaco-editor";
-import { JudgeResultMetadata } from "@/types/judge";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { DefaultEditorOptionConfig } from "@/config/editor-option";
 import { DEFAULT_EDITOR_LANGUAGE } from "@/config/editor-language";
-import { EditorLanguage, LanguageServerConfig } from "@prisma/client";
+import { DefaultEditorOptionConfig } from "@/config/editor-option";
+import { EditorLanguage, JudgeResult, LanguageServerConfig } from "@prisma/client";
 
 interface CodeEditorState {
   hydrated: boolean;
@@ -15,7 +14,7 @@ interface CodeEditorState {
   isLspEnabled: boolean;
   editorConfig: editor.IEditorConstructionOptions;
   editor: editor.IStandaloneCodeEditor | null;
-  result: JudgeResultMetadata | null;
+  result: JudgeResult | null;
   setHydrated: (value: boolean) => void;
   setLanguage: (language: EditorLanguage) => void;
   setPath: (path: string) => void;
@@ -24,7 +23,7 @@ interface CodeEditorState {
   setIsLspEnabled: (enabled: boolean) => void;
   setEditorConfig: (editorConfig: editor.IEditorConstructionOptions) => void;
   setEditor: (editor: editor.IStandaloneCodeEditor) => void;
-  setResult: (result: JudgeResultMetadata) => void;
+  setResult: (result: JudgeResult) => void;
 }
 
 export const useCodeEditorStore = create<CodeEditorState>()(
@@ -46,7 +45,7 @@ export const useCodeEditorStore = create<CodeEditorState>()(
       setLspConfig: (lspConfig) => set({ lspConfig }),
       setIsLspEnabled: (enabled) => set({ isLspEnabled: enabled }),
       setEditorConfig: (editorConfig) => set({ editorConfig }),
-      setEditor: (editor) => set({ editor: editor }),
+      setEditor: (editor) => set({ editor }),
       setResult: (result) => set({ result }),
     }),
     {
