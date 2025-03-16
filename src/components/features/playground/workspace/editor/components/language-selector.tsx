@@ -9,20 +9,20 @@ import {
 } from "@/components/ui/select";
 import { getPath } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
-import LanguageServerConfig from "@/config/language-server";
 import { useCodeEditorStore } from "@/store/useCodeEditorStore";
 import { EditorLanguageIcons } from "@/config/editor-language-icons";
-import { EditorLanguage, EditorLanguageConfig } from "@prisma/client";
+import { EditorLanguage, EditorLanguageConfig, LanguageServerConfig } from "@prisma/client";
 
 interface LanguageSelectorProps {
   editorLanguageConfigs: EditorLanguageConfig[];
+  languageServerConfigs: LanguageServerConfig[];
 }
 
 export default function LanguageSelector({
   editorLanguageConfigs,
+  languageServerConfigs,
 }: LanguageSelectorProps) {
-  const { hydrated, language, setLanguage, setPath, setLspConfig } =
-    useCodeEditorStore();
+  const { hydrated, language, setLanguage, setPath, setLspConfig } = useCodeEditorStore();
 
   if (!hydrated) {
     return <Skeleton className="h-6 w-16 rounded-2xl" />;
@@ -30,8 +30,14 @@ export default function LanguageSelector({
 
   const handleValueChange = (lang: EditorLanguage) => {
     setLanguage(lang);
-    setPath(getPath(lang));
-    setLspConfig(LanguageServerConfig[lang]);
+    const selectedEditorLanguageConfig = editorLanguageConfigs.find(
+      (config) => config.language === lang
+    );
+    const selectedLanguageServerConfig = languageServerConfigs.find(
+      (config) => config.language === lang
+    );
+    setPath(selectedEditorLanguageConfig ? getPath(selectedEditorLanguageConfig) : "");
+    setLspConfig(selectedLanguageServerConfig || null);
   };
 
   return (
