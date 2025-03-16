@@ -6,7 +6,7 @@ import { JudgeResultMetadata } from "@/types/judge";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { LanguageServerMetadata } from "@/types/language-server";
 import { DefaultEditorOptionConfig } from "@/config/editor-option";
-import { DefaultEditorLanguageConfig } from "@/config/editor-language";
+import { DEFAULT_EDITOR_LANGUAGE } from "@/config/editor-language";
 
 interface CodeEditorState {
   hydrated: boolean;
@@ -33,8 +33,8 @@ export const useCodeEditorStore = create<CodeEditorState>()(
   persist(
     (set) => ({
       hydrated: false,
-      language: DefaultEditorLanguageConfig.id,
-      path: getPath(DefaultEditorLanguageConfig.id),
+      language: DEFAULT_EDITOR_LANGUAGE,
+      path: getPath(DEFAULT_EDITOR_LANGUAGE),
       value: "",
       lspConfig: null,
       isLspEnabled: true,
