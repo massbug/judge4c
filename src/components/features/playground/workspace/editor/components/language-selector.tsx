@@ -8,14 +8,19 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { getPath } from "@/lib/utils";
-import { EditorLanguage } from "@prisma/client";
 import { Skeleton } from "@/components/ui/skeleton";
 import LanguageServerConfig from "@/config/language-server";
-import { EditorLanguageConfig } from "@/config/editor-language";
 import { useCodeEditorStore } from "@/store/useCodeEditorStore";
 import { EditorLanguageIcons } from "@/config/editor-language-icons";
+import { EditorLanguage, EditorLanguageConfig } from "@prisma/client";
 
-export default function LanguageSelector() {
+interface LanguageSelectorProps {
+  editorLanguageConfigs: EditorLanguageConfig[];
+}
+
+export default function LanguageSelector({
+  editorLanguageConfigs,
+}: LanguageSelectorProps) {
   const { hydrated, language, setLanguage, setPath, setLspConfig } =
     useCodeEditorStore();
 
@@ -35,13 +40,13 @@ export default function LanguageSelector() {
         <SelectValue placeholder="Select language" />
       </SelectTrigger>
       <SelectContent className="[&_*[role=option]>span>svg]:shrink-0 [&_*[role=option]>span>svg]:text-muted-foreground/80 [&_*[role=option]>span]:end-2 [&_*[role=option]>span]:start-auto [&_*[role=option]>span]:flex [&_*[role=option]>span]:items-center [&_*[role=option]>span]:gap-2 [&_*[role=option]]:pe-8 [&_*[role=option]]:ps-2">
-        {Object.values(EditorLanguageConfig).map((langConfig) => {
-          const Icon = EditorLanguageIcons[langConfig.id];
+        {editorLanguageConfigs.map((config) => {
+          const Icon = EditorLanguageIcons[config.language];
           return (
-            <SelectItem key={langConfig.id} value={langConfig.id}>
+            <SelectItem key={config.language} value={config.language}>
               <Icon size={16} aria-hidden="true" />
               <span className="truncate text-sm font-semibold mr-2">
-                {langConfig.label}
+                {config.label}
               </span>
             </SelectItem>
           );

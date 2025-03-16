@@ -4,7 +4,7 @@ import WorkspaceEditorHeader from "@/components/features/playground/workspace/ed
 import WorkspaceEditorFooter from "@/components/features/playground/workspace/editor/components/footer";
 
 interface WorkspaceEditorProps {
-  params: Promise<{ id: string }>
+  params: Promise<{ id: string }>;
 }
 
 export default async function WorkspaceEditorPage({
@@ -19,20 +19,25 @@ export default async function WorkspaceEditorPage({
         select: {
           language: true,
           template: true,
-        }
-      }
-    }
+        },
+      },
+    },
   });
+
+  const editorLanguageConfigs = await prisma.editorLanguageConfig.findMany();
 
   const templates = problem?.templates ?? [];
 
   return (
     <>
-      <WorkspaceEditorHeader templates={templates} />
+      <WorkspaceEditorHeader
+        templates={templates}
+        editorLanguageConfigs={editorLanguageConfigs}
+      />
       <div className="flex-1">
         <CodeEditor problemId={id} templates={templates} />
       </div>
       <WorkspaceEditorFooter />
     </>
-  )
+  );
 }
