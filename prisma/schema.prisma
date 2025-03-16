@@ -109,6 +109,14 @@ enum ExitCode {
   WA  // Wrong Answer
 }
 
+model JudgeResult {
+  id            String   @id @default(cuid())
+  output        String
+  exitCode      ExitCode
+  executionTime Int?
+  memoryUsage   Int?
+}
+
 model Account {
   userId            String
   type              String
