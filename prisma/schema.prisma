@@ -60,10 +60,20 @@ enum EditorLanguage {
 }
 
 model EditorLanguageConfig {
-  language      EditorLanguage @unique
-  label         String
-  fileName      String
-  fileExtension String
+  language             EditorLanguage        @unique
+  label                String
+  fileName             String
+  fileExtension        String
+  languageServerConfig LanguageServerConfig? @relation
+}
+
+model LanguageServerConfig {
+  language             EditorLanguage       @unique
+  protocol             String
+  hostname             String
+  port                 Int?
+  path                 String?
+  editorLanguageConfig EditorLanguageConfig @relation(fields: [language], references: [language])
 }
 
 model Template {
