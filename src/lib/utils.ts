@@ -1,13 +1,11 @@
 import { twMerge } from "tailwind-merge";
 import { clsx, type ClassValue } from "clsx";
-import { EditorLanguage } from "@prisma/client";
-import LanguageServerConfig from "@/config/language-server";
+import { EditorLanguageConfig } from "@prisma/client";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function getPath(lang: EditorLanguage) {
-  const config = LanguageServerConfig[lang];
-  return `file:///${config.lang.fileName}${config.lang.fileExtension}`;
+export function getPath(editorLanguageConfig: EditorLanguageConfig) {
+  return `file:///${editorLanguageConfig.language}${editorLanguageConfig.fileExtension}`;
 }
