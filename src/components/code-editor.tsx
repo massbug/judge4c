@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { getPath } from "@/lib/utils";
 import { highlighter } from "@/lib/shiki";
 import type { editor } from "monaco-editor";
 import { Loading } from "@/components/loading";
@@ -49,6 +50,7 @@ export default function CodeEditor({
     editorConfig,
     isLspEnabled,
     setEditor,
+    setPath,
     setValue,
   } = useCodeEditorStore();
   const { monacoTheme } = useMonacoTheme();
@@ -108,10 +110,17 @@ export default function CodeEditor({
   const handleEditorDidMount = useCallback(
     async (editor: editor.IStandaloneCodeEditor) => {
       editorRef.current = editor;
+
+      const selectedEditorLanguageConfig = editorLanguageConfigs.find(
+        (config) => config.language === language
+      );
+      setPath(selectedEditorLanguageConfig ? getPath(selectedEditorLanguageConfig) : "");
+
       await connectLSP();
+
       setEditor(editor);
     },
-    [connectLSP, setEditor]
+    [connectLSP, setEditor, editorLanguageConfigs, language]
   );
 
   // Reconnect to the LSP whenever language or lspConfig changes
