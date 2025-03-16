@@ -1,19 +1,17 @@
 import { create } from "zustand";
-import { getPath } from "@/lib/utils";
 import type { editor } from "monaco-editor";
-import { EditorLanguage } from "@prisma/client";
 import { JudgeResultMetadata } from "@/types/judge";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { LanguageServerMetadata } from "@/types/language-server";
 import { DefaultEditorOptionConfig } from "@/config/editor-option";
 import { DEFAULT_EDITOR_LANGUAGE } from "@/config/editor-language";
+import { EditorLanguage, LanguageServerConfig } from "@prisma/client";
 
 interface CodeEditorState {
   hydrated: boolean;
   language: EditorLanguage;
   path: string;
   value: string;
-  lspConfig: LanguageServerMetadata | null;
+  lspConfig: LanguageServerConfig | null;
   isLspEnabled: boolean;
   editorConfig: editor.IEditorConstructionOptions;
   editor: editor.IStandaloneCodeEditor | null;
@@ -22,7 +20,7 @@ interface CodeEditorState {
   setLanguage: (language: EditorLanguage) => void;
   setPath: (path: string) => void;
   setValue: (value: string) => void;
-  setLspConfig: (lspConfig: LanguageServerMetadata) => void;
+  setLspConfig: (lspConfig: LanguageServerConfig | null) => void;
   setIsLspEnabled: (enabled: boolean) => void;
   setEditorConfig: (editorConfig: editor.IEditorConstructionOptions) => void;
   setEditor: (editor: editor.IStandaloneCodeEditor) => void;
@@ -34,7 +32,7 @@ export const useCodeEditorStore = create<CodeEditorState>()(
     (set) => ({
       hydrated: false,
       language: DEFAULT_EDITOR_LANGUAGE,
-      path: getPath(DEFAULT_EDITOR_LANGUAGE),
+      path: "",
       value: "",
       lspConfig: null,
       isLspEnabled: true,
