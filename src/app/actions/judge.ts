@@ -2,10 +2,12 @@
 
 import tar from "tar-stream";
 import Docker from "dockerode";
+import prisma from "@/lib/prisma";
+import { v4 as uuid } from "uuid";
+import { auth } from "@/lib/auth";
+import { redirect } from "next/navigation";
 import { Readable, Writable } from "stream";
-import { JudgeConfig } from "@/config/judge";
-import { EditorLanguage } from "@prisma/client";
-import { ExitCode, JudgeResultMetadata } from "@/types/judge";
+import { ExitCode, EditorLanguage, JudgeResult } from "@prisma/client";
 
 // Docker client initialization
 const docker = new Docker({ socketPath: "/var/run/docker.sock" });
@@ -19,10 +21,15 @@ async function prepareEnvironment(image: string, tag: string) {
 }
 
 // Create Docker container with keep-alive
-async function createContainer(image: string, tag: string, workingDir: string, memoryLimit?: number) {
+async function createContainer(
+  image: string,
+  tag: string,
+  workingDir: string,
+  memoryLimit?: number
+) {
   const container = await docker.createContainer({
     Image: `${image}:${tag}`,
-    Cmd: ["tail", "-f", "/dev/null"],  // Keep container alive
+    Cmd: ["tail", "-f", "/dev/null"], // Keep container alive
     WorkingDir: workingDir,
     HostConfig: {
       Memory: memoryLimit ? memoryLimit * 1024 * 1024 : undefined,
@@ -30,6 +37,7 @@ async function createContainer(image: string, tag: string, workingDir: string, m
     },
     NetworkDisabled: true,
   });
+
   await container.start();
   return container;
 }
@@ -45,26 +53,68 @@ function createTarStream(file: string, value: string) {
 export async function judge(
   language: EditorLanguage,
   value: string
-): Promise<JudgeResultMetadata> {
-  const { fileName, fileExtension } = JudgeConfig[language].editorLanguageMetadata;
-  const { image, tag, workingDir, memoryLimit, timeLimit, compileOutputLimit, runOutputLimit } = JudgeConfig[language].dockerMetadata;
-  const file = `${fileName}.${fileExtension}`;
-  let container: Docker.Container | undefined;
+): Promise<JudgeResult> {
+  const session = await auth();
+  if (!session) redirect("/sign-in");
+
+  let container: Docker.Container | null = null;
 
   try {
+    const config = await prisma.editorLanguageConfig.findUnique({
+      where: { language },
+      include: {
+        dockerConfig: true,
+      },
+    });
+
+    if (!config || !config.dockerConfig) {
+      return {
+        id: uuid(),
+        output: "Configuration Error: Missing editor or docker configuration",
+        exitCode: ExitCode.SE,
+        executionTime: null,
+        memoryUsage: null,
+      };
+    }
+
+    const {
+      image,
+      tag,
+      workingDir,
+      memoryLimit,
+      timeLimit,
+      compileOutputLimit,
+      runOutputLimit,
+    } = config.dockerConfig;
+    const { fileName, fileExtension } = config;
+    const file = `${fileName}.${fileExtension}`;
+
+    // Prepare the environment and create a container
     await prepareEnvironment(image, tag);
     container = await createContainer(image, tag, workingDir, memoryLimit);
+
+    // Upload code to the container
     const tarStream = createTarStream(file, value);
     await container.putArchive(tarStream, { path: workingDir });
+
+    // Compile the code
     const compileResult = await compile(container, file, fileName, compileOutputLimit);
     if (compileResult.exitCode === ExitCode.CE) {
       return compileResult;
     }
+
+    // Run the code
     const runResult = await run(container, fileName, timeLimit, runOutputLimit);
     return runResult;
   } catch (error) {
     console.error(error);
-    return { output: "System Error", exitCode: ExitCode.SE };
+    return {
+      id: uuid(),
+      output: "System Error",
+      exitCode: ExitCode.SE,
+      executionTime: null,
+      memoryUsage: null,
+    };
   } finally {
     if (container) {
       await container.kill();
@@ -73,14 +123,19 @@ export async function judge(
   }
 }
 
-async function compile(container: Docker.Container, file: string, fileName: string, maxOutput: number = 1 * 1024 * 1024): Promise<JudgeResultMetadata> {
+async function compile(
+  container: Docker.Container,
+  file: string,
+  fileName: string,
+  maxOutput: number = 1 * 1024 * 1024
+): Promise<JudgeResult> {
   const compileExec = await container.exec({
     Cmd: ["gcc", "-O2", file, "-o", fileName],
     AttachStdout: true,
     AttachStderr: true,
   });
 
-  return new Promise<JudgeResultMetadata>((resolve, reject) => {
+  return new Promise<JudgeResult>((resolve, reject) => {
     compileExec.start({}, (error, stream) => {
       if (error || !stream) {
         return reject({ output: "System Error", exitCode: ExitCode.SE });
@@ -129,12 +184,24 @@ async function compile(container: Docker.Container, file: string, fileName: stri
         const stderr = stderrChunks.join("");
         const exitCode = (await compileExec.inspect()).ExitCode;
 
-        let result: JudgeResultMetadata;
+        let result: JudgeResult;
 
         if (exitCode !== 0 || stderr) {
-          result = { output: stderr || "Compilation Error", exitCode: ExitCode.CE };
+          result = {
+            id: uuid(),
+            output: stderr || "Compilation Error",
+            exitCode: ExitCode.CE,
+            executionTime: null,
+            memoryUsage: null,
+          };
         } else {
-          result = { output: stdout, exitCode: ExitCode.CS };
+          result = {
+            id: uuid(),
+            output: stdout,
+            exitCode: ExitCode.CS,
+            executionTime: null,
+            memoryUsage: null,
+          };
         }
 
         resolve(result);
@@ -148,14 +215,19 @@ async function compile(container: Docker.Container, file: string, fileName: stri
 }
 
 // Run code and implement timeout
-async function run(container: Docker.Container, fileName: string, timeLimit?: number, maxOutput: number = 1 * 1024 * 1024): Promise<JudgeResultMetadata> {
+async function run(
+  container: Docker.Container,
+  fileName: string,
+  timeLimit?: number,
+  maxOutput: number = 1 * 1024 * 1024
+): Promise<JudgeResult> {
   const runExec = await container.exec({
     Cmd: [`./${fileName}`],
     AttachStdout: true,
     AttachStderr: true,
   });
 
-  return new Promise<JudgeResultMetadata>((resolve, reject) => {
+  return new Promise<JudgeResult>((resolve, reject) => {
     const stdoutChunks: string[] = [];
     let stdoutLength = 0;
     const stdoutStream = new Writable({
@@ -203,8 +275,11 @@ async function run(container: Docker.Container, fileName: string, timeLimit?: nu
       // Timeout mechanism
       const timeoutId = setTimeout(async () => {
         resolve({
+          id: uuid(),
           output: "Time Limit Exceeded",
           exitCode: ExitCode.TLE,
+          executionTime: null,
+          memoryUsage: null,
         });
       }, timeLimit);
 
@@ -214,15 +289,33 @@ async function run(container: Docker.Container, fileName: string, timeLimit?: nu
         const stderr = stderrChunks.join("");
         const exitCode = (await runExec.inspect()).ExitCode;
 
-        let result: JudgeResultMetadata;
+        let result: JudgeResult;
 
         // Exit code 0 means successful execution
         if (exitCode === 0) {
-          result = { output: stdout, exitCode: ExitCode.AC };
+          result = {
+            id: uuid(),
+            output: stdout,
+            exitCode: ExitCode.AC,
+            executionTime: null,
+            memoryUsage: null,
+          };
         } else if (exitCode === 137) {
-          result = { output: stderr || "Memory Limit Exceeded", exitCode: ExitCode.MLE };
+          result = {
+            id: uuid(),
+            output: stderr || "Memory Limit Exceeded",
+            exitCode: ExitCode.MLE,
+            executionTime: null,
+            memoryUsage: null,
+          };
         } else {
-          result = { output: stderr || "Runtime Error", exitCode: ExitCode.RE };
+          result = {
+            id: uuid(),
+            output: stderr || "Runtime Error",
+            exitCode: ExitCode.RE,
+            executionTime: null,
+            memoryUsage: null,
+          };
         }
 
         resolve(result);
