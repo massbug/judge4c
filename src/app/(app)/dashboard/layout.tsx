@@ -1,15 +1,13 @@
 import { auth } from "@/lib/auth";
 import { User } from "@prisma/client";
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
 interface DashboardLayoutProps {
   admin: React.ReactNode;
-  guest: React.ReactNode;
 }
 
 export default async function DashboardLayout({
   admin,
-  guest,
 }: DashboardLayoutProps) {
   const session = await auth();
   if (!session?.user) {
@@ -18,5 +16,5 @@ export default async function DashboardLayout({
 
   const user = session.user as User;
 
-  return user.role === "ADMIN" ? admin : guest;
+  return user.role === "ADMIN" ? admin : notFound();
 }
