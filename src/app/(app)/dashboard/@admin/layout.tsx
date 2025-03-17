@@ -16,6 +16,7 @@ import { User } from "@prisma/client";
 import { redirect } from "next/navigation";
 import { AppSidebar } from "@/components/app-sidebar";
 import { Separator } from "@/components/ui/separator";
+import { type NavUserProps } from "@/components/nav-user";
 
 interface AdminDashboardLayoutProps {
   children: React.ReactNode;
@@ -30,7 +31,7 @@ export default async function AdminDashboardLayout({
     redirect("/sign-in");
   }
 
-  const user = (({ name, email, image }) => ({
+  const user: NavUserProps["user"] = (({ name, email, image }) => ({
     name: name ?? "",
     email: email ?? "",
     avatar: image ?? "",
