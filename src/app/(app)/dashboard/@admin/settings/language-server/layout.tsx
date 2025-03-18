@@ -1,3 +1,5 @@
+import { Suspense } from "react";
+import { Loading } from "@/components/loading";
 import { Separator } from "@/components/ui/separator";
 
 interface SettingsLanguageServerLayoutProps {
@@ -16,7 +18,9 @@ export default function SettingsLanguageServerLayout({
         </p>
       </div>
       <Separator />
-      {children}
+      <Suspense fallback={<Loading />}>
+        {children}
+      </Suspense>
     </div>
   );
 }
