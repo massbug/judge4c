@@ -24,7 +24,14 @@ export function LanguageServerAccordion({
   const { hydrated, activeLanguageServerSetting, setActiveLanguageServerSetting } =
     useAdminSettingsStore();
 
-  if (!hydrated) return <Loading />;
+  if (!hydrated) {
+    return (
+      <div className="h-full w-full space-y-2">
+        <Loading className="h-12 p-0" skeletonClassName="rounded-md" />
+        <Loading className="h-12 p-0" skeletonClassName="rounded-md" />
+      </div>
+    );
+  }
 
   return (
     <Accordion
