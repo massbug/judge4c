@@ -9,11 +9,13 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useState } from "react";
+import { toast } from "sonner";
 import { authSchema } from "@/lib/zod";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useState, useTransition } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signInWithCredentials } from "@/app/actions/auth";
 import { EyeIcon, EyeOffIcon, MailIcon } from "lucide-react";
@@ -21,6 +23,10 @@ import { EyeIcon, EyeOffIcon, MailIcon } from "lucide-react";
 export type CredentialsSignInFormValues = z.infer<typeof authSchema>;
 
 export function CredentialsSignInForm() {
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+  const [isVisible, setIsVisible] = useState(false);
+
   const form = useForm<CredentialsSignInFormValues>({
     resolver: zodResolver(authSchema),
     defaultValues: {
@@ -29,11 +35,21 @@ export function CredentialsSignInForm() {
     },
   });
 
-  const [isVisible, setIsVisible] = useState<boolean>(false);
-  const toggleVisibility = () => setIsVisible((prevState) => !prevState);
+  const toggleVisibility = () => setIsVisible((prev) => !prev);
 
-  const onSubmit = async (data: CredentialsSignInFormValues) => {
-    await signInWithCredentials(data);
+  const onSubmit = (data: CredentialsSignInFormValues) => {
+    startTransition(async () => {
+      const result = await signInWithCredentials(data);
+      
+      if (result?.error) {
+        toast.error("Sign In Failed", {
+          description: result.error,
+        });
+      } else {
+        toast.success("Signed In Successfully");
+        router.push("/dashboard");
+      }
+    });
   };
 
   return (
@@ -92,8 +108,8 @@ export function CredentialsSignInForm() {
           )}
         />
 
-        <Button type="submit" className="w-full">
-          Sign In
+        <Button type="submit" disabled={isPending} className="w-full">
+          {isPending ? "Signing In..." : "Sign In"}
         </Button>
       </form>
     </Form>
