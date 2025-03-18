@@ -68,13 +68,18 @@ model EditorLanguageConfig {
   dockerConfig         DockerConfig?         @relation
 }
 
+enum LanguageServerProtocol {
+  ws
+  wss
+}
+
 model LanguageServerConfig {
-  language             EditorLanguage       @unique
-  protocol             String
+  language             EditorLanguage         @unique
+  protocol             LanguageServerProtocol
   hostname             String
   port                 Int?
   path                 String?
-  editorLanguageConfig EditorLanguageConfig @relation(fields: [language], references: [language])
+  editorLanguageConfig EditorLanguageConfig   @relation(fields: [language], references: [language])
 }
 
 model DockerConfig {
