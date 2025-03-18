@@ -87,4 +87,15 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       return encode(params); // Default encoding for JWT
     },
   },
+  events: {
+    async createUser({ user }) {
+      const count = await prisma.user.count();
+      if (count === 1) {
+        await prisma.user.update({
+          where: { id: user.id },
+          data: { role: "ADMIN" },
+        });
+      }
+    },
+  },
 });
