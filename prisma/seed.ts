@@ -1,4 +1,4 @@
-import { PrismaClient, Prisma, EditorLanguage } from "@prisma/client";
+import { PrismaClient, Prisma, EditorLanguage, LanguageServerProtocol } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -10,7 +10,7 @@ const editorLanguageConfigData: Prisma.EditorLanguageConfigCreateInput[] = [
     fileExtension: ".c",
     languageServerConfig: {
       create: {
-        protocol: "ws",
+        protocol: LanguageServerProtocol.ws,
         hostname: "localhost",
         port: 4594,
         path: "/clangd",
@@ -35,7 +35,7 @@ const editorLanguageConfigData: Prisma.EditorLanguageConfigCreateInput[] = [
     fileExtension: ".cpp",
     languageServerConfig: {
       create: {
-        protocol: "ws",
+        protocol: LanguageServerProtocol.ws,
         hostname: "localhost",
         port: 4595,
         path: "/clangd",
