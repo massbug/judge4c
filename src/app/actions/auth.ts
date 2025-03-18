@@ -4,7 +4,6 @@ import bcrypt from "bcrypt";
 import prisma from "@/lib/prisma";
 import { signIn } from "@/lib/auth";
 import { authSchema } from "@/lib/zod";
-import { Prisma } from "@prisma/client";
 import { CredentialsSignInFormValues } from "@/components/credentials-sign-in-form";
 import { CredentialsSignUpFormValues } from "@/components/credentials-sign-up-form";
 
@@ -19,7 +18,7 @@ export async function signInWithCredentials(formData: CredentialsSignInFormValue
     return { success: true };
   } catch (error) {
     if (error instanceof Error) {
-      return { error: error.message };
+      return { error: "Invalid credentials" };
     }
     return { error: "Failed to sign in. Please try again." };
   }
@@ -55,11 +54,6 @@ export async function signUpWithCredentials(formData: CredentialsSignUpFormValue
 
     return { success: true };
   } catch (error) {
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      if (error.code === "P2002") {
-        return { error: "Email already registered" };
-      }
-    }
     if (error instanceof Error) {
       return { error: error.message };
     }
