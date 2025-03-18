@@ -18,8 +18,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { signUpWithCredentials } from "@/app/actions/auth";
 import { EyeIcon, EyeOffIcon, MailIcon } from "lucide-react";
 
-export function CredentialsSignUp() {
-  const form = useForm<z.infer<typeof authSchema>>({
+export type CredentialsSignUpFormValues = z.infer<typeof authSchema>;
+
+export function CredentialsSignUpForm() {
+  const form = useForm<CredentialsSignUpFormValues>({
     resolver: zodResolver(authSchema),
     defaultValues: {
       email: "",
@@ -28,15 +30,15 @@ export function CredentialsSignUp() {
   });
 
   const [isVisible, setIsVisible] = useState<boolean>(false);
-
   const toggleVisibility = () => setIsVisible((prevState) => !prevState);
+
+  const onSubmit = async (data: CredentialsSignUpFormValues) => {
+    await signUpWithCredentials(data);
+  };
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit((data) => signUpWithCredentials(data))}
-        className="grid gap-6"
-      >
+      <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-6">
         <FormField
           control={form.control}
           name="email"

@@ -1,7 +1,7 @@
 import { signIn } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 
-export function GithubSignIn() {
+export function GithubSignInForm() {
   return (
     <form
       action={async () => {

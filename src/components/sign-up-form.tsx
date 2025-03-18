@@ -1,5 +1,5 @@
-import { GithubSignIn } from "@/components/github-sign-in";
-import { CredentialsSignUp } from "@/components/credentials-sign-up";
+import { GithubSignInForm } from "@/components/github-sign-in-form";
+import { CredentialsSignUpForm } from "@/components/credentials-sign-up-form";
 
 export function SignUpForm() {
   return (
@@ -10,19 +10,19 @@ export function SignUpForm() {
           Enter your email below to sign up to your account
         </p>
       </div>
-      <CredentialsSignUp />
+      <CredentialsSignUpForm />
       <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
         <span className="relative z-10 bg-background px-2 text-muted-foreground">
           Or
         </span>
       </div>
-      <GithubSignIn />
+      <GithubSignInForm />
       <div className="text-center text-sm">
-        Already have an account? {" "}
+        Already have an account?{" "}
         <a href="/sign-in" className="underline underline-offset-4">
           Sign in
         </a>
       </div>
     </div>
-  )
+  );
 }
