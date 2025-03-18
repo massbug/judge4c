@@ -9,11 +9,13 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useState } from "react";
+import { toast } from "sonner";
 import { authSchema } from "@/lib/zod";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useState, useTransition } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signUpWithCredentials } from "@/app/actions/auth";
 import { EyeIcon, EyeOffIcon, MailIcon } from "lucide-react";
@@ -21,6 +23,10 @@ import { EyeIcon, EyeOffIcon, MailIcon } from "lucide-react";
 export type CredentialsSignUpFormValues = z.infer<typeof authSchema>;
 
 export function CredentialsSignUpForm() {
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+  const [isVisible, setIsVisible] = useState(false);
+
   const form = useForm<CredentialsSignUpFormValues>({
     resolver: zodResolver(authSchema),
     defaultValues: {
@@ -29,11 +35,26 @@ export function CredentialsSignUpForm() {
     },
   });
 
-  const [isVisible, setIsVisible] = useState<boolean>(false);
-  const toggleVisibility = () => setIsVisible((prevState) => !prevState);
+  const toggleVisibility = () => setIsVisible((prev) => !prev);
 
-  const onSubmit = async (data: CredentialsSignUpFormValues) => {
-    await signUpWithCredentials(data);
+  const onSubmit = (data: CredentialsSignUpFormValues) => {
+    startTransition(async () => {
+      const result = await signUpWithCredentials(data);
+
+      if (result?.error) {
+        toast.error("Registration Failed", {
+          description: result.error,
+        });
+      } else {
+        toast.success("Account Created", {
+          description: "You can now sign in with your credentials",
+          action: {
+            label: "Go to Sign In",
+            onClick: () => router.push("/sign-in"),
+          },
+        });
+      }
+    });
   };
 
   return (
@@ -92,8 +113,8 @@ export function CredentialsSignUpForm() {
           )}
         />
 
-        <Button type="submit" className="w-full">
-          Sign Up
+        <Button type="submit" disabled={isPending} className="w-full">
+          {isPending ? "Creating Account..." : "Sign Up"}
         </Button>
       </form>
     </Form>
