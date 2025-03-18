@@ -108,24 +108,16 @@ const data = {
     },
     {
       title: "Settings",
-      url: "#",
+      url: "/dashboard/settings",
       icon: Settings2,
       items: [
         {
           title: "General",
-          url: "#",
+          url: "/general",
         },
         {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
+          title: "Language Server",
+          url: "/language-server",
         },
       ],
     },
