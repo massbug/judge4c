@@ -17,12 +17,20 @@ export async function signUpWithCredentials(formData: { email: string; password:
 
   const pwHash = await bcrypt.hash(validatedData.password, saltRounds);
 
-  await prisma.user.create({
+  const user = await prisma.user.create({
     data: {
       email: validatedData.email,
       password: pwHash,
     },
   });
+
+  const count = await prisma.user.count();
+  if (count === 1) {
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { role: "ADMIN" },
+    });
+  }
 
   redirect("/sign-in");
 }
