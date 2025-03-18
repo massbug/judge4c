@@ -26,7 +26,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         >
           <div className="w-full">{children}</div>
           <SettingsDialog />
-          <Toaster />
+          <Toaster position="top-right" />
         </ThemeProvider>
       </body>
     </html>
