@@ -11,52 +11,59 @@ const saltRounds = 10;
 
 export async function signInWithCredentials(formData: CredentialsSignInFormValues) {
   try {
-    await signIn("credentials", {
-      ...formData,
-      redirect: false,
-    });
+    // Parse credentials using authSchema for validation
+    const { email, password } = await authSchema.parseAsync(formData);
+
+    // Find user by email
+    const user = await prisma.user.findUnique({ where: { email } });
+
+    // Check if the user exists
+    if (!user) {
+      throw new Error("User not found.");
+    }
+
+    // Check if the user has a password
+    if (!user.password) {
+      throw new Error("Invalid credentials.");
+    }
+
+    // Check if the password matches
+    const passwordMatch = await bcrypt.compare(password, user.password);
+    if (!passwordMatch) {
+      throw new Error("Incorrect password.");
+    }
+
+    await signIn("credentials", formData);
     return { success: true };
   } catch (error) {
-    if (error instanceof Error) {
-      return { error: "Invalid credentials" };
-    }
-    return { error: "Failed to sign in. Please try again." };
+    return { error: error instanceof Error ? error.message : "Failed to sign in. Please try again." };
   }
 }
 
 export async function signUpWithCredentials(formData: CredentialsSignUpFormValues) {
   try {
     const validatedData = await authSchema.parseAsync(formData);
-    const existingUser = await prisma.user.findUnique({
-      where: { email: validatedData.email },
-    });
 
+    // Check if user already exists
+    const existingUser = await prisma.user.findUnique({ where: { email: validatedData.email } });
     if (existingUser) {
       throw new Error("User already exists");
     }
 
+    // Hash password and create user
     const pwHash = await bcrypt.hash(validatedData.password, saltRounds);
-
     const user = await prisma.user.create({
-      data: {
-        email: validatedData.email,
-        password: pwHash,
-      },
+      data: { email: validatedData.email, password: pwHash },
     });
 
-    const count = await prisma.user.count();
-    if (count === 1) {
-      await prisma.user.update({
-        where: { id: user.id },
-        data: { role: "ADMIN" },
-      });
+    // Assign admin role if first user
+    const userCount = await prisma.user.count();
+    if (userCount === 1) {
+      await prisma.user.update({ where: { id: user.id }, data: { role: "ADMIN" } });
     }
 
     return { success: true };
   } catch (error) {
-    if (error instanceof Error) {
-      return { error: error.message };
-    }
-    return { error: "Registration failed. Please try again." };
+    return { error: error instanceof Error ? error.message : "Registration failed. Please try again." };
   }
 }
