@@ -7,5 +7,5 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function getPath(editorLanguageConfig: EditorLanguageConfig) {
-  return `file:///${editorLanguageConfig.language}${editorLanguageConfig.fileExtension}`;
+  return `file:///${editorLanguageConfig.fileName}${editorLanguageConfig.fileExtension}`;
 }
