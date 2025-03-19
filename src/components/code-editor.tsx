@@ -53,7 +53,7 @@ export default function CodeEditor({
     setPath,
     setValue,
   } = useCodeEditorStore();
-  const { monacoTheme } = useMonacoTheme();
+  const { currentTheme } = useMonacoTheme();
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
   const monacoLanguageClientRef = useRef<MonacoLanguageClient | null>(null);
 
@@ -149,7 +149,7 @@ export default function CodeEditor({
   return (
     <Editor
       language={language}
-      theme={monacoTheme.id}
+      theme={currentTheme.id}
       path={path}
       value={value}
       beforeMount={handleEditorWillMount}

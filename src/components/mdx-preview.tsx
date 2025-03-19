@@ -22,7 +22,7 @@ interface MdxPreviewProps {
 }
 
 export default function MdxPreview({ source }: MdxPreviewProps) {
-  const { monacoTheme } = useMonacoTheme();
+  const { currentTheme } = useMonacoTheme();
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [mdxSource, setMdxSource] = useState<MDXRemoteSerializeResult | null>(null);
@@ -56,7 +56,7 @@ export default function MdxPreview({ source }: MdxPreviewProps) {
             [
               rehypePretty,
               {
-                theme: monacoTheme.id,
+                theme: currentTheme.id,
                 keepBackground: false,
               },
             ],
@@ -72,7 +72,7 @@ export default function MdxPreview({ source }: MdxPreviewProps) {
     } finally {
       setIsLoading(false);
     }
-  }, [source, monacoTheme]);
+  }, [source, currentTheme]);
 
   // Delay the serialize process to the next event loop to avoid flickering
   // when copying code to the editor and the MDX preview shrinks.
