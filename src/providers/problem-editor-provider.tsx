@@ -6,12 +6,14 @@ import type {
   LanguageServerConfig,
   Template,
 } from "@prisma/client";
+import type { editor } from "monaco-editor";
 import { createStore, StoreApi, useStore } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { DEFAULT_EDITOR_LANGUAGE } from "@/config/editor-language";
 import { createContext, PropsWithChildren, useContext, useState } from "react";
 
 type ProblemEditorState = {
+  editor: editor.IStandaloneCodeEditor | null;
   globalLang: EditorLanguage;
   currentLang: EditorLanguage;
   currentValue: string;
@@ -22,6 +24,7 @@ type ProblemEditorState = {
 };
 
 type ProblemEditorActions = {
+  setEditor: (editor: editor.IStandaloneCodeEditor) => void;
   setGlobalLang: (lang: EditorLanguage) => void;
   setCurrentLang: (lang: EditorLanguage) => void;
   setCurrentValue: (value: string) => void;
@@ -49,6 +52,7 @@ export function ProblemEditorProvider({
     createStore<ProblemEditorStore>()(
       persist(
         (set) => ({
+          editor: null,
           globalLang: DEFAULT_EDITOR_LANGUAGE,
           currentLang: DEFAULT_EDITOR_LANGUAGE,
           currentValue: "",
@@ -56,6 +60,7 @@ export function ProblemEditorProvider({
           templates,
           editorLanguageConfigs,
           languageServerConfigs,
+          setEditor: (editor) => set({ editor }),
           setGlobalLang: (lang) => set({ globalLang: lang }),
           setCurrentLang: (lang) => set({ currentLang: lang }),
           setCurrentValue: (value) => set({ currentValue: value }),
@@ -65,15 +70,17 @@ export function ProblemEditorProvider({
           storage: createJSONStorage(() => localStorage),
           partialize: (state) => ({
             globalLang: state.globalLang,
-            currentLang: state.currentLang,
-            currentValue: state.currentValue,
           }),
         }
       )
     )
   );
 
-  return <ProblemEditorContext.Provider value={store}>{children}</ProblemEditorContext.Provider>;
+  return (
+    <ProblemEditorContext.Provider value={store}>
+      {children}
+    </ProblemEditorContext.Provider>
+  );
 }
 
 export function useProblemEditorStore<T>(selector: (state: ProblemEditorStore) => T) {
@@ -82,12 +89,4 @@ export function useProblemEditorStore<T>(selector: (state: ProblemEditorStore) =
     throw new Error("ProblemEditorContext.Provider is missing.");
   }
   return useStore(context, selector);
-}
-
-export function useProblemEditorStoreInstance() {
-  const context = useContext(ProblemEditorContext);
-  if (!context) {
-    throw new Error("ProblemEditorContext.Provider is missing.");
-  }
-  return context;
 }
