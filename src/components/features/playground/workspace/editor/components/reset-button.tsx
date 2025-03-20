@@ -8,19 +8,28 @@ import {
 } from "@/components/ui/tooltip";
 import { RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { EditorLanguage } from "@prisma/client";
-import { useCodeEditorStore } from "@/store/useCodeEditorStore";
+import { useProblemEditor } from "@/hooks/use-problem-editor";
 
-interface ResetButtonProps {
-  templates: { language: EditorLanguage; template: string }[];
-}
+export function ResetButton() {
+  const { editor, currentTemplate } = useProblemEditor();
 
-export default function ResetButton({
-  templates,
-}: ResetButtonProps) {
-  const { editor, language } = useCodeEditorStore();
-
-  const currentTemplate = templates.find((t) => t.language === language)?.template ?? "";
+  const handleReset = () => {
+    if (editor) {
+      const model = editor.getModel();
+      if (model) {
+        const fullRange = model.getFullModelRange();
+        editor.pushUndoStop();
+        editor.executeEdits("reset-code", [
+          {
+            range: fullRange,
+            text: currentTemplate,
+            forceMoveMarkers: true,
+          },
+        ]);
+        editor.pushUndoStop();
+      }
+    }
+  };
 
   return (
     <TooltipProvider delayDuration={0}>
@@ -30,23 +39,8 @@ export default function ResetButton({
             variant="outline"
             size="icon"
             aria-label="Reset Code"
-            onClick={() => {
-              if (editor) {
-                const model = editor.getModel();
-                if (model) {
-                  const fullRange = model.getFullModelRange();
-                  editor.pushUndoStop();
-                  editor.executeEdits("reset-code", [
-                    {
-                      range: fullRange,
-                      text: currentTemplate,
-                      forceMoveMarkers: true,
-                    },
-                  ]);
-                  editor.pushUndoStop();
-                }
-              }
-            }}
+            onClick={handleReset}
+            disabled={!editor}
             className="h-6 w-6 px-1.5 py-0.5 border-none shadow-none hover:bg-muted"
           >
             <RotateCcw size={16} strokeWidth={2} aria-hidden="true" />
