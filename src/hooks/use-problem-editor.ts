@@ -1,7 +1,7 @@
 import { getPath } from "@/lib/utils";
 import { EditorLanguage } from "@prisma/client";
 import { useCallback, useEffect, useMemo } from "react";
-import { useProblemEditorStoreInstance } from "@/providers/problem-editor-provider";
+import { useProblemEditorStore } from "@/providers/problem-editor-provider";
 
 /**
  * Generates a unique localStorage key for storing the editor language of a problem.
@@ -28,18 +28,18 @@ const getStoredProblemValue = (problemId: string, defaultValue: string) =>
   localStorage.getItem(getProblemValueStorageKey(problemId)) ?? defaultValue;
 
 export const useProblemEditor = () => {
-  const {
-    globalLang,
-    currentLang,
-    currentValue,
-    setGlobalLang,
-    setCurrentLang,
-    setCurrentValue,
-    problemId,
-    templates,
-    editorLanguageConfigs,
-    languageServerConfigs,
-  } = useProblemEditorStoreInstance().getState();
+  const editor = useProblemEditorStore((state) => state.editor);
+  const globalLang = useProblemEditorStore((state) => state.globalLang);
+  const currentLang = useProblemEditorStore((state) => state.currentLang);
+  const currentValue = useProblemEditorStore((state) => state.currentValue);
+  const setEditor = useProblemEditorStore((state) => state.setEditor);
+  const setGlobalLang = useProblemEditorStore((state) => state.setGlobalLang);
+  const setCurrentLang = useProblemEditorStore((state) => state.setCurrentLang);
+  const setCurrentValue = useProblemEditorStore((state) => state.setCurrentValue);
+  const problemId = useProblemEditorStore((state) => state.problemId);
+  const templates = useProblemEditorStore((state) => state.templates);
+  const editorLanguageConfigs = useProblemEditorStore((state) => state.editorLanguageConfigs);
+  const languageServerConfigs = useProblemEditorStore((state) => state.languageServerConfigs);
 
   const currentTemplate = useMemo(() => {
     return templates.find((t) => t.language === currentLang)?.template || "";
@@ -89,6 +89,8 @@ export const useProblemEditor = () => {
   );
 
   return {
+    editor,
+    setEditor,
     globalLang,
     currentLang,
     currentValue,
