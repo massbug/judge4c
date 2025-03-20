@@ -8,10 +8,10 @@ import {
 } from "@/components/ui/tooltip";
 import { Paintbrush } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useCodeEditorStore } from "@/store/useCodeEditorStore";
+import { useProblemEditor } from "@/hooks/use-problem-editor";
 
 export default function FormatButton() {
-  const { editor } = useCodeEditorStore();
+  const { editor } = useProblemEditor();
 
   return (
     <TooltipProvider delayDuration={0}>
@@ -25,6 +25,7 @@ export default function FormatButton() {
               editor?.trigger("format", "editor.action.formatDocument", null);
             }}
             className="h-6 w-6 px-1.5 py-0.5 border-none shadow-none hover:bg-muted"
+            disabled={!editor}
           >
             <Paintbrush size={16} strokeWidth={2} aria-hidden="true" />
           </Button>
