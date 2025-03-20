@@ -1,16 +1,16 @@
 import { cn } from "@/lib/utils";
-import CopyButton from "./copy-button";
-import RedoButton from "./redo-button";
-import UndoButton from "./undo-button";
-import ResetButton from "./reset-button";
-import FormatButton from "./format-button";
-import LanguageSelector from "./language-selector";
+import { CopyButton } from "./copy-button";
+import { RedoButton } from "./redo-button";
+import { UndoButton } from "./undo-button";
+import { ResetButton } from "./reset-button";
+import { FormatButton } from "./format-button";
+import { LanguageSelector } from "./language-selector";
 
 interface WorkspaceEditorHeaderProps {
   className?: string;
 }
 
-export default function WorkspaceEditorHeader({
+export function WorkspaceEditorHeader({
   className,
   ...props
 }: WorkspaceEditorHeaderProps) {

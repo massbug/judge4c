@@ -10,7 +10,7 @@ import { Paintbrush } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useProblemEditor } from "@/hooks/use-problem-editor";
 
-export default function FormatButton() {
+export function FormatButton() {
   const { editor } = useProblemEditor();
 
   return (

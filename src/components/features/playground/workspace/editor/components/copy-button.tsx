@@ -12,7 +12,7 @@ import { Check, Copy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useProblemEditor } from "@/hooks/use-problem-editor";
 
-export default function CopyButton() {
+export function CopyButton() {
   const { editor } = useProblemEditor();
   const [copied, setCopied] = useState(false);
 
