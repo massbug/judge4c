@@ -2,17 +2,17 @@
 
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
-import { useCodeEditorStore } from "@/store/useCodeEditorStore";
+import { useProblemEditor } from "@/hooks/use-problem-editor";
 
 interface WorkspaceEditorFooterProps {
   className?: string;
 }
 
-export default function WorkspaceEditorFooter({
+export function WorkspaceEditorFooter({
   className,
   ...props
 }: WorkspaceEditorFooterProps) {
-  const { editor } = useCodeEditorStore();
+  const { editor } = useProblemEditor();
   const [position, setPosition] = useState<{ lineNumber: number; column: number } | null>(null);
 
   useEffect(() => {
