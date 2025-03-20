@@ -8,10 +8,10 @@ import {
 } from "@/components/ui/tooltip";
 import { Undo2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useCodeEditorStore } from "@/store/useCodeEditorStore";
+import { useProblemEditor } from "@/hooks/use-problem-editor";
 
-export default function UndoButton() {
-  const { editor } = useCodeEditorStore();
+export function UndoButton() {
+  const { editor } = useProblemEditor();
 
   return (
     <TooltipProvider delayDuration={0}>
@@ -24,6 +24,7 @@ export default function UndoButton() {
             onClick={() => {
               editor?.trigger("undo", "undo", null);
             }}
+            disabled={!editor}
             className="h-6 w-6 px-1.5 py-0.5 border-none shadow-none hover:bg-muted"
           >
             <Undo2 size={16} strokeWidth={2} aria-hidden="true" />
