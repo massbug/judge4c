@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import RunCode from "@/components/run-code";
+import { RunCode } from "@/components/run-code";
 import BackButton from "@/components/back-button";
 import { AvatarButton } from "@/components/avatar-button";
 
