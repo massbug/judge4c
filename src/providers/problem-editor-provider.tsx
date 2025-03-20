@@ -9,12 +9,14 @@ import type {
 import type { editor } from "monaco-editor";
 import { createStore, StoreApi, useStore } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
+import type { MonacoLanguageClient } from "monaco-languageclient";
 import { DEFAULT_EDITOR_LANGUAGE } from "@/config/editor-language";
 import { createContext, PropsWithChildren, useContext, useState } from "react";
 
 type ProblemEditorState = {
   hydrated: boolean;
   editor: editor.IStandaloneCodeEditor | null;
+  monacoLanguageClient: MonacoLanguageClient | null;
   globalLang: EditorLanguage;
   currentLang: EditorLanguage;
   currentValue: string;
@@ -27,6 +29,7 @@ type ProblemEditorState = {
 type ProblemEditorActions = {
   setHydrated: (value: boolean) => void;
   setEditor: (editor: editor.IStandaloneCodeEditor) => void;
+  setMonacoLanguageClient: (client: MonacoLanguageClient | null) => void;
   setGlobalLang: (lang: EditorLanguage) => void;
   setCurrentLang: (lang: EditorLanguage) => void;
   setCurrentValue: (value: string) => void;
@@ -56,6 +59,7 @@ export function ProblemEditorProvider({
         (set) => ({
           hydrated: false,
           editor: null,
+          monacoLanguageClient: null,
           globalLang: DEFAULT_EDITOR_LANGUAGE,
           currentLang: DEFAULT_EDITOR_LANGUAGE,
           currentValue: "",
@@ -65,6 +69,7 @@ export function ProblemEditorProvider({
           languageServerConfigs,
           setHydrated: (value) => set({ hydrated: value }),
           setEditor: (editor) => set({ editor }),
+          setMonacoLanguageClient: (client) => set({ monacoLanguageClient: client }),
           setGlobalLang: (lang) => set({ globalLang: lang }),
           setCurrentLang: (lang) => set({ currentLang: lang }),
           setCurrentValue: (value) => set({ currentValue: value }),
