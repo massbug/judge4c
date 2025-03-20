@@ -5,7 +5,7 @@ import { MonacoThemeConfig } from "@/config/monaco-theme";
 export function useMonacoTheme() {
   const { resolvedTheme } = useTheme();
 
-  const currentTheme = resolvedTheme === "light" ? MonacoThemeConfig[MonacoTheme.GitHubLightDefault] : MonacoThemeConfig[MonacoTheme.GitHubDarkDefault];
+  const currentTheme = resolvedTheme === "light" ? MonacoThemeConfig[MonacoTheme.GitHubLightDefault].id : MonacoThemeConfig[MonacoTheme.GitHubDarkDefault].id;
 
   return {
     currentTheme,

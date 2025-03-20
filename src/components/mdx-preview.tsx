@@ -56,7 +56,7 @@ export default function MdxPreview({ source }: MdxPreviewProps) {
             [
               rehypePretty,
               {
-                theme: currentTheme.id,
+                theme: currentTheme,
                 keepBackground: false,
               },
             ],
