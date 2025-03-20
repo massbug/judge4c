@@ -2,8 +2,8 @@ import prisma from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { CodeEditor } from "@/components/problem-editor";
 import { ProblemEditorProvider } from "@/providers/problem-editor-provider";
-import WorkspaceEditorHeader from "@/components/features/playground/workspace/editor/components/header";
-import WorkspaceEditorFooter from "@/components/features/playground/workspace/editor/components/footer";
+import { WorkspaceEditorHeader } from "@/components/features/playground/workspace/editor/components/header";
+import { WorkspaceEditorFooter } from "@/components/features/playground/workspace/editor/components/footer";
 
 interface WorkspaceEditorProps {
   params: Promise<{ id: string }>;
