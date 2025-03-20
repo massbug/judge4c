@@ -7,11 +7,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Loading } from "@/components/loading";
 import { useProblemEditor } from "@/hooks/use-problem-editor";
 import { EditorLanguageIcons } from "@/config/editor-language-icons";
 
-export default function LanguageSelector() {
-  const { currentLang, changeLang, editorLanguageConfigs } = useProblemEditor();
+export function LanguageSelector() {
+  const { hydrated, currentLang, changeLang, editorLanguageConfigs } = useProblemEditor();
+
+  if (!hydrated) {
+    return <Loading className="h-6 w-16 p-0" skeletonClassName="rounded-2xl" />
+  }
 
   return (
     <Select value={currentLang} onValueChange={changeLang}>
