@@ -10,11 +10,11 @@ import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { Check, Copy } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useCodeEditorStore } from "@/store/useCodeEditorStore";
+import { useProblemEditor } from "@/hooks/use-problem-editor";
 
 export default function CopyButton() {
+  const { editor } = useProblemEditor();
   const [copied, setCopied] = useState(false);
-  const { editor } = useCodeEditorStore();
 
   const handleCopy = async () => {
     try {
@@ -33,10 +33,13 @@ export default function CopyButton() {
           <Button
             variant="outline"
             size="icon"
-            className="h-6 w-6 border-none shadow-none px-1.5 py-0.5 disabled:opacity-100 hover:bg-muted"
+            className={cn(
+              "h-6 w-6 border-none shadow-none px-1.5 py-0.5 hover:bg-muted",
+              copied ? "disabled:opacity-100" : ""
+            )}
             onClick={handleCopy}
             aria-label={copied ? "Copied" : "Copy to clipboard"}
-            disabled={copied}
+            disabled={!editor || copied}
           >
             <div
               className={cn(
