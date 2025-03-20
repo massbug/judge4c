@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 import { notFound } from "next/navigation";
-import CodeEditor from "@/components/code-editor";
+import { CodeEditor } from "@/components/problem-editor";
+import { ProblemEditorProvider } from "@/providers/problem-editor-provider";
 import WorkspaceEditorHeader from "@/components/features/playground/workspace/editor/components/header";
 import WorkspaceEditorFooter from "@/components/features/playground/workspace/editor/components/footer";
 
@@ -13,17 +14,14 @@ export default async function WorkspaceEditorPage({
 }: WorkspaceEditorProps) {
   const { id } = await params;
 
-  const [problem, editorLanguageConfigs, languageServerConfigs] = await Promise.all([
+  const [
+    problem,
+    editorLanguageConfigs,
+    languageServerConfigs,
+  ] = await Promise.all([
     prisma.problem.findUnique({
       where: { id },
-      select: {
-        templates: {
-          select: {
-            language: true,
-            template: true,
-          },
-        },
-      },
+      select: { templates: true },
     }),
     prisma.editorLanguageConfig.findMany(),
     prisma.languageServerConfig.findMany(),
@@ -33,19 +31,20 @@ export default async function WorkspaceEditorPage({
     return notFound();
   }
 
-  const commonProps = {
-    templates: problem.templates ?? [],
-    editorLanguageConfigs,
-    languageServerConfigs,
-  };
-
   return (
-    <>
-      <WorkspaceEditorHeader {...commonProps} />
-      <div className="flex-1">
-        <CodeEditor problemId={id} {...commonProps} />
-      </div>
-      <WorkspaceEditorFooter />
-    </>
+    <ProblemEditorProvider
+      problemId={id}
+      templates={problem.templates ?? []}
+      editorLanguageConfigs={editorLanguageConfigs}
+      languageServerConfigs={languageServerConfigs}
+    >
+      <>
+        <WorkspaceEditorHeader />
+        <div className="flex-1">
+          <CodeEditor />
+        </div>
+        <WorkspaceEditorFooter />
+      </>
+    </ProblemEditorProvider>
   );
 }
