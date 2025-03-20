@@ -8,10 +8,10 @@ import {
 } from "@/components/ui/tooltip";
 import { Redo2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useCodeEditorStore } from "@/store/useCodeEditorStore";
+import { useProblemEditor } from "@/hooks/use-problem-editor";
 
-export default function RedoButton() {
-  const { editor } = useCodeEditorStore();
+export function RedoButton() {
+  const { editor } = useProblemEditor();
 
   return (
     <TooltipProvider delayDuration={0}>
@@ -24,6 +24,7 @@ export default function RedoButton() {
             onClick={() => {
               editor?.trigger("redo", "redo", null);
             }}
+            disabled={!editor}
             className="h-6 w-6 px-1.5 py-0.5 border-none shadow-none hover:bg-muted"
           >
             <Redo2 size={16} strokeWidth={2} aria-hidden="true" />
