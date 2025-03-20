@@ -13,6 +13,7 @@ import { DEFAULT_EDITOR_LANGUAGE } from "@/config/editor-language";
 import { createContext, PropsWithChildren, useContext, useState } from "react";
 
 type ProblemEditorState = {
+  hydrated: boolean;
   editor: editor.IStandaloneCodeEditor | null;
   globalLang: EditorLanguage;
   currentLang: EditorLanguage;
@@ -24,6 +25,7 @@ type ProblemEditorState = {
 };
 
 type ProblemEditorActions = {
+  setHydrated: (value: boolean) => void;
   setEditor: (editor: editor.IStandaloneCodeEditor) => void;
   setGlobalLang: (lang: EditorLanguage) => void;
   setCurrentLang: (lang: EditorLanguage) => void;
@@ -52,6 +54,7 @@ export function ProblemEditorProvider({
     createStore<ProblemEditorStore>()(
       persist(
         (set) => ({
+          hydrated: false,
           editor: null,
           globalLang: DEFAULT_EDITOR_LANGUAGE,
           currentLang: DEFAULT_EDITOR_LANGUAGE,
@@ -60,6 +63,7 @@ export function ProblemEditorProvider({
           templates,
           editorLanguageConfigs,
           languageServerConfigs,
+          setHydrated: (value) => set({ hydrated: value }),
           setEditor: (editor) => set({ editor }),
           setGlobalLang: (lang) => set({ globalLang: lang }),
           setCurrentLang: (lang) => set({ currentLang: lang }),
@@ -71,6 +75,15 @@ export function ProblemEditorProvider({
           partialize: (state) => ({
             globalLang: state.globalLang,
           }),
+          onRehydrateStorage: () => {
+            return (state, error) => {
+              if (error) {
+                console.error("An error happened during hydration", error);
+              } else if (state) {
+                state.setHydrated(true);
+              }
+            };
+          },
         }
       )
     )
