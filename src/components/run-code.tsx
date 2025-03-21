@@ -5,18 +5,19 @@ import { useState } from "react";
 import { judge } from "@/app/actions/judge";
 import { Button } from "@/components/ui/button";
 import { LoaderCircleIcon, PlayIcon } from "lucide-react";
-import { useCodeEditorStore } from "@/store/useCodeEditorStore";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
+import { useProblemEditor } from "@/hooks/use-problem-editor";
+import { showExitCodeToast } from "@/lib/show-exit-code-toast";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface RunCodeProps {
   className?: string;
 }
 
-export default function RunCode({
+export function RunCode({
   className,
   ...props
 }: RunCodeProps) {
-  const { language, editor, setResult } = useCodeEditorStore();
+  const { currentLang, editor } = useProblemEditor();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleJudge = async () => {
@@ -26,8 +27,8 @@ export default function RunCode({
     setIsLoading(true);
 
     try {
-      const result = await judge(language, code);
-      setResult(result);
+      const result = await judge(currentLang, code);
+      showExitCodeToast({ exitCode: result.exitCode });
     } catch (error) {
       console.error("Error occurred while judging the code:");
       console.error(error);
@@ -54,7 +55,11 @@ export default function RunCode({
                 aria-hidden="true"
               />
             ) : (
-              <PlayIcon className="-ms-1 opacity-60" size={16} aria-hidden="true" />
+              <PlayIcon
+                className="-ms-1 opacity-60"
+                size={16}
+                aria-hidden="true"
+              />
             )}
             {isLoading ? "Running..." : "Run"}
           </Button>
