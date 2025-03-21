@@ -484,7 +484,7 @@ public:
     name: "fly6516",
     email: "fly6516@outlook.com",
     password: "$2b$10$SD1T/dYvKTArGdTmf8ERxuBKIONxY01/wSboRNaNsHnKZzDhps/0u",
-    role: "TEACHER",
+    role: "ADMIN",
     problems: {
       create: [
         {
