@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import AppearanceSettings from "./appearance-settings";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useSettingsStore } from "@/store/useSettingsStore";
+import { useSettingsStore } from "@/stores/useSettingsStore";
 import { CodeXml, Globe, Paintbrush, Settings } from "lucide-react";
 
 const data = {
