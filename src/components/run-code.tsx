@@ -1,13 +1,18 @@
 "use client";
 
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { judge } from "@/app/actions/judge";
 import { Button } from "@/components/ui/button";
+import { useProblem } from "@/hooks/use-problem";
 import { LoaderCircleIcon, PlayIcon } from "lucide-react";
-import { useProblemEditor } from "@/hooks/use-problem-editor";
 import { showExitCodeToast } from "@/lib/show-exit-code-toast";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface RunCodeProps {
   className?: string;
@@ -17,7 +22,7 @@ export function RunCode({
   className,
   ...props
 }: RunCodeProps) {
-  const { currentLang, editor } = useProblemEditor();
+  const { currentLang, editor } = useProblem();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleJudge = async () => {

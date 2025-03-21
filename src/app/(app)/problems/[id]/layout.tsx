@@ -1,8 +1,12 @@
 import prisma from "@/lib/prisma";
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable";
 import { notFound } from "next/navigation";
+import { ProblemStoreProvider } from "@/providers/problem-store-provider";
 import { PlaygroundHeader } from "@/components/features/playground/header";
-import { ProblemEditorProvider } from "@/providers/problem-editor-provider";
-import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 
 interface PlaygroundLayoutProps {
   params: Promise<{ id: string }>;
@@ -38,7 +42,7 @@ export default async function PlaygroundLayout({
 
   return (
     <div className="h-screen flex flex-col">
-      <ProblemEditorProvider
+      <ProblemStoreProvider
         problemId={id}
         templates={problemData.templates ?? []}
         editorLanguageConfigs={editorLanguageConfigs}
@@ -64,7 +68,7 @@ export default async function PlaygroundLayout({
             </ResizablePanel>
           </ResizablePanelGroup>
         </main>
-      </ProblemEditorProvider>
+      </ProblemStoreProvider>
     </div>
   );
 }

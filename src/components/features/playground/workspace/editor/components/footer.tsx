@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
-import { useProblemEditor } from "@/hooks/use-problem-editor";
+import { useProblem } from "@/hooks/use-problem";
 
 interface WorkspaceEditorFooterProps {
   className?: string;
@@ -12,7 +12,7 @@ export function WorkspaceEditorFooter({
   className,
   ...props
 }: WorkspaceEditorFooterProps) {
-  const { editor } = useProblemEditor();
+  const { editor } = useProblem();
   const [position, setPosition] = useState<{ lineNumber: number; column: number } | null>(null);
 
   useEffect(() => {

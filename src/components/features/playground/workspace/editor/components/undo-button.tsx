@@ -8,10 +8,10 @@ import {
 } from "@/components/ui/tooltip";
 import { Undo2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useProblemEditor } from "@/hooks/use-problem-editor";
+import { useProblem } from "@/hooks/use-problem";
 
 export function UndoButton() {
-  const { editor } = useProblemEditor();
+  const { editor } = useProblem();
 
   return (
     <TooltipProvider delayDuration={0}>

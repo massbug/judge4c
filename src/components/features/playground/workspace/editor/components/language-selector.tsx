@@ -8,14 +8,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Loading } from "@/components/loading";
-import { useProblemEditor } from "@/hooks/use-problem-editor";
+import { useProblem } from "@/hooks/use-problem";
 import { EditorLanguageIcons } from "@/config/editor-language-icons";
 
 export function LanguageSelector() {
-  const { hydrated, currentLang, changeLang, editorLanguageConfigs } = useProblemEditor();
+  const { hydrated, currentLang, changeLang, editorLanguageConfigs } = useProblem();
 
   if (!hydrated) {
-    return <Loading className="h-6 w-16 p-0" skeletonClassName="rounded-2xl" />
+    return <Loading className="h-6 w-16 p-0" skeletonClassName="rounded-2xl" />;
   }
 
   return (

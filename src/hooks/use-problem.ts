@@ -2,7 +2,7 @@ import { getPath } from "@/lib/utils";
 import { EditorLanguage } from "@prisma/client";
 import { useCallback, useEffect, useMemo } from "react";
 import { useMonacoTheme } from "@/hooks/use-monaco-theme";
-import { useProblemEditorStore } from "@/providers/problem-editor-provider";
+import { useProblemStore } from "@/providers/problem-store-provider";
 
 /**
  * Generates a localStorage key for storing the editor language of a problem.
@@ -34,27 +34,29 @@ const getStoredProblemValue = (
   language: EditorLanguage
 ) => localStorage.getItem(getProblemValueStorageKey(problemId, language)) ?? defaultValue;
 
-export const useProblemEditor = () => {
+export const useProblem = () => {
   const { currentTheme } = useMonacoTheme();
-
-  const hydrated = useProblemEditorStore((state) => state.hydrated);
-  const editor = useProblemEditorStore((state) => state.editor);
-  const globalLang = useProblemEditorStore((state) => state.globalLang);
-  const currentLang = useProblemEditorStore((state) => state.currentLang);
-  const currentValue = useProblemEditorStore((state) => state.currentValue);
-  const setEditor = useProblemEditorStore((state) => state.setEditor);
-  const setGlobalLang = useProblemEditorStore((state) => state.setGlobalLang);
-  const setCurrentLang = useProblemEditorStore((state) => state.setCurrentLang);
-  const setCurrentValue = useProblemEditorStore((state) => state.setCurrentValue);
-  const problemId = useProblemEditorStore((state) => state.problemId);
-  const templates = useProblemEditorStore((state) => state.templates);
-  const editorLanguageConfigs = useProblemEditorStore((state) => state.editorLanguageConfigs);
-  const languageServerConfigs = useProblemEditorStore((state) => state.languageServerConfigs);
+  const {
+    hydrated,
+    editor,
+    globalLang,
+    currentLang,
+    currentValue,
+    setEditor,
+    setGlobalLang,
+    setCurrentLang,
+    setCurrentValue,
+    problemId,
+    templates,
+    editorLanguageConfigs,
+    languageServerConfigs,
+  } = useProblemStore((state) => state);
 
   // Get the default template for the current language from the templates list
-  const currentTemplate = useMemo(() => {
-    return templates.find((t) => t.language === currentLang)?.template || "";
-  }, [templates, currentLang]);
+  const currentTemplate = useMemo(
+    () => templates.find((t) => t.language === currentLang)?.template || "",
+    [templates, currentLang]
+  );
 
   const currentEditorLanguageConfig = useMemo(
     () => editorLanguageConfigs.find((c) => c.language === currentLang),
@@ -66,9 +68,10 @@ export const useProblemEditor = () => {
     [languageServerConfigs, currentLang]
   );
 
-  const currentPath = useMemo(() => {
-    return currentEditorLanguageConfig ? getPath(currentEditorLanguageConfig) : "";
-  }, [currentEditorLanguageConfig]);
+  const currentPath = useMemo(
+    () => (currentEditorLanguageConfig ? getPath(currentEditorLanguageConfig) : ""),
+    [currentEditorLanguageConfig]
+  );
 
   // On initialization, load the stored language and corresponding code content
   useEffect(() => {

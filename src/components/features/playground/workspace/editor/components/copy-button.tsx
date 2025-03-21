@@ -10,10 +10,10 @@ import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { Check, Copy } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useProblemEditor } from "@/hooks/use-problem-editor";
+import { useProblem } from "@/hooks/use-problem";
 
 export function CopyButton() {
-  const { editor } = useProblemEditor();
+  const { editor } = useProblem();
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {

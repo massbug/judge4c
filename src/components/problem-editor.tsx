@@ -5,8 +5,8 @@ import { highlighter } from "@/lib/shiki";
 import type { editor } from "monaco-editor";
 import { Loading } from "@/components/loading";
 import { shikiToMonaco } from "@shikijs/monaco";
+import { useProblem } from "@/hooks/use-problem";
 import type { Monaco } from "@monaco-editor/react";
-import { useProblemEditor } from "@/hooks/use-problem-editor";
 import { DefaultEditorOptionConfig } from "@/config/editor-option";
 
 // Dynamically import Monaco Editor with SSR disabled
@@ -25,8 +25,7 @@ const Editor = dynamic(
 );
 
 export function CodeEditor() {
-
-  const { setEditor, currentLang, currentPath, currentTheme, currentValue, changeValue } = useProblemEditor();
+  const { setEditor, currentLang, currentPath, currentTheme, currentValue, changeValue } = useProblem();
 
   const handleBeforeMount = (monaco: Monaco) => {
     shikiToMonaco(highlighter, monaco);
@@ -34,7 +33,7 @@ export function CodeEditor() {
 
   const handleOnMount = (editor: editor.IStandaloneCodeEditor) => {
     setEditor(editor);
-  }
+  };
 
   const handleOnChange = (value: string | undefined) => {
     if (value === undefined) return;

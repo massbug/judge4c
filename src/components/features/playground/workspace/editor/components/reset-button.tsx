@@ -8,10 +8,10 @@ import {
 } from "@/components/ui/tooltip";
 import { RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useProblemEditor } from "@/hooks/use-problem-editor";
+import { useProblem } from "@/hooks/use-problem";
 
 export function ResetButton() {
-  const { editor, currentTemplate } = useProblemEditor();
+  const { editor, currentTemplate } = useProblem();
 
   const handleReset = () => {
     if (editor) {
