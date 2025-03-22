@@ -40,14 +40,14 @@ export function CredentialsSignInForm() {
   const onSubmit = (data: CredentialsSignInFormValues) => {
     startTransition(async () => {
       const result = await signInWithCredentials(data);
-      
+
       if (result?.error) {
         toast.error("Sign In Failed", {
           description: result.error,
         });
       } else {
         toast.success("Signed In Successfully");
-        router.push("/dashboard");
+        router.push("/");
       }
     });
   };
