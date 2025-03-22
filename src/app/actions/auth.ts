@@ -33,7 +33,7 @@ export async function signInWithCredentials(formData: CredentialsSignInFormValue
       throw new Error("Incorrect password.");
     }
 
-    await signIn("credentials", formData);
+    await signIn("credentials", { ...formData, redirect: false });
     return { success: true };
   } catch (error) {
     return { error: error instanceof Error ? error.message : "Failed to sign in. Please try again." };
