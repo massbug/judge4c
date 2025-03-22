@@ -49,7 +49,7 @@ export default async function ProblemsetPage() {
       </TableHeader>
       <tbody aria-hidden="true" className="table-row h-2"></tbody>
       <TableBody className="[&_td:first-child]:rounded-l-lg [&_td:last-child]:rounded-r-lg">
-        {problems.map((problem) => (
+        {problems.map((problem, index) => (
           <TableRow
             key={problem.id}
             className="odd:bg-muted/50 odd:hover:bg-muted/50 border-none hover:bg-transparent"
@@ -59,7 +59,7 @@ export default async function ProblemsetPage() {
                 href={`/problems/${problem.id}`}
                 className="hover:text-blue-500"
               >
-                {problem.id}
+                {index + 1}
               </Link>
             </TableCell>
             <TableCell className="py-2.5">
