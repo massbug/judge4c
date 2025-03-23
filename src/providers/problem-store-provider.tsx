@@ -37,7 +37,7 @@ export const ProblemStoreProvider = ({
     storeRef.current = createProblemStore({
       hydrated: false,
       editor: null,
-      monacoLanguageClient: null,
+      webSocket: null,
       globalLang: EditorLanguage.c,
       currentLang: EditorLanguage.c,
       currentValue: "",
