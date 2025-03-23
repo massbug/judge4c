@@ -61,7 +61,7 @@ export function CodeEditor() {
     try {
       const monacoLanguageClient = await connectToLanguageServer(
         currentEditorLanguageConfig,
-        currentLanguageServerConfig,
+        currentLanguageServerConfig
       );
       monacoLanguageClientRef.current = monacoLanguageClient;
       setMonacoLanguageClient(monacoLanguageClient);
@@ -92,23 +92,30 @@ export function CodeEditor() {
     };
   }, [setMonacoLanguageClient]);
 
+  const handleEditorWillMount = useCallback((monaco: Monaco) => {
+    shikiToMonaco(highlighter, monaco);
+  }, []);
+
+  const handleOnMount = useCallback(
+    async (editor: editor.IStandaloneCodeEditor) => {
+      setEditor(editor);
+      await connectLSP();
+    },
+    [setEditor, connectLSP]
+  );
+
+  const handleEditorChange = useCallback(
+    (value: string | undefined) => {
+      if (value !== undefined) {
+        changeValue(value);
+      }
+    },
+    [changeValue]
+  );
+
   if (!hydrated) {
     return <Loading />;
   }
-
-  const handleBeforeMount = (monaco: Monaco) => {
-    shikiToMonaco(highlighter, monaco);
-  };
-
-  const handleOnMount = async (editor: editor.IStandaloneCodeEditor) => {
-    setEditor(editor);
-    await connectLSP();
-  };
-
-  const handleOnChange = (value: string | undefined) => {
-    if (value === undefined) return;
-    changeValue(value);
-  };
 
   return (
     <Editor
@@ -116,9 +123,9 @@ export function CodeEditor() {
       theme={currentTheme}
       path={currentPath}
       value={currentValue}
-      beforeMount={handleBeforeMount}
+      beforeMount={handleEditorWillMount}
       onMount={handleOnMount}
-      onChange={handleOnChange}
+      onChange={handleEditorChange}
       options={DefaultEditorOptionConfig}
       loading={<Loading />}
       className="h-full w-full py-2"
