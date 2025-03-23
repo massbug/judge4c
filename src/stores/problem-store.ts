@@ -7,12 +7,11 @@ import type {
 import type { editor } from "monaco-editor";
 import { createStore } from "zustand/vanilla";
 import { createJSONStorage, persist } from "zustand/middleware";
-import type { MonacoLanguageClient } from "monaco-languageclient";
 
 export type ProblemState = {
   hydrated: boolean;
   editor: editor.IStandaloneCodeEditor | null;
-  monacoLanguageClient: MonacoLanguageClient | null;
+  webSocket: WebSocket | null;
   globalLang: EditorLanguage;
   currentLang: EditorLanguage;
   currentValue: string;
@@ -25,7 +24,7 @@ export type ProblemState = {
 export type ProblemActions = {
   setHydrated: (value: boolean) => void;
   setEditor: (editor: editor.IStandaloneCodeEditor) => void;
-  setMonacoLanguageClient: (client: MonacoLanguageClient | null) => void;
+  setWebSocket: (webSocket: WebSocket | null) => void;
   setGlobalLang: (lang: EditorLanguage) => void;
   setCurrentLang: (lang: EditorLanguage) => void;
   setCurrentValue: (value: string) => void;
@@ -40,7 +39,7 @@ export const createProblemStore = (initState: ProblemState) => {
         ...initState,
         setHydrated: (value) => set({ hydrated: value }),
         setEditor: (editor) => set({ editor }),
-        setMonacoLanguageClient: (client) => set({ monacoLanguageClient: client }),
+        setWebSocket: (webSocket) => set({ webSocket }),
         setGlobalLang: (lang) => set({ globalLang: lang }),
         setCurrentLang: (lang) => set({ currentLang: lang }),
         setCurrentValue: (value) => set({ currentValue: value }),
@@ -51,14 +50,12 @@ export const createProblemStore = (initState: ProblemState) => {
         partialize: (state) => ({
           globalLang: state.globalLang,
         }),
-        onRehydrateStorage: () => {
-          return (state, error) => {
-            if (error) {
-              console.error("An error happened during hydration", error);
-            } else if (state) {
-              state.setHydrated(true);
-            }
-          };
+        onRehydrateStorage: () => (state, error) => {
+          if (error) {
+            console.error("An error happened during hydration", error);
+          } else if (state) {
+            state.setHydrated(true);
+          }
         },
       }
     )
