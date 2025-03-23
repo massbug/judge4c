@@ -27,7 +27,7 @@ const Editor = dynamic(
   }
 );
 
-export function CodeEditor() {
+export function ProblemEditor() {
   const {
     hydrated,
     editor,
