@@ -8,15 +8,26 @@ import {
 } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { useProblem } from "@/hooks/use-problem";
-import type { MonacoLanguageClient } from "monaco-languageclient";
 
-const getLspStatusColor = (client: MonacoLanguageClient | null) => {
-  if (!client) return "bg-amber-500";
-  return client.isRunning() ? "bg-emerald-500" : "bg-red-500";
+const getLspStatusColor = (webSocket: WebSocket | null) => {
+  if (!webSocket) return "bg-gray-500";
+
+  switch (webSocket.readyState) {
+    case WebSocket.CONNECTING:
+      return "bg-yellow-500";
+    case WebSocket.OPEN:
+      return "bg-green-500";
+    case WebSocket.CLOSING:
+      return "bg-orange-500";
+    case WebSocket.CLOSED:
+      return "bg-red-500";
+    default:
+      return "bg-gray-500";
+  }
 };
 
 export function LspStatusButton() {
-  const { monacoLanguageClient } = useProblem();
+  const { webSocket } = useProblem();
 
   return (
     <TooltipProvider delayDuration={0}>
@@ -29,7 +40,7 @@ export function LspStatusButton() {
             <div className="h-3 w-3 flex items-center justify-center">
               <div
                 className={`h-1.5 w-1.5 rounded-full transition-all ${getLspStatusColor(
-                  monacoLanguageClient
+                  webSocket
                 )}`}
               />
             </div>
