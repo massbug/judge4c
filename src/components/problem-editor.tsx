@@ -32,7 +32,7 @@ export function CodeEditor() {
     hydrated,
     editor,
     setEditor,
-    setMonacoLanguageClient,
+    setWebSocket,
     currentLang,
     currentPath,
     currentTheme,
@@ -52,19 +52,19 @@ export function CodeEditor() {
     if (monacoLanguageClientRef.current) {
       monacoLanguageClientRef.current.stop();
       monacoLanguageClientRef.current = null;
-      setMonacoLanguageClient(null);
+      setWebSocket(null);
     }
 
     if (!currentEditorLanguageConfig || !currentLanguageServerConfig) return;
 
     // Create a new language client
     try {
-      const monacoLanguageClient = await connectToLanguageServer(
+      const { client: monacoLanguageClient, webSocket } = await connectToLanguageServer(
         currentEditorLanguageConfig,
         currentLanguageServerConfig
       );
       monacoLanguageClientRef.current = monacoLanguageClient;
-      setMonacoLanguageClient(monacoLanguageClient);
+      setWebSocket(webSocket);
     } catch (error) {
       console.error("Failed to connect to LSP:", error);
     }
@@ -73,7 +73,7 @@ export function CodeEditor() {
     currentLang,
     currentLanguageServerConfig,
     editor,
-    setMonacoLanguageClient,
+    setWebSocket,
   ]);
 
   // Reconnect to the LSP whenever language or lspConfig changes
@@ -87,10 +87,10 @@ export function CodeEditor() {
       if (monacoLanguageClientRef.current) {
         monacoLanguageClientRef.current.stop();
         monacoLanguageClientRef.current = null;
-        setMonacoLanguageClient(null);
+        setWebSocket(null);
       }
     };
-  }, [setMonacoLanguageClient]);
+  }, [setWebSocket]);
 
   const handleEditorWillMount = useCallback((monaco: Monaco) => {
     shikiToMonaco(highlighter, monaco);
