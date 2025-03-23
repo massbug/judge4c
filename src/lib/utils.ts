@@ -3,9 +3,12 @@ import { clsx, type ClassValue } from "clsx";
 import { EditorLanguageConfig } from "@prisma/client";
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
-export function getPath(editorLanguageConfig: EditorLanguageConfig) {
-  return `file:///${editorLanguageConfig.fileName}${editorLanguageConfig.fileExtension}`;
+export function getPath(
+  problemId: string,
+  editorLanguageConfig: EditorLanguageConfig
+) {
+  return `file:///${problemId}/${editorLanguageConfig.fileName}${editorLanguageConfig.fileExtension}`;
 }
