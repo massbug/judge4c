@@ -39,10 +39,12 @@ export const useProblem = () => {
   const {
     hydrated,
     editor,
+    monacoLanguageClient,
     globalLang,
     currentLang,
     currentValue,
     setEditor,
+    setMonacoLanguageClient,
     setGlobalLang,
     setCurrentLang,
     setCurrentValue,
@@ -109,7 +111,9 @@ export const useProblem = () => {
   return {
     hydrated,
     editor,
+    monacoLanguageClient,
     setEditor,
+    setMonacoLanguageClient,
     globalLang,
     currentLang,
     currentValue,
