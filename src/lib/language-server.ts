@@ -7,8 +7,7 @@ import { toSocket, WebSocketMessageReader, WebSocketMessageWriter } from "vscode
 // Create the WebSocket URL based on the protocol and port
 function createUrl(languageServerConfig: LanguageServerConfig): string {
   return normalizeUrl(
-    `${languageServerConfig.protocol}://${languageServerConfig.hostname}${
-      languageServerConfig.port ? `:${languageServerConfig.port}` : ""
+    `${languageServerConfig.protocol}://${languageServerConfig.hostname}${languageServerConfig.port ? `:${languageServerConfig.port}` : ""
     }${languageServerConfig.path || ""}`
   );
 }
@@ -34,9 +33,7 @@ async function createLanguageClient(
     },
     // create a language client connection from the JSON RPC connection on demand
     connectionProvider: {
-      get: () => {
-        return Promise.resolve(transports);
-      },
+      get: () => Promise.resolve(transports),
     },
   });
 }
@@ -45,7 +42,7 @@ async function createLanguageClient(
 export function connectToLanguageServer(
   editorLanguageConfig: EditorLanguageConfig,
   languageServerConfig: LanguageServerConfig
-): Promise<MonacoLanguageClient> {
+): Promise<{ client: MonacoLanguageClient; webSocket: WebSocket }> {
   const url = createUrl(languageServerConfig);
   const webSocket = new WebSocket(url);
 
@@ -57,14 +54,18 @@ export function connectToLanguageServer(
       const writer = new WebSocketMessageWriter(socket);
 
       try {
-        const languageClient = await createLanguageClient({ reader, writer }, editorLanguageConfig);
+        const languageClient = await createLanguageClient(
+          { reader, writer },
+          editorLanguageConfig
+        );
+
         // Start the language client
         languageClient.start();
 
         // Stop the language client when the reader closes
         reader.onClose(() => languageClient.stop());
 
-        resolve(languageClient);
+        resolve({ client: languageClient, webSocket });
       } catch (error) {
         reject(error);
       }
