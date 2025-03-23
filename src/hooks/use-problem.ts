@@ -69,8 +69,8 @@ export const useProblem = () => {
   );
 
   const currentPath = useMemo(
-    () => (currentEditorLanguageConfig ? getPath(currentEditorLanguageConfig) : ""),
-    [currentEditorLanguageConfig]
+    () => (currentEditorLanguageConfig ? getPath(problemId, currentEditorLanguageConfig) : ""),
+    [problemId, currentEditorLanguageConfig]
   );
 
   // On initialization, load the stored language and corresponding code content
