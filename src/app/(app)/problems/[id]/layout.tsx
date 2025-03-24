@@ -30,7 +30,7 @@ export default async function PlaygroundLayout({
   ] = await Promise.all([
     prisma.problem.findUnique({
       where: { id },
-      select: { templates: true },
+      include: { templates: true },
     }),
     prisma.editorLanguageConfig.findMany(),
     prisma.languageServerConfig.findMany(),
@@ -44,6 +44,7 @@ export default async function PlaygroundLayout({
     <div className="h-screen flex flex-col">
       <ProblemStoreProvider
         problemId={id}
+        problem={problemData}
         templates={problemData.templates ?? []}
         editorLanguageConfigs={editorLanguageConfigs}
         languageServerConfigs={languageServerConfigs}
