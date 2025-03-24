@@ -1,6 +1,12 @@
 "use client";
 
+import { useCallback } from "react";
 import { useChat } from "@ai-sdk/react";
+import {
+  ChatBubble,
+  ChatBubbleAvatar,
+  ChatBubbleMessage,
+} from "@/components/ui/chat/chat-bubble";
 import { SendHorizonal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useProblem } from "@/hooks/use-problem";
@@ -8,11 +14,10 @@ import MdxPreview from "@/components/mdx-preview";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { ChatMessageList } from "@/components/ui/chat/chat-message-list";
-import { ChatBubble, ChatBubbleAvatar, ChatBubbleMessage } from "@/components/ui/chat/chat-bubble";
 
 export default function AiBotPage() {
-  const { problemId, problem } = useProblem();
-  const { messages, input, handleInputChange, handleSubmit } = useChat({
+  const { problemId, problem, currentLang, currentValue } = useProblem();
+  const { messages, input, handleInputChange, setMessages, handleSubmit } = useChat({
     initialMessages: [
       {
         id: problemId,
@@ -22,6 +27,23 @@ export default function AiBotPage() {
     ],
   });
 
+  const handleFormSubmit = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault();
+      if (!input.trim()) return;
+
+      const currentCodeMessage = {
+        id: problemId,
+        role: "system" as const,
+        content: `Current code:\n\`\`\`${currentLang}\n${currentValue}\n\`\`\``,
+      };
+
+      setMessages([...messages, currentCodeMessage]);
+      handleSubmit();
+    },
+    [currentLang, currentValue, handleSubmit, input, messages, problemId, setMessages]
+  );
+
   return (
     <div className="h-full flex flex-col">
       <div className="flex-1">
@@ -29,8 +51,8 @@ export default function AiBotPage() {
           <ChatMessageList>
             {messages
               .filter((message) => message.role === "user" || message.role === "assistant")
-              .map((message, index) => (
-                <ChatBubble key={index} layout="ai">
+              .map((message) => (
+                <ChatBubble key={message.id} layout="ai">
                   <ChatBubbleAvatar src="" fallback={message.role === "user" ? "US" : "AI"} />
                   <ChatBubbleMessage layout="ai">
                     <MdxPreview source={message.content} />
@@ -42,7 +64,7 @@ export default function AiBotPage() {
         </ScrollArea>
       </div>
       <footer className="h-36 flex flex-none">
-        <form onSubmit={handleSubmit} className="w-full p-4 pt-0 relative">
+        <form onSubmit={handleFormSubmit} className="w-full p-4 pt-0 relative">
           <Textarea
             value={input}
             onChange={handleInputChange}
