@@ -40,12 +40,14 @@ export default async function PlaygroundLayout({
     return notFound();
   }
 
+  const { templates, ...problemWithoutTemplates } = problemData;
+
   return (
     <div className="h-screen flex flex-col">
       <ProblemStoreProvider
         problemId={id}
-        problem={problemData}
-        templates={problemData.templates ?? []}
+        problem={problemWithoutTemplates}
+        templates={templates}
         editorLanguageConfigs={editorLanguageConfigs}
         languageServerConfigs={languageServerConfigs}
       >
