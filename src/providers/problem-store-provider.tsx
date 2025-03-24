@@ -2,6 +2,7 @@
 
 import {
   EditorLanguage,
+  type Problem,
   type EditorLanguageConfig,
   type LanguageServerConfig,
   type Template,
@@ -19,6 +20,7 @@ export const ProblemStoreContext = createContext<ProblemStoreApi | undefined>(
 export interface ProblemStoreProviderProps {
   children: ReactNode;
   problemId: string;
+  problem: Problem;
   templates: Template[];
   editorLanguageConfigs: EditorLanguageConfig[];
   languageServerConfigs: LanguageServerConfig[];
@@ -27,6 +29,7 @@ export interface ProblemStoreProviderProps {
 export const ProblemStoreProvider = ({
   children,
   problemId,
+  problem,
   templates,
   editorLanguageConfigs,
   languageServerConfigs,
@@ -42,6 +45,7 @@ export const ProblemStoreProvider = ({
       currentLang: EditorLanguage.c,
       currentValue: "",
       problemId,
+      problem,
       templates,
       editorLanguageConfigs,
       languageServerConfigs,
