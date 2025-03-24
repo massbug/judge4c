@@ -45,9 +45,9 @@ const ExitCodeToast = ({
   message: string;
   colorClass: string;
 }) => (
-  <div className="bg-background text-foreground w-full rounded-md border px-4 py-3 shadow-lg sm:w-[var(--width)]">
+  <div className="bg-background text-foreground w-full rounded-md border px-4 py-1 shadow-lg sm:w-[var(--width)]">
     <div className="flex gap-2">
-      <div className="flex grow gap-3">
+      <div className="flex items-center grow gap-3">
         <Icon
           className={`mt-0.5 shrink-0 ${colorClass}`}
           size={16}
