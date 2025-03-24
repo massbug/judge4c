@@ -1,38 +1,35 @@
 "use client";
 
 import "@/style/mdx.css";
+import { cn } from "@/lib/utils";
 import "katex/dist/katex.min.css";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 // import rehypeSlug from "rehype-slug";
 import rehypePretty from "rehype-pretty-code";
-import { Pre } from "@/components/content/pre";
 import { Skeleton } from "@/components/ui/skeleton";
 import { serialize } from "next-mdx-remote/serialize";
 import { useCallback, useEffect, useState } from "react";
 import { CircleAlert, TriangleAlert } from "lucide-react";
 import { useMonacoTheme } from "@/hooks/use-monaco-theme";
 // import rehypeAutolinkHeadings from "rehype-autolink-headings";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { MdxComponents } from "@/components/content/mdx-components";
 import { MDXRemote, MDXRemoteSerializeResult } from "next-mdx-remote";
 
 interface MdxPreviewProps {
   source: string;
+  className?: string;
 }
 
-export default function MdxPreview({ source }: MdxPreviewProps) {
+export default function MdxPreview({
+  source,
+  className,
+}: MdxPreviewProps) {
   const { currentTheme } = useMonacoTheme();
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [mdxSource, setMdxSource] = useState<MDXRemoteSerializeResult | null>(null);
-
-  const components = {
-    // Define your custom components here
-    // For example:
-    // Test: ({ name }: { name: string }) => <p>Test Component: {name}</p>,
-    pre: Pre,
-  };
 
   const getMdxSource = useCallback(async () => {
     setIsLoading(true);
@@ -119,11 +116,8 @@ export default function MdxPreview({ source }: MdxPreviewProps) {
   }
 
   return (
-    <ScrollArea className="[&>[data-radix-scroll-area-viewport]]:max-h-[calc(100vh-132px)]">
-      <div className="markdown-body">
-        <MDXRemote {...mdxSource!} components={components} />
-      </div>
-      <ScrollBar orientation="horizontal" />
-    </ScrollArea>
+    <article className={cn("markdown-body", className)}>
+      <MDXRemote {...mdxSource!} components={MdxComponents} />
+    </article>
   );
 }
