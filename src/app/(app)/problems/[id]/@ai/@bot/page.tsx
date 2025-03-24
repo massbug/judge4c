@@ -3,6 +3,7 @@
 import { useChat } from "@ai-sdk/react";
 import { SendHorizonal } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useProblem } from "@/hooks/use-problem";
 import MdxPreview from "@/components/mdx-preview";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
@@ -10,21 +11,32 @@ import { ChatMessageList } from "@/components/ui/chat/chat-message-list";
 import { ChatBubble, ChatBubbleAvatar, ChatBubbleMessage } from "@/components/ui/chat/chat-bubble";
 
 export default function AiBotPage() {
-  const { messages, input, handleInputChange, handleSubmit } = useChat();
+  const { problemId, problem } = useProblem();
+  const { messages, input, handleInputChange, handleSubmit } = useChat({
+    initialMessages: [
+      {
+        id: problemId,
+        role: "system",
+        content: `Problem description:\n${problem.description}`,
+      },
+    ],
+  });
 
   return (
     <div className="h-full flex flex-col">
       <div className="flex-1">
         <ScrollArea className="[&>[data-radix-scroll-area-viewport]]:max-h-[calc(100vh-238px)]">
           <ChatMessageList>
-            {messages.map((message, index) => (
-              <ChatBubble key={index} layout="ai">
-                <ChatBubbleAvatar src="" fallback={message.role === "user" ? "US" : "AI"} />
-                <ChatBubbleMessage layout="ai">
-                  <MdxPreview source={message.content} />
-                </ChatBubbleMessage>
-              </ChatBubble>
-            ))}
+            {messages
+              .filter((message) => message.role === "user" || message.role === "assistant")
+              .map((message, index) => (
+                <ChatBubble key={index} layout="ai">
+                  <ChatBubbleAvatar src="" fallback={message.role === "user" ? "US" : "AI"} />
+                  <ChatBubbleMessage layout="ai">
+                    <MdxPreview source={message.content} />
+                  </ChatBubbleMessage>
+                </ChatBubble>
+              ))}
           </ChatMessageList>
           <ScrollBar orientation="horizontal" />
         </ScrollArea>
