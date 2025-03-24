@@ -8,10 +8,12 @@ interface ChatMessageListProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const ChatMessageList = React.forwardRef<HTMLDivElement, ChatMessageListProps>(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   ({ className, children, smooth = false, ...props }, _ref) => {
     const {
       scrollRef,
       isAtBottom,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       autoScrollEnabled,
       scrollToBottom,
       disableAutoScroll,
