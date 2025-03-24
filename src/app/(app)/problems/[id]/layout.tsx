@@ -75,3 +75,13 @@ export default async function PlaygroundLayout({
     </div>
   );
 }
+
+export async function generateStaticParams() {
+  const problems = await prisma.problem.findMany({
+    select: { id: true },
+  });
+
+  return problems.map((problem) => ({
+    id: problem.id,
+  }));
+}
