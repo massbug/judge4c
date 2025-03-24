@@ -90,11 +90,6 @@
 }
 
 .markdown-body {
-  box-sizing: border-box;
-  min-width: 200px;
-  max-width: 980px;
-  margin: 0 auto;
-  padding: 45px;
   font-family: "Fira Code";
   font-weight: 500;
   font-size: 14px;
@@ -107,12 +102,6 @@
   font-weight: 500;
   font-size: 14px;
   line-height: 20px;
-}
-
-@media (max-width: 768px) {
-  .markdown-body {
-    padding: 15px;
-  }
 }
 
 code[data-theme*=" "],
