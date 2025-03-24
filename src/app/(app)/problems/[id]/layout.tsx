@@ -13,6 +13,7 @@ interface PlaygroundLayoutProps {
   problem: React.ReactNode;
   workspace: React.ReactNode;
   terminal: React.ReactNode;
+  ai: React.ReactNode;
 }
 
 export default async function PlaygroundLayout({
@@ -20,6 +21,7 @@ export default async function PlaygroundLayout({
   problem,
   workspace,
   terminal,
+  ai,
 }: PlaygroundLayoutProps) {
   const { id } = await params;
 
@@ -54,11 +56,11 @@ export default async function PlaygroundLayout({
         <PlaygroundHeader />
         <main className="flex flex-grow overflow-y-hidden p-2.5 pt-0">
           <ResizablePanelGroup direction="horizontal" className="relative h-full flex">
-            <ResizablePanel defaultSize={50} className="border border-muted rounded-xl min-w-9">
+            <ResizablePanel defaultSize={30} className="border border-muted rounded-xl min-w-9">
               {problem}
             </ResizablePanel>
             <ResizableHandle className="mx-1 bg-transparent hover:bg-blue-500" />
-            <ResizablePanel defaultSize={50} className="min-w-9">
+            <ResizablePanel defaultSize={40} className="min-w-9">
               <ResizablePanelGroup direction="vertical">
                 <ResizablePanel defaultSize={50} className="border border-muted rounded-xl min-h-9">
                   {workspace}
@@ -68,6 +70,10 @@ export default async function PlaygroundLayout({
                   {terminal}
                 </ResizablePanel>
               </ResizablePanelGroup>
+            </ResizablePanel>
+            <ResizableHandle className="mx-1 bg-transparent hover:bg-blue-500" />
+            <ResizablePanel defaultSize={30} className="border border-muted rounded-xl min-w-9">
+              {ai}
             </ResizablePanel>
           </ResizablePanelGroup>
         </main>
