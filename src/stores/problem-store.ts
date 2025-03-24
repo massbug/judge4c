@@ -2,6 +2,7 @@ import type {
   EditorLanguage,
   EditorLanguageConfig,
   LanguageServerConfig,
+  Problem,
   Template,
 } from "@prisma/client";
 import type { editor } from "monaco-editor";
@@ -16,6 +17,7 @@ export type ProblemState = {
   currentLang: EditorLanguage;
   currentValue: string;
   problemId: string;
+  problem: Problem;
   templates: Template[];
   editorLanguageConfigs: EditorLanguageConfig[];
   languageServerConfigs: LanguageServerConfig[];
