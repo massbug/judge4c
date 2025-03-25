@@ -50,7 +50,7 @@ export default function AiBotPage() {
         {!messages.some((message) => message.role === "user" || message.role === "assistant") && (
           <div className="absolute bottom-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-muted-foreground flex flex-col items-center gap-2">
             <BotIcon />
-            <span>Asi Bot</span>
+            <span>Ask Bot</span>
             <span className="font-thin text-xs">Powered by Vercel Ai SDK</span>
           </div>
         )}
