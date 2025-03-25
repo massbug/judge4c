@@ -1,29 +1,12 @@
 <div align="center">
 
-# monaco-editor-lsp-next
+# Judge4c
 
-✨ A seamless Next.js integration of the Monaco Editor with robust LSP support – all without SSR hassles.
+✨ A full-stack, open-source online judge platform designed to elevate college programming education.
 
 ![demo](demo.png)
 
 </div>
-
-## ⚠️ LSP Configuration and Environment Variable Limitations
-
-**Warning: Pre-built Image LSP Configuration Limitations**
-
-The pre-built Docker image `cfngc4594/monaco-editor-lsp-next` is configured to connect exclusively to `ws://localhost:4594/clangd` and `ws://localhost:4595/clangd`. This is due to the LSP configuration being set via `NEXT_PUBLIC` environment variables during the image build process.
-
-* **Build-Time Freezing:** As per the Next.js [official documentation](https://nextjs.org/docs/pages/building-your-application/configuring/environment-variables#bundling-environment-variables-for-the-browser), `NEXT_PUBLIC` variables are frozen at build time, and subsequent changes are ineffective.
-* **Local LSP Server Dependency:** Therefore, the pre-built image can only connect to the specified local LSP servers.
-* **Custom Configuration Requirement:** If you wish to define your own LSP configuration via environment variables, you **cannot** use the pre-built image. Instead, you must:
-    * Clone the source code.
-    * Set your desired environment variables.
-    * Manually build the Docker image.
-
-**Upcoming Improvements (v0.0.1):**
-
-To address these limitations, v0.0.1 will implement the officially recommended API approach for retrieving LSP configurations, enabling runtime dynamic LSP server configuration without image rebuilding.
 
 ## ⚠️ WSL Users: Critical Configuration
 
@@ -33,10 +16,10 @@ When using Windows Subsystem for Linux (WSL), you **must** configure your networ
 
 #### 🔧 Mirror Mode Setup:
 
-1.  Open WSL settings ⚙️
-2.  Navigate to **Network** section 🌐
-3.  Select **Mirrored** mode 🔄
-4.  Restart WSL instance 💻
+1. Open WSL settings ⚙️
+2. Navigate to **Network** section 🌐
+3. Select **Mirrored** mode 🔄
+4. Restart WSL instance 💻
 
 Complete these steps before launching the editor for seamless LSP integration! 🎉
 
@@ -49,8 +32,8 @@ Deploy the project quickly using Docker. Follow the steps below:
 #### Step 1: Clone the Repository
 
 ```shell
-git clone https://github.com/cfngc4594/monaco-editor-lsp-next
-cd monaco-editor-lsp-next
+git clone https://github.com/massbug/judge4c
+cd judge4c
 ```
 
 #### Step 2: Install Dependencies
@@ -97,6 +80,19 @@ bun install
      ```sh
      AUTH_GITHUB_ID="your_github_client_id"
      AUTH_GITHUB_SECRET="your_github_client_secret"
+     ```
+
+   - **Authentication Callback URL**:
+     Set the base URL for authentication callbacks (typically your app's domain):
+     ```sh
+     AUTH_URL="http://localhost:3000"  # Replace with your production URL if deployed
+     ```
+   
+   - **OpenAI API Configuration** (Optional):
+     If you use OpenAI-based features, provide your API key and custom endpoint (if applicable):
+     ```sh
+     OPENAI_API_KEY="your_openai_api_key"              # Required for AI features
+     OPENAI_BASE_URL="your_openai_base_url_if_custom"  # Optional, for self-hosted proxies
      ```
 
 #### Step 4: Start the Application
