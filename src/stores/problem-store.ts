@@ -12,6 +12,7 @@ import { createJSONStorage, persist } from "zustand/middleware";
 export type ProblemState = {
   hydrated: boolean;
   editor: editor.IStandaloneCodeEditor | null;
+  markers: editor.IMarker[];
   webSocket: WebSocket | null;
   globalLang: EditorLanguage;
   currentLang: EditorLanguage;
@@ -26,6 +27,7 @@ export type ProblemState = {
 export type ProblemActions = {
   setHydrated: (value: boolean) => void;
   setEditor: (editor: editor.IStandaloneCodeEditor) => void;
+  setMarkers: (markers: editor.IMarker[]) => void;
   setWebSocket: (webSocket: WebSocket | null) => void;
   setGlobalLang: (lang: EditorLanguage) => void;
   setCurrentLang: (lang: EditorLanguage) => void;
@@ -41,6 +43,7 @@ export const createProblemStore = (initState: ProblemState) => {
         ...initState,
         setHydrated: (value) => set({ hydrated: value }),
         setEditor: (editor) => set({ editor }),
+        setMarkers: (markers) => set({ markers }),
         setWebSocket: (webSocket) => set({ webSocket }),
         setGlobalLang: (lang) => set({ globalLang: lang }),
         setCurrentLang: (lang) => set({ currentLang: lang }),
