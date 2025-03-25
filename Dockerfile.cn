@@ -1,0 +1,72 @@
+# syntax=docker.io/docker/dockerfile:1
+
+# 升级到 Node.js v20 或更高版本，以解决 `ReferenceError: File is not defined` 问题
+# 参考链接：https://github.com/vercel/next.js/discussions/56032
+FROM dockerp.com/node:22-alpine AS base
+
+# 仅在需要时安装依赖
+FROM base AS deps
+# 查看 https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine 了解为什么可能需要安装 libc6-compat。
+RUN sed -i 's#https\?://dl-cdn.alpinelinux.org/alpine#https://mirror.nju.edu.cn/alpine#g' /etc/apk/repositories && apk add --no-cache libc6-compat
+WORKDIR /app
+
+# 在安装依赖前复制 prisma 目录
+COPY prisma ./prisma
+
+# 根据使用的包管理工具安装依赖
+COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* bun.lock* .npmrc* ./
+RUN \
+    if [ -f yarn.lock ]; then yarn config set registry https://registry.npmmirror.com && yarn --frozen-lockfile; \
+    elif [ -f package-lock.json ]; then npm config set registry https://registry.npmmirror.com && npm ci; \
+    elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm config set registry https://registry.npmmirror.com && pnpm i --frozen-lockfile; \
+    elif [ -f bun.lock ] || [ -f bun.lockb ]; then npm config set registry https://registry.npmmirror.com && npm install -g bun && printf '[install]\nregistry = "https://registry.npmmirror.com/"\n' > bunfig.toml && bun install --frozen-lockfile; \
+    else echo "未找到锁文件。" && exit 1; \
+    fi
+
+# 仅在需要时重新构建源代码
+FROM base AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+
+# Next.js 会收集完全匿名的遥测数据，以了解一般使用情况。
+# 了解更多信息：https://nextjs.org/telemetry
+# 如果希望在构建时禁用遥测功能，请取消注释以下行。
+ENV NEXT_TELEMETRY_DISABLED=1
+
+RUN \
+    if [ -f yarn.lock ]; then yarn config set registry https://registry.npmmirror.com && yarn --frozen-lockfile; \
+    elif [ -f package-lock.json ]; then npm config set registry https://registry.npmmirror.com && npm ci; \
+    elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm config set registry https://registry.npmmirror.com && pnpm i --frozen-lockfile; \
+    elif [ -f bun.lock ] || [ -f bun.lockb ]; then npm config set registry https://registry.npmmirror.com && npm install -g bun && printf '[install]\nregistry = "https://registry.npmmirror.com/"\n' > bunfig.toml && bun run build; \
+    else echo "未找到锁文件。" && exit 1; \
+    fi
+
+# 生产环境镜像，复制所有文件并运行 Next.js
+FROM base AS runner
+WORKDIR /app
+
+# 安装 curl 工具，以确保健康检查正常运行
+RUN sed -i 's#https\?://dl-cdn.alpinelinux.org/alpine#https://mirror.nju.edu.cn/alpine#g' /etc/apk/repositories && apk add --no-cache curl
+
+ENV NODE_ENV=production
+# 如果希望在运行时禁用遥测功能，请取消注释以下行。
+ENV NEXT_TELEMETRY_DISABLED=1
+
+COPY --from=builder /app/public ./public
+
+# 自动利用输出跟踪功能以减少镜像大小
+# 参考：https://nextjs.org/docs/advanced-features/output-file-tracing
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+USER root
+
+EXPOSE 3000
+
+ENV PORT=3000
+
+# server.js 由 next build 在 standalone 输出模式下创建
+# 参考：https://nextjs.org/docs/pages/api-reference/config/next-config-js/output
+ENV HOSTNAME="0.0.0.0"
+CMD ["node", "server.js"]
