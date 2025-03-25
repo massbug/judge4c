@@ -40,6 +40,7 @@ export const ProblemStoreProvider = ({
     storeRef.current = createProblemStore({
       hydrated: false,
       editor: null,
+      markers: [],
       webSocket: null,
       globalLang: EditorLanguage.c,
       currentLang: EditorLanguage.c,
