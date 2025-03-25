@@ -1,4 +1,4 @@
-name: Build & Push Monaco Docker Image
+name: Build & Push Judge4c Docker Image
 
 on:
   push:
@@ -6,12 +6,12 @@ on:
       - main
 
 jobs:
-  build-and-push-monaco-docker-image:
+  build-and-push-judge4c-docker-image:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         include:
-          - image: monaco-editor-lsp-next
+          - image: judge4c
             context: .
             file: Dockerfile
 
