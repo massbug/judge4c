@@ -5,9 +5,9 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { SettingsDialog } from "@/components/settings-dialog";
 
 export const metadata: Metadata = {
-  title: "monaco-editor-lsp-next",
+  title: "Judge4c",
   description:
-    "A Next.js integration of Monaco Editor with LSP support, free from SSR issues",
+    "A full-stack, open-source online judge platform designed to elevate college programming education.",
 };
 
 interface RootLayoutProps {
