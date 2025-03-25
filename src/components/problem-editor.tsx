@@ -32,6 +32,7 @@ export function ProblemEditor() {
     hydrated,
     editor,
     setEditor,
+    setMarkers,
     setWebSocket,
     currentLang,
     currentPath,
@@ -113,6 +114,13 @@ export function ProblemEditor() {
     [changeValue]
   );
 
+  const handleEditorValidation = useCallback(
+    (markers: editor.IMarker[]) => {
+      setMarkers(markers);
+    },
+    [setMarkers]
+  );
+
   if (!hydrated) {
     return <Loading />;
   }
@@ -126,6 +134,7 @@ export function ProblemEditor() {
       beforeMount={handleEditorWillMount}
       onMount={handleOnMount}
       onChange={handleEditorChange}
+      onValidate={handleEditorValidation}
       options={DefaultEditorOptionConfig}
       loading={<Loading />}
       className="h-full w-full py-2"
