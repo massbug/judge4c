@@ -103,6 +103,12 @@ Once the environment variables are configured, start the application using Docke
 docker compose up -d --build
 ```
 
+For Chinese users:
+
+```sh
+docker compose -f compose.cn.yml up -d --build
+```
+
 #### Step 5: Access the Application
 
 The application should now be running. You can access it at:
