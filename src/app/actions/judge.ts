@@ -1,5 +1,6 @@
 "use server";
 
+import fs from "fs";
 import tar from "tar-stream";
 import Docker from "dockerode";
 import prisma from "@/lib/prisma";
@@ -9,8 +10,19 @@ import { redirect } from "next/navigation";
 import { Readable, Writable } from "stream";
 import { ExitCode, EditorLanguage, JudgeResult } from "@prisma/client";
 
+const isRemote = process.env.DOCKER_HOST_MODE === "remote";
+
 // Docker client initialization
-const docker = new Docker({ socketPath: "/var/run/docker.sock" });
+const docker = isRemote
+  ? new Docker({
+    protocol: process.env.DOCKER_REMOTE_PROTOCOL as "https" | "http" | "ssh" | undefined,
+    host: process.env.DOCKER_REMOTE_HOST,
+    port: process.env.DOCKER_REMOTE_PORT,
+    ca: fs.readFileSync(process.env.DOCKER_REMOTE_CA_PATH || "/certs/ca.pem"),
+    cert: fs.readFileSync(process.env.DOCKER_REMOTE_CERT_PATH || "/certs/cert.pem"),
+    key: fs.readFileSync(process.env.DOCKER_REMOTE_KEY_PATH || "/certs/key.pem"),
+  })
+  : new Docker({ socketPath: "/var/run/docker.sock" });
 
 // Prepare Docker image environment
 async function prepareEnvironment(image: string, tag: string) {
