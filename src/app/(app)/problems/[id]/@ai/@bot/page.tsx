@@ -2,11 +2,6 @@
 
 import { useCallback } from "react";
 import { useChat } from "@ai-sdk/react";
-import {
-  ChatBubble,
-  ChatBubbleAvatar,
-  ChatBubbleMessage,
-} from "@/components/ui/chat/chat-bubble";
 import { Button } from "@/components/ui/button";
 import { useProblem } from "@/hooks/use-problem";
 import MdxPreview from "@/components/mdx-preview";
@@ -14,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { BotIcon, SendHorizonal } from "lucide-react";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { ChatMessageList } from "@/components/ui/chat/chat-message-list";
+import { ChatBubble, ChatBubbleMessage } from "@/components/ui/chat/chat-bubble";
 
 export default function AiBotPage() {
   const { problemId, problem, currentLang, currentValue } = useProblem();
@@ -54,13 +50,12 @@ export default function AiBotPage() {
             <span className="font-thin text-xs">Powered by Vercel Ai SDK</span>
           </div>
         )}
-        <ScrollArea className="[&>[data-radix-scroll-area-viewport]]:max-h-[calc(100vh-238px)]">
+        <ScrollArea className="[&>[data-radix-scroll-area-viewport]]:max-h-[calc(100vh-238px)] [&>[data-radix-scroll-area-viewport]>div:min-w-0 [&>[data-radix-scroll-area-viewport]>div]:!block">
           <ChatMessageList>
             {messages
               .filter((message) => message.role === "user" || message.role === "assistant")
               .map((message) => (
-                <ChatBubble key={message.id} layout="ai">
-                  <ChatBubbleAvatar src="" fallback={message.role === "user" ? "US" : "AI"} />
+                <ChatBubble key={message.id} layout="ai" className="border-b pb-4">
                   <ChatBubbleMessage layout="ai">
                     <MdxPreview source={message.content} />
                   </ChatBubbleMessage>
