@@ -4,9 +4,10 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { CheckIcon, CopyIcon } from "lucide-react";
 import { ReactNode, useRef, useState } from "react";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 interface PreProps {
-  children?: ReactNode,
+  children?: ReactNode;
   className?: string;
 }
 
@@ -53,7 +54,7 @@ export function Pre({
         <div
           className={cn(
             "transition-all",
-            copied ? "scale-100 opacity-100" : "scale-0 opacity-0",
+            copied ? "scale-100 opacity-100" : "scale-0 opacity-0"
           )}
         >
           <CheckIcon className="stroke-emerald-500" size={16} aria-hidden="true" />
@@ -61,15 +62,18 @@ export function Pre({
         <div
           className={cn(
             "absolute transition-all",
-            copied ? "scale-0 opacity-0" : "scale-100 opacity-100",
+            copied ? "scale-0 opacity-0" : "scale-100 opacity-100"
           )}
         >
           <CopyIcon size={16} aria-hidden="true" />
         </div>
       </Button>
-      <pre ref={preRef} className={className} {...props}>
-        {children}
-      </pre>
+      <ScrollArea>
+        <pre ref={preRef} className={className} {...props}>
+          {children}
+        </pre>
+        <ScrollBar orientation="horizontal" />
+      </ScrollArea>
     </div>
   );
 }
