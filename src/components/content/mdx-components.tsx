@@ -1,5 +1,6 @@
 import { HTMLAttributes } from "react";
 import { Pre } from "@/components/content/pre";
+import { AccordionComponent } from "@/components/content/accordion";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 export const MdxComponents = {
@@ -16,4 +17,5 @@ export const MdxComponents = {
       <ScrollBar orientation="horizontal" />
     </ScrollArea>
   ),
+  Accordion: AccordionComponent,
 };
