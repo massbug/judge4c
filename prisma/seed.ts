@@ -71,6 +71,8 @@ You may assume that each input would have **exactly one solution**, and you may 
 
 You can return the answer in any order.
 
+<VideoEmbed platform="bilibili" id="BV1TC411b7H8" />
+
 ## Examples
 
 ### Example 1
@@ -113,10 +115,24 @@ Output: [0,1]
 Only one valid answer exists.
 </div>
 
+**Follow-up:** Can you come up with an algorithm that is less than $O(n^2)$ time complexity?
+
 ---
 
-**Follow-up:** Can you come up with an algorithm that is less than $O(n^2)$ time complexity?`,
-          solution: `## Approach 1: Brute Force
+<Accordion title="Hint 1">
+A really brute force way would be to search for all possible pairs of numbers but that would be too slow. Again, it's best to try out brute force solutions for just for completeness. It is from these brute force solutions that you can come up with optimizations.
+</Accordion>
+
+<Accordion title="Hint 2">
+So, if we fix one of the numbers, say \`x\`, we have to scan the entire array to find the next number \`y\` which is \`value - x\` where value is the input parameter. Can we change our array somehow so that this search becomes faster?
+</Accordion>
+
+<Accordion title="Hint 3">
+The second train of thought is, without changing the array, can we use additional space somehow? Like maybe a hash map to speed up the search?
+</Accordion>`,
+          solution: `<VideoEmbed platform="youtube" id="tSI98g3PDyE" />
+
+## Approach 1: Brute Force
 
 ### Algorithm
 
@@ -313,6 +329,8 @@ You may assume the two numbers do not contain any leading zero, except the numbe
 
 ### Example 1
 
+![Example 1](https://assets.leetcode.com/uploads/2020/10/02/addtwonumber1.jpg)
+
 \`\`\`shell
 Input: l1 = [2,4,3], l2 = [5,6,4]
 Output: [7,0,8]
@@ -351,6 +369,8 @@ It is guaranteed that the list represents a number that does not have leading ze
 ### Intuition
 
 Keep track of the carry using a variable and simulate digits-by-digits sum starting from the head of list, which contains the least-significant digit.
+
+![Figure 1](https://leetcode.com/problems/add-two-numbers/Figures/2_add_two_numbers.svg)
 
 *Figure 1. Visualization of the addition of two numbers: $342 + 465 = 807$.*
 
