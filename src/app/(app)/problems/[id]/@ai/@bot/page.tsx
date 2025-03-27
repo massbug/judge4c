@@ -1,5 +1,6 @@
 "use client";
 
+import { toast } from "sonner";
 import { useCallback } from "react";
 import { useChat } from "@ai-sdk/react";
 import { Button } from "@/components/ui/button";
@@ -10,6 +11,7 @@ import { BotIcon, SendHorizonal } from "lucide-react";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { ChatMessageList } from "@/components/ui/chat/chat-message-list";
 import { ChatBubble, ChatBubbleMessage } from "@/components/ui/chat/chat-bubble";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 export default function AiBotPage() {
   const { problemId, problem, currentLang, currentValue } = useProblem();
@@ -70,12 +72,34 @@ export default function AiBotPage() {
           <Textarea
             value={input}
             onChange={handleInputChange}
+            onKeyDown={(e) => {
+              if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+                e.preventDefault();
+                if (input.trim()) {
+                  handleFormSubmit(e);
+                } else {
+                  toast.error("Input cannot be empty");
+                }
+              }
+            }}
             className="h-full bg-muted border-transparent shadow-none rounded-lg"
             placeholder="Bot will automatically get your current code"
           />
-          <Button type="submit" variant="ghost" className="absolute bottom-6 right-6 h-6 w-auto px-2" aria-label="Send Message">
-            <SendHorizonal className="size-4" />
-          </Button>
+          <TooltipProvider delayDuration={0}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  type="submit"
+                  variant="ghost"
+                  className="absolute bottom-6 right-6 h-6 w-auto px-2"
+                  aria-label="Send Message"
+                >
+                  <SendHorizonal className="size-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent className="px-2 py-1 text-xs">Ctrl + Enter</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </form>
       </footer>
     </div>
