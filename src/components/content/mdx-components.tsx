@@ -1,5 +1,6 @@
 import { HTMLAttributes } from "react";
 import { Pre } from "@/components/content/pre";
+import { VideoEmbed } from "@/components/content/video-embed";
 import { AccordionComponent } from "@/components/content/accordion";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
@@ -18,4 +19,5 @@ export const MdxComponents = {
     </ScrollArea>
   ),
   Accordion: AccordionComponent,
+  VideoEmbed,
 };
