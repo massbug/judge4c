@@ -28,7 +28,10 @@ export default function AiBotPage() {
   const handleFormSubmit = useCallback(
     (e: React.FormEvent) => {
       e.preventDefault();
-      if (!input.trim()) return;
+      if (!input.trim()) {
+        toast.error("Input cannot be empty");
+        return;
+      }
 
       const currentCodeMessage = {
         id: problemId,
