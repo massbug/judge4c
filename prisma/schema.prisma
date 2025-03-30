@@ -39,6 +39,7 @@ enum Difficulty {
 
 model Problem {
   id          String     @id @default(cuid())
+  displayId   Int        @unique
   title       String
   description String
   solution    String
@@ -102,14 +103,14 @@ model Template {
 }
 
 enum ExitCode {
-  SE  // System Error
-  CS  // Compilation Success
-  CE  // Compilation Error
+  SE // System Error
+  CS // Compilation Success
+  CE // Compilation Error
   TLE // Time Limit Exceeded
   MLE // Memory Limit Exceeded
-  RE  // Runtime Error
-  AC  // Accepted
-  WA  // Wrong Answer
+  RE // Runtime Error
+  AC // Accepted
+  WA // Wrong Answer
 }
 
 model JudgeResult {
