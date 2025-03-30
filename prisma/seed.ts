@@ -64,6 +64,7 @@ const userData: Prisma.UserCreateInput[] = [
     problems: {
       create: [
         {
+          displayId: 1000,
           title: "Two Sum",
           description: `Given an array of integers \`nums\` and an integer \`target\`, return indices of the two numbers such that they add up to \`target\`.
 
@@ -320,6 +321,7 @@ public:
           },
         },
         {
+          displayId: 1001,
           title: "Add Two Numbers",
           description: `You are given two **non-empty** linked lists representing two non-negative integers. The digits are stored in **reverse order**, and each of their nodes contains a single digit. Add the two numbers and return the sum as a linked list.
 
@@ -508,6 +510,7 @@ public:
     problems: {
       create: [
         {
+          displayId: 1002,
           title: "Median of Two Sorted Arrays",
           description: `Given two sorted arrays \`nums1\` and \`nums2\` of size \`m\` and \`n\` respectively, return **the median** of the two sorted arrays.
 
