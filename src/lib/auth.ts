@@ -34,7 +34,9 @@ const createSession = async (userId: string) => {
 export const { auth, handlers, signIn, signOut } = NextAuth({
   adapter,
   providers: [
-    GitHub,
+    GitHub({
+      allowDangerousEmailAccountLinking: true,
+    }),
     Credentials({
       credentials: {
         email: {},
