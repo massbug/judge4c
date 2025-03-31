@@ -64,7 +64,7 @@ function createTarStream(file: string, value: string) {
 
 export async function judge(
   language: EditorLanguage,
-  value: string
+  value: string,
 ): Promise<JudgeResult> {
   const session = await auth();
   if (!session) redirect("/sign-in");
@@ -230,13 +230,14 @@ async function compile(
 async function run(
   container: Docker.Container,
   fileName: string,
-  timeLimit?: number,
-  maxOutput: number = 1 * 1024 * 1024
+  timeLimit: number = 1000,
+  maxOutput: number = 1 * 1024 * 1024,
 ): Promise<JudgeResult> {
   const runExec = await container.exec({
     Cmd: [`./${fileName}`],
     AttachStdout: true,
     AttachStderr: true,
+    AttachStdin: true,
   });
 
   return new Promise<JudgeResult>((resolve, reject) => {
@@ -277,10 +278,13 @@ async function run(
     });
 
     // Start the exec stream
-    runExec.start({}, (error, stream) => {
+    runExec.start({ hijack: true }, (error, stream) => {
       if (error || !stream) {
         return reject({ output: "System Error", exitCode: ExitCode.SE });
       }
+
+      stream.write("[2,7,11,15]\n9\n[3,2,4]\n6\n[3,3]\n6");
+      stream.end();
 
       docker.modem.demuxStream(stream, stdoutStream, stderrStream);
 
