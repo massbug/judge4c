@@ -1,5 +1,5 @@
-import { EditorLanguage } from "@prisma/client";
 import { MonacoTheme } from "@/types/monaco-theme";
+import { EditorLanguage } from "@/generated/client";
 import { createHighlighter, Highlighter } from "shiki";
 
 // Get all values from the ProgrammingLanguage and Theme enums

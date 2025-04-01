@@ -1,5 +1,5 @@
 import { auth } from "@/lib/auth";
-import { User } from "@prisma/client";
+import { User } from "@/generated/client";
 import { notFound, redirect } from "next/navigation";
 
 interface DashboardLayoutProps {

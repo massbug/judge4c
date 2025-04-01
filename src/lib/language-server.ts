@@ -1,7 +1,7 @@
 import normalizeUrl from "normalize-url";
 import type { MessageTransports } from "vscode-languageclient";
 import type { MonacoLanguageClient } from "monaco-languageclient";
-import { EditorLanguageConfig, LanguageServerConfig } from "@prisma/client";
+import { EditorLanguageConfig, LanguageServerConfig } from "@/generated/client";
 import { toSocket, WebSocketMessageReader, WebSocketMessageWriter } from "vscode-ws-jsonrpc";
 
 // Create the WebSocket URL based on the protocol and port

@@ -1,4 +1,4 @@
-import { EditorLanguage } from "@prisma/client";
+import { EditorLanguage } from "@/generated/client";
 import { COriginal, CplusplusOriginal } from "devicons-react";
 
 // Mapping between EditorLanguage and icons

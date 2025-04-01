@@ -6,7 +6,7 @@ import {
   XIcon,
 } from "lucide-react";
 import { toast } from "sonner";
-import { ExitCode } from "@prisma/client";
+import { ExitCode } from "@/generated/client";
 import { Button } from "@/components/ui/button";
 
 const getColorClass = (code: ExitCode) => {

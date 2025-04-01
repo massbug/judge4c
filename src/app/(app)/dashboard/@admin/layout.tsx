@@ -4,7 +4,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { auth } from "@/lib/auth";
-import { User } from "@prisma/client";
+import { User } from "@/generated/client";
 import { redirect } from "next/navigation";
 import { Navbar } from "@/components/navbar";
 import { AppSidebar } from "@/components/app-sidebar";

@@ -4,7 +4,7 @@ import type {
   LanguageServerConfig,
   Problem,
   Template,
-} from "@prisma/client";
+} from "@/generated/client";
 import type { editor } from "monaco-editor";
 import { createStore } from "zustand/vanilla";
 import { createJSONStorage, persist } from "zustand/middleware";

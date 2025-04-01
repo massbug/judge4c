@@ -1,4 +1,4 @@
-import { PrismaClient, Prisma, EditorLanguage, LanguageServerProtocol } from "@prisma/client";
+import { PrismaClient, Prisma, EditorLanguage, LanguageServerProtocol } from "@/generated/client";
 
 const prisma = new PrismaClient();
 

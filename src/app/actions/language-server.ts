@@ -1,7 +1,7 @@
 "use server";
 
 import prisma from "@/lib/prisma";
-import { EditorLanguage } from "@prisma/client";
+import { EditorLanguage } from "@/generated/client";
 import { SettingsLanguageServerFormValues } from "@/app/(app)/dashboard/@admin/settings/language-server/form";
 
 export const getLanguageServerConfig = async (language: EditorLanguage) => {

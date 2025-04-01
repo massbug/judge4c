@@ -22,7 +22,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { EditorLanguage, LanguageServerProtocol } from "@prisma/client";
+import { EditorLanguage, LanguageServerProtocol } from "@/generated/client";
 import { handleLanguageServerConfigSubmit } from "@/app/actions/language-server";
 
 const settingsLanguageServerFormSchema = z.object({

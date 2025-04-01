@@ -1,4 +1,4 @@
-import { EditorLanguage } from "@prisma/client";
+import { EditorLanguage } from "@/generated/client";
 import { getLanguageServerConfig } from "@/app/actions/language-server";
 import { LanguageServerAccordion } from "@/app/(app)/dashboard/@admin/settings/language-server/accordion";
 

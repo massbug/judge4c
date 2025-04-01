@@ -8,7 +8,7 @@ import { v4 as uuid } from "uuid";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { Readable, Writable } from "stream";
-import { ExitCode, EditorLanguage, JudgeResult } from "@prisma/client";
+import { ExitCode, EditorLanguage, JudgeResult } from "@/generated/client";
 
 const isRemote = process.env.DOCKER_HOST_MODE === "remote";
 

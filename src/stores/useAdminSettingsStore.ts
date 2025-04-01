@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { EditorLanguage } from "@prisma/client";
+import { EditorLanguage } from "@/generated/client";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { DEFAULT_EDITOR_LANGUAGE } from "@/config/editor-language";
 

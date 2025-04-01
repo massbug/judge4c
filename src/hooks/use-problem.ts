@@ -1,5 +1,5 @@
 import { getPath } from "@/lib/utils";
-import { EditorLanguage } from "@prisma/client";
+import { EditorLanguage } from "@/generated/client";
 import { useCallback, useEffect, useMemo } from "react";
 import { useMonacoTheme } from "@/hooks/use-monaco-theme";
 import { useProblemStore } from "@/providers/problem-store-provider";

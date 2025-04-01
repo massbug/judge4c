@@ -79,7 +79,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useMemo, useRef, useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Difficulty, Problem } from "@prisma/client";
+import { Difficulty, Problem } from "@/generated/client";
 import { cn, getDifficultyColorClass } from "@/lib/utils";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 

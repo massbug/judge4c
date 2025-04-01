@@ -7,8 +7,8 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Loading } from "@/components/loading";
-import { EditorLanguage, LanguageServerConfig } from "@prisma/client";
 import { useAdminSettingsStore } from "@/stores/useAdminSettingsStore";
+import { EditorLanguage, LanguageServerConfig } from "@/generated/client";
 import { SettingsLanguageServerForm } from "@/app/(app)/dashboard/@admin/settings/language-server/form";
 
 interface LanguageServerAccordionProps {
