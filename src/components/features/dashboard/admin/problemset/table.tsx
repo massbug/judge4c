@@ -16,6 +16,7 @@ import {
   PlusIcon,
   TrashIcon,
 } from "lucide-react";
+import Link from "next/link";
 import {
   Table,
   TableBody,
@@ -406,13 +407,15 @@ export function ProblemsetTable({ data }: ProblemTableProps) {
               </AlertDialogContent>
             </AlertDialog>
           )}
-          <Button className="ml-auto" variant="outline">
-            <PlusIcon
-              className="-ms-1 opacity-60"
-              size={16}
-              aria-hidden="true"
-            />
-            Add Problem
+          <Button className="ml-auto" variant="outline" asChild>
+            <Link href="/dashboard/problemset/new">
+              <PlusIcon
+                className="-ms-1 opacity-60"
+                size={16}
+                aria-hidden="true"
+              />
+              Add Problem
+            </Link>
           </Button>
         </div>
       </div>
