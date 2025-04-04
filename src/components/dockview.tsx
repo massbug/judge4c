@@ -43,7 +43,7 @@ const DefaultTab = ({ params }: IDockviewPanelHeaderProps<{ title: string }>) =>
   const Icon = PanelIcons[title];
 
   return (
-    <div className="flex items-center text-sm font-medium">
+    <div className="flex items-center px-1 text-sm font-medium">
       {Icon && (
         <Icon
           className="-ms-0.5 me-1.5 opacity-60"

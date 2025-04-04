@@ -1,28 +1,28 @@
 import prisma from "@/lib/prisma";
-import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from "@/components/ui/resizable";
 import { notFound } from "next/navigation";
+import DockView from "@/components/dockview";
 import { ProblemStoreProvider } from "@/providers/problem-store-provider";
 import { PlaygroundHeader } from "@/components/features/playground/header";
 
-interface PlaygroundLayoutProps {
+interface ProblemProps {
   params: Promise<{ id: string }>;
-  problem: React.ReactNode;
-  workspace: React.ReactNode;
-  terminal: React.ReactNode;
-  ai: React.ReactNode;
+  Description: React.ReactNode;
+  Solutions: React.ReactNode;
+  Submissions: React.ReactNode;
+  Code: React.ReactNode;
+  Testcase: React.ReactNode;
+  TestResult: React.ReactNode;
 }
 
-export default async function PlaygroundLayout({
+export default async function ProblemLayout({
   params,
-  problem,
-  workspace,
-  terminal,
-  ai,
-}: PlaygroundLayoutProps) {
+  Description,
+  Solutions,
+  Submissions,
+  Code,
+  Testcase,
+  TestResult,
+}: ProblemProps) {
   const { id } = await params;
 
   const [
@@ -45,7 +45,7 @@ export default async function PlaygroundLayout({
   const { templates, ...problemWithoutTemplates } = problemData;
 
   return (
-    <div className="h-screen flex flex-col">
+    <div className="flex flex-col h-screen">
       <ProblemStoreProvider
         problemId={id}
         problem={problemWithoutTemplates}
@@ -55,27 +55,14 @@ export default async function PlaygroundLayout({
       >
         <PlaygroundHeader />
         <main className="flex flex-grow overflow-y-hidden p-2.5 pt-0">
-          <ResizablePanelGroup direction="horizontal" className="relative h-full flex">
-            <ResizablePanel defaultSize={30} className="border border-muted rounded-xl min-w-9">
-              {problem}
-            </ResizablePanel>
-            <ResizableHandle className="mx-1 bg-transparent hover:bg-blue-500" />
-            <ResizablePanel defaultSize={40} className="min-w-9">
-              <ResizablePanelGroup direction="vertical">
-                <ResizablePanel defaultSize={50} className="border border-muted rounded-xl min-h-9">
-                  {workspace}
-                </ResizablePanel>
-                <ResizableHandle className="my-1 bg-transparent hover:bg-blue-500" />
-                <ResizablePanel defaultSize={50} className="border border-muted rounded-xl min-h-9">
-                  {terminal}
-                </ResizablePanel>
-              </ResizablePanelGroup>
-            </ResizablePanel>
-            <ResizableHandle className="mx-1 bg-transparent hover:bg-blue-500" />
-            <ResizablePanel defaultSize={30} className="border border-muted rounded-xl min-w-9">
-              {ai}
-            </ResizablePanel>
-          </ResizablePanelGroup>
+          <DockView
+            Description={Description}
+            Solutions={Solutions}
+            Submissions={Submissions}
+            Code={Code}
+            Testcase={Testcase}
+            TestResult={TestResult}
+          />
         </main>
       </ProblemStoreProvider>
     </div>

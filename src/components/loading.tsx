@@ -12,7 +12,7 @@ export function Loading({
   ...props
 }: LoadingProps) {
   return (
-    <div className={cn("h-full w-full p-2", className)} {...props}>
+    <div className={cn("h-full w-full p-2 bg-background", className)} {...props}>
       <Skeleton className={cn("h-full w-full rounded-3xl", skeletonClassName)} />
     </div>
   );

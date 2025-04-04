@@ -19,6 +19,9 @@ export const DefaultEditorOptionConfig: editor.IEditorConstructionOptions = {
   hover: {
     above: false,
   },
+  padding: {
+    top: 8,
+  },
   scrollbar: {
     horizontalSliderSize: 10,
     verticalSliderSize: 10,

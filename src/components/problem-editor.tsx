@@ -137,7 +137,7 @@ export function ProblemEditor() {
       onValidate={handleEditorValidation}
       options={DefaultEditorOptionConfig}
       loading={<Loading />}
-      className="h-full w-full py-2"
+      className="h-full w-full"
     />
   );
 }

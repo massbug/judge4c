@@ -37,6 +37,7 @@
         "clsx": "^2.1.1",
         "devicons-react": "^1.4.0",
         "dockerode": "^4.0.4",
+        "dockview": "^4.2.1",
         "github-markdown-css": "^5.8.1",
         "lucide-react": "^0.482.0",
         "monaco-editor": "<=0.36.1",
@@ -716,6 +717,10 @@
     "docker-modem": ["docker-modem@5.0.6", "https://registry.npmmirror.com/docker-modem/-/docker-modem-5.0.6.tgz", { "dependencies": { "debug": "^4.1.1", "readable-stream": "^3.5.0", "split-ca": "^1.0.1", "ssh2": "^1.15.0" } }, "sha512-ens7BiayssQz/uAxGzH8zGXCtiV24rRWXdjNha5V4zSOcxmAZsfGVm/PPFbwQdqEkDnhG+SyR9E3zSHUbOKXBQ=="],
 
     "dockerode": ["dockerode@4.0.4", "https://registry.npmmirror.com/dockerode/-/dockerode-4.0.4.tgz", { "dependencies": { "@balena/dockerignore": "^1.0.2", "@grpc/grpc-js": "^1.11.1", "@grpc/proto-loader": "^0.7.13", "docker-modem": "^5.0.6", "protobufjs": "^7.3.2", "tar-fs": "~2.0.1", "uuid": "^10.0.0" } }, "sha512-6GYP/EdzEY50HaOxTVTJ2p+mB5xDHTMJhS+UoGrVyS6VC+iQRh7kZ4FRpUYq6nziby7hPqWhOrFFUFTMUZJJ5w=="],
+
+    "dockview": ["dockview@4.2.1", "https://registry.npmmirror.com/dockview/-/dockview-4.2.1.tgz", { "dependencies": { "dockview-core": "^4.2.1" }, "peerDependencies": { "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0" } }, "sha512-P6T4JiM5yuHa8JH0E/BuPpCv8EMLDoCXtvS169ITRRKfgi+zF98AUrnhW8F+FOXV6QS/5Dtt9ca5YxWgtcQsOQ=="],
+
+    "dockview-core": ["dockview-core@4.2.1", "https://registry.npmmirror.com/dockview-core/-/dockview-core-4.2.1.tgz", {}, "sha512-KaEOMzMdQvWB9e3iRQf9BqerB1sX43wAIhla5uGzkA+irag9wz0F5bkVZyJ5mVqJgqrQdWh+W8j94+L2wY0AmA=="],
 
     "doctrine": ["doctrine@2.1.0", "https://registry.npmmirror.com/doctrine/-/doctrine-2.1.0.tgz", { "dependencies": { "esutils": "^2.0.2" } }, "sha512-35mSku4ZXK0vfCuHEDAwt55dg2jNajHZ1odvF+8SSr82EsZY4QmXfuWso8oEd8zRhVObSN18aM0CjSdoBX7zIw=="],
 
