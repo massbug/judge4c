@@ -23,7 +23,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EditorLanguage, LanguageServerProtocol } from "@/generated/client";
-import { handleLanguageServerConfigSubmit } from "@/app/actions/language-server";
+import { handleLanguageServerConfigSubmit } from "@/actions/language-server";
 
 const settingsLanguageServerFormSchema = z.object({
   protocol: z.nativeEnum(LanguageServerProtocol),

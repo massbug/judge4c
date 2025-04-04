@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState, useTransition } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { signInWithCredentials } from "@/app/actions/auth";
+import { signInWithCredentials } from "@/actions/auth";
 import { EyeIcon, EyeOffIcon, MailIcon } from "lucide-react";
 
 export type CredentialsSignInFormValues = z.infer<typeof authSchema>;

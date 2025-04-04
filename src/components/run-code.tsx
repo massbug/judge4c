@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
-import { judge } from "@/app/actions/judge";
+import { judge } from "@/actions/judge";
 import { Button } from "@/components/ui/button";
 import { useProblem } from "@/hooks/use-problem";
 import { LoaderCircleIcon, PlayIcon } from "lucide-react";
