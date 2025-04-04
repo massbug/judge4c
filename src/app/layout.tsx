@@ -16,8 +16,8 @@ interface RootLayoutProps {
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className="flex min-h-screen antialiased">
+    <html lang="en" className="h-full" suppressHydrationWarning>
+      <body className="flex min-h-full antialiased">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
