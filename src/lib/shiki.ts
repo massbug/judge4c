@@ -4,7 +4,7 @@ import { createHighlighter, Highlighter } from "shiki";
 
 // Get all values from the ProgrammingLanguage and Theme enums
 const themes = Object.values(MonacoTheme);
-const languages = Object.values(EditorLanguage);
+const languages = [...Object.values(EditorLanguage), "markdown"];
 
 // Use lazy initialization for highlighter
 let highlighter: Highlighter;
