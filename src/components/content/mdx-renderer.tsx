@@ -1,4 +1,4 @@
-import "@/style/mdx.css";
+import "@/styles/mdx.css";
 import { cn } from "@/lib/utils";
 import { Suspense } from "react";
 import "katex/dist/katex.min.css";

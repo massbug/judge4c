@@ -1,6 +1,6 @@
 "use client";
 
-import "@/style/mdx.css";
+import "@/styles/mdx.css";
 import { cn } from "@/lib/utils";
 import "katex/dist/katex.min.css";
 import remarkGfm from "remark-gfm";
