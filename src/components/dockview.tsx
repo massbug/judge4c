@@ -1,142 +1,98 @@
 "use client";
 
 import {
-  DockviewReact,
-  themeAbyssSpaced,
-  type DockviewReadyEvent,
-  type IDockviewPanelHeaderProps,
-} from "dockview";
-import { 
-  CircleCheckBigIcon, 
-  FileTextIcon, 
-  FlaskConicalIcon, 
-  type LucideProps, 
-  SquareCheckIcon, 
-  SquarePenIcon, 
-  TerminalIcon 
+  BotIcon,
+  CircleCheckBigIcon,
+  FileTextIcon,
+  FlaskConicalIcon,
+  SquareCheckIcon,
+  SquarePenIcon,
+  TerminalIcon,
 } from "lucide-react";
 import "@/styles/dockview.css";
-import { type ForwardRefExoticComponent, type RefAttributes, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { DockviewReact, themeAbyssSpaced } from "dockview";
+import type { AddPanelOptions, DockviewReadyEvent, DockviewApi } from "dockview";
+
+const iconMap = {
+  FileTextIcon,
+  FlaskConicalIcon,
+  CircleCheckBigIcon,
+  SquarePenIcon,
+  SquareCheckIcon,
+  TerminalIcon,
+  BotIcon,
+} as const;
+
+type IconKey = keyof typeof iconMap;
 
 interface DockviewProps {
-  Description: React.ReactNode;
-  Solutions: React.ReactNode;
-  Submissions: React.ReactNode;
-  Code: React.ReactNode;
-  Testcase: React.ReactNode;
-  TestResult: React.ReactNode;
+  options: (AddPanelOptions & {
+    node: React.ReactNode;
+    icon: IconKey;
+  })[];
+  storageKey: string;
 }
 
-const PanelIcons: Record<string, ForwardRefExoticComponent<Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>>> = {
-  Description: FileTextIcon,
-  Solutions: FlaskConicalIcon,
-  Submissions: CircleCheckBigIcon,
-  Code: SquarePenIcon,
-  Testcase: SquareCheckIcon,
-  TestResult: TerminalIcon,
-};
+const DockView = ({ options, storageKey }: DockviewProps) => {
+  const [api, setApi] = useState<DockviewApi>();
 
-const LAYOUT_STORAGE_KEY = "dockview:layout";
+  const { components, tabComponents } = useMemo(() => {
+    const comps: Record<string, () => React.ReactNode> = {};
+    const tabs: Record<string, () => React.ReactNode> = {};
 
-const DefaultTab = ({ params }: IDockviewPanelHeaderProps<{ title: string }>) => {
-  const { title } = params;
-  const Icon = PanelIcons[title];
+    options.forEach((option) => {
+      const { id, icon, node, title } = option;
 
-  return (
-    <div className="flex items-center px-1 text-sm font-medium">
-      {Icon && (
-        <Icon
-          className="-ms-0.5 me-1.5 opacity-60"
-          size={16}
-          aria-hidden="true"
-        />
-      )}
-      <span>{title}</span>
-    </div>
-  );
-};
+      comps[id] = () => <>{node}</>;
 
-const tabComponents = {
-  default: DefaultTab,
-};
+      const Icon = iconMap[icon];
+      tabs[id] = () => (
+        <div className="flex items-center px-1 text-sm font-medium">
+          <Icon
+            className="-ms-0.5 me-1.5 opacity-60"
+            size={16}
+            aria-hidden="true"
+          />
+          <span>{title}</span>
+        </div>
+      );
+    });
 
-const DEFAULT_PANELS = [
-  { id: "Description", component: "Description", position: null },
-  {
-    id: "Solutions",
-    component: "Solutions",
-    position: { referencePanel: "Description", direction: "within" },
-  },
-  {
-    id: "Submissions",
-    component: "Submissions",
-    position: { referencePanel: "Solutions", direction: "within" },
-  },
-  {
-    id: "Code",
-    component: "Code",
-    position: { referencePanel: "Submissions", direction: "right" },
-  },
-  {
-    id: "Testcase",
-    component: "Testcase",
-    position: { referencePanel: "Code", direction: "below" },
-  },
-  {
-    id: "TestResult",
-    component: "TestResult",
-    position: { referencePanel: "Testcase", direction: "within" },
-  },
-];
+    return { components: comps, tabComponents: tabs };
+  }, [options]);
 
-export default function DockView(props: DockviewProps) {
-  const components = useMemo(
-    () => ({
-      Description: () => props.Description,
-      Solutions: () => props.Solutions,
-      Submissions: () => props.Submissions,
-      Code: () => props.Code,
-      Testcase: () => props.Testcase,
-      TestResult: () => props.TestResult,
-    }),
-    [props]
-  );
+  useEffect(() => {
+    if (!api) return;
+
+    const disposable = api.onDidLayoutChange(() => {
+      localStorage.setItem(storageKey, JSON.stringify(api.toJSON()));
+    });
+
+    return () => disposable.dispose();
+  }, [api, storageKey]);
 
   const handleReady = (event: DockviewReadyEvent) => {
-    let success = false;
+    setApi(event.api);
+    const serializedLayout = localStorage.getItem(storageKey);
 
-    try {
-      const layout = localStorage.getItem(LAYOUT_STORAGE_KEY);
-      if (layout) {
-        event.api.fromJSON(JSON.parse(layout));
-        success = true;
-      }
-    } catch (error) {
-      console.error("Failed to load layout:", error);
-      localStorage.removeItem(LAYOUT_STORAGE_KEY);
-    }
-
-    if (!success) {
-      DEFAULT_PANELS.forEach(({ id, component, position }) => {
-        event.api.addPanel({
-          id,
-          component,
-          tabComponent: "default",
-          params: { title: id },
-          position: position || undefined,
-        });
+    const addDefaultPanels = () => {
+      options.forEach((option) => {
+        event.api.addPanel({ ...option });
       });
-    }
-
-    const saveLayout = () => {
-      localStorage.setItem(
-        LAYOUT_STORAGE_KEY,
-        JSON.stringify(event.api.toJSON())
-      );
     };
 
-    const disposable = event.api.onDidLayoutChange(saveLayout);
-    return () => disposable.dispose();
+    if (serializedLayout) {
+      try {
+        event.api.fromJSON(JSON.parse(serializedLayout));
+      } catch (error) {
+        console.error("Failed to parse layout:", error);
+        localStorage.removeItem(storageKey);
+        addDefaultPanels();
+      }
+    } else {
+      addDefaultPanels();
+    }
   };
 
   return (
@@ -147,4 +103,6 @@ export default function DockView(props: DockviewProps) {
       tabComponents={tabComponents}
     />
   );
-}
+};
+
+export default DockView;
