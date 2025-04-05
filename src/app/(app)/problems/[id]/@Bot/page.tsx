@@ -46,7 +46,7 @@ export default function AiBotPage() {
   );
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="flex flex-col h-full bg-background">
       <div className="flex-1 relative">
         {!messages.some((message) => message.role === "user" || message.role === "assistant") && (
           <div className="absolute bottom-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-muted-foreground flex flex-col items-center gap-2">
