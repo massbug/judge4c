@@ -37,7 +37,7 @@ export default async function ProblemsetPage() {
         {problems.map((problem, index) => (
           <TableRow
             key={problem.id}
-            className="h-10 border-b-0 odd:bg-muted/25 hover:text-blue-500 hover:bg-muted"
+            className="h-10 border-b-0 odd:bg-muted/50 hover:text-blue-500 hover:bg-muted"
           >
             <TableCell className="py-2.5">
               <Link

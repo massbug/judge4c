@@ -487,7 +487,7 @@ export function ProblemsetTable({ data }: ProblemTableProps) {
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className="h-10 border-b-0 cursor-pointer odd:bg-muted/25 hover:text-blue-500 hover:bg-muted"
+                  className="h-10 border-b-0 cursor-pointer odd:bg-muted/50 hover:text-blue-500 hover:bg-muted"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id} className="last:py-0">
