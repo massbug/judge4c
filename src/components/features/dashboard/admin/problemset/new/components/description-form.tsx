@@ -10,8 +10,9 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import type { editor } from "monaco-editor";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import DockView from "@/components/dockview";
 import { ArrowRightIcon } from "lucide-react";
@@ -20,6 +21,7 @@ import MdxPreview from "@/components/mdx-preview";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import MarkdownEditor from "@/components/markdown-editor";
+import type { DockviewApi, IDockviewPanelProps } from "dockview";
 import { useNewProblemStore } from "@/app/(app)/dashboard/@admin/problemset/new/store";
 import { problemSchema } from "@/components/features/dashboard/admin/problemset/new/schema";
 import { newProblemMetadataSchema } from "@/components/features/dashboard/admin/problemset/new/components/metadata-form";
@@ -28,9 +30,7 @@ export const newProblemDescriptionSchema = problemSchema.pick({
   description: true,
 });
 
-type NewProblemDescriptionSchema = z.infer<
-  typeof newProblemDescriptionSchema
->;
+type NewProblemDescriptionSchema = z.infer<typeof newProblemDescriptionSchema>;
 
 export default function NewProblemDescriptionForm() {
   const {
@@ -43,6 +43,7 @@ export default function NewProblemDescriptionForm() {
     setData,
   } = useNewProblemStore();
   const router = useRouter();
+  const [dockApi, setDockApi] = useState<DockviewApi>();
 
   const form = useForm<NewProblemDescriptionSchema>({
     resolver: zodResolver(newProblemDescriptionSchema),
@@ -71,6 +72,22 @@ export default function NewProblemDescriptionForm() {
     }
   }, [difficulty, displayId, hydrated, published, router, title]);
 
+  const descriptionValue = form.watch("description");
+
+  useEffect(() => {
+    if (!dockApi) return;
+
+    const mdxPanel = dockApi.getPanel("MdxPreview");
+    if (mdxPanel) {
+      mdxPanel.api.updateParameters({ source: descriptionValue });
+    }
+
+    const editorPanel = dockApi.getPanel("MarkdownEditor");
+    if (editorPanel) {
+      editorPanel.api.updateParameters({ value: descriptionValue });
+    }
+  }, [dockApi, descriptionValue]);
+
   return (
     <Form {...form}>
       <form
@@ -92,41 +109,60 @@ export default function NewProblemDescriptionForm() {
               <FormControl>
                 <DockView
                   storageKey="dockview:new-problem"
+                  components={{
+                    MdxPreview: (
+                      props: IDockviewPanelProps<{ source: string }>
+                    ) => (
+                      <div className="h-full border-x border-muted relative">
+                        <div className="absolute h-full w-full">
+                          <ScrollArea className="h-full">
+                            <MdxPreview
+                              source={props.params.source}
+                              className="p-4 md:p-6"
+                            />
+                          </ScrollArea>
+                        </div>
+                      </div>
+                    ),
+                    MarkdownEditor: (
+                      props: IDockviewPanelProps<{
+                        value: string;
+                        onChange: (
+                          value: string | undefined,
+                          ev: editor.IModelContentChangedEvent
+                        ) => void;
+                      }>
+                    ) => (
+                      <MarkdownEditor
+                        value={props.params.value}
+                        onChange={props.params.onChange}
+                      />
+                    ),
+                  }}
                   options={[
                     {
                       id: "MdxPreview",
-                      title: "Mdx Preview",
                       component: "MdxPreview",
-                      tabComponent: "MdxPreview",
-                      icon: "FileTextIcon",
-                      node: (
-                        <div className="h-full border-x border-muted relative">
-                          <div className="absolute h-full w-full">
-                            <ScrollArea className="h-full">
-                              <MdxPreview
-                                source={field.value}
-                                className="p-4 md:p-6"
-                              />
-                            </ScrollArea>
-                          </div>
-                        </div>
-                      ),
+                      title: "Mdx Preview",
+                      params: { source: field.value },
                     },
                     {
                       id: "MarkdownEditor",
-                      title: "Markdown Editor",
                       component: "MarkdownEditor",
-                      tabComponent: "MarkdownEditor",
-                      icon: "FileTextIcon",
-                      node: (
-                        <MarkdownEditor
-                          value={field.value}
-                          onChange={field.onChange}
-                        />
-                      ),
-                      position: { referencePanel: "MdxPreview", direction: "right" },
+                      title: "Markdown Editor",
+                      params: {
+                        value: field.value,
+                        onChange: (value: string | undefined) => {
+                          field.onChange(value);
+                        },
+                      },
+                      position: {
+                        referencePanel: "MdxPreview",
+                        direction: "right",
+                      },
                     },
                   ]}
+                  onApiReady={setDockApi}
                 />
               </FormControl>
               <FormDescription>
