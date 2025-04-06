@@ -49,6 +49,7 @@ export default function ProblemPage() {
             referencePanel: "Description",
             direction: "within"
           },
+          inactive: true,
         },
         {
           id: "Submissions",
@@ -59,6 +60,7 @@ export default function ProblemPage() {
             referencePanel: "Solutions",
             direction: "within"
           },
+          inactive: true,
         },
         {
           id: "Code",
@@ -99,6 +101,7 @@ export default function ProblemPage() {
             referencePanel: "Testcase",
             direction: "within"
           },
+          inactive: true,
         },
       ]}
     />
