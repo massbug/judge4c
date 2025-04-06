@@ -1,6 +1,15 @@
 "use client";
 
 import {
+  BotIcon,
+  CircleCheckBigIcon,
+  FileTextIcon,
+  FlaskConicalIcon,
+  SquareCheckIcon,
+  SquarePenIcon,
+  TerminalIcon,
+} from "lucide-react";
+import {
   Bot,
   Code,
   Description,
@@ -29,42 +38,67 @@ export default function ProblemPage() {
           id: "Description",
           component: "Description",
           title: "Description",
+          params: { icon: FileTextIcon },
         },
         {
           id: "Solutions",
           component: "Solutions",
           title: "Solutions",
-          position: { referencePanel: "Description", direction: "within" },
+          params: { icon: FlaskConicalIcon },
+          position: {
+            referencePanel: "Description",
+            direction: "within"
+          },
         },
         {
           id: "Submissions",
           component: "Submissions",
           title: "Submissions",
-          position: { referencePanel: "Solutions", direction: "within" },
+          params: { icon: CircleCheckBigIcon },
+          position: {
+            referencePanel: "Solutions",
+            direction: "within"
+          },
         },
         {
           id: "Code",
           component: "Code",
           title: "Code",
-          position: { referencePanel: "Submissions", direction: "right" },
+          params: { icon: SquarePenIcon },
+          position: {
+            referencePanel: "Submissions",
+            direction: "right"
+          },
         },
         {
           id: "Bot",
           component: "Bot",
           title: "Bot",
-          position: { referencePanel: "Code", direction: "right" },
+          params: { icon: BotIcon },
+          position: {
+            referencePanel: "Code",
+            direction: "right"
+          },
         },
         {
           id: "Testcase",
           component: "Testcase",
           title: "Testcase",
-          position: { referencePanel: "Code", direction: "below" },
+          params: { icon: SquareCheckIcon },
+          position: {
+            referencePanel: "Code",
+            direction: "below"
+          },
         },
         {
           id: "TestResult",
           component: "TestResult",
           title: "Test Result",
-          position: { referencePanel: "Testcase", direction: "within" },
+          params: { icon: TerminalIcon },
+          position: {
+            referencePanel: "Testcase",
+            direction: "within"
+          },
         },
       ]}
     />
