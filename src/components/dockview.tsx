@@ -1,108 +1,96 @@
 "use client";
 
-import {
-  BotIcon,
-  CircleCheckBigIcon,
-  FileTextIcon,
-  FlaskConicalIcon,
-  SquareCheckIcon,
-  SquarePenIcon,
-  TerminalIcon,
-} from "lucide-react";
+import type {
+  AddPanelOptions,
+  DockviewApi,
+  DockviewReadyEvent,
+  IDockviewPanelHeaderProps,
+  IDockviewPanelProps,
+} from "dockview";
 import "@/styles/dockview.css";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
+import type { LucideIcon } from "lucide-react";
 import { DockviewReact, themeAbyssSpaced } from "dockview";
-import type { AddPanelOptions, DockviewReadyEvent, DockviewApi } from "dockview";
-
-const iconMap = {
-  FileTextIcon,
-  FlaskConicalIcon,
-  CircleCheckBigIcon,
-  SquarePenIcon,
-  SquareCheckIcon,
-  TerminalIcon,
-  BotIcon,
-} as const;
-
-type IconKey = keyof typeof iconMap;
 
 interface DockviewProps {
-  options: (AddPanelOptions & {
-    node: React.ReactNode;
-    icon: IconKey;
-  })[];
   storageKey: string;
+  options: AddPanelOptions[];
+  components: Record<string, React.FunctionComponent<IDockviewPanelProps>>;
+  tabComponents?: Record<string, React.FunctionComponent<IDockviewPanelHeaderProps>>;
+  onApiReady?: (api: DockviewApi) => void;
 }
 
-const DockView = ({ options, storageKey }: DockviewProps) => {
+const DefaultTab = (
+  props: IDockviewPanelHeaderProps<{ icon?: LucideIcon }>
+) => {
+  const { icon: Icon } = props.params;
+
+  return (
+    <div className="flex items-center px-1 text-sm font-medium">
+      {Icon && (
+        <Icon
+          className="-ms-0.5 me-1.5 opacity-60"
+          size={16}
+          aria-hidden="true"
+        />
+      )}
+      {props.api.title}
+    </div>
+  );
+};
+
+export default function DockView({
+  storageKey,
+  options,
+  components,
+  tabComponents,
+  onApiReady,
+}: DockviewProps) {
   const [api, setApi] = useState<DockviewApi>();
-
-  const { components, tabComponents } = useMemo(() => {
-    const comps: Record<string, () => React.ReactNode> = {};
-    const tabs: Record<string, () => React.ReactNode> = {};
-
-    options.forEach((option) => {
-      const { id, icon, node, title } = option;
-
-      comps[id] = () => <>{node}</>;
-
-      const Icon = iconMap[icon];
-      tabs[id] = () => (
-        <div className="flex items-center px-1 text-sm font-medium">
-          <Icon
-            className="-ms-0.5 me-1.5 opacity-60"
-            size={16}
-            aria-hidden="true"
-          />
-          <span>{title}</span>
-        </div>
-      );
-    });
-
-    return { components: comps, tabComponents: tabs };
-  }, [options]);
 
   useEffect(() => {
     if (!api) return;
 
     const disposable = api.onDidLayoutChange(() => {
-      localStorage.setItem(storageKey, JSON.stringify(api.toJSON()));
+      const layout = api.toJSON();
+      localStorage.setItem(storageKey, JSON.stringify(layout));
     });
 
     return () => disposable.dispose();
   }, [api, storageKey]);
 
-  const handleReady = (event: DockviewReadyEvent) => {
+  const onReady = (event: DockviewReadyEvent) => {
     setApi(event.api);
-    const serializedLayout = localStorage.getItem(storageKey);
+    onApiReady?.(event.api);
 
-    const addDefaultPanels = () => {
-      options.forEach((option) => {
-        event.api.addPanel({ ...option });
-      });
-    };
+    let success = false;
+    const serializedLayout = localStorage.getItem(storageKey);
 
     if (serializedLayout) {
       try {
-        event.api.fromJSON(JSON.parse(serializedLayout));
+        const layout = JSON.parse(serializedLayout);
+        event.api.fromJSON(layout);
+        success = true;
       } catch (error) {
-        console.error("Failed to parse layout:", error);
+        console.error("Failed to load layout:", error);
         localStorage.removeItem(storageKey);
-        addDefaultPanels();
       }
-    } else {
-      addDefaultPanels();
+    }
+
+    if (!success) {
+      options.forEach((option) => {
+        event.api.addPanel({ ...option });
+      });
     }
   };
 
   return (
     <DockviewReact
       theme={themeAbyssSpaced}
-      onReady={handleReady}
+      onReady={onReady}
       components={components}
+      defaultTabComponent={DefaultTab}
       tabComponents={tabComponents}
     />
   );
-};
-
-export default DockView;
+}
