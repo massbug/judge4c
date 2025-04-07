@@ -2,12 +2,18 @@
 
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
-import { MarkerSeverity } from "monaco-editor";
 import { useProblem } from "@/hooks/use-problem";
 import { CircleXIcon, TriangleAlertIcon } from "lucide-react";
 
 interface WorkspaceEditorFooterProps {
   className?: string;
+}
+
+let MarkerSeverity: typeof import("monaco-editor").MarkerSeverity;
+if (typeof window !== "undefined") {
+  import("monaco-editor").then((monaco) => {
+    MarkerSeverity = monaco.MarkerSeverity;
+  });
 }
 
 export function WorkspaceEditorFooter({
