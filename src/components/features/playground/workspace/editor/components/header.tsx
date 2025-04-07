@@ -18,10 +18,10 @@ export function WorkspaceEditorHeader({
   return (
     <header
       {...props}
-      className={cn("h-8 flex flex-none items-center px-2", className)}
+      className={cn("flex items-center flex-none h-8 relative", className)}
     >
-      <div className="w-full flex items-center justify-between">
-        <div className="flex flex-nowrap items-center">
+      <div className="absolute flex w-full items-center justify-between px-2">
+        <div className="flex items-center">
           <LanguageSelector />
           <LspStatusButton />
         </div>
