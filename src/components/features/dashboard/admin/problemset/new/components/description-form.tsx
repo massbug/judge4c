@@ -42,6 +42,7 @@ export default function NewProblemDescriptionForm() {
     description,
     setData,
   } = useNewProblemStore();
+
   const router = useRouter();
   const [dockApi, setDockApi] = useState<DockviewApi>();
 
@@ -144,7 +145,7 @@ export default function NewProblemDescriptionForm() {
                       id: "MdxPreview",
                       component: "MdxPreview",
                       title: "Mdx Preview",
-                      params: { source: field.value },
+                      params: { source: field.value, icon: "FileTextIcon" },
                     },
                     {
                       id: "MarkdownEditor",
@@ -155,6 +156,7 @@ export default function NewProblemDescriptionForm() {
                         onChange: (value: string | undefined) => {
                           field.onChange(value);
                         },
+                        icon: "SquarePenIcon",
                       },
                       position: {
                         referencePanel: "MdxPreview",

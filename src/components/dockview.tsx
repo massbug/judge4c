@@ -8,6 +8,7 @@ import type {
   IDockviewPanelProps,
 } from "dockview";
 import "@/styles/dockview.css";
+import * as Icons from "lucide-react";
 import { useEffect, useState } from "react";
 import type { LucideIcon } from "lucide-react";
 import { DockviewReact, themeAbyssSpaced } from "dockview";
@@ -21,9 +22,13 @@ interface DockviewProps {
 }
 
 const DefaultTab = (
-  props: IDockviewPanelHeaderProps<{ icon?: LucideIcon }>
+  props: IDockviewPanelHeaderProps<{ icon?: string }>
 ) => {
-  const { icon: Icon } = props.params;
+  const { icon } = props.params;
+  const Icon =
+    icon && icon in Icons
+      ? (Icons[icon as keyof typeof Icons] as LucideIcon)
+      : null;
 
   return (
     <div className="flex items-center px-1 text-sm font-medium">
