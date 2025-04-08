@@ -27,7 +27,26 @@ Complete these steps before launching the editor for seamless LSP integration! �
 
 ### 🐳 Docker Deployment (Recommended)
 
-Deploy the project quickly using Docker. Follow the steps below:
+Quickly deploy the project using Docker with these steps:
+
+```shell
+# Clone the repository
+git clone https://github.com/massbug/judge4c
+
+# Navigate to project directory
+cd judge4c
+
+# Set up environment configuration
+cp .env.example .env
+# Edit the .env file with your configuration
+
+# Build and start containers in detached mode
+docker compose up -d
+```
+
+### 🛠️ Local Development Setup
+
+For local development, follow these steps:
 
 #### Step 1: Clone the Repository
 
@@ -63,6 +82,12 @@ bun install
      POSTGRES_USER="your_postgres_user"
      POSTGRES_PASSWORD="your_postgres_password"
      POSTGRES_DB="your_postgres_db"
+     # POSTGRES_HOST and DATABASE_URL are used for local development.
+     # Note: In compose.yml, POSTGRES_HOST is hardcoded as "postgres" and POSTGRES_PORT as "5432".
+     # If you need to change them, update the corresponding values in the environment section of compose.yml.
+     POSTGRES_HOST="your_postgres_host"
+     POSTGRES_PORT="your_postgres_port"
+     DATABASE_URL="postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}?schema=public"
      ```
 
    - **Authentication Secret**:
@@ -95,18 +120,33 @@ bun install
      OPENAI_BASE_URL="your_openai_base_url_if_custom"  # Optional, for self-hosted proxies
      ```
 
+   - **Docker Remote Access Configuration** (Optional):
+     If you require remote access to Docker, update the following settings:
+     ```sh
+     # Docker Remote Access Configuration
+     DOCKER_HOST_MODE="remote_or_blank"
+     DOCKER_REMOTE_PROTOCOL="http_or_https_or_ssh"
+     DOCKER_REMOTE_HOST="your_docker_remote_host"
+     DOCKER_REMOTE_PORT="your_docker_remote_port"
+     # Docker TLS/SSL Certificate Paths (only required when DOCKER_HOST_MODE is set to "remote" **with TLS** enabled)
+     DOCKER_REMOTE_CERTS_PATH="your_certs_path"
+     DOCKER_REMOTE_CA_PATH="your_ca_path" # Default: /certs/ca.pem
+     DOCKER_REMOTE_CERT_PATH="your_cert_path" # Default: /certs/cert.pem
+     DOCKER_REMOTE_KEY_PATH="your_remote_key_path" # Default: /certs/key.pem
+     ```
+
 #### Step 4: Start the Application
 
 Once the environment variables are configured, start the application using Docker Compose:
 
 ```sh
-docker compose up -d --build
+docker compose -f compose.local.yml up -d --build
 ```
 
 For Chinese users:
 
 ```sh
-docker compose -f compose.cn.yml up -d --build
+docker compose -f compose.local.cn.yml up -d --build
 ```
 
 #### Step 5: Access the Application
