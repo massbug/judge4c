@@ -1,6 +1,4 @@
-import { Suspense } from "react";
 import { Banner } from "@/components/banner";
-import { Loading } from "@/components/loading";
 import { AvatarButton } from "@/components/avatar-button";
 
 interface ProblemsetLayoutProps {
@@ -15,9 +13,7 @@ export default function ProblemsetLayout({ children }: ProblemsetLayoutProps) {
         <AvatarButton />
       </div>
       <main className="h-full container mx-auto p-4">
-        <Suspense fallback={<Loading />}>
-          {children}
-        </Suspense>
+        {children}
       </main>
     </div>
   );
