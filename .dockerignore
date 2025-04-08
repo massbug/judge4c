@@ -1,10 +1,14 @@
 .git
 .github
+certs
 .next
+docker
 node_modules
 prisma
 !prisma/schema.prisma
+src/generated
 .dockerignore
+.env*
 .gitignore
 **/*compose*
 demo.png
