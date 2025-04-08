@@ -1,9 +1,6 @@
 services:
   judge4c:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    image: judge4c:latest
+    image: cfngc4594/judge4c:latest
     container_name: judge4c
     restart: always
     ports:
@@ -55,10 +52,7 @@ services:
       # - DOCKER_REMOTE_KEY_PATH=${DOCKER_REMOTE_KEY_PATH}   # Custom path for key (default: /certs/key.pem)
 
   lsp-c:
-    build:
-      context: ./docker/lsp/clangd
-      dockerfile: Dockerfile
-    image: lsp-c:latest
+    image: cfngc4594/lsp-c:latest
     container_name: lsp-c
     restart: always
     ports:
@@ -72,10 +66,7 @@ services:
       retries: 5
 
   lsp-cpp:
-    build:
-      context: ./docker/lsp/clangd
-      dockerfile: Dockerfile
-    image: lsp-cpp:latest
+    image: cfngc4594/lsp-cpp:latest
     container_name: lsp-cpp
     restart: always
     ports:
