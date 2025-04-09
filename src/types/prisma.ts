@@ -2,9 +2,31 @@ import prisma from "@/lib/prisma";
 
 type ThenArg<T> = T extends PromiseLike<infer U> ? U : T;
 
-export async function getTestcaseWithData() {
-  const testcases = await prisma.testcase.findMany({ include: { data: true } });
-  return testcases;
+export async function getAllProblems() {
+  return await prisma.problem.findMany({
+    include: {
+      templates: true,
+      testcases: {
+        include: {
+          data: true,
+        },
+      },
+    },
+  });
 }
 
-export type TestcaseWithData = ThenArg<ReturnType<typeof getTestcaseWithData>>;
+export type ProblemWithDetails = ThenArg<
+  ReturnType<typeof getAllProblems>
+>[number];
+
+export async function getAllTestcases() {
+  return await prisma.testcase.findMany({
+    include: {
+      data: true,
+    },
+  });
+}
+
+export type TestcaseWithDetails = ThenArg<
+  ReturnType<typeof getAllTestcases>
+>;
