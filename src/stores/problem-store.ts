@@ -7,6 +7,7 @@ import type {
 } from "@/generated/client";
 import type { editor } from "monaco-editor";
 import { createStore } from "zustand/vanilla";
+import { TestcaseWithData } from "@/types/prisma";
 import { createJSONStorage, persist } from "zustand/middleware";
 
 export type ProblemState = {
@@ -20,6 +21,7 @@ export type ProblemState = {
   problemId: string;
   problem: Problem;
   templates: Template[];
+  testcases: TestcaseWithData;
   editorLanguageConfigs: EditorLanguageConfig[];
   languageServerConfigs: LanguageServerConfig[];
 };

@@ -18,7 +18,14 @@ export default async function ProblemLayout({
     await Promise.all([
       prisma.problem.findUnique({
         where: { id },
-        include: { templates: true },
+        include: {
+          templates: true,
+          testcases: {
+            include: {
+              data: true,
+            },
+          },
+        },
       }),
       prisma.editorLanguageConfig.findMany(),
       prisma.languageServerConfig.findMany(),
@@ -28,7 +35,7 @@ export default async function ProblemLayout({
     return notFound();
   }
 
-  const { templates, ...problemWithoutTemplates } = problemData;
+  const { templates, testcases, ...problemWithoutTemplates } = problemData;
 
   return (
     <div className="flex flex-col h-screen">
@@ -36,6 +43,7 @@ export default async function ProblemLayout({
         problemId={id}
         problem={problemWithoutTemplates}
         templates={templates}
+        testcases={testcases}
         editorLanguageConfigs={editorLanguageConfigs}
         languageServerConfigs={languageServerConfigs}
       >

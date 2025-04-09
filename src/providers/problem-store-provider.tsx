@@ -8,6 +8,7 @@ import {
   type Template,
 } from "@/generated/client";
 import { useStore } from "zustand";
+import { TestcaseWithData } from "@/types/prisma";
 import { type ReactNode, createContext, useRef, useContext } from "react";
 import { type ProblemStore, createProblemStore } from "@/stores/problem-store";
 
@@ -22,6 +23,7 @@ export interface ProblemStoreProviderProps {
   problemId: string;
   problem: Problem;
   templates: Template[];
+  testcases: TestcaseWithData;
   editorLanguageConfigs: EditorLanguageConfig[];
   languageServerConfigs: LanguageServerConfig[];
 }
@@ -31,6 +33,7 @@ export const ProblemStoreProvider = ({
   problemId,
   problem,
   templates,
+  testcases,
   editorLanguageConfigs,
   languageServerConfigs,
 }: ProblemStoreProviderProps) => {
@@ -48,6 +51,7 @@ export const ProblemStoreProvider = ({
       problemId,
       problem,
       templates,
+      testcases,
       editorLanguageConfigs,
       languageServerConfigs,
     });
