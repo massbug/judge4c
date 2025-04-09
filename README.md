@@ -8,9 +8,9 @@
 
 </div>
 
-## ⚠️ WSL Users: Critical Configuration
+## ⚠️ Network Configuration & Troubleshooting
 
-### 🐧 Network Mode Requirement
+### 🐧 For WSL Users: Mirrored Network Mode Requirement
 
 When using Windows Subsystem for Linux (WSL), you **must** configure your network mode as **Mirrored** to ensure proper LSP server connectivity. Standard WSL network configurations may create IPv6 conflicts that block Monaco-LSP communication.
 
@@ -22,6 +22,16 @@ When using Windows Subsystem for Linux (WSL), you **must** configure your networ
 4. Restart WSL instance 💻
 
 Complete these steps before launching the editor for seamless LSP integration! 🎉
+
+### 🚨 Troubleshooting: TLS Connection Error Due to Network Proxy
+
+If you encounter the following error:
+
+```pgsql
+[Error: Client network socket disconnected before secure TLS connection was established]
+```
+
+Please check if a network proxy (e.g., VPN, HTTP/SOCKS proxy, etc.) is enabled on your system and disable it. The active proxy may interfere with the establishment of a secure TLS connection.
 
 ## 🚀 Getting Started
 
