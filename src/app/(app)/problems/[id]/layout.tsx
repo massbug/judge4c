@@ -14,36 +14,31 @@ export default async function ProblemLayout({
 }: ProblemProps) {
   const { id } = await params;
 
-  const [problemData, editorLanguageConfigs, languageServerConfigs] =
-    await Promise.all([
-      prisma.problem.findUnique({
-        where: { id },
-        include: {
-          templates: true,
-          testcases: {
-            include: {
-              data: true,
-            },
+  const [problem, editorLanguageConfigs, languageServerConfigs] = await Promise.all([
+    prisma.problem.findUnique({
+      where: { id },
+      include: {
+        templates: true,
+        testcases: {
+          include: {
+            data: true,
           },
         },
-      }),
-      prisma.editorLanguageConfig.findMany(),
-      prisma.languageServerConfig.findMany(),
-    ]);
+      },
+    }),
+    prisma.editorLanguageConfig.findMany(),
+    prisma.languageServerConfig.findMany(),
+  ]);
 
-  if (!problemData) {
+  if (!problem) {
     return notFound();
   }
-
-  const { templates, testcases, ...problemWithoutTemplates } = problemData;
 
   return (
     <div className="flex flex-col h-screen">
       <ProblemStoreProvider
         problemId={id}
-        problem={problemWithoutTemplates}
-        templates={templates}
-        testcases={testcases}
+        problem={problem}
         editorLanguageConfigs={editorLanguageConfigs}
         languageServerConfigs={languageServerConfigs}
       >

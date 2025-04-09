@@ -52,15 +52,14 @@ export const useProblem = () => {
     setCurrentValue,
     problemId,
     problem,
-    templates,
     editorLanguageConfigs,
     languageServerConfigs,
   } = useProblemStore((state) => state);
 
   // Get the default template for the current language from the templates list
   const currentTemplate = useMemo(
-    () => templates.find((t) => t.language === currentLang)?.template || "",
-    [templates, currentLang]
+    () => problem.templates.find((t) => t.language === currentLang)?.template || "",
+    [problem.templates, currentLang]
   );
 
   const currentEditorLanguageConfig = useMemo(
@@ -124,7 +123,6 @@ export const useProblem = () => {
     currentValue,
     problemId,
     problem,
-    templates,
     editorLanguageConfigs,
     languageServerConfigs,
     currentTemplate,

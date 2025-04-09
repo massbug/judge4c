@@ -2,28 +2,22 @@
 
 import {
   EditorLanguage,
-  type Problem,
   type EditorLanguageConfig,
   type LanguageServerConfig,
-  type Template,
 } from "@/generated/client";
 import { useStore } from "zustand";
-import { TestcaseWithData } from "@/types/prisma";
+import { type ProblemWithDetails } from "@/types/prisma";
 import { type ReactNode, createContext, useRef, useContext } from "react";
 import { type ProblemStore, createProblemStore } from "@/stores/problem-store";
 
 export type ProblemStoreApi = ReturnType<typeof createProblemStore>;
 
-export const ProblemStoreContext = createContext<ProblemStoreApi | undefined>(
-  undefined
-);
+export const ProblemStoreContext = createContext<ProblemStoreApi | undefined>(undefined);
 
 export interface ProblemStoreProviderProps {
   children: ReactNode;
   problemId: string;
-  problem: Problem;
-  templates: Template[];
-  testcases: TestcaseWithData;
+  problem: ProblemWithDetails;
   editorLanguageConfigs: EditorLanguageConfig[];
   languageServerConfigs: LanguageServerConfig[];
 }
@@ -32,8 +26,6 @@ export const ProblemStoreProvider = ({
   children,
   problemId,
   problem,
-  templates,
-  testcases,
   editorLanguageConfigs,
   languageServerConfigs,
 }: ProblemStoreProviderProps) => {
@@ -50,8 +42,6 @@ export const ProblemStoreProvider = ({
       currentValue: "",
       problemId,
       problem,
-      templates,
-      testcases,
       editorLanguageConfigs,
       languageServerConfigs,
     });

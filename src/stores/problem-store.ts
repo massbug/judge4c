@@ -2,12 +2,10 @@ import type {
   EditorLanguage,
   EditorLanguageConfig,
   LanguageServerConfig,
-  Problem,
-  Template,
 } from "@/generated/client";
 import type { editor } from "monaco-editor";
 import { createStore } from "zustand/vanilla";
-import { TestcaseWithData } from "@/types/prisma";
+import type { ProblemWithDetails } from "@/types/prisma";
 import { createJSONStorage, persist } from "zustand/middleware";
 
 export type ProblemState = {
@@ -19,9 +17,7 @@ export type ProblemState = {
   currentLang: EditorLanguage;
   currentValue: string;
   problemId: string;
-  problem: Problem;
-  templates: Template[];
-  testcases: TestcaseWithData;
+  problem: ProblemWithDetails;
   editorLanguageConfigs: EditorLanguageConfig[];
   languageServerConfigs: LanguageServerConfig[];
 };
