@@ -301,7 +301,77 @@ int* twoSum(int* nums, int numsSize, int target, int* returnSize) {
             create: [
               {
                 language: "c",
-                template: `/**
+                template: `#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int *parseIntArray(char *line, int *len) {
+  line[strcspn(line, "\\n")] = 0;
+  char *p = line;
+  while (*p && (*p == '[' || *p == ' ' || *p == ']'))
+    p++;
+
+  int capacity = 10;
+  int *arr = malloc(capacity * sizeof(int));
+  *len = 0;
+
+  char *token = strtok(p, ",");
+  while (token) {
+    if (*len >= capacity) {
+      capacity *= 2;
+      arr = realloc(arr, capacity * sizeof(int));
+    }
+    arr[(*len)++] = atoi(token);
+    token = strtok(NULL, ",");
+  }
+  return arr;
+}
+
+char *formatOutput(int *res, int resLen) {
+  if (resLen == 0)
+    return "[]";
+
+  char *buf = malloc(resLen * 12 + 3);
+  char *p = buf;
+  *p++ = '[';
+  for (int i = 0; i < resLen; i++) {
+    p += sprintf(p, "%d", res[i]);
+    if (i != resLen - 1)
+      *p++ = ',';
+  }
+  *p++ = ']';
+  *p = 0;
+  return buf;
+}
+
+int *twoSum(int *nums, int numsSize, int target, int *returnSize);
+
+int main() {
+  char line[1024];
+  while (fgets(line, sizeof(line), stdin)) {
+    int numsSize;
+    int *nums = parseIntArray(line, &numsSize);
+
+    if (!fgets(line, sizeof(line), stdin))
+      break;
+    int target = atoi(line);
+
+    int returnSize;
+    int *res = twoSum(nums, numsSize, target, &returnSize);
+
+    char *output = formatOutput(res, returnSize);
+    printf("%s\\n", output);
+
+    free(nums);
+    if (returnSize > 0)
+      free(res);
+    if (returnSize > 0)
+      free(output);
+  }
+  return 0;
+}
+
+/**
  * Note: The returned array must be malloced, assume caller calls free().
  */
 int* twoSum(int* nums, int numsSize, int target, int* returnSize) {
@@ -316,6 +386,34 @@ public:
         
     }
 };`,
+              },
+            ],
+          },
+          testcases: {
+            create: [
+              {
+                data: {
+                  create: [
+                    { label: "nums", value: "[2,7,11,15]" },
+                    { label: "target", value: "9" },
+                  ],
+                },
+              },
+              {
+                data: {
+                  create: [
+                    { label: "nums", value: "[3,2,4]" },
+                    { label: "target", value: "6" },
+                  ],
+                },
+              },
+              {
+                data: {
+                  create: [
+                    { label: "nums", value: "[3,3]" },
+                    { label: "target", value: "6" },
+                  ],
+                },
               },
             ],
           },
@@ -498,6 +596,34 @@ public:
               },
             ],
           },
+          testcases: {
+            create: [
+              {
+                data: {
+                  create: [
+                    { label: "l1", value: "[2,4,3]" },
+                    { label: "l2", value: "[5,6,4]" },
+                  ],
+                },
+              },
+              {
+                data: {
+                  create: [
+                    { label: "l1", value: "[0]" },
+                    { label: "l2", value: "[0]" },
+                  ],
+                },
+              },
+              {
+                data: {
+                  create: [
+                    { label: "l1", value: "[9,9,9,9,9,9,9]" },
+                    { label: "l2", value: "[9,9,9,9]" },
+                  ],
+                },
+              },
+            ],
+          },
         },
       ],
     },
@@ -667,6 +793,26 @@ public:
         
     }
 };`,
+              },
+            ],
+          },
+          testcases: {
+            create: [
+              {
+                data: {
+                  create: [
+                    { label: "nums1", value: "[1,3]" },
+                    { label: "nums2", value: "[2]" },
+                  ],
+                },
+              },
+              {
+                data: {
+                  create: [
+                    { label: "nums1", value: "[1,2]" },
+                    { label: "nums2", value: "[3,4]" },
+                  ],
+                },
               },
             ],
           },
