@@ -54,6 +54,7 @@ model Problem {
   userId      String
   user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   templates   Template[]
+  testcases   Testcase[]
 
   @@index([userId])
   @@index([difficulty])
@@ -125,6 +126,21 @@ model JudgeResult {
   exitCode      ExitCode
   executionTime Int?
   memoryUsage   Int?
+}
+
+model Testcase {
+  id        String         @id @default(cuid())
+  problemId String
+  problem   Problem        @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  data      TestcaseData[]
+}
+
+model TestcaseData {
+  id         String   @id @default(cuid())
+  label      String
+  value      String
+  testcaseId String
+  testcase   Testcase @relation(fields: [testcaseId], references: [id], onDelete: Cascade)
 }
 
 model Account {
