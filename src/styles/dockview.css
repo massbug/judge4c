@@ -41,17 +41,15 @@
   --dv-floating-box-shadow: 8px 8px 8px 0px rgba(83, 89, 93, 0.5);
   --dv-overlay-z-index: 999;
   --dv-tab-font-size: inherit;
-  --dv-border-radius: 0px;
   --dv-tab-margin: 0;
   --dv-sash-color: transparent;
   --dv-active-sash-color: transparent;
   --dv-active-sash-transition-duration: 0.1s;
   --dv-active-sash-transition-delay: 0.5s;
   --dv-tab-font-size: 12px;
-  --dv-border-radius: 20px;
   --dv-tab-margin: 0.5rem 0.25rem;
   --dv-tabs-and-actions-container-height: 44px;
-  --dv-border-radius: 20px;
+  --dv-border-radius: 24px;
   --dv-color-abyss-dark: hsl(var(--background));
   --dv-color-abyss: hsl(var(--muted));
   --dv-color-abyss-light: hsl(var(--muted));
