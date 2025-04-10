@@ -65,6 +65,7 @@ function createTarStream(file: string, value: string) {
 export async function judge(
   language: EditorLanguage,
   value: string,
+  problemId: string,
 ): Promise<JudgeResult> {
   const session = await auth();
   if (!session) redirect("/sign-in");
@@ -89,12 +90,28 @@ export async function judge(
       };
     }
 
+    const problem = await prisma.problem.findUnique({
+      where: { id: problemId },
+      select: {
+        timeLimit: true,
+        memoryLimit: true,
+      },
+    });
+
+    if (!problem) {
+      return {
+        id: uuid(),
+        output: "Problem not found.",
+        exitCode: ExitCode.SE,
+        executionTime: null,
+        memoryUsage: null,
+      };
+    }
+
     const {
       image,
       tag,
       workingDir,
-      memoryLimit,
-      timeLimit,
       compileOutputLimit,
       runOutputLimit,
     } = config.dockerConfig;
@@ -103,7 +120,7 @@ export async function judge(
 
     // Prepare the environment and create a container
     await prepareEnvironment(image, tag);
-    container = await createContainer(image, tag, workingDir, memoryLimit);
+    container = await createContainer(image, tag, workingDir, problem.memoryLimit);
 
     // Upload code to the container
     const tarStream = createTarStream(file, value);
@@ -116,7 +133,7 @@ export async function judge(
     }
 
     // Run the code
-    const runResult = await run(container, fileName, timeLimit, runOutputLimit);
+    const runResult = await run(container, fileName, problem.timeLimit, runOutputLimit);
     return runResult;
   } catch (error) {
     console.error(error);

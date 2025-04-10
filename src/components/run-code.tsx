@@ -22,7 +22,7 @@ export function RunCode({
   className,
   ...props
 }: RunCodeProps) {
-  const { currentLang, editor } = useProblem();
+  const { currentLang, editor, problemId } = useProblem();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleJudge = async () => {
@@ -32,7 +32,7 @@ export function RunCode({
     setIsLoading(true);
 
     try {
-      const result = await judge(currentLang, code);
+      const result = await judge(currentLang, code, problemId);
       showExitCodeToast({ exitCode: result.exitCode });
     } catch (error) {
       console.error("Error occurred while judging the code:");
