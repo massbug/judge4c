@@ -30,8 +30,9 @@ model User {
   // Optional for WebAuthn support
   Authenticator Authenticator[]
 
-  role     Role      @default(GUEST)
-  problems Problem[]
+  role       Role         @default(GUEST)
+  problems   Problem[]
+  Submission Submission[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -44,20 +45,20 @@ enum Difficulty {
 }
 
 model Problem {
-  id          String     @id @default(cuid())
-  displayId   Int        @unique
+  id          String       @id @default(cuid())
+  displayId   Int          @unique
   title       String
   description String
   solution    String
-  difficulty  Difficulty @default(EASY)
-  published   Boolean    @default(false)
+  difficulty  Difficulty   @default(EASY)
+  published   Boolean      @default(false)
   userId      String
-  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  timeLimit   Int          @default(1000)
+  memoryLimit Int          @default(128)
   templates   Template[]
   testcases   Testcase[]
-
-  timeLimit   Int @default(1000)
-  memoryLimit Int @default(128)
+  Submission  Submission[]
 
   @@index([userId])
   @@index([difficulty])
@@ -110,23 +111,38 @@ model Template {
   @@id([problemId, language])
 }
 
-enum ExitCode {
-  SE // System Error
-  CS // Compilation Success
+enum Status {
+  PD // PENDING
+  QD // QUEUED
+  CP // COMPILING
   CE // Compilation Error
+  CS // Compilation Success
+  RU // RUNNING
   TLE // Time Limit Exceeded
   MLE // Memory Limit Exceeded
   RE // Runtime Error
   AC // Accepted
   WA // Wrong Answer
+  SE // System Error
 }
 
-model JudgeResult {
-  id            String   @id @default(cuid())
-  output        String
-  exitCode      ExitCode
+model Submission {
+  id            String         @id @default(cuid())
+  language      EditorLanguage
+  code          String
+  status        Status
+  message       String?
   executionTime Int?
   memoryUsage   Int?
+
+  userId    String
+  problemId String
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  problem Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Testcase {
