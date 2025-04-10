@@ -398,6 +398,7 @@ public:
                     { label: "target", value: "9" },
                   ],
                 },
+                expectedOutput: "[0,1]",
               },
               {
                 data: {
@@ -406,6 +407,7 @@ public:
                     { label: "target", value: "6" },
                   ],
                 },
+                expectedOutput: "[1,2]",
               },
               {
                 data: {
@@ -414,6 +416,7 @@ public:
                     { label: "target", value: "6" },
                   ],
                 },
+                expectedOutput: "[0,1]",
               },
             ],
           },
@@ -605,6 +608,7 @@ public:
                     { label: "l2", value: "[5,6,4]" },
                   ],
                 },
+                expectedOutput: "[7,0,8]",
               },
               {
                 data: {
@@ -613,6 +617,7 @@ public:
                     { label: "l2", value: "[0]" },
                   ],
                 },
+                expectedOutput: "[0]",
               },
               {
                 data: {
@@ -621,6 +626,7 @@ public:
                     { label: "l2", value: "[9,9,9,9]" },
                   ],
                 },
+                expectedOutput: "[8,9,9,9,0,0,0,1]",
               },
             ],
           },
@@ -805,6 +811,7 @@ public:
                     { label: "nums2", value: "[2]" },
                   ],
                 },
+                expectedOutput: "2.00000",
               },
               {
                 data: {
@@ -813,6 +820,7 @@ public:
                     { label: "nums2", value: "[3,4]" },
                   ],
                 },
+                expectedOutput: "2.50000",
               },
             ],
           },
