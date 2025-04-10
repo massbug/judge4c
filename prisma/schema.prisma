@@ -56,6 +56,9 @@ model Problem {
   templates   Template[]
   testcases   Testcase[]
 
+  timeLimit   Int @default(1000)
+  memoryLimit Int @default(128)
+
   @@index([userId])
   @@index([difficulty])
 }
@@ -93,8 +96,6 @@ model DockerConfig {
   image                String
   tag                  String
   workingDir           String
-  timeLimit            Int
-  memoryLimit          Int
   compileOutputLimit   Int
   runOutputLimit       Int
   editorLanguageConfig EditorLanguageConfig @relation(fields: [language], references: [language])
