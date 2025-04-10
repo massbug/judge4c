@@ -11,8 +11,8 @@ import { useState } from "react";
 import { judge } from "@/actions/judge";
 import { Button } from "@/components/ui/button";
 import { useProblem } from "@/hooks/use-problem";
+import { showStatusToast } from "@/lib/show-status-toast";
 import { LoaderCircleIcon, PlayIcon } from "lucide-react";
-import { showExitCodeToast } from "@/lib/show-exit-code-toast";
 
 interface RunCodeProps {
   className?: string;
@@ -33,7 +33,7 @@ export function RunCode({
 
     try {
       const result = await judge(currentLang, code, problemId);
-      showExitCodeToast({ exitCode: result.exitCode });
+      showStatusToast({ status: result.status });
     } catch (error) {
       console.error("Error occurred while judging the code:");
       console.error(error);

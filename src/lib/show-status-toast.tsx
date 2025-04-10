@@ -6,24 +6,28 @@ import {
   XIcon,
 } from "lucide-react";
 import { toast } from "sonner";
-import { ExitCode } from "@/generated/client";
 import { Button } from "@/components/ui/button";
+import type { Status } from "@/generated/client";
 
-const getColorClass = (code: ExitCode) => {
-  const colorMap: Record<ExitCode, string> = {
-    SE: "text-red-500",
-    CS: "text-green-500",
+const getColorClass = (code: Status) => {
+  const colorMap: Record<Status, string> = {
+    PD: "text-gray-400",
+    QD: "text-gray-400",
+    CP: "text-yellow-400",
     CE: "text-yellow-500",
+    CS: "text-green-500",
+    RU: "text-blue-400",
     TLE: "text-blue-500",
     MLE: "text-purple-500",
     RE: "text-orange-500",
     AC: "text-green-500",
     WA: "text-red-500",
+    SE: "text-red-500",
   };
   return colorMap[code] || "text-gray-500";
 };
 
-const exitCodeMap = new Map<ExitCode, { icon: LucideIcon; message: string }>([
+const statusMap = new Map<Status, { icon: LucideIcon; message: string }>([
   ["SE", { icon: BanIcon, message: "System Error" }],
   ["CS", { icon: CircleCheckIcon, message: "Compilation Success" }],
   ["CE", { icon: AlertTriangleIcon, message: "Compilation Error" }],
@@ -34,7 +38,7 @@ const exitCodeMap = new Map<ExitCode, { icon: LucideIcon; message: string }>([
   ["WA", { icon: AlertTriangleIcon, message: "Wrong Answer" }],
 ]);
 
-const ExitCodeToast = ({
+const StatusToast = ({
   t,
   Icon,
   message,
@@ -76,21 +80,21 @@ const ExitCodeToast = ({
   </div>
 );
 
-interface ShowExitCodeToastProps {
-  exitCode: ExitCode;
+interface ShowStatusToastProps {
+  status: Status;
 }
 
-export function showExitCodeToast({
-  exitCode,
-}: ShowExitCodeToastProps) {
-  const { icon: Icon, message } = exitCodeMap.get(exitCode) || {
+export function showStatusToast({
+  status,
+}: ShowStatusToastProps) {
+  const { icon: Icon, message } = statusMap.get(status) || {
     icon: XIcon,
     message: "Unknown Error",
   };
-  const colorClass = getColorClass(exitCode);
+  const colorClass = getColorClass(status);
 
   toast.custom((t) => (
-    <ExitCodeToast
+    <StatusToast
       t={t}
       Icon={Icon}
       message={message}
