@@ -51,9 +51,9 @@ export default function Bot() {
   );
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="relative flex-1 border-x border-muted">
-        <div className="flex flex-col h-full bg-background">
+    <div className="flex flex-col h-full border border-t-0 border-muted rounded-b-3xl bg-background">
+      <div className="relative flex-1">
+        <div className="flex flex-col h-full">
           <div className="flex-1 relative">
             {!messages.some(
               (message) => message.role === "user" || message.role === "assistant"
