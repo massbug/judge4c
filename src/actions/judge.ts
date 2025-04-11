@@ -4,11 +4,11 @@ import fs from "fs";
 import tar from "tar-stream";
 import Docker from "dockerode";
 import prisma from "@/lib/prisma";
-import { v4 as uuid } from "uuid";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { Readable, Writable } from "stream";
-import { ExitCode, EditorLanguage, JudgeResult } from "@/generated/client";
+import { Status } from "@/generated/client";
+import type { EditorLanguage, Submission } from "@/generated/client";
 
 const isRemote = process.env.DOCKER_HOST_MODE === "remote";
 
@@ -25,11 +25,16 @@ const docker = isRemote
   : new Docker({ socketPath: "/var/run/docker.sock" });
 
 // Prepare Docker image environment
-async function prepareEnvironment(image: string, tag: string) {
-  const reference = `${image}:${tag}`;
-  const filters = { reference: [reference] };
-  const images = await docker.listImages({ filters });
-  if (images.length === 0) await docker.pull(reference);
+async function prepareEnvironment(image: string, tag: string): Promise<boolean> {
+  try {
+    const reference = `${image}:${tag}`;
+    const filters = { reference: [reference] };
+    const images = await docker.listImages({ filters });
+    return images.length !== 0;
+  } catch (error) {
+    console.error("Error checking Docker images:", error);
+    return false;
+  }
 }
 
 // Create Docker container with keep-alive
@@ -64,15 +69,35 @@ function createTarStream(file: string, value: string) {
 
 export async function judge(
   language: EditorLanguage,
-  value: string,
+  code: string,
   problemId: string,
-): Promise<JudgeResult> {
+): Promise<Submission> {
   const session = await auth();
-  if (!session) redirect("/sign-in");
+  if (!session?.user?.id) redirect("/sign-in");
 
+  const userId = session.user.id;
   let container: Docker.Container | null = null;
+  let submission: Submission | null = null;
 
   try {
+    const problem = await prisma.problem.findUnique({
+      where: { id: problemId },
+    });
+
+    if (!problem) {
+      submission = await prisma.submission.create({
+        data: {
+          language,
+          code,
+          status: Status.SE,
+          userId,
+          problemId,
+          message: "Problem not found",
+        },
+      });
+      return submission;
+    }
+
     const config = await prisma.editorLanguageConfig.findUnique({
       where: { language },
       include: {
@@ -80,32 +105,18 @@ export async function judge(
       },
     });
 
-    if (!config || !config.dockerConfig) {
-      return {
-        id: uuid(),
-        output: "Configuration Error: Missing editor or docker configuration",
-        exitCode: ExitCode.SE,
-        executionTime: null,
-        memoryUsage: null,
-      };
-    }
-
-    const problem = await prisma.problem.findUnique({
-      where: { id: problemId },
-      select: {
-        timeLimit: true,
-        memoryLimit: true,
-      },
-    });
-
-    if (!problem) {
-      return {
-        id: uuid(),
-        output: "Problem not found.",
-        exitCode: ExitCode.SE,
-        executionTime: null,
-        memoryUsage: null,
-      };
+    if (!config?.dockerConfig) {
+      submission = await prisma.submission.create({
+        data: {
+          language,
+          code,
+          status: Status.SE,
+          userId,
+          problemId,
+          message: " Missing editor or docker configuration",
+        },
+      });
+      return submission;
     }
 
     const {
@@ -119,35 +130,78 @@ export async function judge(
     const file = `${fileName}.${fileExtension}`;
 
     // Prepare the environment and create a container
-    await prepareEnvironment(image, tag);
-    container = await createContainer(image, tag, workingDir, problem.memoryLimit);
+    if (await prepareEnvironment(image, tag)) {
+      container = await createContainer(image, tag, workingDir, problem.memoryLimit);
+    } else {
+      submission = await prisma.submission.create({
+        data: {
+          language,
+          code,
+          status: Status.SE,
+          userId,
+          problemId,
+          message: "The docker environment is not ready",
+        },
+      });
+      return submission;
+    }
+
+    submission = await prisma.submission.create({
+      data: {
+        language,
+        code,
+        status: Status.PD,
+        userId,
+        problemId,
+        message: "",
+      },
+    });
 
     // Upload code to the container
-    const tarStream = createTarStream(file, value);
+    const tarStream = createTarStream(file, code);
     await container.putArchive(tarStream, { path: workingDir });
 
     // Compile the code
-    const compileResult = await compile(container, file, fileName, compileOutputLimit);
-    if (compileResult.exitCode === ExitCode.CE) {
+    const compileResult = await compile(container, file, fileName, compileOutputLimit, submission.id);
+    if (compileResult.status === Status.CE) {
       return compileResult;
     }
 
     // Run the code
-    const runResult = await run(container, fileName, problem.timeLimit, runOutputLimit);
+    const runResult = await run(container, fileName, problem.timeLimit, runOutputLimit, submission.id);
     return runResult;
   } catch (error) {
     console.error(error);
-    return {
-      id: uuid(),
-      output: "System Error",
-      exitCode: ExitCode.SE,
-      executionTime: null,
-      memoryUsage: null,
-    };
+    if (submission) {
+      const updatedSubmission = await prisma.submission.update({
+        where: { id: submission.id },
+        data: {
+          status: Status.SE,
+          message: "System Error",
+        }
+      })
+      return updatedSubmission;
+    } else {
+      submission = await prisma.submission.create({
+        data: {
+          language,
+          code,
+          status: Status.PD,
+          userId,
+          problemId,
+          message: "",
+        },
+      })
+      return submission;
+    }
   } finally {
     if (container) {
-      await container.kill();
-      await container.remove();
+      try {
+        await container.kill();
+        await container.remove();
+      } catch (error) {
+        console.error("Container cleanup failed:", error);
+      }
     }
   }
 }
@@ -156,18 +210,19 @@ async function compile(
   container: Docker.Container,
   file: string,
   fileName: string,
-  maxOutput: number = 1 * 1024 * 1024
-): Promise<JudgeResult> {
+  compileOutputLimit: number = 1 * 1024 * 1024,
+  submissionId: string,
+): Promise<Submission> {
   const compileExec = await container.exec({
     Cmd: ["gcc", "-O2", file, "-o", fileName],
     AttachStdout: true,
     AttachStderr: true,
   });
 
-  return new Promise<JudgeResult>((resolve, reject) => {
+  return new Promise<Submission>((resolve, reject) => {
     compileExec.start({}, (error, stream) => {
       if (error || !stream) {
-        return reject({ output: "System Error", exitCode: ExitCode.SE });
+        return reject({ message: "System Error", Status: Status.SE });
       }
 
       const stdoutChunks: string[] = [];
@@ -175,10 +230,10 @@ async function compile(
       const stdoutStream = new Writable({
         write(chunk, _encoding, callback) {
           let text = chunk.toString();
-          if (stdoutLength + text.length > maxOutput) {
-            text = text.substring(0, maxOutput - stdoutLength);
+          if (stdoutLength + text.length > compileOutputLimit) {
+            text = text.substring(0, compileOutputLimit - stdoutLength);
             stdoutChunks.push(text);
-            stdoutLength = maxOutput;
+            stdoutLength = compileOutputLimit;
             callback();
             return;
           }
@@ -193,10 +248,10 @@ async function compile(
       const stderrStream = new Writable({
         write(chunk, _encoding, callback) {
           let text = chunk.toString();
-          if (stderrLength + text.length > maxOutput) {
-            text = text.substring(0, maxOutput - stderrLength);
+          if (stderrLength + text.length > compileOutputLimit) {
+            text = text.substring(0, compileOutputLimit - stderrLength);
             stderrChunks.push(text);
-            stderrLength = maxOutput;
+            stderrLength = compileOutputLimit;
             callback();
             return;
           }
@@ -213,31 +268,31 @@ async function compile(
         const stderr = stderrChunks.join("");
         const exitCode = (await compileExec.inspect()).ExitCode;
 
-        let result: JudgeResult;
+        let updatedSubmission: Submission;
 
         if (exitCode !== 0 || stderr) {
-          result = {
-            id: uuid(),
-            output: stderr || "Compilation Error",
-            exitCode: ExitCode.CE,
-            executionTime: null,
-            memoryUsage: null,
-          };
+          updatedSubmission = await prisma.submission.update({
+            where: { id: submissionId },
+            data: {
+              status: Status.CE,
+              message: stderr || "Compilation Error",
+            },
+          });
         } else {
-          result = {
-            id: uuid(),
-            output: stdout,
-            exitCode: ExitCode.CS,
-            executionTime: null,
-            memoryUsage: null,
-          };
+          updatedSubmission = await prisma.submission.update({
+            where: { id: submissionId },
+            data: {
+              status: Status.CS,
+              message: stdout,
+            },
+          });
         }
 
-        resolve(result);
+        resolve(updatedSubmission);
       });
 
       stream.on("error", () => {
-        reject({ output: "System Error", exitCode: ExitCode.SE });
+        reject({ message: "System Error", Status: Status.SE });
       });
     });
   });
@@ -249,7 +304,8 @@ async function run(
   fileName: string,
   timeLimit: number = 1000,
   maxOutput: number = 1 * 1024 * 1024,
-): Promise<JudgeResult> {
+  submissionId: string,
+): Promise<Submission> {
   const runExec = await container.exec({
     Cmd: [`./${fileName}`],
     AttachStdout: true,
@@ -257,7 +313,7 @@ async function run(
     AttachStdin: true,
   });
 
-  return new Promise<JudgeResult>((resolve, reject) => {
+  return new Promise<Submission>((resolve, reject) => {
     const stdoutChunks: string[] = [];
     let stdoutLength = 0;
     const stdoutStream = new Writable({
@@ -297,7 +353,7 @@ async function run(
     // Start the exec stream
     runExec.start({ hijack: true }, (error, stream) => {
       if (error || !stream) {
-        return reject({ output: "System Error", exitCode: ExitCode.SE });
+        return reject({ message: "System Error", status: Status.SE });
       }
 
       stream.write("[2,7,11,15]\n9\n[3,2,4]\n6\n[3,3]\n6");
@@ -307,13 +363,14 @@ async function run(
 
       // Timeout mechanism
       const timeoutId = setTimeout(async () => {
-        resolve({
-          id: uuid(),
-          output: "Time Limit Exceeded",
-          exitCode: ExitCode.TLE,
-          executionTime: null,
-          memoryUsage: null,
-        });
+        const updatedSubmission = await prisma.submission.update({
+          where: { id: submissionId },
+          data: {
+            status: Status.TLE,
+            message: "Time Limit Exceeded",
+          }
+        })
+        resolve(updatedSubmission);
       }, timeLimit);
 
       stream.on("end", async () => {
@@ -322,41 +379,40 @@ async function run(
         const stderr = stderrChunks.join("");
         const exitCode = (await runExec.inspect()).ExitCode;
 
-        let result: JudgeResult;
+        let updatedSubmission: Submission;
 
         // Exit code 0 means successful execution
         if (exitCode === 0) {
-          result = {
-            id: uuid(),
-            output: stdout,
-            exitCode: ExitCode.AC,
-            executionTime: null,
-            memoryUsage: null,
-          };
+          updatedSubmission = await prisma.submission.update({
+            where: { id: submissionId },
+            data: {
+              status: Status.AC,
+              message: stdout,
+            }
+          })
         } else if (exitCode === 137) {
-          result = {
-            id: uuid(),
-            output: stderr || "Memory Limit Exceeded",
-            exitCode: ExitCode.MLE,
-            executionTime: null,
-            memoryUsage: null,
-          };
+          updatedSubmission = await prisma.submission.update({
+            where: { id: submissionId },
+            data: {
+              status: Status.MLE,
+              message: stderr || "Memory Limit Exceeded",
+            }
+          })
         } else {
-          result = {
-            id: uuid(),
-            output: stderr || "Runtime Error",
-            exitCode: ExitCode.RE,
-            executionTime: null,
-            memoryUsage: null,
-          };
+          updatedSubmission = await prisma.submission.update({
+            where: { id: submissionId },
+            data: {
+              status: Status.RE,
+              message: stderr || "Runtime Error",
+            }
+          })
         }
-
-        resolve(result);
+        resolve(updatedSubmission);
       });
 
       stream.on("error", () => {
         clearTimeout(timeoutId); // Clear timeout in case of error
-        reject({ output: "System Error", exitCode: ExitCode.SE });
+        reject({ message: "System Error", Status: Status.SE });
       });
     });
   });
