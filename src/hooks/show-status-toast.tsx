@@ -1,42 +1,11 @@
 import {
-  AlertTriangleIcon,
-  BanIcon,
-  CircleCheckIcon,
   LucideIcon,
   XIcon,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import type { Status } from "@/generated/client";
-
-const getColorClass = (code: Status) => {
-  const colorMap: Record<Status, string> = {
-    PD: "text-gray-400",
-    QD: "text-gray-400",
-    CP: "text-yellow-400",
-    CE: "text-yellow-500",
-    CS: "text-green-500",
-    RU: "text-blue-400",
-    TLE: "text-blue-500",
-    MLE: "text-purple-500",
-    RE: "text-orange-500",
-    AC: "text-green-500",
-    WA: "text-red-500",
-    SE: "text-red-500",
-  };
-  return colorMap[code] || "text-gray-500";
-};
-
-const statusMap = new Map<Status, { icon: LucideIcon; message: string }>([
-  ["SE", { icon: BanIcon, message: "System Error" }],
-  ["CS", { icon: CircleCheckIcon, message: "Compilation Success" }],
-  ["CE", { icon: AlertTriangleIcon, message: "Compilation Error" }],
-  ["TLE", { icon: AlertTriangleIcon, message: "Time Limit Exceeded" }],
-  ["MLE", { icon: AlertTriangleIcon, message: "Memory Limit Exceeded" }],
-  ["RE", { icon: AlertTriangleIcon, message: "Runtime Error" }],
-  ["AC", { icon: CircleCheckIcon, message: "Accepted" }],
-  ["WA", { icon: AlertTriangleIcon, message: "Wrong Answer" }],
-]);
+import { getStatusColorClass, statusMap } from "@/lib/status";
 
 const StatusToast = ({
   t,
@@ -88,7 +57,7 @@ export function showStatusToast({
     icon: XIcon,
     message: "Unknown Error",
   };
-  const colorClass = getColorClass(status);
+  const colorClass = getStatusColorClass(status);
 
   toast.custom((t) => (
     <StatusToast
@@ -97,9 +66,5 @@ export function showStatusToast({
       message={message}
       colorClass={colorClass}
     />
-  ),
-    {
-      duration: Infinity,
-    }
-  );
+  ));
 }
