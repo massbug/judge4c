@@ -8,7 +8,8 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { Readable, Writable } from "stream";
 import { Status } from "@/generated/client";
-import type { EditorLanguage, Submission } from "@/generated/client";
+import type { ProblemWithTestcases, TestcaseWithDetails } from "@/types/prisma";
+import type { EditorLanguage, Submission, TestcaseResult } from "@/generated/client";
 
 const isRemote = process.env.DOCKER_HOST_MODE === "remote";
 
@@ -82,7 +83,14 @@ export async function judge(
   try {
     const problem = await prisma.problem.findUnique({
       where: { id: problemId },
-    });
+      include: {
+        testcases: {
+          include: {
+            data: true,
+          },
+        },
+      },
+    }) as ProblemWithTestcases | null;
 
     if (!problem) {
       submission = await prisma.submission.create({
@@ -119,6 +127,22 @@ export async function judge(
       return submission;
     }
 
+    const testcases = problem.testcases;
+
+    if (!testcases || testcases.length === 0) {
+      submission = await prisma.submission.create({
+        data: {
+          language,
+          code,
+          status: Status.SE,
+          userId,
+          problemId,
+          message: "Testcases not found",
+        },
+      });
+      return submission;
+    }
+
     const {
       image,
       tag,
@@ -133,6 +157,7 @@ export async function judge(
     if (await prepareEnvironment(image, tag)) {
       container = await createContainer(image, tag, workingDir, problem.memoryLimit);
     } else {
+      console.error("Docker image not found:", image, ":", tag);
       submission = await prisma.submission.create({
         data: {
           language,
@@ -168,7 +193,7 @@ export async function judge(
     }
 
     // Run the code
-    const runResult = await run(container, fileName, problem.timeLimit, runOutputLimit, submission.id);
+    const runResult = await run(container, fileName, problem.timeLimit, runOutputLimit, submission.id, testcases);
     return runResult;
   } catch (error) {
     console.error(error);
@@ -305,115 +330,181 @@ async function run(
   timeLimit: number = 1000,
   maxOutput: number = 1 * 1024 * 1024,
   submissionId: string,
+  testcases: TestcaseWithDetails,
 ): Promise<Submission> {
-  const runExec = await container.exec({
-    Cmd: [`./${fileName}`],
-    AttachStdout: true,
-    AttachStderr: true,
-    AttachStdin: true,
-  });
+  let finalSubmission: Submission | null = null;
 
-  return new Promise<Submission>((resolve, reject) => {
-    const stdoutChunks: string[] = [];
-    let stdoutLength = 0;
-    const stdoutStream = new Writable({
-      write(chunk, _encoding, callback) {
-        let text = chunk.toString();
-        if (stdoutLength + text.length > maxOutput) {
-          text = text.substring(0, maxOutput - stdoutLength);
-          stdoutChunks.push(text);
-          stdoutLength = maxOutput;
-          callback();
-          return;
-        }
-        stdoutChunks.push(text);
-        stdoutLength += text.length;
-        callback();
-      },
+  for (const testcase of testcases) {
+    const sortedData = testcase.data.sort((a, b) => a.index - b.index);
+    const inputData = sortedData.map(d => d.value).join("\n");
+
+    const runExec = await container.exec({
+      Cmd: [`./${fileName}`],
+      AttachStdout: true,
+      AttachStderr: true,
+      AttachStdin: true,
     });
 
-    const stderrChunks: string[] = [];
-    let stderrLength = 0;
-    const stderrStream = new Writable({
-      write(chunk, _encoding, callback) {
-        let text = chunk.toString();
-        if (stderrLength + text.length > maxOutput) {
-          text = text.substring(0, maxOutput - stderrLength);
-          stderrChunks.push(text);
-          stderrLength = maxOutput;
-          callback();
-          return;
+    const result = await new Promise<Submission | TestcaseResult>((resolve, reject) => {
+      // Start the exec stream
+      runExec.start({ hijack: true }, async (error, stream) => {
+        if (error || !stream) {
+          const submission = await prisma.submission.update({
+            where: { id: submissionId },
+            data: {
+              status: Status.SE,
+              message: "System Error",
+            }
+          })
+          return resolve(submission);
         }
-        stderrChunks.push(text);
-        stderrLength += text.length;
-        callback();
-      },
+
+        stream.write(inputData);
+        stream.end();
+
+        const stdoutChunks: string[] = [];
+        const stderrChunks: string[] = [];
+        let stdoutLength = 0;
+        let stderrLength = 0;
+
+        const stdoutStream = new Writable({
+          write: (chunk, _, callback) => {
+            const text = chunk.toString();
+            if (stdoutLength + text.length > maxOutput) {
+              stdoutChunks.push(text.substring(0, maxOutput - stdoutLength));
+              stdoutLength = maxOutput;
+            } else {
+              stdoutChunks.push(text);
+              stdoutLength += text.length;
+            }
+            callback();
+          }
+        });
+
+        const stderrStream = new Writable({
+          write: (chunk, _, callback) => {
+            const text = chunk.toString();
+            if (stderrLength + text.length > maxOutput) {
+              stderrChunks.push(text.substring(0, maxOutput - stderrLength));
+              stderrLength = maxOutput;
+            } else {
+              stderrChunks.push(text);
+              stderrLength += text.length;
+            }
+            callback();
+          }
+        });
+
+        docker.modem.demuxStream(stream, stdoutStream, stderrStream);
+
+        const startTime = Date.now();
+
+        // Timeout mechanism
+        const timeoutId = setTimeout(async () => {
+          stream.destroy(); // Destroy the stream to stop execution
+          const updatedSubmission = await prisma.submission.update({
+            where: { id: submissionId },
+            data: {
+              status: Status.TLE,
+              message: "Time Limit Exceeded",
+            }
+          })
+          resolve(updatedSubmission);
+        }, timeLimit);
+
+        stream.on("end", async () => {
+          clearTimeout(timeoutId); // Clear the timeout if the program finishes before the time limit
+          const stdout = stdoutChunks.join("");
+          const stderr = stderrChunks.join("");
+          const exitCode = (await runExec.inspect()).ExitCode;
+          const executionTime = Date.now() - startTime;
+
+          // Exit code 0 means successful execution
+          if (exitCode === 0) {
+            const expectedOutput = testcase.expectedOutput;
+            const testcaseResult = await prisma.testcaseResult.create({
+              data: {
+                isCorrect: stdout.trim() === expectedOutput.trim(),
+                output: stdout,
+                executionTime,
+                submissionId,
+                testcaseId: testcase.id,
+              }
+            })
+            resolve(testcaseResult);
+          } else if (exitCode === 137) {
+            await prisma.testcaseResult.create({
+              data: {
+                isCorrect: false,
+                output: stdout,
+                executionTime,
+                submissionId,
+                testcaseId: testcase.id,
+              }
+            })
+            const updatedSubmission = await prisma.submission.update({
+              where: { id: submissionId },
+              data: {
+                status: Status.MLE,
+                message: stderr || "Memory Limit Exceeded",
+              }
+            })
+            resolve(updatedSubmission);
+          } else {
+            await prisma.testcaseResult.create({
+              data: {
+                isCorrect: false,
+                output: stdout,
+                executionTime,
+                submissionId,
+                testcaseId: testcase.id,
+              }
+            })
+            const updatedSubmission = await prisma.submission.update({
+              where: { id: submissionId },
+              data: {
+                status: Status.RE,
+                message: stderr || "Runtime Error",
+              }
+            })
+            resolve(updatedSubmission);
+          }
+        });
+
+        stream.on("error", () => {
+          clearTimeout(timeoutId); // Clear timeout in case of error
+          reject({ message: "System Error", Status: Status.SE });
+        });
+      });
     });
 
-    // Start the exec stream
-    runExec.start({ hijack: true }, (error, stream) => {
-      if (error || !stream) {
-        return reject({ message: "System Error", status: Status.SE });
-      }
-
-      stream.write("[2,7,11,15]\n9\n[3,2,4]\n6\n[3,3]\n6");
-      stream.end();
-
-      docker.modem.demuxStream(stream, stdoutStream, stderrStream);
-
-      // Timeout mechanism
-      const timeoutId = setTimeout(async () => {
-        const updatedSubmission = await prisma.submission.update({
+    if ('status' in result) {
+      return result;
+    } else {
+      if (!result.isCorrect) {
+        finalSubmission = await prisma.submission.update({
           where: { id: submissionId },
           data: {
-            status: Status.TLE,
-            message: "Time Limit Exceeded",
+            status: Status.WA,
+            message: "Wrong Answer",
+          },
+          include: {
+            TestcaseResult: true,
           }
-        })
-        resolve(updatedSubmission);
-      }, timeLimit);
-
-      stream.on("end", async () => {
-        clearTimeout(timeoutId); // Clear the timeout if the program finishes before the time limit
-        const stdout = stdoutChunks.join("");
-        const stderr = stderrChunks.join("");
-        const exitCode = (await runExec.inspect()).ExitCode;
-
-        let updatedSubmission: Submission;
-
-        // Exit code 0 means successful execution
-        if (exitCode === 0) {
-          updatedSubmission = await prisma.submission.update({
-            where: { id: submissionId },
-            data: {
-              status: Status.AC,
-              message: stdout,
-            }
-          })
-        } else if (exitCode === 137) {
-          updatedSubmission = await prisma.submission.update({
-            where: { id: submissionId },
-            data: {
-              status: Status.MLE,
-              message: stderr || "Memory Limit Exceeded",
-            }
-          })
-        } else {
-          updatedSubmission = await prisma.submission.update({
-            where: { id: submissionId },
-            data: {
-              status: Status.RE,
-              message: stderr || "Runtime Error",
-            }
-          })
-        }
-        resolve(updatedSubmission);
-      });
-
-      stream.on("error", () => {
-        clearTimeout(timeoutId); // Clear timeout in case of error
-        reject({ message: "System Error", Status: Status.SE });
-      });
-    });
+        });
+        return finalSubmission;
+      }
+    }
+  }
+  finalSubmission = await prisma.submission.update({
+    where: { id: submissionId },
+    data: {
+      status: Status.AC,
+      message: "All testcases passed",
+    },
+    include: {
+      TestcaseResult: true,
+    }
   });
+  return finalSubmission;
 }
