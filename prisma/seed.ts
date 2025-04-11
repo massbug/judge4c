@@ -390,8 +390,8 @@ public:
               {
                 data: {
                   create: [
-                    { label: "nums", value: "[2,7,11,15]" },
-                    { label: "target", value: "9" },
+                    { label: "nums", value: "[2,7,11,15]", index: 0 },
+                    { label: "target", value: "9", index: 1 },
                   ],
                 },
                 expectedOutput: "[0,1]",
@@ -399,8 +399,8 @@ public:
               {
                 data: {
                   create: [
-                    { label: "nums", value: "[3,2,4]" },
-                    { label: "target", value: "6" },
+                    { label: "nums", value: "[3,2,4]", index: 0 },
+                    { label: "target", value: "6", index: 1 },
                   ],
                 },
                 expectedOutput: "[1,2]",
@@ -408,8 +408,8 @@ public:
               {
                 data: {
                   create: [
-                    { label: "nums", value: "[3,3]" },
-                    { label: "target", value: "6" },
+                    { label: "nums", value: "[3,3]", index: 0 },
+                    { label: "target", value: "6", index: 1 },
                   ],
                 },
                 expectedOutput: "[0,1]",
@@ -600,8 +600,8 @@ public:
               {
                 data: {
                   create: [
-                    { label: "l1", value: "[2,4,3]" },
-                    { label: "l2", value: "[5,6,4]" },
+                    { label: "l1", value: "[2,4,3]", index: 0 },
+                    { label: "l2", value: "[5,6,4]", index: 1 },
                   ],
                 },
                 expectedOutput: "[7,0,8]",
@@ -609,8 +609,8 @@ public:
               {
                 data: {
                   create: [
-                    { label: "l1", value: "[0]" },
-                    { label: "l2", value: "[0]" },
+                    { label: "l1", value: "[0]", index: 0 },
+                    { label: "l2", value: "[0]", index: 1 },
                   ],
                 },
                 expectedOutput: "[0]",
@@ -618,8 +618,8 @@ public:
               {
                 data: {
                   create: [
-                    { label: "l1", value: "[9,9,9,9,9,9,9]" },
-                    { label: "l2", value: "[9,9,9,9]" },
+                    { label: "l1", value: "[9,9,9,9,9,9,9]", index: 0 },
+                    { label: "l2", value: "[9,9,9,9]", index: 1 },
                   ],
                 },
                 expectedOutput: "[8,9,9,9,0,0,0,1]",
@@ -803,8 +803,8 @@ public:
               {
                 data: {
                   create: [
-                    { label: "nums1", value: "[1,3]" },
-                    { label: "nums2", value: "[2]" },
+                    { label: "nums1", value: "[1,3]", index: 0 },
+                    { label: "nums2", value: "[2]", index: 1 },
                   ],
                 },
                 expectedOutput: "2.00000",
@@ -812,8 +812,8 @@ public:
               {
                 data: {
                   create: [
-                    { label: "nums1", value: "[1,2]" },
-                    { label: "nums2", value: "[3,4]" },
+                    { label: "nums1", value: "[1,2]", index: 0 },
+                    { label: "nums2", value: "[3,4]", index: 1 },
                   ],
                 },
                 expectedOutput: "2.50000",
