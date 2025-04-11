@@ -19,6 +19,22 @@ export type ProblemWithDetails = ThenArg<
   ReturnType<typeof getAllProblems>
 >[number];
 
+export async function getAllProblemsWithTestcases() {
+  return await prisma.problem.findMany({
+    include: {
+      testcases: {
+        include: {
+          data: true,
+        },
+      },
+    },
+  });
+}
+
+export type ProblemWithTestcases = ThenArg<
+  ReturnType<typeof getAllProblemsWithTestcases>
+>[number];
+
 export async function getAllTestcases() {
   return await prisma.testcase.findMany({
     include: {
