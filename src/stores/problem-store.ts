@@ -2,6 +2,7 @@ import type {
   EditorLanguage,
   EditorLanguageConfig,
   LanguageServerConfig,
+  Submission,
 } from "@/generated/client";
 import type { editor } from "monaco-editor";
 import { createStore } from "zustand/vanilla";
@@ -20,6 +21,7 @@ export type ProblemState = {
   problem: ProblemWithDetails;
   editorLanguageConfigs: EditorLanguageConfig[];
   languageServerConfigs: LanguageServerConfig[];
+  submissions: Submission[];
 };
 
 export type ProblemActions = {

@@ -14,7 +14,7 @@ export default async function ProblemLayout({
 }: ProblemProps) {
   const { id } = await params;
 
-  const [problem, editorLanguageConfigs, languageServerConfigs] = await Promise.all([
+  const [problem, editorLanguageConfigs, languageServerConfigs, submissions] = await Promise.all([
     prisma.problem.findUnique({
       where: { id },
       include: {
@@ -28,6 +28,9 @@ export default async function ProblemLayout({
     }),
     prisma.editorLanguageConfig.findMany(),
     prisma.languageServerConfig.findMany(),
+    prisma.submission.findMany({
+      where: { problemId: id },
+    })
   ]);
 
   if (!problem) {
@@ -41,6 +44,7 @@ export default async function ProblemLayout({
         problem={problem}
         editorLanguageConfigs={editorLanguageConfigs}
         languageServerConfigs={languageServerConfigs}
+        submissions={submissions}
       >
         <PlaygroundHeader />
         <main className="flex flex-grow overflow-y-hidden p-2.5 pt-0">

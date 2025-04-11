@@ -2,6 +2,7 @@
 
 import {
   EditorLanguage,
+  type Submission,
   type EditorLanguageConfig,
   type LanguageServerConfig,
 } from "@/generated/client";
@@ -20,6 +21,7 @@ export interface ProblemStoreProviderProps {
   problem: ProblemWithDetails;
   editorLanguageConfigs: EditorLanguageConfig[];
   languageServerConfigs: LanguageServerConfig[];
+  submissions: Submission[];
 }
 
 export const ProblemStoreProvider = ({
@@ -28,6 +30,7 @@ export const ProblemStoreProvider = ({
   problem,
   editorLanguageConfigs,
   languageServerConfigs,
+  submissions,
 }: ProblemStoreProviderProps) => {
   const storeRef = useRef<ProblemStoreApi | null>(null);
 
@@ -44,6 +47,7 @@ export const ProblemStoreProvider = ({
       problem,
       editorLanguageConfigs,
       languageServerConfigs,
+      submissions,
     });
   }
 
