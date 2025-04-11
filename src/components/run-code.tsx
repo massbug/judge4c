@@ -11,8 +11,8 @@ import { useState } from "react";
 import { judge } from "@/actions/judge";
 import { Button } from "@/components/ui/button";
 import { useProblem } from "@/hooks/use-problem";
-import { showStatusToast } from "@/lib/show-status-toast";
 import { LoaderCircleIcon, PlayIcon } from "lucide-react";
+import { showStatusToast } from "@/hooks/show-status-toast";
 
 interface RunCodeProps {
   className?: string;

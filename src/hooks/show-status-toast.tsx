@@ -49,9 +49,9 @@ const StatusToast = ({
   message: string;
   colorClass: string;
 }) => (
-  <div className="bg-background text-foreground w-full rounded-md border px-4 py-1 shadow-lg sm:w-[var(--width)]">
+  <div className="bg-background text-foreground w-full rounded-md border px-4 py-1 shadow-lg h-10 flex items-center">
     <div className="flex gap-2">
-      <div className="flex items-center grow gap-3">
+      <div className="flex grow gap-3">
         <Icon
           className={`mt-0.5 shrink-0 ${colorClass}`}
           size={16}
@@ -59,9 +59,6 @@ const StatusToast = ({
         />
         <div className="flex grow justify-between gap-12">
           <p className="text-sm">{message}</p>
-          <div className="text-sm whitespace-nowrap">
-            <button className="text-sm font-medium hover:underline">Details</button>
-          </div>
         </div>
       </div>
       <Button
@@ -100,5 +97,9 @@ export function showStatusToast({
       message={message}
       colorClass={colorClass}
     />
-  ));
+  ),
+    {
+      duration: Infinity,
+    }
+  );
 }
