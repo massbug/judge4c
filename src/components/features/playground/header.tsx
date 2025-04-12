@@ -2,6 +2,7 @@ import { cn } from "@/lib/utils";
 import { RunCode } from "@/components/run-code";
 import BackButton from "@/components/back-button";
 import { AvatarButton } from "@/components/avatar-button";
+import BotVisibilityToggle from "@/components/bot-visibility-toggle";
 
 interface PlaygroundHeaderProps {
   className?: string;
@@ -23,6 +24,7 @@ export function PlaygroundHeader({
               <BackButton href="/problemset" />
             </div>
             <div className="relative flex items-center gap-2">
+              <BotVisibilityToggle />
               <AvatarButton />
             </div>
           </div>
