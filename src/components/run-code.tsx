@@ -11,6 +11,7 @@ import { useState } from "react";
 import { judge } from "@/actions/judge";
 import { Button } from "@/components/ui/button";
 import { useProblem } from "@/hooks/use-problem";
+import { useDockviewStore } from "@/stores/dockview";
 import { LoaderCircleIcon, PlayIcon } from "lucide-react";
 import { showStatusToast } from "@/hooks/show-status-toast";
 
@@ -22,6 +23,7 @@ export function RunCode({
   className,
   ...props
 }: RunCodeProps) {
+  const { api } = useDockviewStore();
   const { currentLang, editor, problemId } = useProblem();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -34,6 +36,10 @@ export function RunCode({
     try {
       const result = await judge(currentLang, code, problemId);
       showStatusToast({ status: result.status });
+      const panel = api?.getPanel("Submissions");
+      if (panel && !panel.api.isActive) {
+        panel.api.setActive();
+      }
     } catch (error) {
       console.error("Error occurred while judging the code:");
       console.error(error);
@@ -51,7 +57,7 @@ export function RunCode({
             variant="secondary"
             className={cn("h-8 px-3 py-1.5", className)}
             onClick={handleJudge}
-            disabled={isLoading}
+            disabled={isLoading || !api?.getPanel("Submissions")}
           >
             {isLoading ? (
               <LoaderCircleIcon
