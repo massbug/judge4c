@@ -29,13 +29,15 @@ import AppearanceSettings from "./appearance-settings";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useSettingsStore } from "@/stores/useSettingsStore";
 import { CodeXml, Globe, Paintbrush, Settings } from "lucide-react";
+import { useTranslations } from "next-intl";
 
+const t = useTranslations('settings');
 const data = {
   nav: [
-    { name: "Appearance", icon: Paintbrush },
-    { name: "Language & region", icon: Globe },
-    { name: "Code Editor", icon: CodeXml },
-    { name: "Advanced", icon: Settings },
+    { name: t('appearance'), icon: Paintbrush },
+    { name: t('language-and-region'), icon: Globe },
+    { name: t('code-editor'), icon: CodeXml },
+    { name: t('advanced'), icon: Settings },
   ],
 };
 
@@ -45,9 +47,9 @@ export function SettingsDialog() {
   return (
     <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
       <DialogContent className="overflow-hidden p-0 md:max-h-[500px] md:max-w-[700px] lg:max-w-[800px]">
-        <DialogTitle className="sr-only">Settings</DialogTitle>
+        <DialogTitle className="sr-only">{t('settings')}</DialogTitle>
         <DialogDescription className="sr-only">
-          Customize your settings here.
+          {t('customize-your-settings-here')}
         </DialogDescription>
         <SidebarProvider className="items-start">
           <Sidebar collapsible="none" className="hidden md:flex">
@@ -80,7 +82,7 @@ export function SettingsDialog() {
                 <Breadcrumb>
                   <BreadcrumbList>
                     <BreadcrumbItem className="hidden md:block">
-                      <BreadcrumbLink href="#">Settings</BreadcrumbLink>
+                      <BreadcrumbLink href="#">{t('settings')}</BreadcrumbLink>
                     </BreadcrumbItem>
                     <BreadcrumbSeparator className="hidden md:block" />
                     <BreadcrumbItem>
@@ -92,7 +94,7 @@ export function SettingsDialog() {
             </header>
             <ScrollArea className="flex-1 overflow-y-auto p-4 pt-0">
               <div className="flex flex-col gap-4">
-                {activeSetting === "Appearance" ? (
+                {activeSetting === t('appearance') ? (
                   <AppearanceSettings />
                 ) : (
                   Array.from({ length: 10 }).map((_, i) => (

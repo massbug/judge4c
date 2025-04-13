@@ -11,10 +11,12 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Home } from "lucide-react";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 export const Navbar = () => {
   const pathname = usePathname();
   const pathSegments = pathname.split("/").filter(Boolean); // Filter out empty strings
+  const t = useTranslations('nav');
 
   return (
     <Breadcrumb>
@@ -24,7 +26,7 @@ export const Navbar = () => {
           <BreadcrumbItem>
             <BreadcrumbPage>
               <Home size={16} strokeWidth={2} aria-hidden="true" />
-              <span className="sr-only">Home</span>
+              <span className="sr-only">{t('home')}</span>
             </BreadcrumbPage>
           </BreadcrumbItem>
         ) : (
@@ -33,7 +35,7 @@ export const Navbar = () => {
             <BreadcrumbItem>
               <BreadcrumbLink href="/">
                 <Home size={16} strokeWidth={2} aria-hidden="true" />
-                <span className="sr-only">Home</span>
+                <span className="sr-only">{t('home')}</span>
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />

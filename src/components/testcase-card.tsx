@@ -6,7 +6,9 @@ import {
 } from "@/components/ui/tabs";
 import { TestcaseWithDetails } from "@/types/prisma";
 import TestcaseForm from "@/components/testcase-form";
+import { useTranslations } from "next-intl";
 
+const t = useTranslations('test');
 interface TestcaseCardProps {
   testcases: TestcaseWithDetails;
 }
@@ -21,7 +23,7 @@ export default function TestcaseCard({ testcases }: TestcaseCardProps) {
             value={`case-${index + 1}`}
             className="data-[state=active]:bg-muted data-[state=active]:shadow-none"
           >
-            Case {index + 1}
+            {t('case')} {index + 1}
           </TabsTrigger>
         ))}
       </TabsList>

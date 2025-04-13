@@ -13,7 +13,9 @@ import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslations } from "next-intl";
 
+const t = useTranslations('test');
 const formSchema = z.record(z.string().min(1));
 
 interface TestcaseFormInterface {
@@ -32,7 +34,7 @@ export default function TestcaseForm(props: TestcaseFormInterface) {
       toast.success(JSON.stringify(values, null, 2));
     } catch (error) {
       console.error("Form submission error", error);
-      toast.error("Failed to submit the form. Please try again.");
+      toast.error(t('failed-to-submit-the-form-please-try-again'));
     }
   }
 
@@ -50,7 +52,7 @@ export default function TestcaseForm(props: TestcaseFormInterface) {
                 <FormControl>
                   <Input
                     className="bg-muted border-transparent shadow-none rounded-lg h-10"
-                    placeholder={`Enter ${fieldName}`}
+                    placeholder={`Enter'+' ${fieldName}`}
                     type="text"
                     {...field}
                   />

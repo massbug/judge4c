@@ -7,6 +7,69 @@
     "Sign up": "Sign up"
   },
   "sign-up-form": {
-    "title": "Hello world!"
+    "title": "Hello world!",
+    "enter-your-email-below-to-sign-up-to-your-account": "enter-your-email-below-to-sign-up-to-your-account",
+    "sign-up-to-your-account": "Sign up to your account",
+    "or": "Or",
+    "already-have-an-account": "Already have an account?",
+    "sign-in": "Sign in"
+  },
+  "appearance-settings": {
+    "choose-a-theme": "Choose a theme",
+    "toggle-theme": "Toggle theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "avatar-button": {
+    "log-in": "Log In",
+    "account": "Account",
+    "log-out": "Log out"
+  },
+  "email": "Email",
+  "password": "Password",
+  "GithubSignInForm": {
+    "continue-with-github": "Continue with GitHub"
+  },
+  "nav": {
+    "platform": "Platform",
+    "projects": "Projects",
+    "more": "More",
+    "view-project": "View Project",
+    "share-project": "Share Project",
+    "delete-project": "Delete Project",
+    "upgrade-to-pro": "Upgrade to Pro",
+    "billing": "Billing",
+    "notifications": "Notifications",
+    "home": "Home"
+  },
+  "run-code": {
+    "run": "Run",
+    "run-code": "Run Code",
+    "running": "Running..."
+  },
+  "settings": {
+    "settings": "Settings",
+    "appearance": "Appearance",
+    "language-and-region": "Language & region",
+    "code-editor": "Code Editor",
+    "advanced": "Advanced",
+    "customize-your-settings-here": "Customize your settings here."
+  },
+  "submissions": {
+    "index": "Index",
+    "status": "Status",
+    "language": "Language",
+    "time": "Time",
+    "memory": "Memory",
+    "submitted": "Submitted"
+  },
+  "teams": {
+    "teams": "Teams",
+    "add-team": "Add team"
+  },
+  "test": {
+    "case": "Case",
+    "failed-to-submit-the-form-please-try-again": "Failed to submit the form. Please try again."
   }
 }

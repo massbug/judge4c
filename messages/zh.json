@@ -7,6 +7,69 @@
     "Sign up": "注册"
   },
   "sign-up-form": {
-    "title": "Hello world!"
+    "title": "Hello world!",
+    "already-have-an-account": "已经有账号了？",
+    "enter-your-email-below-to-sign-up-to-your-account": "在下面输入您的电子邮件以注册您的帐户",
+    "or": "或",
+    "sign-in": "登录",
+    "sign-up-to-your-account": "注册您的帐户"
+  },
+  "appearance-settings": {
+    "dark": "暗",
+    "light": "亮",
+    "system": "系统",
+    "choose-a-theme": "选择一个主题",
+    "toggle-theme": "切换主题"
+  },
+  "nav": {
+    "platform": "平台",
+    "projects": "项目",
+    "share-project": "共享项目",
+    "upgrade-to-pro": "升级到专业版",
+    "view-project": "查看项目",
+    "more": "更多",
+    "notifications": "通知",
+    "billing": "账务",
+    "delete-project": "删除项目",
+    "home": "主页"
+  },
+  "GithubSignInForm": {
+    "continue-with-github": "继续使用GitHub"
+  },
+  "avatar-button": {
+    "account": "账户",
+    "log-in": "登录",
+    "log-out": "注销"
+  },
+  "password": "密码",
+  "run-code": {
+    "run-code": "运行代码",
+    "run": "运行",
+    "running": "正在运行。。。"
+  },
+  "submissions": {
+    "status": "状态",
+    "submitted": "提交",
+    "time": "时间",
+    "language": "语言",
+    "memory": "内存",
+    "index": "指数"
+  },
+  "teams": {
+    "teams": "团队",
+    "add-team": "添加团队"
+  },
+  "email": "电子邮件",
+  "settings": {
+    "advanced": "高级",
+    "appearance": "外貌",
+    "code-editor": "代码编辑器",
+    "customize-your-settings-here": "在此处自定义您的设置。",
+    "language-and-region": "语言和地区",
+    "settings": "设置"
+  },
+  "test": {
+    "case": "样例",
+    "failed-to-submit-the-form-please-try-again": "提交失败。请重试。"
   }
 }

@@ -10,7 +10,9 @@ import { Submission } from "@/generated/client";
 import { getStatusColorClass } from "@/lib/status";
 import { EditorLanguageIcons } from "@/config/editor-language-icons";
 import { formatDistanceToNow, isBefore, subDays, format } from "date-fns";
+import { useTranslations } from "next-intl";
 
+const t = useTranslations('submissions');
 interface SubmissionsTableProps {
   submissions: Submission[]
 }
@@ -24,12 +26,12 @@ export default function SubmissionsTable({ submissions }: SubmissionsTableProps)
     <Table>
       <TableHeader className="bg-transparent">
         <TableRow className="hover:bg-transparent">
-          <TableHead className="w-[100px]">Index</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead>Language</TableHead>
-          <TableHead>Time</TableHead>
-          <TableHead>Memory</TableHead>
-          <TableHead>Submitted</TableHead>
+          <TableHead className="w-[100px]">t('index')</TableHead>
+          <TableHead>t('status')</TableHead>
+          <TableHead>t('language')</TableHead>
+          <TableHead>t('time')</TableHead>
+          <TableHead>t('memory')</TableHead>
+          <TableHead>t('submitted')</TableHead>
         </TableRow>
       </TableHeader>
       <tbody aria-hidden="true" className="table-row h-2"></tbody>

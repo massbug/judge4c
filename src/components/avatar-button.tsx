@@ -1,3 +1,4 @@
+//avatar-button
 import {
   BadgeCheck,
   Bell,
@@ -21,6 +22,7 @@ import { auth, signOut } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SettingsButton } from "@/components/settings-button";
+import { useTranslations } from 'next-intl';
 
 const UserAvatar = ({ image, name }: { image: string; name: string }) => (
   <Avatar className="h-8 w-8 rounded-lg">
@@ -45,6 +47,7 @@ export async function AvatarButton() {
   const image = session?.user?.image ?? "https://github.com/shadcn.png";
   const name = session?.user?.name ?? "unknown";
   const email = session?.user?.email ?? "unknwon@example.com";
+  const t = useTranslations('avatar-button');
 
   return (
     <DropdownMenu>
@@ -61,7 +64,7 @@ export async function AvatarButton() {
             <SettingsButton />
             <DropdownMenuItem onClick={handleSignIn}>
               <LogIn />
-              Log In
+              {t('log-in')}
             </DropdownMenuItem>
           </DropdownMenuGroup>
         ) : (
@@ -79,7 +82,7 @@ export async function AvatarButton() {
             <DropdownMenuGroup>
               <DropdownMenuItem>
                 <BadgeCheck />
-                Account
+                {t('account')}
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <Bell />
@@ -93,7 +96,7 @@ export async function AvatarButton() {
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleSignOut}>
               <LogOut />
-              Log out
+              {t('log-out')}
             </DropdownMenuItem>
           </>
         )}

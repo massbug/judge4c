@@ -1,7 +1,10 @@
+//GithubSignInForm
 import { signIn } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
+import { useTranslations } from "next-intl";
 
 export function GithubSignInForm() {
+   const t = useTranslations('GithubSignInForm');
   return (
     <form
       action={async () => {
@@ -16,7 +19,7 @@ export function GithubSignInForm() {
             fill="currentColor"
           />
         </svg>
-        Continue with GitHub
+        {t('continue-with-github')}
       </Button>
     </form>
   );

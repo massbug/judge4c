@@ -1,9 +1,11 @@
+//appearance-settings
 "use client";
 
 import Image from "next/image";
 import { useTheme } from "next-themes";
 import { CheckIcon, MinusIcon } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useTranslations } from 'next-intl';
 
 const items = [
   { value: "system", label: "System", image: "/ui-system.png" },
@@ -13,11 +15,12 @@ const items = [
 
 export default function AppearanceSettings() {
   const { theme, setTheme } = useTheme();
+  const t = useTranslations('appearance-settings');
 
   return (
     <fieldset className="space-y-4">
       <legend className="text-foreground text-sm leading-none font-medium">
-        Choose a theme
+        {t('choose-a-theme')}
       </legend>
       <RadioGroup className="flex gap-3" defaultValue={theme}>
         {items.map((item) => (

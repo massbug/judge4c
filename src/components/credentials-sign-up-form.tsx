@@ -19,6 +19,7 @@ import { useState, useTransition } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signUpWithCredentials } from "@/actions/auth";
 import { EyeIcon, EyeOffIcon, MailIcon } from "lucide-react";
+import { useTranslations } from 'next-intl';
 
 export type CredentialsSignUpFormValues = z.infer<typeof authSchema>;
 
@@ -57,6 +58,8 @@ export function CredentialsSignUpForm() {
     });
   };
 
+  const t = useTranslations('');
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-6">
@@ -65,7 +68,7 @@ export function CredentialsSignUpForm() {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel>{t('email')}</FormLabel>
               <FormControl>
                 <div className="relative">
                   <Input className="peer pe-9" {...field} />
@@ -84,7 +87,7 @@ export function CredentialsSignUpForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
+              <FormLabel>{t('password')}</FormLabel>
               <FormControl>
                 <div className="relative">
                   <Input

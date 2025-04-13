@@ -13,6 +13,9 @@ import { Button } from "@/components/ui/button";
 import { useProblem } from "@/hooks/use-problem";
 import { LoaderCircleIcon, PlayIcon } from "lucide-react";
 import { showStatusToast } from "@/hooks/show-status-toast";
+import { useTranslations } from "next-intl";
+
+const t = useTranslations('run-code');
 
 interface RunCodeProps {
   className?: string;
@@ -66,10 +69,10 @@ export function RunCode({
                 aria-hidden="true"
               />
             )}
-            {isLoading ? "Running..." : "Run"}
+            {isLoading ? t('running') : t('run')}
           </Button>
         </TooltipTrigger>
-        <TooltipContent className="px-2 py-1 text-xs">Run Code</TooltipContent>
+        <TooltipContent className="px-2 py-1 text-xs">{t('run-code')}</TooltipContent>
       </Tooltip>
     </TooltipProvider>
   );
