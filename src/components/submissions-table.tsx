@@ -6,6 +6,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { cn } from "@/lib/utils";
 import { Submission } from "@/generated/client";
 import { getStatusColorClass } from "@/lib/status";
 import { EditorLanguageIcons } from "@/config/editor-language-icons";
@@ -40,11 +41,12 @@ export default function SubmissionsTable({ submissions }: SubmissionsTableProps)
           const submittedDisplay = isBefore(createdAt, subDays(new Date(), 1))
             ? format(createdAt, "yyyy-MM-dd")
             : formatDistanceToNow(createdAt, { addSuffix: true });
+          const isEven = (submissions.length - index) % 2 === 0;
 
           return (
             <TableRow
               key={submission.id}
-              className="border-b-0 odd:bg-muted/50 hover:text-blue-500 hover:bg-muted"
+              className={cn("border-b-0 hover:text-blue-500 hover:bg-muted", isEven ? "" : "bg-muted/50")}
             >
               <TableCell className="font-medium">
                 {sortedSubmissions.length - index}
