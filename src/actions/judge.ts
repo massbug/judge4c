@@ -8,6 +8,7 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { Readable, Writable } from "stream";
 import { Status } from "@/generated/client";
+import { revalidatePath } from "next/cache";
 import type { ProblemWithTestcases, TestcaseWithDetails } from "@/types/prisma";
 import type { EditorLanguage, Submission, TestcaseResult } from "@/generated/client";
 
@@ -220,6 +221,7 @@ export async function judge(
       return submission;
     }
   } finally {
+    revalidatePath(`/problems/${problemId}`);
     if (container) {
       try {
         await container.kill();
