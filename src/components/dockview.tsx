@@ -9,7 +9,6 @@ import type {
 } from "dockview";
 import "@/styles/dockview.css";
 import type { LucideIcon } from "lucide-react";
-import { useDockviewStore } from "@/stores/dockview";
 import { useEffect, useMemo, useState } from "react";
 import { DockviewReact, themeAbyssSpaced } from "dockview";
 
@@ -21,11 +20,11 @@ interface PanelContent {
 
 interface DockviewProps {
   storageKey: string;
+  onApiReady?: (api: DockviewApi) => void;
   options: AddPanelOptions<PanelContent>[];
 }
 
-export default function DockView({ storageKey, options }: DockviewProps) {
-  const { setApi: _setApi } = useDockviewStore();
+export default function DockView({ storageKey, onApiReady, options }: DockviewProps) {
   const [api, setApi] = useState<DockviewApi>();
 
   const { components, tabComponents } = useMemo(() => {
@@ -79,7 +78,7 @@ export default function DockView({ storageKey, options }: DockviewProps) {
 
   const onReady = (event: DockviewReadyEvent) => {
     setApi(event.api);
-    _setApi(event.api);
+    onApiReady?.(event.api);
 
     let success = false;
     const serializedLayout = localStorage.getItem(storageKey);
