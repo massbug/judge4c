@@ -49,9 +49,10 @@ export default function TestcaseForm(props: TestcaseFormInterface) {
                 <FormLabel>{`${fieldName} =`}</FormLabel>
                 <FormControl>
                   <Input
-                    className="bg-muted border-transparent shadow-none rounded-lg h-10"
-                    placeholder={`Enter ${fieldName}`}
                     type="text"
+                    placeholder={`Enter ${fieldName}`}
+                    readOnly
+                    className="bg-muted border-transparent shadow-none rounded-lg h-10"
                     {...field}
                   />
                 </FormControl>
