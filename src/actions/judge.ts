@@ -335,6 +335,7 @@ async function run(
   testcases: TestcaseWithDetails,
 ): Promise<Submission> {
   let finalSubmission: Submission | null = null;
+  let maxExecutionTime = 0;
 
   for (const testcase of testcases) {
     const sortedData = testcase.data.sort((a, b) => a.index - b.index);
@@ -495,6 +496,8 @@ async function run(
           }
         });
         return finalSubmission;
+      } else {
+        maxExecutionTime = Math.max(maxExecutionTime, result.executionTime ?? 0);
       }
     }
   }
@@ -503,6 +506,7 @@ async function run(
     data: {
       status: Status.AC,
       message: "All testcases passed",
+      executionTime: maxExecutionTime,
     },
     include: {
       TestcaseResult: true,
