@@ -501,12 +501,14 @@ async function run(
       }
     }
   }
+  const maxMemoryUsage = (await container.stats({ stream: false, "one-shot": true })).memory_stats.max_usage;
   finalSubmission = await prisma.submission.update({
     where: { id: submissionId },
     data: {
       status: Status.AC,
       message: "All testcases passed",
       executionTime: maxExecutionTime,
+      memoryUsage: maxMemoryUsage / 1024 / 1024,
     },
     include: {
       TestcaseResult: true,
