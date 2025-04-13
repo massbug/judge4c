@@ -32,7 +32,7 @@ model User {
 
   role       Role         @default(GUEST)
   problems   Problem[]
-  Submission Submission[]
+  submissions Submission[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -58,7 +58,7 @@ model Problem {
   memoryLimit Int          @default(128)
   templates   Template[]
   testcases   Testcase[]
-  Submission  Submission[]
+  submissions  Submission[]
 
   @@index([userId])
   @@index([difficulty])
