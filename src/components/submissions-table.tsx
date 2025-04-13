@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Table,
   TableBody,
@@ -8,8 +10,9 @@ import {
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import { Submission } from "@/generated/client";
-import { getStatusColorClass } from "@/lib/status";
 import { Clock4Icon, CpuIcon } from "lucide-react";
+import { getStatusColorClass } from "@/lib/status";
+import { useDockviewStore } from "@/stores/dockview";
 import { EditorLanguageIcons } from "@/config/editor-language-icons";
 import { formatDistanceToNow, isBefore, subDays, format } from "date-fns";
 
@@ -18,9 +21,30 @@ interface SubmissionsTableProps {
 }
 
 export default function SubmissionsTable({ submissions }: SubmissionsTableProps) {
+  const { api, setSubmission } = useDockviewStore();
   const sortedSubmissions = [...submissions].sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   );
+
+  const handleRowClick = (submission: Submission) => {
+    if (!api) return;
+    setSubmission(submission);
+    const panel = api.getPanel("Details");
+    if (panel) {
+      panel.api.setActive();
+    } else {
+      api.addPanel({
+        id: "Details",
+        component: "Details",
+        tabComponent: "Details",
+        title: submission.status,
+        position: {
+          referencePanel: "Submissions",
+          direction: "within",
+        },
+      });
+    }
+  }
 
   return (
     <Table>
@@ -48,10 +72,13 @@ export default function SubmissionsTable({ submissions }: SubmissionsTableProps)
           return (
             <TableRow
               key={submission.id}
-              className={cn(
-                "border-b-0 hover:text-blue-500 hover:bg-muted",
-                isEven ? "" : "bg-muted/50"
-              )}
+              onClick={() => handleRowClick(submission)}
+              className={
+                cn(
+                  "border-b-0 hover:text-blue-500 hover:bg-muted hover:cursor-pointer",
+                  isEven ? "" : "bg-muted/50"
+                )
+              }
             >
               <TableCell className="font-medium">
                 {sortedSubmissions.length - index}
@@ -91,6 +118,6 @@ export default function SubmissionsTable({ submissions }: SubmissionsTableProps)
           );
         })}
       </TableBody>
-    </Table>
+    </Table >
   );
 }
