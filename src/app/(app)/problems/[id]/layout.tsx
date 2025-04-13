@@ -9,6 +9,7 @@ interface ProblemProps {
   Description: React.ReactNode;
   Solutions: React.ReactNode;
   Submissions: React.ReactNode;
+  Details: React.ReactNode;
   Code: React.ReactNode;
   Testcase: React.ReactNode;
   TestResult: React.ReactNode;
@@ -20,6 +21,7 @@ export default async function ProblemLayout({
   Description,
   Solutions,
   Submissions,
+  Details,
   Code,
   Testcase,
   TestResult,
@@ -74,6 +76,7 @@ export default async function ProblemLayout({
             Description={Description}
             Solutions={Solutions}
             Submissions={Submissions}
+            Details={Details}
             Code={Code}
             Testcase={Testcase}
             TestResult={TestResult}

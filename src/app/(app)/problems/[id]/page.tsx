@@ -16,6 +16,7 @@ interface ProblemPageProps {
   Description: React.ReactNode;
   Solutions: React.ReactNode;
   Submissions: React.ReactNode;
+  Details: React.ReactNode;
   Code: React.ReactNode;
   Testcase: React.ReactNode;
   TestResult: React.ReactNode;
@@ -26,6 +27,7 @@ export default function ProblemPage({
   Description,
   Solutions,
   Submissions,
+  Details,
   Code,
   Testcase,
   TestResult,
@@ -76,6 +78,17 @@ export default function ProblemPage({
             direction: "within",
           },
           inactive: true,
+        },
+        {
+          id: "Details",
+          component: "Details",
+          tabComponent: "Details",
+          title: "Details",
+          params: {
+            icon: CircleCheckBigIcon,
+            content: Details,
+            autoAdd: false,
+          },
         },
         {
           id: "Code",
