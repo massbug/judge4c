@@ -1,0 +1,12 @@
+{
+  "sign-in-form": {
+    "Sign in to your account": "登陆你的账户",
+    "Enter your email below to sign in to your account": "在下方输入你的邮箱以登录",
+    "Or": "或",
+    "Don&apos;t have an account?": "没有帐户？",
+    "Sign up": "注册"
+  },
+  "sign-up-form": {
+    "title": "Hello world!"
+  }
+}

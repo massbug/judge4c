@@ -1,0 +1,12 @@
+{
+  "sign-in-form": {
+    "Sign in to your account": "Sign in to your account",
+    "Enter your email below to sign in to your account": "Enter your email below to sign in to your account",
+    "Or": "Or",
+    "Don&apos;t have an account?": "Don't have an account?",
+    "Sign up": "Sign up"
+  },
+  "sign-up-form": {
+    "title": "Hello world!"
+  }
+}

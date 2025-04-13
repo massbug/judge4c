@@ -54,6 +54,7 @@
     "monaco-languageclient": "<=5.0.1",
     "next": "15.1.7",
     "next-auth": "^5.0.0-beta.25",
+    "next-intl": "^4.0.2",
     "next-mdx-remote": "^5.0.0",
     "next-themes": "^0.4.6",
     "normalize-url": "^8.0.1",
