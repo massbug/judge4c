@@ -1,7 +1,18 @@
+"use client";
+
+import { useRouter, useSearchParams } from "next/navigation";
 import { GithubSignInForm } from "@/components/github-sign-in-form";
 import { CredentialsSignInForm } from "@/components/credentials-sign-in-form";
 
 export function SignInForm() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const handleSignUp = () => {
+    const params = new URLSearchParams(searchParams.toString());
+    router.push(`/sign-up?${params.toString()}`);
+  };
+
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col items-center gap-2 text-center">
@@ -19,9 +30,12 @@ export function SignInForm() {
       <GithubSignInForm />
       <div className="text-center text-sm">
         Don&apos;t have an account?{" "}
-        <a href="/sign-up" className="underline underline-offset-4">
+        <button
+          onClick={handleSignUp}
+          className="underline underline-offset-4"
+        >
           Sign up
-        </a>
+        </button>
       </div>
     </div>
   );

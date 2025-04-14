@@ -12,18 +12,20 @@ import {
 import { toast } from "sonner";
 import { authSchema } from "@/lib/zod";
 import { useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState, useTransition } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signInWithCredentials } from "@/actions/auth";
 import { EyeIcon, EyeOffIcon, MailIcon } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export type CredentialsSignInFormValues = z.infer<typeof authSchema>;
 
 export function CredentialsSignInForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirectTo");
   const [isPending, startTransition] = useTransition();
   const [isVisible, setIsVisible] = useState(false);
 
@@ -47,7 +49,7 @@ export function CredentialsSignInForm() {
         });
       } else {
         toast.success("Signed In Successfully");
-        router.push("/");
+        router.push(redirectTo || "/");
       }
     });
   };

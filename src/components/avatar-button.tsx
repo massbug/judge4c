@@ -1,11 +1,4 @@
-import {
-  LogIn,
-  LogOut,
-} from "lucide-react";
-import {
-  Avatar,
-  AvatarImage,
-} from "@/components/ui/avatar";
+import { LogOut } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,8 +9,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { auth, signOut } from "@/lib/auth";
-import { redirect } from "next/navigation";
 import { Skeleton } from "@/components/ui/skeleton";
+import LogInButton from "@/components/log-in-button";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { SettingsButton } from "@/components/settings-button";
 
 const UserAvatar = ({ image, name }: { image: string; name: string }) => (
@@ -27,12 +21,7 @@ const UserAvatar = ({ image, name }: { image: string; name: string }) => (
   </Avatar>
 );
 
-async function handleSignIn() {
-  "use server";
-  redirect("/sign-in");
-}
-
-async function handleSignOut() {
+async function handleLogOut() {
   "use server";
   await signOut();
 }
@@ -57,10 +46,7 @@ export async function AvatarButton() {
         {!isLoggedIn ? (
           <DropdownMenuGroup>
             <SettingsButton />
-            <DropdownMenuItem onClick={handleSignIn}>
-              <LogIn />
-              Log In
-            </DropdownMenuItem>
+            <LogInButton />
           </DropdownMenuGroup>
         ) : (
           <>
@@ -76,7 +62,7 @@ export async function AvatarButton() {
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <SettingsButton />
-              <DropdownMenuItem onClick={handleSignOut}>
+              <DropdownMenuItem onClick={handleLogOut}>
                 <LogOut />
                 Log out
               </DropdownMenuItem>

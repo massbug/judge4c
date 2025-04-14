@@ -1,8 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { auth } from "@/lib/auth";
-import { Code } from "lucide-react";
-import { redirect } from "next/navigation";
+import { CodeIcon } from "lucide-react";
 
 interface AuthLayoutProps {
   children: React.ReactNode;
@@ -11,16 +9,13 @@ interface AuthLayoutProps {
 export default async function AuthLayout({
   children
 }: AuthLayoutProps) {
-  const session = await auth();
-  if (session) redirect("/");
-
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
       <div className="flex flex-col gap-4 p-6 md:p-10">
         <div className="flex justify-center gap-2 md:justify-start">
           <Link href="/" className="flex items-center gap-2 font-medium">
             <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
-              <Code className="size-4" />
+              <CodeIcon className="size-4" />
             </div>
             Judge4c
           </Link>

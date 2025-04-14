@@ -12,18 +12,20 @@ import {
 import { toast } from "sonner";
 import { authSchema } from "@/lib/zod";
 import { useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState, useTransition } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signUpWithCredentials } from "@/actions/auth";
 import { EyeIcon, EyeOffIcon, MailIcon } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export type CredentialsSignUpFormValues = z.infer<typeof authSchema>;
 
 export function CredentialsSignUpForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirectTo");
   const [isPending, startTransition] = useTransition();
   const [isVisible, setIsVisible] = useState(false);
 
@@ -48,11 +50,8 @@ export function CredentialsSignUpForm() {
       } else {
         toast.success("Account Created", {
           description: "You can now sign in with your credentials",
-          action: {
-            label: "Go to Sign In",
-            onClick: () => router.push("/sign-in"),
-          },
         });
+        router.push(`/sign-in?${redirectTo}`)
       }
     });
   };

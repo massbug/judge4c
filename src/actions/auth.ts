@@ -9,7 +9,7 @@ import { CredentialsSignUpFormValues } from "@/components/credentials-sign-up-fo
 
 const saltRounds = 10;
 
-export async function signInWithCredentials(formData: CredentialsSignInFormValues) {
+export async function signInWithCredentials(formData: CredentialsSignInFormValues, redirectTo?: string) {
   try {
     // Parse credentials using authSchema for validation
     const { email, password } = await authSchema.parseAsync(formData);
@@ -33,7 +33,7 @@ export async function signInWithCredentials(formData: CredentialsSignInFormValue
       throw new Error("Incorrect password.");
     }
 
-    await signIn("credentials", { ...formData, redirect: false });
+    await signIn("credentials", { ...formData, redirectTo, redirect: !!redirectTo });
     return { success: true };
   } catch (error) {
     return { error: error instanceof Error ? error.message : "Failed to sign in. Please try again." };
@@ -66,4 +66,8 @@ export async function signUpWithCredentials(formData: CredentialsSignUpFormValue
   } catch (error) {
     return { error: error instanceof Error ? error.message : "Registration failed. Please try again." };
   }
+}
+
+export async function signInWithGithub(redirectTo?: string) {
+  await signIn("github", { redirectTo, redirect: !!redirectTo });
 }
