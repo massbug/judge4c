@@ -4,7 +4,8 @@
     "Enter your email below to sign in to your account": "在下方输入你的邮箱以登录",
     "Or": "或",
     "Don&apos;t have an account?": "没有帐户？",
-    "Sign up": "注册"
+    "sign-up": "注册",
+    "signing-in": "正在登录。。。"
   },
   "sign-up-form": {
     "title": "Hello world!",
@@ -12,7 +13,8 @@
     "enter-your-email-below-to-sign-up-to-your-account": "在下面输入您的电子邮件以注册您的帐户",
     "or": "或",
     "sign-in": "登录",
-    "sign-up-to-your-account": "注册您的帐户"
+    "sign-up-to-your-account": "注册您的帐户",
+    "creating-account": "正在创建帐户。。。"
   },
   "appearance-settings": {
     "dark": "暗",
@@ -71,5 +73,33 @@
   "test": {
     "case": "样例",
     "failed-to-submit-the-form-please-try-again": "提交失败。请重试。"
+  },
+  "problemset": {
+    "actions": "行动",
+    "add-problem": "添加问题",
+    "are-you-absolutely-sure": "你真的确定吗？",
+    "cancel": "取消",
+    "clear-filter": "清除过滤器",
+    "enter": "进入",
+    "filter-by-displayid-or-title": "按显示ID或标题筛选",
+    "filters": "过滤器",
+    "go-to-first-page": "转到第一页",
+    "go-to-last-page": "转到最后一页",
+    "select-number-of-results": "选择结果数量",
+    "select-row": "选定行",
+    "this-action-cannot-be-undone-this-will-permanently-delete": "此操作无法撤消。这将永久删除",
+    "title": "名称",
+    "toggle-columns": "切换列",
+    "delete": "删除",
+    "difficulty": "难度",
+    "displayid-or-title": "显示ID或标题。。。",
+    "edit": "编辑",
+    "edit-item": "编辑项目",
+    "view": "视图",
+    "go-to-next-page": "转到下一页",
+    "go-to-previous-page": "转到上一页",
+    "no-results": "没有结果。",
+    "rows-per-page": "每页行数",
+    "select-all": "选择全部"
   }
 }

@@ -83,8 +83,11 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Difficulty, Problem } from "@/generated/client";
 import { cn, getDifficultyColorClass } from "@/lib/utils";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { useTranslations } from "next-intl";
 
 type ProblemTableItem = Pick<Problem, "id" | "displayId" | "title" | "difficulty">;
+
+const t = useTranslations('problemset');
 
 interface ProblemTableProps {
   data: ProblemTableItem[];
@@ -117,14 +120,14 @@ const columns: ColumnDef<ProblemTableItem>[] = [
           (table.getIsSomePageRowsSelected() && "indeterminate")
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
+        aria-label= {t('select-all')}
       />
     ),
     cell: ({ row }) => (
       <Checkbox
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
+        aria-label= {t('select-row')}
       />
     ),
     size: 28,
@@ -140,12 +143,12 @@ const columns: ColumnDef<ProblemTableItem>[] = [
     enableHiding: false,
   },
   {
-    header: "Title",
+    header: t('title'),
     accessorKey: "title",
     cell: ({ row }) => <div className="font-medium">{row.getValue("title")}</div>,
   },
   {
-    header: "Difficulty",
+    header: t('difficulty'),
     accessorKey: "difficulty",
     cell: ({ row }) => {
       const difficulty = row.getValue("difficulty") as Difficulty;
@@ -160,7 +163,7 @@ const columns: ColumnDef<ProblemTableItem>[] = [
   },
   {
     id: "actions",
-    header: () => <span className="sr-only">Actions</span>,
+    header: () => <span className="sr-only">t('actions')</span>,
     cell: () => <RowActions />,
     enableHiding: false,
   },
@@ -262,9 +265,9 @@ export function ProblemsetTable({ data }: ProblemTableProps) {
               onChange={(e) =>
                 table.getColumn("displayId")?.setFilterValue(e.target.value)
               }
-              placeholder="DisplayId or Title..."
+              placeholder={t('displayid-or-title')}
               type="text"
-              aria-label="Filter by displayId or title"
+              aria-label={t('filter-by-displayid-or-title')}
             />
             <div className="text-muted-foreground/80 pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 peer-disabled:opacity-50">
               <ListFilterIcon size={16} aria-hidden="true" />
@@ -272,7 +275,7 @@ export function ProblemsetTable({ data }: ProblemTableProps) {
             {Boolean(table.getColumn("displayId")?.getFilterValue()) && (
               <button
                 className="text-muted-foreground/80 hover:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 absolute inset-y-0 end-0 flex h-full w-9 items-center justify-center rounded-e-md transition-[color,box-shadow] outline-none focus:z-10 focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
-                aria-label="Clear filter"
+                aria-label={t('clear-filter')}
                 onClick={() => {
                   table.getColumn("displayId")?.setFilterValue("");
                   if (inputRef.current) {
@@ -292,7 +295,7 @@ export function ProblemsetTable({ data }: ProblemTableProps) {
                   size={16}
                   aria-hidden="true"
                 />
-                Difficulty
+                {t('difficulty')}
                 {selectedDifficulties.length > 0 && (
                   <span className="bg-background text-muted-foreground/70 -me-1 inline-flex h-5 max-h-full items-center rounded border px-1 font-[inherit] text-[0.625rem] font-medium">
                     {selectedDifficulties.length}
@@ -303,7 +306,7 @@ export function ProblemsetTable({ data }: ProblemTableProps) {
             <PopoverContent className="w-auto min-w-36 p-3" align="start">
               <div className="space-y-3">
                 <div className="text-muted-foreground text-xs font-medium">
-                  Filters
+                  {t('filters')}
                 </div>
                 <div className="space-y-3">
                   {uniqueDifficultyValues.map((value) => (
@@ -334,11 +337,11 @@ export function ProblemsetTable({ data }: ProblemTableProps) {
                   size={16}
                   aria-hidden="true"
                 />
-                View
+                {t('view')}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
+              <DropdownMenuLabel>{t('toggle-columns')}</DropdownMenuLabel>
               {table
                 .getAllColumns()
                 .filter((column) => column.getCanHide())
@@ -370,7 +373,7 @@ export function ProblemsetTable({ data }: ProblemTableProps) {
                     size={16}
                     aria-hidden="true"
                   />
-                  Delete
+                  {t('delete')}
                   <span className="bg-background text-muted-foreground/70 -me-1 inline-flex h-5 max-h-full items-center rounded border px-1 font-[inherit] text-[0.625rem] font-medium">
                     {table.getSelectedRowModel().rows.length}
                   </span>
@@ -386,10 +389,10 @@ export function ProblemsetTable({ data }: ProblemTableProps) {
                   </div>
                   <AlertDialogHeader>
                     <AlertDialogTitle>
-                      Are you absolutely sure?
+                      {t('are-you-absolutely-sure')}
                     </AlertDialogTitle>
                     <AlertDialogDescription>
-                      This action cannot be undone. This will permanently delete{" "}
+                      {t('this-action-cannot-be-undone-this-will-permanently-delete')}{" "}
                       {table.getSelectedRowModel().rows.length} selected{" "}
                       {table.getSelectedRowModel().rows.length === 1
                         ? "row"
@@ -399,9 +402,9 @@ export function ProblemsetTable({ data }: ProblemTableProps) {
                   </AlertDialogHeader>
                 </div>
                 <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogCancel>{t('cancel')}</AlertDialogCancel>
                   <AlertDialogAction onClick={handleDeleteRows}>
-                    Delete
+                    {t('delete')}
                   </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
@@ -414,7 +417,7 @@ export function ProblemsetTable({ data }: ProblemTableProps) {
                 size={16}
                 aria-hidden="true"
               />
-              Add Problem
+              {t('add-problem')}
             </Link>
           </Button>
         </div>
@@ -439,7 +442,7 @@ export function ProblemsetTable({ data }: ProblemTableProps) {
                         onKeyDown={(e) => {
                           if (
                             header.column.getCanSort() &&
-                            (e.key === "Enter" || e.key === " ")
+                            (e.key === t('enter') || e.key === " ")
                           ) {
                             e.preventDefault();
                             header.column.getToggleSortingHandler()?.(e);
@@ -499,7 +502,7 @@ export function ProblemsetTable({ data }: ProblemTableProps) {
             ) : (
               <TableRow>
                 <TableCell colSpan={columns.length} className="h-24 text-center">
-                  No results.
+                  {t('problemset.no-results')}
                 </TableCell>
               </TableRow>
             )}
@@ -508,7 +511,7 @@ export function ProblemsetTable({ data }: ProblemTableProps) {
       </div>
       <div className="flex items-center justify-between gap-8">
         <div className="flex items-center gap-3">
-          <Label className="max-sm:sr-only">Rows per page</Label>
+          <Label className="max-sm:sr-only">{t('rows-per-page')}</Label>
           <Select
             value={table.getState().pagination.pageSize.toString()}
             onValueChange={(value) => {
@@ -516,7 +519,7 @@ export function ProblemsetTable({ data }: ProblemTableProps) {
             }}
           >
             <SelectTrigger className="w-fit whitespace-nowrap">
-              <SelectValue placeholder="Select number of results" />
+              <SelectValue placeholder={t('problemset.select-number-of-results')} />
             </SelectTrigger>
             <SelectContent className="[&_*[role=option]]:ps-2 [&_*[role=option]]:pe-8 [&_*[role=option]>span]:start-auto [&_*[role=option]>span]:end-2">
               {[5, 10, 25, 50].map((pageSize) => (
@@ -563,7 +566,7 @@ export function ProblemsetTable({ data }: ProblemTableProps) {
                   className="disabled:pointer-events-none disabled:opacity-50"
                   onClick={() => table.firstPage()}
                   disabled={!table.getCanPreviousPage()}
-                  aria-label="Go to first page"
+                  aria-label={t('go-to-first-page')}
                 >
                   <ChevronFirstIcon size={16} aria-hidden="true" />
                 </Button>
@@ -575,7 +578,7 @@ export function ProblemsetTable({ data }: ProblemTableProps) {
                   className="disabled:pointer-events-none disabled:opacity-50"
                   onClick={() => table.previousPage()}
                   disabled={!table.getCanPreviousPage()}
-                  aria-label="Go to previous page"
+                  aria-label={t('go-to-previous-page')}
                 >
                   <ChevronLeftIcon size={16} aria-hidden="true" />
                 </Button>
@@ -587,7 +590,7 @@ export function ProblemsetTable({ data }: ProblemTableProps) {
                   className="disabled:pointer-events-none disabled:opacity-50"
                   onClick={() => table.nextPage()}
                   disabled={!table.getCanNextPage()}
-                  aria-label="Go to next page"
+                  aria-label={t('go-to-next-page')}
                 >
                   <ChevronRightIcon size={16} aria-hidden="true" />
                 </Button>
@@ -599,7 +602,7 @@ export function ProblemsetTable({ data }: ProblemTableProps) {
                   className="disabled:pointer-events-none disabled:opacity-50"
                   onClick={() => table.lastPage()}
                   disabled={!table.getCanNextPage()}
-                  aria-label="Go to last page"
+                  aria-label={t('go-to-last-page')}
                 >
                   <ChevronLastIcon size={16} aria-hidden="true" />
                 </Button>
@@ -621,7 +624,7 @@ function RowActions() {
             size="icon"
             variant="ghost"
             className="shadow-none"
-            aria-label="Edit item"
+            aria-label={t('edit-item')}
           >
             <EllipsisIcon size={16} aria-hidden="true" />
           </Button>
@@ -630,12 +633,12 @@ function RowActions() {
       <DropdownMenuContent align="end">
         <DropdownMenuGroup>
           <DropdownMenuItem>
-            <span>Edit</span>
+            <span>{t('edit')}</span>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem className="text-destructive focus:text-destructive">
-          <span>Delete</span>
+          <span>{t('delete')}</span>
           <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
         </DropdownMenuItem>
       </DropdownMenuContent>

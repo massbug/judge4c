@@ -4,7 +4,8 @@
     "Enter your email below to sign in to your account": "Enter your email below to sign in to your account",
     "Or": "Or",
     "Don&apos;t have an account?": "Don't have an account?",
-    "Sign up": "Sign up"
+    "sign-up": "Sign up",
+    "signing-in": "Signing In..."
   },
   "sign-up-form": {
     "title": "Hello world!",
@@ -12,7 +13,8 @@
     "sign-up-to-your-account": "Sign up to your account",
     "or": "Or",
     "already-have-an-account": "Already have an account?",
-    "sign-in": "Sign in"
+    "sign-in": "Sign in",
+    "creating-account": "Creating Account..."
   },
   "appearance-settings": {
     "choose-a-theme": "Choose a theme",
@@ -71,5 +73,33 @@
   "test": {
     "case": "Case",
     "failed-to-submit-the-form-please-try-again": "Failed to submit the form. Please try again."
+  },
+  "problemset": {
+    "select-all": "Select all",
+    "select-row": "Select row",
+    "title": "Title",
+    "difficulty": "Difficulty",
+    "actions": "Actions",
+    "displayid-or-title": "DisplayId or Title...",
+    "filter-by-displayid-or-title": "Filter by displayId or title",
+    "clear-filter": "Clear filter",
+    "filters": "Filters",
+    "view": "View",
+    "toggle-columns": "Toggle columns",
+    "delete": "Delete",
+    "are-you-absolutely-sure": "Are you absolutely sure?",
+    "this-action-cannot-be-undone-this-will-permanently-delete": "This action cannot be undone. This will permanently delete",
+    "cancel": "Cancel",
+    "add-problem": "Add Problem",
+    "enter": "Enter",
+    "no-results": "No results.",
+    "rows-per-page": "Rows per page",
+    "select-number-of-results": "Select number of results",
+    "go-to-first-page": "Go to first page",
+    "go-to-previous-page": "Go to previous page",
+    "go-to-next-page": "Go to next page",
+    "go-to-last-page": "Go to last page",
+    "edit-item": "Edit item",
+    "edit": "Edit"
   }
 }

@@ -112,7 +112,7 @@ export function CredentialsSignInForm() {
         />
 
         <Button type="submit" disabled={isPending} className="w-full">
-          {isPending ? "Signing In..." : "Sign In"}
+          {isPending ? t('sign-in-form.signing-in'): t('sign-up-form.sign-in')}
         </Button>
       </form>
     </Form>
