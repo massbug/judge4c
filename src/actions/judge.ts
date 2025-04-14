@@ -423,6 +423,14 @@ async function run(
         // Timeout mechanism
         const timeoutId = setTimeout(async () => {
           stream.destroy(); // Destroy the stream to stop execution
+          await prisma.testcaseResult.create({
+            data: {
+              isCorrect: false,
+              output: "",
+              submissionId,
+              testcaseId: testcase.id,
+            }
+          })
           const updatedSubmission = await prisma.submission.update({
             where: { id: submissionId },
             data: {
@@ -510,7 +518,7 @@ async function run(
             message: "Wrong Answer",
           },
           include: {
-            TestcaseResult: true,
+            testcaseResults: true,
           }
         });
         return finalSubmission;
@@ -529,7 +537,7 @@ async function run(
       memoryUsage: maxMemoryUsage / 1024 / 1024,
     },
     include: {
-      TestcaseResult: true,
+      testcaseResults: true,
     }
   });
   return finalSubmission;
