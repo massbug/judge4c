@@ -1,8 +1,9 @@
 // services/locale.ts
 import { cookies, headers } from 'next/headers';
+import {locales, defaultLocale} from '@/i18n/config';
 
 // 支持的语言白名单（可根据实际需求扩展）
-const SUPPORTED_LOCALES = new Set(['en', 'zh', 'fr', 'de', 'ja']);
+//const SUPPORTED_LOCALES = new Set(['en', 'zh', 'fr', 'de', 'ja']);
 
 /**
  * 解析 Accept-Language 头部（符合 RFC 7231 规范）
@@ -29,7 +30,7 @@ export async function getUserLocale(): Promise<string> {
   try {
     // 优先从 Cookie 获取（带白名单校验）
     const cookieLocale = (await cookies()).get('NEXT_LOCALE')?.value;
-    if (cookieLocale && SUPPORTED_LOCALES.has(cookieLocale)) {
+    if (cookieLocale && locales.has(cookieLocale)) {
       return cookieLocale;
     }
 
@@ -37,7 +38,7 @@ export async function getUserLocale(): Promise<string> {
     const acceptLanguage = (await headers()).get('accept-language');
     if (acceptLanguage) {
       const parsedLocale = parseAcceptLanguage(acceptLanguage);
-      if (SUPPORTED_LOCALES.has(parsedLocale)) {
+      if (locales.has(parsedLocale)) {
         return parsedLocale;
       }
     }
@@ -46,5 +47,5 @@ export async function getUserLocale(): Promise<string> {
   }
 
   // 最终兜底（含白名单过滤）
-  return SUPPORTED_LOCALES.has('en') ? 'en' : Array.from(SUPPORTED_LOCALES)[0];
+  return locales.has(defaultLocale) ? defaultLocale : Array.from(locales)[0];
 }

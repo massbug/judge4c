@@ -1,5 +1,6 @@
 import {getRequestConfig} from 'next-intl/server';
 import {getUserLocale} from '@/services/locale';
+import {defaultLocale} from '@/i18n/config';
 
 
 export default getRequestConfig(async () => {
@@ -8,7 +9,7 @@ export default getRequestConfig(async () => {
 
     let locale = await getUserLocale();
     if (!locale) {
-        locale = 'en';
+        locale = defaultLocale;
     }
 
     let messages;
@@ -18,7 +19,7 @@ export default getRequestConfig(async () => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
         // 如果加载失败则回退到默认语言 'en'
-        locale = 'en';
+        locale = defaultLocale;
         messages = (await import(`../../messages/en.json`)).default;
     }
 
