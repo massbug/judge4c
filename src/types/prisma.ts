@@ -46,3 +46,39 @@ export async function getAllTestcases() {
 export type TestcaseWithDetails = ThenArg<
   ReturnType<typeof getAllTestcases>
 >;
+
+export async function getAllSubmissionsWithTestcaseResults() {
+  return await prisma.submission.findMany({
+    include: {
+      testcaseResults: {
+        include: {
+          testcase: {
+            include: {
+              data: true,
+            }
+          }
+        }
+      }
+    }
+  })
+}
+
+export type SubmissionWithTestcaseResult = ThenArg<
+  ReturnType<typeof getAllSubmissionsWithTestcaseResults>
+>[number];
+
+export async function getAllTestcaseResultWithTestcase() {
+  return await prisma.testcaseResult.findMany({
+    include:{
+      testcase:{
+        include:{
+          data:true
+        }
+      }
+    }
+  })
+}
+
+export type TestcaseResultWithTestcase=ThenArg<
+  ReturnType<typeof getAllTestcaseResultWithTestcase>
+>[number];
