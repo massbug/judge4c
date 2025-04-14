@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import { Submission } from "@/generated/client";
+import { useProblem } from "@/hooks/use-problem";
 import { Clock4Icon, CpuIcon } from "lucide-react";
 import { getStatusColorClass } from "@/lib/status";
 import { useDockviewStore } from "@/stores/dockview";
@@ -21,7 +22,9 @@ interface SubmissionsTableProps {
 }
 
 export default function SubmissionsTable({ submissions }: SubmissionsTableProps) {
+  const { editorLanguageConfigs } = useProblem();
   const { api, setSubmission } = useDockviewStore();
+
   const sortedSubmissions = [...submissions].sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   );
@@ -29,6 +32,7 @@ export default function SubmissionsTable({ submissions }: SubmissionsTableProps)
   const handleRowClick = (submission: Submission) => {
     if (!api) return;
     setSubmission(submission);
+
     const panel = api.getPanel("Details");
     if (panel) {
       panel.api.setActive();
@@ -44,7 +48,7 @@ export default function SubmissionsTable({ submissions }: SubmissionsTableProps)
         },
       });
     }
-  }
+  };
 
   return (
     <Table>
@@ -67,18 +71,17 @@ export default function SubmissionsTable({ submissions }: SubmissionsTableProps)
           const submittedDisplay = isBefore(createdAt, subDays(new Date(), 1))
             ? format(createdAt, "yyyy-MM-dd")
             : formatDistanceToNow(createdAt, { addSuffix: true });
+
           const isEven = (submissions.length - index) % 2 === 0;
 
           return (
             <TableRow
               key={submission.id}
               onClick={() => handleRowClick(submission)}
-              className={
-                cn(
-                  "border-b-0 hover:text-blue-500 hover:bg-muted hover:cursor-pointer",
-                  isEven ? "" : "bg-muted/50"
-                )
-              }
+              className={cn(
+                "border-b-0 hover:text-blue-500 hover:bg-muted hover:cursor-pointer",
+                isEven ? "" : "bg-muted/50"
+              )}
             >
               <TableCell className="font-medium">
                 {sortedSubmissions.length - index}
@@ -92,7 +95,16 @@ export default function SubmissionsTable({ submissions }: SubmissionsTableProps)
                 </div>
               </TableCell>
               <TableCell>
-                <Icon size={16} aria-hidden="true" />
+                <div className="flex items-center gap-2">
+                  <Icon size={16} aria-hidden="true" />
+                  <span className="truncate text-sm font-semibold mr-2">
+                    {
+                      editorLanguageConfigs.find(
+                        (config) => config.language === submission.language
+                      )?.label
+                    }
+                  </span>
+                </div>
               </TableCell>
               <TableCell>
                 <div className="flex items-center gap-1.5">
@@ -118,6 +130,6 @@ export default function SubmissionsTable({ submissions }: SubmissionsTableProps)
           );
         })}
       </TableBody>
-    </Table >
+    </Table>
   );
 }
