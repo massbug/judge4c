@@ -9,38 +9,28 @@ import {
 } from "@/components/ui/table";
 import prisma from "@/lib/prisma";
 import { auth } from "@/lib/auth";
-import { CircleCheckBigIcon } from "lucide-react";
 import { getDifficultyColorClass } from "@/lib/utils";
+import { CircleCheckBigIcon, CircleDotIcon } from "lucide-react";
 
 export default async function ProblemsetPage() {
   const problems = await prisma.problem.findMany({
     where: { published: true },
-    orderBy: {
-      id: "asc",
-    },
-    select: {
-      id: true,
-      title: true,
-      difficulty: true,
-    },
+    orderBy: { id: "asc" },
+    select: { id: true, title: true, difficulty: true },
   });
 
   const session = await auth();
+  const userId = session?.user?.id;
 
-  let completedProblems: string[] = [];
-  if (session?.user) {
-    const submissions = await prisma.submission.findMany({
-      where: {
-        userId: session.user.id,
-        status: "AC",
-      },
-      select: {
-        problemId: true,
-      },
-    });
+  const submissions = userId
+    ? await prisma.submission.findMany({
+      where: { userId },
+      select: { problemId: true, status: true },
+    })
+    : [];
 
-    completedProblems = submissions.map(sub => sub.problemId);
-  }
+  const completedProblems = new Set(submissions.filter(s => s.status === "AC").map(s => s.problemId));
+  const attemptedProblems = new Set(submissions.filter(s => s.status !== "AC").map(s => s.problemId));
 
   return (
     <Table>
@@ -51,7 +41,6 @@ export default async function ProblemsetPage() {
           <TableHead className="w-1/3">Difficulty</TableHead>
         </TableRow>
       </TableHeader>
-      <tbody aria-hidden="true" className="table-row h-2"></tbody>
       <TableBody className="[&_td:first-child]:rounded-l-lg [&_td:last-child]:rounded-r-lg">
         {problems.map((problem, index) => (
           <TableRow
@@ -59,19 +48,14 @@ export default async function ProblemsetPage() {
             className="h-10 border-b-0 odd:bg-muted/50 hover:text-blue-500 hover:bg-muted"
           >
             <TableCell className="py-2.5">
-              {session?.user && completedProblems.includes(problem.id) && (
-                <CircleCheckBigIcon
-                  className="text-green-500"
-                  size={16}
-                  aria-hidden="true"
-                />
-              )}
+              {userId && (completedProblems.has(problem.id) ? (
+                <CircleCheckBigIcon className="text-green-500" size={18} aria-hidden="true" />
+              ) : attemptedProblems.has(problem.id) ? (
+                <CircleDotIcon className="text-yellow-500" size={18} aria-hidden="true" />
+              ) : null)}
             </TableCell>
             <TableCell className="py-2.5">
-              <Link
-                href={`/problems/${problem.id}`}
-                className="hover:text-blue-500"
-              >
+              <Link href={`/problems/${problem.id}`} className="hover:text-blue-500">
                 {index + 1}. {problem.title}
               </Link>
             </TableCell>
