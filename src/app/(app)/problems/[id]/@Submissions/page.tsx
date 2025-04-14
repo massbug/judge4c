@@ -17,7 +17,19 @@ export default async function SubmissionsPage({ params }: SubmissionsPageProps) 
   const problem = await prisma.problem.findUnique({
     where: { id },
     select: {
-      submissions: true,
+      submissions: {
+        include: {
+          testcaseResults: {
+            include: {
+              testcase: {
+                include: {
+                  data: true,
+                },
+              },
+            },
+          },
+        },
+      },
     },
   });
 
