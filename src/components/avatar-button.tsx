@@ -1,6 +1,4 @@
 import {
-  BadgeCheck,
-  Bell,
   LogIn,
   LogOut,
 } from "lucide-react";
@@ -77,24 +75,12 @@ export async function AvatarButton() {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <BadgeCheck />
-                Account
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Bell />
-                Notifications
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
               <SettingsButton />
+              <DropdownMenuItem onClick={handleSignOut}>
+                <LogOut />
+                Log out
+              </DropdownMenuItem>
             </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleSignOut}>
-              <LogOut />
-              Log out
-            </DropdownMenuItem>
           </>
         )}
       </DropdownMenuContent>
