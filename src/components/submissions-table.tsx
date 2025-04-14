@@ -9,16 +9,16 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
-import { Submission } from "@/generated/client";
 import { useProblem } from "@/hooks/use-problem";
 import { Clock4Icon, CpuIcon } from "lucide-react";
 import { getStatusColorClass } from "@/lib/status";
 import { useDockviewStore } from "@/stores/dockview";
+import type { SubmissionWithTestcaseResult } from "@/types/prisma";
 import { EditorLanguageIcons } from "@/config/editor-language-icons";
 import { formatDistanceToNow, isBefore, subDays, format } from "date-fns";
 
 interface SubmissionsTableProps {
-  submissions: Submission[];
+  submissions: SubmissionWithTestcaseResult[];
 }
 
 export default function SubmissionsTable({ submissions }: SubmissionsTableProps) {
@@ -29,7 +29,7 @@ export default function SubmissionsTable({ submissions }: SubmissionsTableProps)
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   );
 
-  const handleRowClick = (submission: Submission) => {
+  const handleRowClick = (submission: SubmissionWithTestcaseResult) => {
     if (!api) return;
     setSubmission(submission);
 
