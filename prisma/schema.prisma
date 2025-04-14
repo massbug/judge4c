@@ -141,7 +141,7 @@ model Submission {
   user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   problem Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
 
-  TestcaseResult TestcaseResult[]
+  testcaseResults TestcaseResult[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -153,7 +153,7 @@ model Testcase {
   problem        Problem          @relation(fields: [problemId], references: [id], onDelete: Cascade)
   data           TestcaseData[]
   expectedOutput String
-  TestcaseResult TestcaseResult[]
+  testcaseResults TestcaseResult[]
 }
 
 model TestcaseData {
