@@ -188,7 +188,7 @@ export async function judge(
     await container.putArchive(tarStream, { path: workingDir });
 
     // Compile the code
-    const compileResult = await compile(container, file, fileName, compileOutputLimit, submission.id);
+    const compileResult = await compile(container, file, fileName, compileOutputLimit, submission.id, language);
     if (compileResult.status === Status.CE) {
       return compileResult;
     }
@@ -239,9 +239,27 @@ async function compile(
   fileName: string,
   compileOutputLimit: number = 1 * 1024 * 1024,
   submissionId: string,
+  language: EditorLanguage,
 ): Promise<Submission> {
+  const compileCmd =
+    language === "c"
+      ? ["gcc", "-O2", file, "-o", fileName]
+      : language === "cpp"
+        ? ["g++", "-O2", file, "-o", fileName]
+        : null;
+
+  if (!compileCmd) {
+    return prisma.submission.update({
+      where: { id: submissionId },
+      data: {
+        status: Status.SE,
+        message: "Unsupported language",
+      },
+    });
+  }
+
   const compileExec = await container.exec({
-    Cmd: ["gcc", "-O2", file, "-o", fileName],
+    Cmd: compileCmd,
     AttachStdout: true,
     AttachStderr: true,
   });
