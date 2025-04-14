@@ -11,8 +11,8 @@ import {
 import { cn } from "@/lib/utils";
 import { useProblem } from "@/hooks/use-problem";
 import { Clock4Icon, CpuIcon } from "lucide-react";
-import { getStatusColorClass } from "@/lib/status";
 import { useDockviewStore } from "@/stores/dockview";
+import { getStatusColorClass, statusMap } from "@/lib/status";
 import type { SubmissionWithTestcaseResult } from "@/types/prisma";
 import { EditorLanguageIcons } from "@/config/editor-language-icons";
 import { formatDistanceToNow, isBefore, subDays, format } from "date-fns";
@@ -89,7 +89,7 @@ export default function SubmissionsTable({ submissions }: SubmissionsTableProps)
               <TableCell>
                 <div className="flex flex-col truncate">
                   <span className={getStatusColorClass(submission.status)}>
-                    {submission.status}
+                    {statusMap.get(submission.status)?.message}
                   </span>
                   <span className="text-xs">{submittedDisplay}</span>
                 </div>
