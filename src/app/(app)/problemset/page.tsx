@@ -8,6 +8,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import prisma from "@/lib/prisma";
+import { auth } from "@/lib/auth";
+import { CircleCheckBigIcon } from "lucide-react";
 import { getDifficultyColorClass } from "@/lib/utils";
 
 export default async function ProblemsetPage() {
@@ -23,11 +25,28 @@ export default async function ProblemsetPage() {
     },
   });
 
+  const session = await auth();
+
+  let completedProblems: string[] = [];
+  if (session?.user) {
+    const submissions = await prisma.submission.findMany({
+      where: {
+        userId: session.user.id,
+        status: "AC",
+      },
+      select: {
+        problemId: true,
+      },
+    });
+
+    completedProblems = submissions.map(sub => sub.problemId);
+  }
+
   return (
     <Table>
       <TableHeader className="bg-transparent">
         <TableRow className="hover:bg-transparent">
-          <TableHead className="w-1/3">Id</TableHead>
+          <TableHead className="w-1/3">Status</TableHead>
           <TableHead className="w-1/3">Title</TableHead>
           <TableHead className="w-1/3">Difficulty</TableHead>
         </TableRow>
@@ -40,19 +59,20 @@ export default async function ProblemsetPage() {
             className="h-10 border-b-0 odd:bg-muted/50 hover:text-blue-500 hover:bg-muted"
           >
             <TableCell className="py-2.5">
-              <Link
-                href={`/problems/${problem.id}`}
-                className="hover:text-blue-500"
-              >
-                {index + 1}
-              </Link>
+              {session?.user && completedProblems.includes(problem.id) && (
+                <CircleCheckBigIcon
+                  className="text-green-500"
+                  size={16}
+                  aria-hidden="true"
+                />
+              )}
             </TableCell>
             <TableCell className="py-2.5">
               <Link
                 href={`/problems/${problem.id}`}
                 className="hover:text-blue-500"
               >
-                {problem.title}
+                {index + 1}. {problem.title}
               </Link>
             </TableCell>
             <TableCell className={`py-2.5 ${getDifficultyColorClass(problem.difficulty)}`}>
