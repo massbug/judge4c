@@ -7,7 +7,6 @@ import {
   FlaskConicalIcon,
   SquareCheckIcon,
   SquarePenIcon,
-  TerminalIcon,
 } from "lucide-react";
 import Dockview from "@/components/dockview";
 import { useDockviewStore } from "@/stores/dockview";
@@ -19,7 +18,6 @@ interface ProblemPageProps {
   Details: React.ReactNode;
   Code: React.ReactNode;
   Testcase: React.ReactNode;
-  TestResult: React.ReactNode;
   Bot: React.ReactNode;
 }
 
@@ -30,7 +28,6 @@ export default function ProblemPage({
   Details,
   Code,
   Testcase,
-  TestResult,
   Bot,
 }: ProblemPageProps) {
   const { setApi } = useDockviewStore();
@@ -117,21 +114,6 @@ export default function ProblemPage({
             referencePanel: "Code",
             direction: "below",
           },
-        },
-        {
-          id: "TestResult",
-          component: "TestResult",
-          tabComponent: "TestResult",
-          title: "Test Result",
-          params: {
-            icon: TerminalIcon,
-            content: TestResult,
-          },
-          position: {
-            referencePanel: "Testcase",
-            direction: "within",
-          },
-          inactive: true,
         },
         {
           id: "Bot",

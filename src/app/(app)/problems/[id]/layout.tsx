@@ -12,7 +12,6 @@ interface ProblemProps {
   Details: React.ReactNode;
   Code: React.ReactNode;
   Testcase: React.ReactNode;
-  TestResult: React.ReactNode;
   Bot: React.ReactNode;
 }
 
@@ -24,7 +23,6 @@ export default async function ProblemLayout({
   Details,
   Code,
   Testcase,
-  TestResult,
   Bot,
 }: ProblemProps) {
   const { id } = await params;
@@ -79,7 +77,6 @@ export default async function ProblemLayout({
             Details={Details}
             Code={Code}
             Testcase={Testcase}
-            TestResult={TestResult}
             Bot={Bot}
           />
         </main>
