@@ -1,16 +1,16 @@
 import { create } from "zustand";
 import type { DockviewApi } from "dockview";
-import type { Submission } from "@/generated/client";
 import { createJSONStorage, persist } from "zustand/middleware";
+import type { SubmissionWithTestcaseResult } from "@/types/prisma";
 
 export type DockviewState = {
   api: DockviewApi | null;
-  submission: Submission | null;
+  submission: SubmissionWithTestcaseResult | null;
 };
 
 export type DockviewActions = {
   setApi: (api: DockviewApi) => void;
-  setSubmission: (submission: Submission) => void;
+  setSubmission: (submission: SubmissionWithTestcaseResult) => void;
 };
 
 export type DockviewStore = DockviewState & DockviewActions;
