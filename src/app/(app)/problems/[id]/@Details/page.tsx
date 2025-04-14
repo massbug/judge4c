@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import { useEffect } from "react";
 import { ArrowLeftIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useProblem } from "@/hooks/use-problem";
@@ -15,14 +16,17 @@ export default function DetailsPage() {
   const { api, submission } = useDockviewStore();
   const { editorLanguageConfigs, problemId } = useProblem();
 
-  if (!api || !problemId || !submission?.id) return null;
-
-  if (problemId !== submission.problemId) {
-    const detailsPanel = api.getPanel("Details");
-    if (detailsPanel) {
-      api.removePanel(detailsPanel);
+  useEffect(() => {
+    if (!api || !problemId || !submission?.id) return;
+    if (problemId !== submission.problemId) {
+      const detailsPanel = api.getPanel("Details");
+      if (detailsPanel) {
+        api.removePanel(detailsPanel);
+      }
     }
-  }
+  }, [api, problemId, submission])
+
+  if (!api || !problemId || !submission?.id) return null;
 
   const createdAt = new Date(submission.createdAt);
   const submittedDisplay = isBefore(createdAt, subDays(new Date(), 1))
