@@ -25,6 +25,27 @@
     "open": "Open Bot",
     "close": "Close Bot"
   },
+  "CredentialsSignInForm": {
+    "email": "Email",
+    "password": "Password",
+    "signIn": "Sign In",
+    "signingIn": "Signing In...",
+    "signInSuccess": "Signed In Successfully",
+    "signInFailed": "Sign In Failed",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password"
+  },
+  "CredentialsSignUpForm": {
+    "email": "Email",
+    "password": "Password",
+    "signUp": "Sign Up",
+    "creatingAccount": "Creating Account...",
+    "signUpSuccess": "Account Created",
+    "signUpSuccessDescription": "You can now sign in with your credentials",
+    "signUpFailed": "Registration Failed",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password"
+  },
   "DetailsPage": {
     "BackButton": "All Submissions",
     "Time": "Submitted on",
@@ -38,6 +59,7 @@
     "MEDIUM": "MEDIUM",
     "HARD": "HARD"
   },
+  "GithubSignInForm": "Continue with GitHub",
   "LanguageSettings": {
     "en": {
       "flag": "🇺🇸",
@@ -81,6 +103,30 @@
       "CodeEditor": "CodeEditor",
       "Advanced": "Advanced"
     }
+  },
+  "SignInForm": {
+    "title": "Sign in to your account",
+    "description": "Enter your email below to sign in to your account",
+    "or": "Or",
+    "noAccount": "Don't have an account?",
+    "signUp": "Sign up"
+  },
+  "signInWithCredentials": {
+    "userNotFound": "User not found.",
+    "invalidCredentials": "Invalid credentials.",
+    "incorrectPassword": "Incorrect password.",
+    "signInFailedFallback": "Failed to sign in. Please try again."
+  },
+  "signUpWithCredentials": {
+    "userAlreadyExists": "User already exists.",
+    "registrationFailedFallback": "Registration failed. Please try again."
+  },
+  "SignUpForm": {
+    "title": "Sign up to your account",
+    "description": "Enter your email below to sign up to your account",
+    "or": "Or",
+    "haveAccount": "Already have an account?",
+    "signIn": "Sign in"
   },
   "StatusMessage": {
     "PD": "Pending",

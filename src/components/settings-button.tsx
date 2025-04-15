@@ -1,6 +1,6 @@
 "use client";
 
-import { Settings } from "lucide-react";
+import { SettingsIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useSettingsStore } from "@/stores/useSettingsStore";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
@@ -11,7 +11,7 @@ export function SettingsButton() {
 
   return (
     <DropdownMenuItem onClick={() => setDialogOpen(true)}>
-      <Settings />
+      <SettingsIcon />
       {t("Settings")}
     </DropdownMenuItem>
   );

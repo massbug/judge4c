@@ -1,4 +1,3 @@
-import { LogOut } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,6 +7,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { LogOutIcon } from "lucide-react";
 import { auth, signOut } from "@/lib/auth";
 import { getTranslations } from "next-intl/server";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -65,7 +65,7 @@ export async function AvatarButton() {
             <DropdownMenuGroup>
               <SettingsButton />
               <DropdownMenuItem onClick={handleLogOut}>
-                <LogOut />
+                <LogOutIcon />
                 {t("LogOut")}
               </DropdownMenuItem>
             </DropdownMenuGroup>

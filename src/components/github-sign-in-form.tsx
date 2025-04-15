@@ -1,10 +1,12 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { signInWithGithub } from "@/actions/auth";
 import { useSearchParams } from "next/navigation";
 
 export function GithubSignInForm() {
+  const t = useTranslations();
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get("redirectTo");
   const signInAction = signInWithGithub.bind(null, redirectTo || "/");
@@ -18,7 +20,7 @@ export function GithubSignInForm() {
             fill="currentColor"
           />
         </svg>
-        Continue with GitHub
+        {t("GithubSignInForm")}
       </Button>
     </form>
   );

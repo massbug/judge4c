@@ -4,12 +4,15 @@ import bcrypt from "bcrypt";
 import prisma from "@/lib/prisma";
 import { signIn } from "@/lib/auth";
 import { authSchema } from "@/lib/zod";
+import { getTranslations } from "next-intl/server";
 import { CredentialsSignInFormValues } from "@/components/credentials-sign-in-form";
 import { CredentialsSignUpFormValues } from "@/components/credentials-sign-up-form";
 
 const saltRounds = 10;
 
 export async function signInWithCredentials(formData: CredentialsSignInFormValues, redirectTo?: string) {
+  const t = await getTranslations("signInWithCredentials");
+
   try {
     // Parse credentials using authSchema for validation
     const { email, password } = await authSchema.parseAsync(formData);
@@ -19,35 +22,37 @@ export async function signInWithCredentials(formData: CredentialsSignInFormValue
 
     // Check if the user exists
     if (!user) {
-      throw new Error("User not found.");
+      throw new Error(t("userNotFound"));
     }
 
     // Check if the user has a password
     if (!user.password) {
-      throw new Error("Invalid credentials.");
+      throw new Error(t("invalidCredentials"));
     }
 
     // Check if the password matches
     const passwordMatch = await bcrypt.compare(password, user.password);
     if (!passwordMatch) {
-      throw new Error("Incorrect password.");
+      throw new Error(t("incorrectPassword"));
     }
 
     await signIn("credentials", { ...formData, redirectTo, redirect: !!redirectTo });
     return { success: true };
   } catch (error) {
-    return { error: error instanceof Error ? error.message : "Failed to sign in. Please try again." };
+    return { error: error instanceof Error ? error.message : t("signInFailedFallback") };
   }
 }
 
 export async function signUpWithCredentials(formData: CredentialsSignUpFormValues) {
+  const t = await getTranslations("signUpWithCredentials");
+
   try {
     const validatedData = await authSchema.parseAsync(formData);
 
     // Check if user already exists
     const existingUser = await prisma.user.findUnique({ where: { email: validatedData.email } });
     if (existingUser) {
-      throw new Error("User already exists");
+      throw new Error(t("userAlreadyExists"));
     }
 
     // Hash password and create user
@@ -64,7 +69,7 @@ export async function signUpWithCredentials(formData: CredentialsSignUpFormValue
 
     return { success: true };
   } catch (error) {
-    return { error: error instanceof Error ? error.message : "Registration failed. Please try again." };
+    return { error: error instanceof Error ? error.message : t("registrationFailedFallback") };
   }
 }
 

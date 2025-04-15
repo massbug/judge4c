@@ -12,6 +12,7 @@ import {
 import { toast } from "sonner";
 import { authSchema } from "@/lib/zod";
 import { useForm } from "react-hook-form";
+import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState, useTransition } from "react";
@@ -26,6 +27,7 @@ export function CredentialsSignInForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get("redirectTo");
+  const t = useTranslations("CredentialsSignInForm");
   const [isPending, startTransition] = useTransition();
   const [isVisible, setIsVisible] = useState(false);
 
@@ -44,11 +46,11 @@ export function CredentialsSignInForm() {
       const result = await signInWithCredentials(data);
 
       if (result?.error) {
-        toast.error("Sign In Failed", {
+        toast.error(t("signInFailed"), {
           description: result.error,
         });
       } else {
-        toast.success("Signed In Successfully");
+        toast.success(t("signInSuccess"));
         router.push(redirectTo || "/");
       }
     });
@@ -62,7 +64,7 @@ export function CredentialsSignInForm() {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel>{t("email")}</FormLabel>
               <FormControl>
                 <div className="relative">
                   <Input className="peer pe-9" {...field} />
@@ -81,7 +83,7 @@ export function CredentialsSignInForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
+              <FormLabel>{t("password")}</FormLabel>
               <FormControl>
                 <div className="relative">
                   <Input
@@ -93,7 +95,7 @@ export function CredentialsSignInForm() {
                     className="text-muted-foreground/80 hover:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 absolute inset-y-0 end-0 flex h-full w-9 items-center justify-center rounded-e-md transition-[color,box-shadow] outline-none focus:z-10 focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
                     type="button"
                     onClick={toggleVisibility}
-                    aria-label={isVisible ? "Hide password" : "Show password"}
+                    aria-label={isVisible ? t("hidePassword") : t("showPassword")}
                     aria-pressed={isVisible}
                     aria-controls="password"
                   >
@@ -111,7 +113,7 @@ export function CredentialsSignInForm() {
         />
 
         <Button type="submit" disabled={isPending} className="w-full">
-          {isPending ? "Signing In..." : "Sign In"}
+          {isPending ? t("signingIn") : t("signIn")}
         </Button>
       </form>
     </Form>

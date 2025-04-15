@@ -25,6 +25,27 @@
     "open": "打开AI助手",
     "close": "关闭AI助手"
   },
+  "CredentialsSignInForm": {
+    "email": "邮箱",
+    "password": "密码",
+    "signIn": "登录",
+    "signingIn": "正在登录...",
+    "signInSuccess": "登录成功",
+    "signInFailed": "登录失败",
+    "showPassword": "显示密码",
+    "hidePassword": "隐藏密码"
+  },
+  "CredentialsSignUpForm": {
+    "email": "邮箱",
+    "password": "密码",
+    "signUp": "注册",
+    "creatingAccount": "正在创建账户...",
+    "signUpSuccess": "账户创建成功",
+    "signUpSuccessDescription": "你现在可以使用凭据登录",
+    "signUpFailed": "注册失败",
+    "showPassword": "显示密码",
+    "hidePassword": "隐藏密码"
+  },
   "DetailsPage": {
     "BackButton": "所有提交记录",
     "Time": "提交于",
@@ -38,6 +59,7 @@
     "MEDIUM": "中等",
     "HARD": "困难"
   },
+  "GithubSignInForm": "使用 GitHub 登录",
   "LanguageSettings": {
     "en": {
       "flag": "🇺🇸",
@@ -81,6 +103,30 @@
       "CodeEditor": "代码编辑器",
       "Advanced": "高级设置"
     }
+  },
+  "SignInForm": {
+    "title": "登录到你的账户",
+    "description": "请输入你的邮箱以登录账户",
+    "or": "或者",
+    "noAccount": "还没有账户？",
+    "signUp": "注册"
+  },
+  "signInWithCredentials": {
+    "userNotFound": "未找到用户。",
+    "invalidCredentials": "凭据无效。",
+    "incorrectPassword": "密码错误。",
+    "signInFailedFallback": "登录失败，请重试。"
+  },
+  "signUpWithCredentials": {
+    "userAlreadyExists": "用户已存在。",
+    "registrationFailedFallback": "注册失败，请重试。"
+  },
+  "SignUpForm": {
+    "title": "注册你的账户",
+    "description": "请输入你的邮箱以注册账户",
+    "or": "或者",
+    "haveAccount": "已经有账户了？",
+    "signIn": "登录"
   },
   "StatusMessage": {
     "PD": "待处理",
