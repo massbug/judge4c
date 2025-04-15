@@ -297,8 +297,7 @@ int* twoSum(int* nums, int numsSize, int target, int* returnSize) {
             create: [
               {
                 language: "c",
-                template: `
-#include <stdio.h>
+                template: `#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -377,73 +376,12 @@ int* twoSum(int* nums, int numsSize, int target, int* returnSize) {
               },
               {
                 language: "cpp",
-                template: `
-#include <iostream>
-#include <vector>
-#include <string>
-#include <sstream>
-#include <algorithm>
-#include <unordered_map>
-
-using namespace std;
-
-// 解析输入字符串为整数数组
-vector<int> parseIntArray(string line) {
-    vector<int> result;
-    line.erase(remove(line.begin(), line.end(), '['), line.end());
-    line.erase(remove(line.begin(), line.end(), ']'), line.end());
-    stringstream ss(line);
-    string token;
-    while (getline(ss, token, ',')) {
-        if (!token.empty()) {
-            result.push_back(stoi(token));
-        }
-    }
-    return result;
-}
-
-// 格式化输出结果为字符串
-string formatOutput(const vector<int>& res) {
-    if (res.empty()) return "[]";
-    stringstream ss;
-    ss << "[";
-    for (size_t i = 0; i < res.size(); ++i) {
-        ss << res[i];
-        if (i != res.size() - 1)
-            ss << ",";
-    }
-    ss << "]";
-    return ss.str();
-}
-
-// Solution 类声明
-class Solution {
+                template: `class Solution {
 public:
-    vector<int> twoSum(vector<int>& nums, int target);
-};
-
-int main() {
-    string line;
-    while (getline(cin, line)) {
-        vector<int> nums = parseIntArray(line);
-
-        if (!getline(cin, line)) break;
-        int target = stoi(line);
-
-        Solution sol;
-        vector<int> res = sol.twoSum(nums, target);
-
-        cout << formatOutput(res) << endl;
+    vector<int> twoSum(vector<int>& nums, int target) {
+        
     }
-
-    return 0;
-}
-
-vector<int> Solution::twoSum(vector<int>& nums, int target) {
-
-    return {};
-}
-`,
+};`,
               },
             ],
           },
@@ -625,182 +563,35 @@ $(3 → 4 → 2) + (4 → 6 → 5) = 8 → 0 → 7$`,
             create: [
               {
                 language: "c",
-                template: `
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-// Definition for singly-linked list.
-struct ListNode {
-    int val;
-    struct ListNode *next;
-};
-
-// 创建链表
-struct ListNode* createList(char *line) {
-    struct ListNode dummy;
-    struct ListNode *tail = &dummy;
-    dummy.next = NULL;
-
-    line[strcspn(line, "\\n")] = 0;
-    char *p = line;
-    while (*p && (*p == '[' || *p == ' ' || *p == ']')) p++;
-
-    char *token = strtok(p, ",");
-    while (token) {
-        struct ListNode *node = malloc(sizeof(struct ListNode));
-        node->val = atoi(token);
-        node->next = NULL;
-        tail->next = node;
-        tail = node;
-        token = strtok(NULL, ",");
-    }
-
-    return dummy.next;
-}
-
-// 打印链表
-void printList(struct ListNode* head) {
-    printf("[");
-    while (head) {
-        printf("%d", head->val);
-        if (head->next) printf(",");
-        head = head->next;
-    }
-    printf("]\\n");
-}
-
-// 释放链表内存
-void freeList(struct ListNode* head) {
-    while (head) {
-        struct ListNode* temp = head;
-        head = head->next;
-        free(temp);
-    }
-}
-
-// 主函数
-int main() {
-    char line[1024];
-
-    while (fgets(line, sizeof(line), stdin)) {
-        struct ListNode* l1 = createList(line);
-
-        if (!fgets(line, sizeof(line), stdin)) break;
-        struct ListNode* l2 = createList(line);
-
-        struct ListNode* result = addTwoNumbers(l1, l2);
-        printList(result);
-
-        freeList(l1);
-        freeList(l2);
-        freeList(result);
-    }
-
-    return 0;
-}
-
-
+                template: `/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     struct ListNode *next;
+ * };
+ */
 struct ListNode* addTwoNumbers(struct ListNode* l1, struct ListNode* l2) {
     
-    return NULL; // 在这里填充你的算法逻辑
-}
-
-`,
+}`,
               },
               {
                 language: "cpp",
-                template: `
-#include <iostream>
-#include <string>
-#include <sstream>
-#include <vector>
-#include <algorithm>
-using namespace std;
-
-// Definition for singly-linked list.
-struct ListNode {
-    int val;
-    ListNode *next;
-    ListNode() : val(0), next(nullptr) {}
-    ListNode(int x) : val(x), next(nullptr) {}
-    ListNode(int x, ListNode *next) : val(x), next(next) {}
-};
-
-// 声明 Solution 类
+                template: `/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
 class Solution {
 public:
-    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2);
-};
-
-// 输入字符串 -> 链表
-ListNode* createList(const string& line) {
-    ListNode dummy;
-    ListNode* tail = &dummy;
-    dummy.next = nullptr;
-
-    string nums = line;
-    nums.erase(remove(nums.begin(), nums.end(), '['), nums.end());
-    nums.erase(remove(nums.begin(), nums.end(), ']'), nums.end());
-
-    stringstream ss(nums);
-    string token;
-    while (getline(ss, token, ',')) {
-        if (!token.empty()) {
-            int val = stoi(token);
-            tail->next = new ListNode(val);
-            tail = tail->next;
-        }
+    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+        
     }
-
-    return dummy.next;
-}
-
-// 打印链表
-void printList(ListNode* head) {
-    cout << "[";
-    while (head) {
-        cout << head->val;
-        if (head->next) cout << ",";
-        head = head->next;
-    }
-    cout << "]" << endl;
-}
-
-// 释放内存
-void freeList(ListNode* head) {
-    while (head) {
-        ListNode* tmp = head;
-        head = head->next;
-        delete tmp;
-    }
-}
-
-// 主函数
-int main() {
-    string line;
-    while (getline(cin, line)) {
-        ListNode* l1 = createList(line);
-        if (!getline(cin, line)) break;
-        ListNode* l2 = createList(line);
-
-        Solution sol;
-        ListNode* res = sol.addTwoNumbers(l1, l2);
-        printList(res);
-
-        freeList(l1);
-        freeList(l2);
-        freeList(res);
-    }
-    return 0;
-}
-
-
-ListNode* Solution::addTwoNumbers(ListNode* l1, ListNode* l2) {
-
-    return nullptr; // 在这里填充你的算法逻辑
-}
-`,
+};`,
               },
             ],
           },
@@ -992,117 +783,18 @@ Let $m$ be the size of array \`nums1\` and $n$ be the size of array \`nums2\`.
             create: [
               {
                 language: "c",
-                template: `
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-// 解析输入数组
-int *parseIntArray(char *line, int *len) {
-    line[strcspn(line, "\\n")] = 0; // 移除换行符
-    char *p = line;
-    while (*p && (*p == '[' || *p == ' ' || *p == ']')) p++; // 跳过空格和括号
-
-    int capacity = 10;
-    int *arr = malloc(capacity * sizeof(int)); // 初始分配空间
-    *len = 0;
-
-    char *token = strtok(p, ","); // 分割输入为逗号分隔的整数
-    while (token) {
-        if (*len >= capacity) { // 扩展数组大小
-            capacity *= 2;
-            arr = realloc(arr, capacity * sizeof(int));
-        }
-        arr[(*len)++] = atoi(token); // 存储整数
-        token = strtok(NULL, ",");
-    }
-    return arr;
-}
-
-double findMedianSortedArrays(int* nums1, int nums1Size, int* nums2, int nums2Size);
-
-int main() {
-    char line[1024];
-
-    while (fgets(line, sizeof(line), stdin)) { // 读取第一行
-        int len1;
-        int *nums1 = parseIntArray(line, &len1); // 解析数组1
-
-        if (!fgets(line, sizeof(line), stdin)) break; // 如果第二行不存在，退出
-        int len2;
-        int *nums2 = parseIntArray(line, &len2); // 解析数组2
-
-        double result = findMedianSortedArrays(nums1, len1, nums2, len2); // 计算中位数
-        printf("%.5f\\n", result); // 输出中位数，保留5位小数
-
-        free(nums1); // 释放内存
-        free(nums2); // 释放内存
-    }
-
-    return 0;
-}
-
-
-// 寻找中位数函数 
-double findMedianSortedArrays(int* nums1, int nums1Size, int* nums2, int nums2Size) {
+                template: `double findMedianSortedArrays(int* nums1, int nums1Size, int* nums2, int nums2Size) {
     
-    return 0.0; // 在这里填充你的算法逻辑
-}
-`,
+}`,
               },
               {
                 language: "cpp",
-                template: `
-#include <iostream>
-#include <vector>
-#include <string>
-#include <sstream>
-#include <algorithm>
-using namespace std;
-
-class Solution {
+                template: `class Solution {
 public:
-    double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2);
-};
-
-// 解析输入为整数数组
-vector<int> parseIntArray(const string& line) {
-    string trimmed = line;
-    trimmed.erase(remove(trimmed.begin(), trimmed.end(), '['), trimmed.end());
-    trimmed.erase(remove(trimmed.begin(), trimmed.end(), ']'), trimmed.end());
-
-    vector<int> result;
-    stringstream ss(trimmed);
-    string token;
-    while (getline(ss, token, ',')) {
-        if (!token.empty()) {
-            result.push_back(stoi(token));
-        }
+    double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
+        
     }
-    return result;
-}
-
-int main() {
-    string line;
-    while (getline(cin, line)) {
-        vector<int> nums1 = parseIntArray(line);
-        if (!getline(cin, line)) break;
-        vector<int> nums2 = parseIntArray(line);
-
-        Solution sol;
-        double result = sol.findMedianSortedArrays(nums1, nums2);
-        printf("%.5f\\n", result);
-    }
-    return 0;
-}
-
-
-
-double Solution::findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
-
-    return 0.0; // 临时返回值，待填充
-}
-`,
+};`,
               },
             ],
           },
