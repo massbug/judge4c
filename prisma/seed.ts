@@ -297,7 +297,8 @@ int* twoSum(int* nums, int numsSize, int target, int* returnSize) {
             create: [
               {
                 language: "c",
-                template: `#include <stdio.h>
+                template: `
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -377,7 +378,7 @@ int* twoSum(int* nums, int numsSize, int target, int* returnSize) {
               {
                 language: "cpp",
                 template: `
-                #include <iostream>
+#include <iostream>
 #include <vector>
 #include <string>
 #include <sstream>
@@ -990,7 +991,7 @@ Let $m$ be the size of array \`nums1\` and $n$ be the size of array \`nums2\`.
               {
                 language: "c",
                 template: `
-                #include <stdio.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -1015,6 +1016,8 @@ int *parseIntArray(char *line, int *len) {
     }
     return arr;
 }
+
+double findMedianSortedArrays(int* nums1, int nums1Size, int* nums2, int nums2Size);
 
 int main() {
     char line[1024];
@@ -1048,7 +1051,7 @@ double findMedianSortedArrays(int* nums1, int nums1Size, int* nums2, int nums2Si
               {
                 language: "cpp",
                 template: `
-                #include <iostream>
+#include <iostream>
 #include <vector>
 #include <string>
 #include <sstream>
