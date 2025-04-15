@@ -25,29 +25,31 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import AppearanceSettings from "./appearance-settings";
+import { useTranslations } from "next-intl";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useSettingsStore } from "@/stores/useSettingsStore";
+import AppearanceSettings from "@/components/appearance-settings";
+import { LanguageSettings } from "@/components/language-settings";
 import { CodeXml, Globe, Paintbrush, Settings } from "lucide-react";
 
-const data = {
-  nav: [
-    { name: "Appearance", icon: Paintbrush },
-    { name: "Language & region", icon: Globe },
-    { name: "Code Editor", icon: CodeXml },
-    { name: "Advanced", icon: Settings },
-  ],
-};
-
 export function SettingsDialog() {
+  const t = useTranslations("SettingsDialog");
+  const data = {
+    nav: [
+      { id: "Appearance", name: t("nav.Appearance"), icon: Paintbrush },
+      { id: "Language", name: t("nav.Language"), icon: Globe },
+      { id: "CodeEditor", name: t("nav.CodeEditor"), icon: CodeXml },
+      { id: "Advanced", name: t("nav.Advanced"), icon: Settings },
+    ],
+  };
   const { isDialogOpen, activeSetting, setDialogOpen, setActiveSetting } = useSettingsStore();
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
       <DialogContent className="overflow-hidden p-0 md:max-h-[500px] md:max-w-[700px] lg:max-w-[800px]">
-        <DialogTitle className="sr-only">Settings</DialogTitle>
+        <DialogTitle className="sr-only">{t("title")}</DialogTitle>
         <DialogDescription className="sr-only">
-          Customize your settings here.
+          {t("description")}
         </DialogDescription>
         <SidebarProvider className="items-start">
           <Sidebar collapsible="none" className="hidden md:flex">
@@ -59,10 +61,10 @@ export function SettingsDialog() {
                       <SidebarMenuItem key={item.name}>
                         <SidebarMenuButton
                           asChild
-                          isActive={item.name === activeSetting}
-                          onClick={() => setActiveSetting(item.name)}
+                          isActive={item.id === activeSetting}
+                          onClick={() => setActiveSetting(item.id)}
                         >
-                          <a href="#">
+                          <a>
                             <item.icon />
                             <span>{item.name}</span>
                           </a>
@@ -80,11 +82,11 @@ export function SettingsDialog() {
                 <Breadcrumb>
                   <BreadcrumbList>
                     <BreadcrumbItem className="hidden md:block">
-                      <BreadcrumbLink href="#">Settings</BreadcrumbLink>
+                      <BreadcrumbLink>{t("breadcrumb")}</BreadcrumbLink>
                     </BreadcrumbItem>
                     <BreadcrumbSeparator className="hidden md:block" />
                     <BreadcrumbItem>
-                      <BreadcrumbPage>{activeSetting}</BreadcrumbPage>
+                      <BreadcrumbPage>{t(`nav.${activeSetting}`)}</BreadcrumbPage>
                     </BreadcrumbItem>
                   </BreadcrumbList>
                 </Breadcrumb>
@@ -92,16 +94,8 @@ export function SettingsDialog() {
             </header>
             <ScrollArea className="flex-1 overflow-y-auto p-4 pt-0">
               <div className="flex flex-col gap-4">
-                {activeSetting === "Appearance" ? (
-                  <AppearanceSettings />
-                ) : (
-                  Array.from({ length: 10 }).map((_, i) => (
-                    <div
-                      key={i}
-                      className="aspect-video max-w-3xl rounded-xl bg-muted/50"
-                    />
-                  ))
-                )}
+                {activeSetting === "Appearance" && <AppearanceSettings />}
+                {activeSetting === "Language" && <LanguageSettings />}
               </div>
             </ScrollArea>
           </main>

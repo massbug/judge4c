@@ -25,16 +25,16 @@ export const getStatusColorClass = (status: Status) => {
 };
 
 export const statusMap = new Map<Status, { icon: LucideIcon; message: string }>([
-  ["PD", { icon: AlertTriangleIcon, message: "Pending" }],
-  ["QD", { icon: AlertTriangleIcon, message: "Queued" }],
-  ["CP", { icon: AlertTriangleIcon, message: "Compiling" }],
-  ["CE", { icon: AlertTriangleIcon, message: "Compilation Error" }],
-  ["CS", { icon: CircleCheckIcon, message: "Compilation Success" }],
-  ["RU", { icon: AlertTriangleIcon, message: "Running" }],
-  ["TLE", { icon: AlertTriangleIcon, message: "Time Limit Exceeded" }],
-  ["MLE", { icon: AlertTriangleIcon, message: "Memory Limit Exceeded" }],
-  ["RE", { icon: AlertTriangleIcon, message: "Runtime Error" }],
-  ["AC", { icon: CircleCheckIcon, message: "Accepted" }],
-  ["WA", { icon: AlertTriangleIcon, message: "Wrong Answer" }],
-  ["SE", { icon: BanIcon, message: "System Error" }],
+  ["PD", { icon: AlertTriangleIcon, message: "PD" }],
+  ["QD", { icon: AlertTriangleIcon, message: "QD" }],
+  ["CP", { icon: AlertTriangleIcon, message: "CP" }],
+  ["CE", { icon: AlertTriangleIcon, message: "CE" }],
+  ["CS", { icon: CircleCheckIcon, message: "CS" }],
+  ["RU", { icon: AlertTriangleIcon, message: "RU" }],
+  ["TLE", { icon: AlertTriangleIcon, message: "TLE" }],
+  ["MLE", { icon: AlertTriangleIcon, message: "MLE" }],
+  ["RE", { icon: AlertTriangleIcon, message: "RE" }],
+  ["AC", { icon: CircleCheckIcon, message: "AC" }],
+  ["WA", { icon: AlertTriangleIcon, message: "WA" }],
+  ["SE", { icon: BanIcon, message: "SE" }],
 ]);

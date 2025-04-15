@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 import { ArrowLeftIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -14,6 +15,8 @@ export default function BackButton({
   className,
   ...props
 }: BackButtonProps) {
+  const t = useTranslations();
+
   return (
     <TooltipProvider delayDuration={0}>
       <Tooltip>
@@ -29,7 +32,9 @@ export default function BackButton({
             </Link>
           </Button>
         </TooltipTrigger>
-        <TooltipContent className="px-2 py-1 text-xs">Back</TooltipContent>
+        <TooltipContent className="px-2 py-1 text-xs">
+          {t("BackButton")}
+        </TooltipContent>
       </Tooltip>
     </TooltipProvider>
   );

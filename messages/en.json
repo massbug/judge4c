@@ -1,0 +1,130 @@
+{
+  "AppearanceSettings": {
+    "title": "Choose a theme",
+    "items": {
+      "System": "System",
+      "Light": "Light",
+      "Dark": "Dark"
+    }
+  },
+  "AvatarButton": {
+    "Settings": "Settings",
+    "LogIn": "LogIn",
+    "LogOut": "LogOut"
+  },
+  "Banner": {
+    "Text": "Star this project if you like it."
+  },
+  "BackButton": "Back",
+  "Bot": {
+    "title": "Ask Bot",
+    "description": "Powered by Vercel Ai SDK",
+    "placeholder": "Bot will automatically get your current code"
+  },
+  "BotVisibilityToggle": {
+    "open": "Open Bot",
+    "close": "Close Bot"
+  },
+  "DetailsPage": {
+    "BackButton": "All Submissions",
+    "Time": "Submitted on",
+    "Input": "Input",
+    "ExpectedOutput": "Expected Output",
+    "ActualOutput": "Acutal Output",
+    "Code": "Code"
+  },
+  "Difficulty": {
+    "EASY": "EASY",
+    "MEDIUM": "MEDIUM",
+    "HARD": "HARD"
+  },
+  "LanguageSettings": {
+    "en": {
+      "flag": "🇺🇸",
+      "name": "English"
+    },
+    "zh": {
+      "flag": "🇨🇳",
+      "name": "Chinese"
+    }
+  },
+  "PlaygroundHeader": {
+    "RunCodeButton": {
+      "TooltipTrigger": {
+        "loading": "Running...",
+        "ready": "Run"
+      },
+      "TooltipContent": "Run Code"
+    }
+  },
+  "ProblemPage": {
+    "Description": "Description",
+    "Solutions": "Solutions",
+    "Submissions": "Submissions",
+    "Details": "Details",
+    "Code": "Code",
+    "Testcase": "Testcase",
+    "Bot": "Bot"
+  },
+  "ProblemsetPage": {
+    "Status": "Status",
+    "Title": "Title",
+    "Difficulty": "Difficulty"
+  },
+  "SettingsDialog": {
+    "title": "Settings",
+    "description": "Customize your settings here.",
+    "breadcrumb": "Settings",
+    "nav": {
+      "Appearance": "Appearance",
+      "Language": "Language",
+      "CodeEditor": "CodeEditor",
+      "Advanced": "Advanced"
+    }
+  },
+  "StatusMessage": {
+    "PD": "Pending",
+    "QD": "Queued",
+    "CP": "Compiling",
+    "CE": "Compilation Error",
+    "CS": "Compilation Success",
+    "RU": "Running",
+    "TLE": "Time Limit Exceeded",
+    "MLE": "Memory Limit Exceeded",
+    "RE": "Runtime Error",
+    "AC": "Accepted",
+    "WA": "Wrong Answer",
+    "SE": "System Error"
+  },
+  "SubmissionsTable": {
+    "Index": "Index",
+    "Status": "Status",
+    "Language": "Language",
+    "Time": "Time",
+    "Memory": "Memory"
+  },
+  "WorkspaceEditorHeader": {
+    "LspStatusButton": {
+      "TooltipContent": "Language Server"
+    },
+    "ResetButton": {
+      "TooltipContent": "Reset Code"
+    },
+    "UndoButton": {
+      "TooltipContent": "Undo"
+    },
+    "RedoButton": {
+      "TooltipContent": "Redo"
+    },
+    "FormatButton": {
+      "TooltipContent": "Format"
+    },
+    "CopyButton": {
+      "TooltipContent": "Copy"
+    }
+  },
+  "WorkspaceEditorFooter": {
+    "Row": "Row",
+    "Column": "Column"
+  }
+}

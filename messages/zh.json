@@ -1,0 +1,130 @@
+{
+  "AppearanceSettings": {
+    "title": "选择一个主题",
+    "items": {
+      "System": "系统",
+      "Light": "浅色",
+      "Dark": "深色"
+    }
+  },
+  "AvatarButton": {
+    "Settings": "设置",
+    "LogIn": "登录",
+    "LogOut": "登出"
+  },
+  "Banner": {
+    "Text": "如果喜欢该项目不妨收藏一下"
+  },
+  "BackButton": "返回",
+  "Bot": {
+    "title": "询问AI助手",
+    "description": "由Vercel Ai SDK驱动",
+    "placeholder": "AI助手将自动获取您当前的代码"
+  },
+  "BotVisibilityToggle": {
+    "open": "打开AI助手",
+    "close": "关闭AI助手"
+  },
+  "DetailsPage": {
+    "BackButton": "所有提交记录",
+    "Time": "提交于",
+    "Input": "输入",
+    "ExpectedOutput": "期望输出",
+    "ActualOutput": "实际输出",
+    "Code": "代码"
+  },
+  "Difficulty": {
+    "EASY": "简单",
+    "MEDIUM": "中等",
+    "HARD": "困难"
+  },
+  "LanguageSettings": {
+    "en": {
+      "flag": "🇺🇸",
+      "name": "英语"
+    },
+    "zh": {
+      "flag": "🇨🇳",
+      "name": "中文"
+    }
+  },
+  "PlaygroundHeader": {
+    "RunCodeButton": {
+      "TooltipTrigger": {
+        "loading": "运行中...",
+        "ready": "运行"
+      },
+      "TooltipContent": "运行代码"
+    }
+  },
+  "ProblemPage": {
+    "Description": "题目描述",
+    "Solutions": "题解",
+    "Submissions": "提交记录",
+    "Details": "详情",
+    "Code": "代码",
+    "Testcase": "测试用例",
+    "Bot": "AI助手"
+  },
+  "ProblemsetPage": {
+    "Status": "状态",
+    "Title": "题目",
+    "Difficulty": "难度"
+  },
+  "SettingsDialog": {
+    "title": "设置",
+    "description": "在此处自定义设置。",
+    "breadcrumb": "设置",
+    "nav": {
+      "Appearance": "外观",
+      "Language": "语言",
+      "CodeEditor": "代码编辑器",
+      "Advanced": "高级设置"
+    }
+  },
+  "StatusMessage": {
+    "PD": "待处理",
+    "QD": "排队中",
+    "CP": "编译中",
+    "CE": "编译错误",
+    "CS": "编译成功",
+    "RU": "运行中",
+    "TLE": "超出时间限制",
+    "MLE": "超出内存限制",
+    "RE": "运行时错误",
+    "AC": "通过",
+    "WA": "解答错误",
+    "SE": "系统错误"
+  },
+  "SubmissionsTable": {
+    "Index": "序号",
+    "Status": "状态",
+    "Language": "语言",
+    "Time": "执行用时",
+    "Memory": "消耗内存"
+  },
+  "WorkspaceEditorHeader": {
+    "LspStatusButton": {
+      "TooltipContent": "语言服务"
+    },
+    "ResetButton": {
+      "TooltipContent": "重置代码"
+    },
+    "UndoButton": {
+      "TooltipContent": "撤销"
+    },
+    "RedoButton": {
+      "TooltipContent": "恢复"
+    },
+    "FormatButton": {
+      "TooltipContent": "格式化"
+    },
+    "CopyButton": {
+      "TooltipContent": "复制"
+    }
+  },
+  "WorkspaceEditorFooter": {
+    "Row": "行",
+    "Column": "列"
+  }
+}

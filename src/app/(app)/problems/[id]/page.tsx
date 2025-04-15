@@ -8,10 +8,14 @@ import {
   SquareCheckIcon,
   SquarePenIcon,
 } from "lucide-react";
+import { Locale } from "@/config/i18n";
+import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import Dockview from "@/components/dockview";
 import { useDockviewStore } from "@/stores/dockview";
 
 interface ProblemPageProps {
+  locale: Locale;
   Description: React.ReactNode;
   Solutions: React.ReactNode;
   Submissions: React.ReactNode;
@@ -22,6 +26,7 @@ interface ProblemPageProps {
 }
 
 export default function ProblemPage({
+  locale,
   Description,
   Solutions,
   Submissions,
@@ -30,9 +35,17 @@ export default function ProblemPage({
   Testcase,
   Bot,
 }: ProblemPageProps) {
+  const [key, setKey] = useState(0);
   const { setApi } = useDockviewStore();
+  const t = useTranslations("ProblemPage");
+
+  useEffect(() => {
+    setKey((prevKey) => prevKey + 1);
+  }, [locale]);
+
   return (
     <Dockview
+      key={key}
       storageKey="dockview:problem"
       onApiReady={setApi}
       options={[
@@ -40,7 +53,7 @@ export default function ProblemPage({
           id: "Description",
           component: "Description",
           tabComponent: "Description",
-          title: "Description",
+          title: t("Description"),
           params: {
             icon: FileTextIcon,
             content: Description,
@@ -50,7 +63,7 @@ export default function ProblemPage({
           id: "Solutions",
           component: "Solutions",
           tabComponent: "Solutions",
-          title: "Solutions",
+          title: t("Solutions"),
           params: {
             icon: FlaskConicalIcon,
             content: Solutions,
@@ -65,7 +78,7 @@ export default function ProblemPage({
           id: "Submissions",
           component: "Submissions",
           tabComponent: "Submissions",
-          title: "Submissions",
+          title: t("Submissions"),
           params: {
             icon: CircleCheckBigIcon,
             content: Submissions,
@@ -80,7 +93,7 @@ export default function ProblemPage({
           id: "Details",
           component: "Details",
           tabComponent: "Details",
-          title: "Details",
+          title: t("Details"),
           params: {
             icon: CircleCheckBigIcon,
             content: Details,
@@ -91,7 +104,7 @@ export default function ProblemPage({
           id: "Code",
           component: "Code",
           tabComponent: "Code",
-          title: "Code",
+          title: t("Code"),
           params: {
             icon: SquarePenIcon,
             content: Code,
@@ -105,7 +118,7 @@ export default function ProblemPage({
           id: "Testcase",
           component: "Testcase",
           tabComponent: "Testcase",
-          title: "Testcase",
+          title: t("Testcase"),
           params: {
             icon: SquareCheckIcon,
             content: Testcase,
@@ -119,7 +132,7 @@ export default function ProblemPage({
           id: "Bot",
           component: "Bot",
           tabComponent: "Bot",
-          title: "Bot",
+          title: t("Bot"),
           params: {
             icon: BotIcon,
             content: Bot,

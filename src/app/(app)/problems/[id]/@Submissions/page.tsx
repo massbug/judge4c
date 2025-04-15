@@ -1,5 +1,6 @@
 import prisma from "@/lib/prisma";
 import { notFound } from "next/navigation";
+import { getUserLocale } from "@/i18n/locale";
 import SubmissionsTable from "@/components/submissions-table";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
@@ -37,10 +38,12 @@ export default async function SubmissionsPage({ params }: SubmissionsPageProps) 
     return notFound();
   }
 
+  const locale = await getUserLocale();
+
   return (
     <div className="px-3 flex flex-col h-full border border-t-0 border-muted rounded-b-3xl bg-background">
       <ScrollArea className="h-full">
-        <SubmissionsTable submissions={problem.submissions} />
+        <SubmissionsTable locale={locale} submissions={problem.submissions} />
         <ScrollBar orientation="horizontal" />
       </ScrollArea>
     </div>

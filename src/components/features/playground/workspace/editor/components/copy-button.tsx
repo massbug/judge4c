@@ -9,12 +9,14 @@ import {
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { Check, Copy } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { useProblem } from "@/hooks/use-problem";
 
 export function CopyButton() {
   const { editor } = useProblem();
   const [copied, setCopied] = useState(false);
+  const t = useTranslations("WorkspaceEditorHeader.CopyButton");
 
   const handleCopy = async () => {
     try {
@@ -65,7 +67,7 @@ export function CopyButton() {
           </Button>
         </TooltipTrigger>
         <TooltipContent className="px-2 py-1 text-xs">
-          Click to Copy
+          {t("TooltipContent")}
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

@@ -7,7 +7,10 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Locale } from "@/config/i18n";
+import { getLocale } from "@/lib/i18n";
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { ArrowLeftIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -20,7 +23,14 @@ import type { TestcaseResultWithTestcase } from "@/types/prisma";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { formatDistanceToNow, isBefore, subDays, format } from "date-fns";
 
-export default function DetailsPage() {
+interface DetailsPageProps {
+  locale: Locale;
+}
+
+export default function DetailsPage({ locale }: DetailsPageProps) {
+  const localeInstance = getLocale(locale);
+  const t = useTranslations("DetailsPage");
+  const s = useTranslations("StatusMessage");
   const { api, submission } = useDockviewStore();
   const { editorLanguageConfigs, problemId } = useProblem();
   const [lastFailedTestcase, setLastFailedTestcase] =
@@ -53,7 +63,7 @@ export default function DetailsPage() {
   const createdAt = new Date(submission.createdAt);
   const submittedDisplay = isBefore(createdAt, subDays(new Date(), 1))
     ? format(createdAt, "yyyy-MM-dd")
-    : formatDistanceToNow(createdAt, { addSuffix: true });
+    : formatDistanceToNow(createdAt, { addSuffix: true, locale: localeInstance });
 
   const source = `\`\`\`${submission?.language}\n${submission?.code}\n\`\`\``;
 
@@ -76,7 +86,7 @@ export default function DetailsPage() {
           className="h-8 w-auto p-2 hover:bg-transparent text-muted-foreground hover:text-foreground"
         >
           <ArrowLeftIcon size={16} aria-hidden="true" />
-          <span>All Submissions</span>
+          <span>{t("BackButton")}</span>
         </Button>
       </div>
       <div className="relative flex-1">
@@ -92,10 +102,10 @@ export default function DetailsPage() {
                         getStatusColorClass(submission.status)
                       )}
                     >
-                      <span>{statusMap.get(submission.status)?.message}</span>
+                      <span>{s(`${statusMap.get(submission.status)?.message}`)}</span>
                     </h3>
                     <div className="flex max-w-full flex-1 items-center gap-1 overflow-hidden text-xs">
-                      <span className="whitespace-nowrap">Submitted on</span>
+                      <span className="whitespace-nowrap mr-1">{t("Time")}</span>
                       <span className="max-w-full truncate">
                         {submittedDisplay}
                       </span>
@@ -118,7 +128,7 @@ export default function DetailsPage() {
                           className="bg-background has-focus-visible:border-ring has-focus-visible:ring-ring/50 relative border px-4 py-1 outline-none first:rounded-t-md last:rounded-b-md last:border-b has-focus-visible:z-10 has-focus-visible:ring-[3px]"
                         >
                           <AccordionTrigger className="py-2 text-[15px] leading-6 hover:no-underline focus-visible:ring-0">
-                            <h4 className="text-sm font-medium">Input</h4>
+                            <h4 className="text-sm font-medium">{t("Input")}</h4>
                           </AccordionTrigger>
                           <AccordionContent className="text-muted-foreground pb-2">
                             <div className="space-y-4">
@@ -142,7 +152,7 @@ export default function DetailsPage() {
                     </div>
 
                     <div className="space-y-2">
-                      <h4 className="text-sm font-medium">Expected Output</h4>
+                      <h4 className="text-sm font-medium">{t("ExpectedOutput")}</h4>
                       <Input
                         type="text"
                         value={lastFailedTestcase.testcase.expectedOutput}
@@ -153,7 +163,7 @@ export default function DetailsPage() {
 
                     {submission.status === "WA" && (
                       <div className="space-y-2">
-                        <h4 className="text-sm font-medium">Your Output</h4>
+                        <h4 className="text-sm font-medium">{t("ActualOutput")}</h4>
                         <Input
                           type="text"
                           value={lastFailedTestcase.output}
@@ -167,14 +177,14 @@ export default function DetailsPage() {
 
                 {(submission.status === "CE" ||
                   submission.status === "SE") && (
-                  <MdxPreview
-                    source={`\`\`\`shell\n${submission.message}\n\`\`\``}
-                  />
-                )}
+                    <MdxPreview
+                      source={`\`\`\`shell\n${submission.message}\n\`\`\``}
+                    />
+                  )}
 
                 <div className="flex items-center pb-2">
                   <div className="flex items-center gap-2 text-sm font-medium">
-                    <span>Code</span>
+                    <span>{t("Code")}</span>
                     <Separator
                       orientation="vertical"
                       className="h-4 bg-muted-foreground"

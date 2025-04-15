@@ -8,11 +8,13 @@ import {
 } from "@/components/ui/tooltip";
 import { BotIcon } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { Toggle } from "@/components/ui/toggle";
 import { useDockviewStore } from "@/stores/dockview";
 
 export default function BotVisibilityToggle() {
   const { api } = useDockviewStore();
+  const t = useTranslations();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isBotVisible, setBotVisible] = useState<boolean>(false);
 
@@ -37,7 +39,7 @@ export default function BotVisibilityToggle() {
           id: "Bot",
           component: "Bot",
           tabComponent: "Bot",
-          title: "Bot",
+          title: t("ProblemPage.Bot"),
           position: {
             direction: "right",
           },
@@ -70,7 +72,7 @@ export default function BotVisibilityToggle() {
           </div>
         </TooltipTrigger>
         <TooltipContent className="px-2 py-1 text-xs">
-          <p>{isBotVisible ? "Close Bot" : "Open Bot"}</p>
+          <p>{isBotVisible ? t("BotVisibilityToggle.close") : t("BotVisibilityToggle.open")}</p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

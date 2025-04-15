@@ -7,11 +7,13 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Paintbrush } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { useProblem } from "@/hooks/use-problem";
 
 export function FormatButton() {
   const { editor } = useProblem();
+  const t = useTranslations("WorkspaceEditorHeader.FormatButton");
 
   return (
     <TooltipProvider delayDuration={0}>
@@ -20,7 +22,7 @@ export function FormatButton() {
           <Button
             variant="outline"
             size="icon"
-            aria-label="Format Code"
+            aria-label={t("TooltipContent")}
             onClick={() => {
               editor?.trigger("format", "editor.action.formatDocument", null);
             }}
@@ -31,7 +33,7 @@ export function FormatButton() {
           </Button>
         </TooltipTrigger>
         <TooltipContent className="px-2 py-1 text-xs">
-          Format Code
+          {t("TooltipContent")}
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

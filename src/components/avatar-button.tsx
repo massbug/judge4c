@@ -9,6 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { auth, signOut } from "@/lib/auth";
+import { getTranslations } from "next-intl/server";
 import { Skeleton } from "@/components/ui/skeleton";
 import LogInButton from "@/components/log-in-button";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
@@ -28,6 +29,7 @@ async function handleLogOut() {
 
 export async function AvatarButton() {
   const session = await auth();
+  const t = await getTranslations("AvatarButton");
   const isLoggedIn = !!session?.user;
   const image = session?.user?.image ?? "https://github.com/shadcn.png";
   const name = session?.user?.name ?? "unknown";
@@ -64,7 +66,7 @@ export async function AvatarButton() {
               <SettingsButton />
               <DropdownMenuItem onClick={handleLogOut}>
                 <LogOut />
-                Log out
+                {t("LogOut")}
               </DropdownMenuItem>
             </DropdownMenuGroup>
           </>

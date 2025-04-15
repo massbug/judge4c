@@ -2,6 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { useProblem } from "@/hooks/use-problem";
 import { CircleXIcon, TriangleAlertIcon } from "lucide-react";
 
@@ -20,6 +21,7 @@ export function WorkspaceEditorFooter({
   className,
   ...props
 }: WorkspaceEditorFooterProps) {
+  const t = useTranslations("WorkspaceEditorFooter");
   const { editor, markers } = useProblem();
   const [position, setPosition] = useState<{ lineNumber: number; column: number } | null>(null);
 
@@ -62,8 +64,8 @@ export function WorkspaceEditorFooter({
         </div>
         <span className="truncate">
           {position
-            ? `Row ${position.lineNumber}, Column ${position.column}`
-            : "Row -, Column -"}
+            ? `${t("Row")} ${position.lineNumber}, ${t("Column")} ${position.column}`
+            : `${t("Row")} -, ${t("Column")} -`}
         </span>
       </div>
     </footer>

@@ -9,6 +9,9 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
+import { Locale } from "@/config/i18n";
+import { useTranslations } from "next-intl";
+import { enUS, zhCN } from "date-fns/locale";
 import { useProblem } from "@/hooks/use-problem";
 import { Clock4Icon, CpuIcon } from "lucide-react";
 import { useDockviewStore } from "@/stores/dockview";
@@ -18,10 +21,23 @@ import { EditorLanguageIcons } from "@/config/editor-language-icons";
 import { formatDistanceToNow, isBefore, subDays, format } from "date-fns";
 
 interface SubmissionsTableProps {
+  locale: Locale;
   submissions: SubmissionWithTestcaseResult[];
 }
 
-export default function SubmissionsTable({ submissions }: SubmissionsTableProps) {
+const getLocale = (locale: Locale) => {
+  switch (locale) {
+    case "zh":
+      return zhCN;
+    case "en":
+    default:
+      return enUS;
+  }
+}
+
+export default function SubmissionsTable({ locale, submissions }: SubmissionsTableProps) {
+  const s = useTranslations("StatusMessage");
+  const t = useTranslations("SubmissionsTable");
   const { editorLanguageConfigs } = useProblem();
   const { api, setSubmission } = useDockviewStore();
 
@@ -41,7 +57,7 @@ export default function SubmissionsTable({ submissions }: SubmissionsTableProps)
         id: "Details",
         component: "Details",
         tabComponent: "Details",
-        title: submission.status,
+        title: s(`${submission.status}`),
         position: {
           referencePanel: "Submissions",
           direction: "within",
@@ -54,11 +70,11 @@ export default function SubmissionsTable({ submissions }: SubmissionsTableProps)
     <Table>
       <TableHeader className="bg-transparent">
         <TableRow className="hover:bg-transparent">
-          <TableHead className="w-[100px]">Index</TableHead>
-          <TableHead className="w-[170px]">Status</TableHead>
-          <TableHead className="w-[100px]">Language</TableHead>
-          <TableHead className="w-[100px]">Time</TableHead>
-          <TableHead className="w-[100px]">Memory</TableHead>
+          <TableHead className="w-[100px]">{t("Index")}</TableHead>
+          <TableHead className="w-[170px]">{t("Status")}</TableHead>
+          <TableHead className="w-[100px]">{t("Language")}</TableHead>
+          <TableHead className="w-[100px]">{t("Time")}</TableHead>
+          <TableHead className="w-[100px]">{t("Memory")}</TableHead>
         </TableRow>
       </TableHeader>
 
@@ -68,11 +84,13 @@ export default function SubmissionsTable({ submissions }: SubmissionsTableProps)
         {sortedSubmissions.map((submission, index) => {
           const Icon = EditorLanguageIcons[submission.language];
           const createdAt = new Date(submission.createdAt);
+          const localeInstance = getLocale(locale);
           const submittedDisplay = isBefore(createdAt, subDays(new Date(), 1))
             ? format(createdAt, "yyyy-MM-dd")
-            : formatDistanceToNow(createdAt, { addSuffix: true });
+            : formatDistanceToNow(createdAt, { addSuffix: true, locale: localeInstance });
 
           const isEven = (submissions.length - index) % 2 === 0;
+          const message = statusMap.get(submission.status)?.message;
 
           return (
             <TableRow
@@ -89,7 +107,7 @@ export default function SubmissionsTable({ submissions }: SubmissionsTableProps)
               <TableCell>
                 <div className="flex flex-col truncate">
                   <span className={getStatusColorClass(submission.status)}>
-                    {statusMap.get(submission.status)?.message}
+                    {s(`${message}`)}
                   </span>
                   <span className="text-xs">{submittedDisplay}</span>
                 </div>

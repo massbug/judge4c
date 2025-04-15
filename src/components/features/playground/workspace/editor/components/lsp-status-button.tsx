@@ -6,6 +6,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { useProblem } from "@/hooks/use-problem";
 
@@ -28,6 +29,7 @@ const getLspStatusColor = (webSocket: WebSocket | null) => {
 
 export function LspStatusButton() {
   const { webSocket } = useProblem();
+  const t = useTranslations("WorkspaceEditorHeader.LspStatusButton");
 
   return (
     <TooltipProvider delayDuration={0}>
@@ -48,7 +50,7 @@ export function LspStatusButton() {
           </Button>
         </TooltipTrigger>
         <TooltipContent className="px-2 py-1 text-xs">
-          Language Server
+          {t("TooltipContent")}
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

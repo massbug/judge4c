@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/tooltip";
 import { useCallback } from "react";
 import { useChat } from "@ai-sdk/react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { useProblem } from "@/hooks/use-problem";
 import MdxPreview from "@/components/mdx-preview";
@@ -19,6 +20,7 @@ import { ChatMessageList } from "@/components/ui/chat/chat-message-list";
 import { ChatBubble, ChatBubbleMessage } from "@/components/ui/chat/chat-bubble";
 
 export default function Bot() {
+  const t = useTranslations("Bot");
   const { problemId, problem, currentLang, currentValue } = useProblem();
 
   const { messages, input, handleInputChange, setMessages, handleSubmit } = useChat({
@@ -58,12 +60,12 @@ export default function Bot() {
         {!messages.some(
           (message) => message.role === "user" || message.role === "assistant"
         ) && (
-          <div className="h-full flex flex-col items-center justify-center gap-2 text-muted-foreground">
-            <BotIcon />
-            <span>Ask Bot</span>
-            <span className="font-thin text-xs">Powered by Vercel Ai SDK</span>
-          </div>
-        )}
+            <div className="h-full flex flex-col items-center justify-center gap-2 text-muted-foreground">
+              <BotIcon />
+              <span>{t("title")}</span>
+              <span className="font-thin text-xs">{t("description")}</span>
+            </div>
+          )}
 
         <div className="absolute h-full w-full">
           <ScrollArea className="h-full [&>[data-radix-scroll-area-viewport]>div:min-w-0 [&>[data-radix-scroll-area-viewport]>div]:!block">
@@ -100,7 +102,7 @@ export default function Bot() {
               }
             }}
             className="h-full bg-muted border-transparent shadow-none rounded-lg"
-            placeholder="Bot will automatically get your current code"
+            placeholder={t("placeholder")}
           />
 
           <TooltipProvider delayDuration={0}>

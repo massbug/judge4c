@@ -2,22 +2,25 @@
 
 import Image from "next/image";
 import { useTheme } from "next-themes";
+import { useTranslations } from "next-intl";
 import { CheckIcon, MinusIcon } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
-const items = [
-  { value: "system", label: "System", image: "/ui-system.png" },
-  { value: "light", label: "Light", image: "/ui-light.png" },
-  { value: "dark", label: "Dark", image: "/ui-dark.png" },
-];
-
 export default function AppearanceSettings() {
+  const t = useTranslations("AppearanceSettings");
+
+  const items = [
+    { value: "system", label: t("items.System"), image: "/ui-system.png" },
+    { value: "light", label: t("items.Light"), image: "/ui-light.png" },
+    { value: "dark", label: t("items.Dark"), image: "/ui-dark.png" },
+  ];
+
   const { theme, setTheme } = useTheme();
 
   return (
     <fieldset className="space-y-4">
       <legend className="text-foreground text-sm leading-none font-medium">
-        Choose a theme
+        {t("title")}
       </legend>
       <RadioGroup className="flex gap-3" defaultValue={theme}>
         {items.map((item) => (

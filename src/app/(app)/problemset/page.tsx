@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/table";
 import prisma from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { getTranslations } from "next-intl/server";
 import { getDifficultyColorClass } from "@/lib/utils";
 import { CircleCheckBigIcon, CircleDotIcon } from "lucide-react";
 
@@ -32,13 +33,15 @@ export default async function ProblemsetPage() {
   const completedProblems = new Set(submissions.filter(s => s.status === "AC").map(s => s.problemId));
   const attemptedProblems = new Set(submissions.filter(s => s.status !== "AC").map(s => s.problemId));
 
+  const t = await getTranslations();
+
   return (
     <Table>
       <TableHeader className="bg-transparent">
         <TableRow className="hover:bg-transparent">
-          <TableHead className="w-1/3">Status</TableHead>
-          <TableHead className="w-1/3">Title</TableHead>
-          <TableHead className="w-1/3">Difficulty</TableHead>
+          <TableHead className="w-1/3">{t("ProblemsetPage.Status")}</TableHead>
+          <TableHead className="w-1/3">{t("ProblemsetPage.Title")}</TableHead>
+          <TableHead className="w-1/3">{t("ProblemsetPage.Difficulty")}</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody className="[&_td:first-child]:rounded-l-lg [&_td:last-child]:rounded-r-lg">
@@ -60,7 +63,7 @@ export default async function ProblemsetPage() {
               </Link>
             </TableCell>
             <TableCell className={`py-2.5 ${getDifficultyColorClass(problem.difficulty)}`}>
-              {problem.difficulty}
+              {t(`Difficulty.${problem.difficulty}`)}
             </TableCell>
           </TableRow>
         ))}

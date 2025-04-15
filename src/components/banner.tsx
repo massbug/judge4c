@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import { siteConfig } from "@/config/site";
+import { useTranslations } from 'next-intl';
 import { ArrowRightIcon } from "lucide-react";
 
 interface BannerProps {
@@ -11,9 +12,11 @@ interface BannerProps {
 export function Banner({
   className,
   link = siteConfig.url.repo.github,
-  text = "Star this project if you like it.",
+  text,
   ...props
 }: BannerProps) {
+  const t = useTranslations();
+
   return (
     <header
       {...props}
@@ -25,7 +28,7 @@ export function Banner({
       <p className="flex justify-center text-sm">
         <a href={link} className="group">
           <span className="me-1 text-base leading-none">✨</span>
-          {text}
+          {text || t("Banner.Text")}
           <ArrowRightIcon
             className="ms-2 -mt-0.5 inline-flex opacity-60 transition-transform group-hover:translate-x-0.5"
             size={16}

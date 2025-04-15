@@ -1,5 +1,6 @@
 import prisma from "@/lib/prisma";
 import { notFound } from "next/navigation";
+import { getUserLocale } from "@/i18n/locale";
 import ProblemPage from "@/app/(app)/problems/[id]/page";
 import { ProblemStoreProvider } from "@/providers/problem-store-provider";
 import { PlaygroundHeader } from "@/components/features/playground/header";
@@ -59,6 +60,8 @@ export default async function ProblemLayout({
     return notFound();
   }
 
+  const locale = await getUserLocale();
+
   return (
     <div className="flex flex-col h-screen">
       <ProblemStoreProvider
@@ -71,6 +74,7 @@ export default async function ProblemLayout({
         <PlaygroundHeader />
         <main className="flex flex-grow overflow-y-hidden p-2.5 pt-0">
           <ProblemPage
+            locale={locale}
             Description={Description}
             Solutions={Solutions}
             Submissions={Submissions}

@@ -7,11 +7,13 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Undo2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { useProblem } from "@/hooks/use-problem";
 
 export function UndoButton() {
   const { editor } = useProblem();
+  const t = useTranslations("WorkspaceEditorHeader.UndoButton");
 
   return (
     <TooltipProvider delayDuration={0}>
@@ -20,7 +22,7 @@ export function UndoButton() {
           <Button
             variant="outline"
             size="icon"
-            aria-label="Undo Code"
+            aria-label={t("TooltipContent")}
             onClick={() => {
               editor?.trigger("undo", "undo", null);
             }}
@@ -31,7 +33,7 @@ export function UndoButton() {
           </Button>
         </TooltipTrigger>
         <TooltipContent className="px-2 py-1 text-xs">
-          Undo Code
+          {t("TooltipContent")}
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

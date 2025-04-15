@@ -7,11 +7,13 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { RotateCcw } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { useProblem } from "@/hooks/use-problem";
 
 export function ResetButton() {
   const { editor, currentTemplate } = useProblem();
+  const t = useTranslations("WorkspaceEditorHeader.ResetButton");
 
   const handleReset = () => {
     if (editor) {
@@ -38,7 +40,7 @@ export function ResetButton() {
           <Button
             variant="outline"
             size="icon"
-            aria-label="Reset Code"
+            aria-label={t("TooltipContent")}
             onClick={handleReset}
             disabled={!editor}
             className="h-6 w-6 px-1.5 py-0.5 border-none shadow-none hover:bg-muted"
@@ -47,7 +49,7 @@ export function ResetButton() {
           </Button>
         </TooltipTrigger>
         <TooltipContent className="px-2 py-1 text-xs">
-          Reset Code
+          {t("TooltipContent")}
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
