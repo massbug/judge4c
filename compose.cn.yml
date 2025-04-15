@@ -1,0 +1,102 @@
+services:
+  judge4c:
+    image: dockerp.com/cfngc4594/judge4c:latest
+    container_name: judge4c
+    restart: always
+    ports:
+      - "3000:3000"
+    networks:
+      - judge4c
+    depends_on:
+      postgres:
+        condition: service_healthy
+      lsp-c:
+        condition: service_healthy
+      lsp-cpp:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD-SHELL", "curl --fail http://localhost:3000 || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    volumes:
+      # Local Docker daemon (default).
+      # Use remote Docker daemon by commenting out this line.
+      - /var/run/docker.sock:/var/run/docker.sock
+      # Mount TLS certificates when using a remote Docker daemon with TLS.
+      # Uncomment the following line if you're connecting to a remote Docker host over TLS.
+      # You can customize the path where the certificates are stored.
+      # DOCKER_REMOTE_CERTS_PATH should contain ca.pem, cert.pem, and key.pem files.
+      # Example: /path/to/certs:/certs
+      # - ${DOCKER_REMOTE_CERTS_PATH}:/certs
+    environment:
+      # Mandatory configurations:
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public
+      - AUTH_SECRET=${AUTH_SECRET}
+      - AUTH_GITHUB_ID=${AUTH_GITHUB_ID}
+      - AUTH_GITHUB_SECRET=${AUTH_GITHUB_SECRET}
+      - AUTH_URL=${AUTH_URL}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - OPENAI_BASE_URL=${OPENAI_BASE_URL} # Optional
+      # Remote Docker configuration (activate only for remote Docker):
+      # - DOCKER_HOST_MODE=${DOCKER_HOST_MODE}         # Options: "remote" or leave empty for local
+      # - DOCKER_REMOTE_PROTOCOL=${DOCKER_REMOTE_PROTOCOL} # Example: "https" or "http" or "ssh"
+      # - DOCKER_REMOTE_HOST=${DOCKER_REMOTE_HOST}         # Remote Docker host address
+      # - DOCKER_REMOTE_PORT=${DOCKER_REMOTE_PORT}         # Remote Docker port number
+      # TLS certificate paths for secure communication with the remote Docker daemon.
+      # You can customize these paths to where your certificates are located on your system.
+      # By default, they are mounted under /certs, but you can specify a custom path here.
+      # - DOCKER_REMOTE_CA_PATH=${DOCKER_REMOTE_CA_PATH}   # Custom path for CA certificate (default: /certs/ca.pem)
+      # - DOCKER_REMOTE_CERT_PATH=${DOCKER_REMOTE_CERT_PATH} # Custom path for certificate (default: /certs/cert.pem)
+      # - DOCKER_REMOTE_KEY_PATH=${DOCKER_REMOTE_KEY_PATH}   # Custom path for key (default: /certs/key.pem)
+
+  lsp-c:
+    image: dockerp.com/cfngc4594/lsp-c:latest
+    container_name: lsp-c
+    restart: always
+    ports:
+      - "4594:3000"
+    networks:
+      - judge4c
+    healthcheck:
+      test: [ "CMD-SHELL", "nc -zv localhost 3000" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  lsp-cpp:
+    image: dockerp.com/cfngc4594/lsp-cpp:latest
+    container_name: lsp-cpp
+    restart: always
+    ports:
+      - "4595:3000"
+    networks:
+      - judge4c
+    healthcheck:
+      test: [ "CMD-SHELL", "nc -zv localhost 3000" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  postgres:
+    image: dockerp.com/postgres:16-alpine
+    container_name: postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+    networks:
+      - judge4c
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d postgres" ]
+      interval: 5s
+      timeout: 2s
+      retries: 20
+
+networks:
+  judge4c:
+    name: judge4c
