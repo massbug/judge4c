@@ -383,6 +383,7 @@ int* twoSum(int* nums, int numsSize, int target, int* returnSize) {
 #include <string>
 #include <sstream>
 #include <algorithm>
+#include <unordered_map>
 
 using namespace std;
 
@@ -415,14 +416,10 @@ string formatOutput(const vector<int>& res) {
     return ss.str();
 }
 
-// Solution 类
+// Solution 类声明
 class Solution {
 public:
-    // 调用独立的算法函数
-    vector<int> twoSum(vector<int>& nums, int target) {
-        // 算法部分留空，放在文件末尾
-        return {};
-    }
+    vector<int> twoSum(vector<int>& nums, int target);
 };
 
 int main() {
@@ -442,12 +439,10 @@ int main() {
     return 0;
 }
 
+vector<int> Solution::twoSum(vector<int>& nums, int target) {
 
-vector<int> findTwoSum(const vector<int>& nums, int target) {
-    
-    return {}; // 在这里填充你的算法逻辑
+    return {};
 }
-
 `,
               },
             ],
@@ -631,7 +626,7 @@ $(3 → 4 → 2) + (4 → 6 → 5) = 8 → 0 → 7$`,
               {
                 language: "c",
                 template: `
-                #include <stdio.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -716,10 +711,11 @@ struct ListNode* addTwoNumbers(struct ListNode* l1, struct ListNode* l2) {
               {
                 language: "cpp",
                 template: `
-                #include <iostream>
+#include <iostream>
 #include <string>
 #include <sstream>
 #include <vector>
+#include <algorithm>
 using namespace std;
 
 // Definition for singly-linked list.
@@ -729,6 +725,12 @@ struct ListNode {
     ListNode() : val(0), next(nullptr) {}
     ListNode(int x) : val(x), next(nullptr) {}
     ListNode(int x, ListNode *next) : val(x), next(next) {}
+};
+
+// 声明 Solution 类
+class Solution {
+public:
+    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2);
 };
 
 // 输入字符串 -> 链表
@@ -1058,6 +1060,11 @@ double findMedianSortedArrays(int* nums1, int nums1Size, int* nums2, int nums2Si
 #include <algorithm>
 using namespace std;
 
+class Solution {
+public:
+    double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2);
+};
+
 // 解析输入为整数数组
 vector<int> parseIntArray(const string& line) {
     string trimmed = line;
@@ -1091,13 +1098,10 @@ int main() {
 
 
 
-class Solution {
-public:
-    double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
-        
-        return 0.0; // 临时返回值，待填充
-    }
-};
+double Solution::findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
+
+    return 0.0; // 临时返回值，待填充
+}
 `,
               },
             ],
