@@ -28,7 +28,7 @@ export default async function DescriptionPage({ params }: DescriptionPageProps) 
   }
 
   return (
-    <div className="h-full flex flex-col">
+    <>
       <div className="relative flex-1 border-x border-muted">
         <div className="absolute h-full w-full">
           <ScrollArea className="h-full [&>[data-radix-scroll-area-viewport]>div:min-w-0 [&>[data-radix-scroll-area-viewport]>div]:!block bg-background">
@@ -37,6 +37,6 @@ export default async function DescriptionPage({ params }: DescriptionPageProps) 
         </div>
       </div>
       <ProblemDescriptionFooter title={problem.title} />
-    </div>
+    </>
   );
 }

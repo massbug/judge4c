@@ -41,11 +41,11 @@ export default async function SubmissionsPage({ params }: SubmissionsPageProps) 
   const locale = await getUserLocale();
 
   return (
-    <div className="px-3 flex flex-col h-full border border-t-0 border-muted rounded-b-3xl bg-background">
+    <>
       <ScrollArea className="h-full">
         <SubmissionsTable locale={locale} submissions={problem.submissions} />
         <ScrollBar orientation="horizontal" />
       </ScrollArea>
-    </div>
+    </>
   );
 }

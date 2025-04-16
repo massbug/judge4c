@@ -78,7 +78,7 @@ export default function DetailsPage({ locale }: DetailsPageProps) {
   };
 
   return (
-    <div className="h-full flex flex-col border border-t-0 border-muted rounded-b-3xl bg-background">
+    <>
       <div className="h-8 flex flex-none items-center px-2 py-1 border-b">
         <Button
           onClick={handleClick}
@@ -206,6 +206,6 @@ export default function DetailsPage({ locale }: DetailsPageProps) {
           </ScrollArea>
         </div>
       </div>
-    </div>
+    </>
   );
 }

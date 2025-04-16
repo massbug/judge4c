@@ -55,7 +55,7 @@ export default function Bot() {
   );
 
   return (
-    <div className="flex flex-col h-full border border-t-0 border-muted rounded-b-3xl bg-background">
+    <>
       <div className="flex-1 relative">
         {!messages.some(
           (message) => message.role === "user" || message.role === "assistant"
@@ -122,6 +122,6 @@ export default function Bot() {
           </TooltipProvider>
         </form>
       </footer>
-    </div>
+    </>
   );
 }

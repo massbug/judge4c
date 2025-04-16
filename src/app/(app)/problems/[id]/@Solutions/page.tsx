@@ -28,7 +28,7 @@ export default async function SolutionsPage({ params }: SolutionsPageProps) {
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <>
       <div className="relative flex-1 border-x border-muted">
         <div className="absolute h-full w-full">
           <ScrollArea className="h-full [&>[data-radix-scroll-area-viewport]>div:min-w-0 [&>[data-radix-scroll-area-viewport]>div]:!block bg-background">
@@ -38,6 +38,6 @@ export default async function SolutionsPage({ params }: SolutionsPageProps) {
         </div>
       </div>
       <ProblemSolutionFooter title={problem.title} />
-    </div>
+    </>
   );
 }
