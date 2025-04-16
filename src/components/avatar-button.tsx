@@ -31,7 +31,7 @@ export async function AvatarButton() {
   const session = await auth();
   const t = await getTranslations("AvatarButton");
   const isLoggedIn = !!session?.user;
-  const image = session?.user?.image ?? "https://github.com/shadcn.png";
+  const image = session?.user?.image ?? "/shadcn.jpg";
   const name = session?.user?.name ?? "unknown";
   const email = session?.user?.email ?? "unknwon@example.com";
 
