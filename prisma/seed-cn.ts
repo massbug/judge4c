@@ -68,7 +68,7 @@ const userData: Prisma.UserCreateInput[] = [
 
 你可以按任意顺序返回答案。
 
- **示例 1：** 
+ ### 示例 1：
 
 \`\`\`shell
 输入：nums = [2,7,11,15], target = 9
@@ -83,14 +83,14 @@ const userData: Prisma.UserCreateInput[] = [
 输出：[1,2]
 \`\`\`
 
-###示例 3：
+### 示例 3：
 
 \`\`\`shell
 输入：nums = [3,3], target = 6
 输出：[0,1]
 \`\`\`
 
-##提示：
+## 提示：
 
 \`\`\`math
 2 <= nums.length <= 10^4
@@ -435,7 +435,7 @@ vector<int> Solution::twoSum(vector<int>& nums, int target) {
 
 你可以假设除了数字 0 之外，这两个数都不会以 0 开头。
 
-###示例 1：
+### 示例 1：
 
 ![](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2021/01/02/addtwonumber1.jpg)
 \`\`\`shell
@@ -444,14 +444,14 @@ vector<int> Solution::twoSum(vector<int>& nums, int target) {
 解释：342 + 465 = 807.
 \`\`\`
 
- **示例 2：** 
+### 示例 2：
 
 \`\`\`shell
 输入：l1 = [0], l2 = [0]
 输出：[0]
 \`\`\`
 
-###示例 3：
+### 示例 3：
 
 \`\`\`shell
 输入：l1 = [9,9,9,9,9,9,9], l2 = [9,9,9,9]
@@ -807,146 +807,96 @@ nums2.length == n
 
 \`\`\`C++
 \`\`\``,
-                    solution: `## 方法一：二分查找
+                    solution: `## 方法一：归并排序
 
-### Intuition
+### 思路
 
-给定两个有序数组，要求找到两个有序数组的中位数，最直观的思路有以下两种：
+让我们从最直接的方法开始。如果我们将两个数组的元素放入一个数组 \`A\` 并进行排序。假设合并后的数组长度为 \`n\`，那么中位数是：
 
-- 使用归并的方式，合并两个有序数组，得到一个大的有序数组。大的有序数组的中间位置的元素，即为中位数。
+- 如果 \`n\` 是奇数，则为 \`A[n / 2]\`。
 
-- 不需要合并两个有序数组，只要找到中位数的位置即可。由于两个数组的长度已知，因此中位数对应的两个数组的下标之和也是已知的。维护两个指针，初始时分别指向两个数组的下标 0 的位置，每次将指向较小值的指针后移一位（如果一个指针已经到达数组末尾，则只需要移动另一个数组的指针），直到到达中位数的位置。
+- 如果 \`n\` 是偶数，则为 \`A[n / 2]\` 和 \`A[n / 2 + 1]\` 的平均值。
 
+然而，我们其实并不需要真的合并并排序这些数组。注意两个数组已经排好序了，所以最小的元素要么是 \`nums1\` 的第一个元素，要么是 \`nums2\` 的第一个元素。因此，我们可以将两个指针 \`p1\` 和 \`p2\` 分别放在每个数组的开头，然后我们可以通过比较 \`nums1[p1]\` 和 \`nums2[p2]\` 的值来获取最小的元素。
 
-#假设两个有序数组的长度分别为 $m$ 和 $n$，上述两种思路的复杂度如何？
+请参考以下幻灯片作为示例：
 
-第一种思路的时间复杂度是 $O(m+n)$，空间复杂度是 $O(m+n)$。第二种思路虽然可以将空间复杂度降到 $O(1)$，但是时间复杂度仍是 $O(m+n)$。
+### 算法
 
-如何把时间复杂度降低到 $O(log(m+n))$ 呢？如果对时间复杂度的要求有 $log$，通常都需要用到二分查找，这道题也可以通过二分查找实现。
+1. 获取两个数组的总长度 \`m + n\`
 
-根据中位数的定义，当 $m+n$ 是奇数时，中位数是两个有序数组中的第 $(m+n)/2$ 个元素，当 $m+n$ 是偶数时，中位数是两个有序数组中的第 $(m+n)/2$ 个元素和第 $(m+n)/2+1$ 个元素的平均值。因此，这道题可以转化成寻找两个有序数组中的第 $k$ 小的数，其中 $k$ 为 $(m+n)/2$ 或 $(m+n)/2+1$。
+  - 如果 \`m + n\` 是奇数，我们寻找第 \`(m + n) / 2\` 个元素。
 
-假设两个有序数组分别是 $A$ 和 $B$。要找到第 $k$ 个元素，我们可以比较 $A[k/2−1]$ 和 $B[k/2−1]$，其中 $/$ 表示整数除法。由于 $A[k/2−1]$ 和 $B[k/2−1]$ 的前面分别有 $A[0..k/2−2]$ 和 $B[0..k/2−2]$，即 $k/2−1$ 个元素，对于 $A[k/2−1]$ 和 $B[k/2−1]$ 中的较小值，最多只会有 $(k/2−1)+(k/2−1)≤k−2$ 个元素比它小，那么它就不能是第 $k$ 小的数了。
+  - 如果 \`m + n\` 是偶数，我们寻找第 \`(m + n) / 2\` 和第 \`(m + n) / 2 + 1\` 个元素的平均值。
 
+2. 将两个指针 \`p1\` 和 \`p2\` 分别放在数组 \`nums1\` 和 \`nums2\` 的开头。
 
- ![](https://assets.leetcode-cn.com/solution-static/4/4_fig1.png）
- 
- 因此我们可以归纳出三种情况：
+3. 如果 \`p1\` 和 \`p2\` 都在数组范围内，比较 \`p1\` 和 \`p2\` 处的值：
 
-- 如果 $A[k/2−1]<B[k/2−1]$，则比 $A[k/2−1]$ 小的数最多只有 $A$ 的前 $k/2−1$ 个数和 $B$ 的前 $k/2−1$ 个数，即比 $A[k/2−1]$ 小的数最多只有 $k−2$ 个，因此 $A[k/2−1]$ 不可能是第 $k$ 个数，$A[0]$ 到 $A[k/2−1]$ 也都不可能是第 $k$ 个数，可以全部排除。
+  - 如果 \`nums1[p1]\` 小于 \`nums2[p2]\`，则将 \`p1\` 向右移动一位。
 
-- 如果 $A[k/2−1]>B[k/2−1]$，则可以排除 $B[0]$ 到 $B[k/2−1]$。
+  - 否则，将 \`p2\` 向右移动一位。
 
-- 如果 $A[k/2−1]=B[k/2−1]$，则可以归入第一种情况处理。
+  如果 \`p1\` 超出了 \`nums1\` 的范围，就将 \`p2\` 向右移动一位。
 
-可以看到，比较 $A[k/2−1] 和 $B[k/2−1]$ 之后，可以排除 $k/2$ 个不可能是第 $k$ 小的数，查找范围缩小了一半。同时，我们将在排除后的新数组上继续进行二分查找，并且根据我们排除数的个数，减少 $k$ 的值，这是因为我们排除的数都不大于第 $k$ 小的数。
+  如果 \`p2\` 超出了 \`nums2\` 的范围，就将 \`p1\` 向右移动一位。
 
-有以下三种情况需要特殊处理：
+4. 获取目标元素并计算中位数：
 
-- 如果 $A[k/2−1]$ 或者 $B[k/2−1]$ 越界，那么我们可以选取对应数组中的最后一个元素。在这种情况下，我们必须根据排除数的个数减少 $k$ 的值，而不能直接将 $k$ 减去 $k/2$。
+  - 如果 \`m + n\` 是奇数，重复第 3 步 \`(m + n + 1) / 2\` 次并返回最后一个元素。
 
-- 如果一个数组为空，说明该数组中的所有元素都被排除，我们可以直接返回另一个数组中第 $k$ 小的元素。
+  - 如果 \`m + n\` 是偶数，重复第 3 步 \`(m + n) / 2 + 1\` 次并返回最后两个元素的平均值。
 
-- 如果 $k=1$，我们只要返回两个数组首元素的最小值即可。
-
-用一个例子说明上述算法。假设两个有序数组如下：
-\`\`\`math
-A: 1 3 4 9
-B: 1 2 3 4 5 6 7 8 9
-\`\`\`
-
-两个有序数组的长度分别是 4 和 9，长度之和是 13，中位数是两个有序数组中的第 7 个元素，因此需要找到第 k=7 个元素。
-
-比较两个有序数组中下标为 k/2−1=2 的数，即 A[2] 和 B[2]，如下面所示：
-\`\`\`math
-A: 1 3 4 9
-       ↑
-B: 1 2 3 4 5 6 7 8 9
-       ↑
-\`\`\`
-由于 A[2]>B[2]，因此排除 B[0] 到 B[2]，即数组 B 的下标偏移（offset）变为 3，同时更新 k 的值：k=k−k/2=4。
-
-下一步寻找，比较两个有序数组中下标为 k/2−1=1 的数，即 A[1] 和 B[4]，如下面所示，其中方括号部分表示已经被排除的数。
-\`\`\`math
-A: 1 3 4 9
-     ↑
-B: [1 2 3] 4 5 6 7 8 9
-             ↑
-\`\`\`
-由于 A[1]<B[4]，因此排除 A[0] 到 A[1]，即数组 A 的下标偏移变为 2，同时更新 k 的值：k=k−k/2=2。
-
-下一步寻找，比较两个有序数组中下标为 k/2−1=0 的数，即比较 A[2] 和 B[3]，如下面所示，其中方括号部分表示已经被排除的数。
-\`\`\`math
-A: [1 3] 4 9
-         ↑
-B: [1 2 3] 4 5 6 7 8 9
-           ↑
-\`\`\`
-由于 A[2]=B[3]，根据之前的规则，排除 A 中的元素，因此排除 A[2]，即数组 A 的下标偏移变为 3，同时更新 k 的值： k=k−k/2=1。
-
-由于 k 的值变成 1，因此比较两个有序数组中的未排除下标范围内的第一个数，其中较小的数即为第 k 个数，由于 A[3]>B[3]，因此第 k 个数是 B[3]=4。
-\`\`\`math
-A: [1 3 4] 9
-           ↑
-B: [1 2 3] 4 5 6 7 8 9
-           ↑
-\`\`\`
-### 代码
+### 实现
 
 \`\`\`c showLineNumbers
-int solve(int* A, int aStart, int aEnd, int* B, int bStart, int bEnd, int k) {
-    // If the segment of on array is empty, it means we have passed all
-    // its element, just return the corresponding element in the other array.
-    if (aEnd < aStart) {
-        return B[k - aStart];
-    }
-    if (bEnd < bStart) {
-        return A[k - bStart];
-    }
+double findMedianSortedArrays(int* nums1, int nums1Size, int* nums2, int nums2Size) {
+    int m = nums1Size, n = nums2Size;
+    int p1 = 0, p2 = 0;
 
-    // Get the middle indexes and middle values of A and B.
-    int aIndex = (aStart + aEnd) / 2, bIndex = (bStart + bEnd) / 2;
-    int aValue = A[aIndex], bValue = B[bIndex];
-
-    // If k is in the right half of A + B, remove the smaller left half.
-    if (aIndex + bIndex < k) {
-        if (aValue > bValue) {
-            return solve(A, aStart, aEnd, B, bIndex + 1, bEnd, k);
-        } else {
-            return solve(A, aIndex + 1, aEnd, B, bStart, bEnd, k);
+    int getMin() {
+        if (p1 < m && p2 < n) {
+            return nums1[p1] < nums2[p2] ? nums1[p1++] : nums2[p2++];
+        } else if (p1 < m) {
+            return nums1[p1++];
+        } else if (p2 < n) {
+            return nums2[p2++];
         }
+        return -1;
     }
-    // Otherwise, remove the larger right half.
-    else {
-        if (aValue > bValue) {
-            return solve(A, aStart, aIndex - 1, B, bStart, bEnd, k);
-        } else {
-            return solve(A, aStart, aEnd, B, bStart, bIndex - 1, k);
-        }
-    }
-}
 
-double findMedianSortedArrays(int* A, int na, int* B, int nb) {
-    int n = na + nb;
-    if (n % 2 == 1) {
-        return solve(A, 0, na - 1, B, 0, nb - 1, n / 2);
+    double median;
+    if ((m + n) % 2 == 0) {
+        for (int i = 0; i < ((m + n) / 2) - 1; ++i) {
+            int temp = getMin();
+        }
+        median = (getMin() + getMin()) / 2.0;
     } else {
-        return (solve(A, 0, na - 1, B, 0, nb - 1, n / 2) +
-                solve(A, 0, na - 1, B, 0, nb - 1, n / 2 - 1)) /
-               2.0;
+        for (int i = 0; i < (m + n) / 2; ++i) {
+            int temp = getMin();
+        }
+        median = getMin();
     }
+
+    return median;
 }
 \`\`\`
 
 ### 复杂度分析
 
-Let $m$ be the size of array \`nums1\` and $n$ be the size of array \`nums2\`.
+令 $m$ 为数组 \`nums1\` 的大小，$n$ 为数组 \`nums2\` 的大小。
 
-- **时间复杂度:** $O(log(m+n))$
+- **时间复杂度：** $O(m + n)$
 
-  - 其中 m 和 n 分别是数组 nums 1​和 nums 2​的长度。初始时有 $k=(m+n)/2$ 或 $k=(m+n)/2+1$，每一轮循环可以将查找范围减少一半，因此时间复杂度是 $O(log(m+n))$。
+  - 我们通过比较 \`p1\` 和 \`p2\` 处的两个值来获取最小元素，比较两个元素并移动相应指针耗时 $O(1)$。
 
-- **空间复杂度:** $O(1)$
+  - 在到达中位数元素之前，我们需要遍历数组的一半。
+
+  - 总的来说，时间复杂度为 $O(m + n)$。
+
+- **空间复杂度：** $O(1)$
+
+  - 我们只需要保持两个指针 \`p1\` 和 \`p2\`。
 
 `,
                     difficulty: "HARD",
