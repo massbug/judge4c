@@ -58,7 +58,7 @@ export default async function ProblemsetPage() {
               ) : null)}
             </TableCell>
             <TableCell className="py-2.5">
-              <Link href={`/problems/${problem.id}`} className="hover:text-blue-500">
+              <Link href={`/problems/${problem.id}`} className="hover:text-blue-500" prefetch>
                 {index + 1}. {problem.title}
               </Link>
             </TableCell>
