@@ -29,7 +29,7 @@ export default async function DescriptionPage({ params }: DescriptionPageProps) 
 
   return (
     <>
-      <div className="relative flex-1 border-x border-muted">
+      <div className="relative flex-1">
         <div className="absolute h-full w-full">
           <ScrollArea className="h-full [&>[data-radix-scroll-area-viewport]>div:min-w-0 [&>[data-radix-scroll-area-viewport]>div]:!block bg-background">
             <MdxPreview source={problem.description} className="p-4 md:p-6" />

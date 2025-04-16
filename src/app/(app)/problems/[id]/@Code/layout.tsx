@@ -9,8 +9,8 @@ interface CodeLayoutProps {
 
 export default function CodeLayout({ children }: CodeLayoutProps) {
   return (
-    <div className="flex flex-col h-full">
-      <WorkspaceEditorHeader className="border-b border-x border-muted bg-background" />
+    <div className="flex flex-col h-full border border-t-0 border-muted rounded-b-3xl bg-background">
+      <WorkspaceEditorHeader />
       <Suspense fallback={<Loading />}>
         {children}
       </Suspense>
