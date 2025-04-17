@@ -172,5 +172,32 @@
   "WorkspaceEditorFooter": {
     "Row": "Row",
     "Column": "Column"
+  },
+  "HomePage": {
+    "MainView": {
+      "title": "Judge4c",
+      "description": "All in one place to support coding learning and teaching:",
+      "features": {
+        "feature1": "Integrated Language Services with Code Completion & Diagnostics",
+        "feature2": "Multi-language Support + Real-time Execution Feedback for Faster Learning",
+        "feature3": "World's First Open-Source Next.js + Monaco LSP Implementation"
+      },
+      "quickStart": "Quickstart",
+      "contactUs": "Contact Us"
+    },
+    "FAQs": {
+      "title": "Frequently Asked Questions",
+      "description": "Can't find your answer? Contact us!",
+      "questions": {
+        "question1": "Which code editor is used?",
+        "answer1": "Built with Microsoft's Monaco Editor",
+        "question2": "What programming languages are supported?",
+        "answer2": "Full support for C/C++ (with LSP integration), syntax highlighting for other languages",
+        "question3": "How do theme and language settings work?",
+        "answer3": "Themes auto-switch (system-aware) or can be manually set; language defaults to browser preference with manual override",
+        "question4": "What styling solutions are used for the editor and docs?",
+        "answer4": "Editor uses @shikijs/monaco themes, documentation rendered with github-markdown-css"
+      }
+    }
   }
 }

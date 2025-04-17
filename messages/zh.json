@@ -172,5 +172,32 @@
   "WorkspaceEditorFooter": {
     "Row": "行",
     "Column": "列"
+  },
+  "HomePage": {
+    "MainView": {
+      "title": "Judge4c",
+      "description": "一站式助力编程学习与教学：",
+      "features": {
+        "feature1": "语言服务集成，内置代码补全与诊断",
+        "feature2": "多语言支持 + 实时运行反馈，学习更高效",
+        "feature3": "全球首个 Next.js + Monaco LSP 开源解决方案"
+      },
+      "quickStart": "即刻启程",
+      "contactUs": "联系我们"
+    },
+    "FAQs": {
+      "title": "常见问题",
+      "description": "未找到答案？欢迎联系我们！",
+      "questions": {
+        "question1": "使用什么代码编辑器？",
+        "answer1": "基于 @monaco-editor/react 开发",
+        "question2": "支持哪些编程语言？",
+        "answer2": "支持 C/C++ (集成LSP)，其他语言支持语法高亮",
+        "question3": "如何设置主题和语言？",
+        "answer3": "主题支持自动切换（跟随系统）或手动设置；语言默认跟随浏览器，可手动修改",
+        "question4": "编辑器主题和文档样式方案？",
+        "answer4": "编辑器采用 @shikijs/monaco, 文档采用 github-markdown-css 样式"
+      }
+    }
   }
 }
