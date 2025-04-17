@@ -185,6 +185,21 @@
       "quickStart": "即刻启程",
       "contactUs": "联系我们"
     },
+    "PrimaryFeatures": {
+      "title": "特性",
+      "MobileFriendlyCard": {
+        "title": "移动端友好",
+        "description": "采用 TailwindCSS 实现响应式布局，界面可自动适配不同设备(答题界面适配功能仍在开发中)"
+      },
+      "DockerCard": {
+        "title": "开箱即用",
+        "description": "提供预构建的 Docker 镜像，支持快速部署，节省配置时间"
+      },
+      "LSPCard": {
+        "title": "告别原始编辑器",
+        "description": "集成实时检测、代码补全、类型提示"
+      }
+    },
     "FAQs": {
       "title": "常见问题",
       "description": "未找到答案？欢迎联系我们！",

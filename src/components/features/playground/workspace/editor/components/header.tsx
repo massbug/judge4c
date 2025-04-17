@@ -18,7 +18,7 @@ export function WorkspaceEditorHeader({
   return (
     <header
       {...props}
-      className={cn("flex items-center flex-none h-8 relative", className)}
+      className={cn("flex items-center flex-none h-8 relative border-b", className)}
     >
       <div className="absolute flex w-full items-center justify-between px-2">
         <div className="flex items-center">

@@ -185,6 +185,21 @@
       "quickStart": "Quickstart",
       "contactUs": "Contact Us"
     },
+    "PrimaryFeatures": {
+      "title": "Features",
+      "MobileFriendlyCard": {
+        "title": "Mobile Friendly",
+        "description": "Responsive design with TailwindCSS, automatically adapts to different devices (quiz interface adaptation still in development)"
+      },
+      "DockerCard": {
+        "title": "Ready to Use",
+        "description": "Pre-built Docker images for quick deployment, saving configuration time"
+      },
+      "LSPCard": {
+        "title": "Say Goodbye to Primitive Editors",
+        "description": "Integrated with real-time detection, code completion, and type hints"
+      }
+    },
     "FAQs": {
       "title": "Frequently Asked Questions",
       "description": "Can't find your answer? Contact us!",
