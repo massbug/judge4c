@@ -29,9 +29,9 @@ export function LanguageSettings() {
     return options.sort((a, b) => a.value.localeCompare(b.value));
   }, [t]);
 
-  const handleValueChange = (value: Locale) => {
+  const handleValueChange = async (value: Locale) => {
     setSelectedOption(value);
-    setUserLocale(value);
+    await setUserLocale(value);
   };
 
   const getIconForLocale = (locale: Locale) => {
