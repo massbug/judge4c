@@ -53,20 +53,20 @@ export default function ProblemPage({
           id: "Description",
           component: "Description",
           tabComponent: "Description",
-          title: t("Description"),
           params: {
             icon: FileTextIcon,
             content: Description,
+            title: t("Description"),
           },
         },
         {
           id: "Solutions",
           component: "Solutions",
           tabComponent: "Solutions",
-          title: t("Solutions"),
           params: {
             icon: FlaskConicalIcon,
             content: Solutions,
+            title: t("Solutions"),
           },
           position: {
             referencePanel: "Description",
@@ -78,10 +78,10 @@ export default function ProblemPage({
           id: "Submissions",
           component: "Submissions",
           tabComponent: "Submissions",
-          title: t("Submissions"),
           params: {
             icon: CircleCheckBigIcon,
             content: Submissions,
+            title: t("Submissions"),
           },
           position: {
             referencePanel: "Solutions",
@@ -93,10 +93,10 @@ export default function ProblemPage({
           id: "Details",
           component: "Details",
           tabComponent: "Details",
-          title: t("Details"),
           params: {
             icon: CircleCheckBigIcon,
             content: Details,
+            title: t("Details"),
             autoAdd: false,
           },
         },
@@ -104,10 +104,10 @@ export default function ProblemPage({
           id: "Code",
           component: "Code",
           tabComponent: "Code",
-          title: t("Code"),
           params: {
             icon: SquarePenIcon,
             content: Code,
+            title: t("Code"),
           },
           position: {
             referencePanel: "Submissions",
@@ -118,10 +118,10 @@ export default function ProblemPage({
           id: "Testcase",
           component: "Testcase",
           tabComponent: "Testcase",
-          title: t("Testcase"),
           params: {
             icon: SquareCheckIcon,
             content: Testcase,
+            title: t("Testcase"),
           },
           position: {
             referencePanel: "Code",
@@ -132,10 +132,10 @@ export default function ProblemPage({
           id: "Bot",
           component: "Bot",
           tabComponent: "Bot",
-          title: t("Bot"),
           params: {
             icon: BotIcon,
             content: Bot,
+            title: t("Bot"),
             autoAdd: false,
           },
           position: {

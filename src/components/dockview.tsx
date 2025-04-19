@@ -15,6 +15,7 @@ import { DockviewReact, themeAbyssSpaced } from "dockview";
 interface PanelContent {
   icon?: LucideIcon;
   content?: React.ReactNode;
+  title?: string;
   autoAdd?: boolean;
 }
 
@@ -45,7 +46,7 @@ export default function DockView({ storageKey, onApiReady, options }: DockviewPr
         return <>{content}</>;
       };
 
-      tabComponents[id] = (props) => {
+      tabComponents[id] = () => {
         const Icon = params?.icon;
         return (
           <div className="flex items-center px-1 text-sm font-medium">
@@ -56,7 +57,7 @@ export default function DockView({ storageKey, onApiReady, options }: DockviewPr
                 aria-hidden="true"
               />
             )}
-            {props.api.title}
+            {params?.title}
           </div>
         );
       };
