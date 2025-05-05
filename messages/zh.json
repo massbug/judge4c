@@ -7,7 +7,7 @@
       "Dark": "深色"
     }
   },
-  "AvatarButton": {
+  "UserAvatar": {
     "Settings": "设置",
     "LogIn": "登录",
     "LogOut": "登出"
@@ -109,7 +109,8 @@
     "description": "请输入你的邮箱以登录账户",
     "or": "或者",
     "noAccount": "还没有账户？",
-    "signUp": "注册"
+    "signUp": "注册",
+    "oauth": "使用 {provider} 登录"
   },
   "signInWithCredentials": {
     "userNotFound": "未找到用户。",

@@ -7,7 +7,7 @@
       "Dark": "Dark"
     }
   },
-  "AvatarButton": {
+  "UserAvatar": {
     "Settings": "Settings",
     "LogIn": "LogIn",
     "LogOut": "LogOut"
@@ -109,7 +109,8 @@
     "description": "Enter your email below to sign in to your account",
     "or": "Or",
     "noAccount": "Don't have an account?",
-    "signUp": "Sign up"
+    "signUp": "Sign up",
+    "oauth": "Sign in with {provider}"
   },
   "signInWithCredentials": {
     "userNotFound": "User not found.",

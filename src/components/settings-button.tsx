@@ -6,7 +6,7 @@ import { useSettingsStore } from "@/stores/useSettingsStore";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 
 export function SettingsButton() {
-  const t = useTranslations("AvatarButton");
+  const t = useTranslations("UserAvatar");
   const { setDialogOpen } = useSettingsStore();
 
   return (
