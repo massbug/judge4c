@@ -1,20 +1,21 @@
 import Link from "next/link";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
 import { ArrowLeftIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
-interface BackButtonProps {
+interface NavigateBackButtonProps {
   href: string;
   className?: string;
 }
 
-export default function BackButton({
-  href,
-  className,
-  ...props
-}: BackButtonProps) {
+const NavigateBackButton = ({ href, className }: NavigateBackButtonProps) => {
   const t = useTranslations();
 
   return (
@@ -25,7 +26,6 @@ export default function BackButton({
             variant="ghost"
             className={cn("h-8 w-auto p-2", className)}
             asChild
-            {...props}
           >
             <Link href={href}>
               <ArrowLeftIcon size={16} aria-hidden="true" />
@@ -38,4 +38,6 @@ export default function BackButton({
       </Tooltip>
     </TooltipProvider>
   );
-}
+};
+
+export { NavigateBackButton };
