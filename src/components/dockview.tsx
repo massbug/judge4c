@@ -4,112 +4,140 @@ import type {
   AddPanelOptions,
   DockviewApi,
   DockviewReadyEvent,
-  IDockviewPanelHeaderProps,
-  IDockviewPanelProps,
 } from "dockview";
 import "@/styles/dockview.css";
-import type { LucideIcon } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
 import { DockviewReact, themeAbyssSpaced } from "dockview";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
-interface PanelContent {
-  icon?: LucideIcon;
-  content?: React.ReactNode;
-  title?: string;
+export interface PanelParams {
   autoAdd?: boolean;
 }
 
 interface DockviewProps {
-  storageKey: string;
+  storageKey?: string;
   onApiReady?: (api: DockviewApi) => void;
-  options: AddPanelOptions<PanelContent>[];
+  components: Record<string, React.ReactNode>;
+  tabComponents: Record<string, React.ReactNode>;
+  panelOptions: AddPanelOptions<PanelParams>[];
 }
 
-export default function DockView({ storageKey, onApiReady, options }: DockviewProps) {
-  const [api, setApi] = useState<DockviewApi>();
-
-  const { components, tabComponents } = useMemo(() => {
-    const components: Record<
-      string,
-      React.FunctionComponent<IDockviewPanelProps<PanelContent>>
-    > = {};
-    const tabComponents: Record<
-      string,
-      React.FunctionComponent<IDockviewPanelHeaderProps<PanelContent>>
-    > = {};
-
-    options.forEach((option) => {
-      const { id, params } = option;
-
-      components[id] = () => {
-        const content = params?.content;
-        return <>{content}</>;
-      };
-
-      tabComponents[id] = () => {
-        const Icon = params?.icon;
-        return (
-          <div className="flex items-center px-1 text-sm font-medium">
-            {Icon && (
-              <Icon
-                className="-ms-0.5 me-1.5 opacity-60"
-                size={16}
-                aria-hidden="true"
-              />
-            )}
-            {params?.title}
-          </div>
-        );
-      };
-    });
-
-    return { components, tabComponents };
-  }, [options]);
-
+/**
+ * Custom hook for handling dockview layout persistence
+ */
+const useLayoutPersistence = (api: DockviewApi | null, storageKey?: string) => {
   useEffect(() => {
-    if (!api) return;
+    if (!api || !storageKey) return;
 
-    const disposable = api.onDidLayoutChange(() => {
-      const layout = api.toJSON();
-      localStorage.setItem(storageKey, JSON.stringify(layout));
-    });
+    const handleLayoutChange = () => {
+      try {
+        const layout = api.toJSON();
+        localStorage.setItem(storageKey, JSON.stringify(layout));
+      } catch (error) {
+        console.error("Failed to save layout:", error);
+      }
+    };
 
+    const disposable = api.onDidLayoutChange(handleLayoutChange);
     return () => disposable.dispose();
   }, [api, storageKey]);
+};
 
-  const onReady = (event: DockviewReadyEvent) => {
-    setApi(event.api);
-    onApiReady?.(event.api);
+/**
+ * Converts React nodes to dockview component functions
+ */
+const useDockviewComponents = (
+  components: Record<string, React.ReactNode>,
+  tabComponents: Record<string, React.ReactNode>
+) => {
+  return useMemo(
+    () => ({
+      dockviewComponents: Object.fromEntries(
+        Object.entries(components).map(([key, value]) => [key, () => value])
+      ),
+      dockviewTabComponents: Object.fromEntries(
+        Object.entries(tabComponents).map(([key, value]) => [key, () => value])
+      ),
+    }),
+    [components, tabComponents]
+  );
+};
 
-    let success = false;
-    const serializedLayout = localStorage.getItem(storageKey);
+const Dockview = ({
+  storageKey,
+  onApiReady,
+  components,
+  tabComponents,
+  panelOptions: options,
+}: DockviewProps) => {
+  const [api, setApi] = useState<DockviewApi | null>(null);
+  const { dockviewComponents, dockviewTabComponents } = useDockviewComponents(
+    components,
+    tabComponents
+  );
 
-    if (serializedLayout) {
+  useLayoutPersistence(api, storageKey);
+
+  const loadLayoutFromStorage = useCallback(
+    (api: DockviewApi, key: string): boolean => {
+      if (!key) return false;
+
       try {
-        const layout = JSON.parse(serializedLayout);
-        event.api.fromJSON(layout);
-        success = true;
+        const serializedLayout = localStorage.getItem(key);
+        if (!serializedLayout) return false;
+
+        api.fromJSON(JSON.parse(serializedLayout));
+        return true;
       } catch (error) {
         console.error("Failed to load layout:", error);
-        localStorage.removeItem(storageKey);
+        localStorage.removeItem(key);
+        return false;
       }
-    }
+    },
+    []
+  );
 
-    if (!success) {
+  const addDefaultPanels = useCallback(
+    (api: DockviewApi, options: AddPanelOptions<PanelParams>[]) => {
+      const existingIds = new Set<string>();
       options.forEach((option) => {
-        const autoAdd = option.params?.autoAdd ?? true;
-        if (!autoAdd) return;
-        event.api.addPanel({ ...option });
+        if (existingIds.has(option.id)) {
+          console.warn(`Duplicate panel ID detected: ${option.id}`);
+          return;
+        }
+        existingIds.add(option.id);
+        if (option.params?.autoAdd ?? true) {
+          api.addPanel(option);
+        }
       });
-    }
-  };
+    },
+    []
+  );
+
+  const handleReady = useCallback(
+    (event: DockviewReadyEvent) => {
+      setApi(event.api);
+
+      const layoutLoaded = storageKey
+        ? loadLayoutFromStorage(event.api, storageKey)
+        : false;
+
+      if (!layoutLoaded) {
+        addDefaultPanels(event.api, options);
+      }
+
+      onApiReady?.(event.api);
+    },
+    [storageKey, loadLayoutFromStorage, addDefaultPanels, onApiReady, options]
+  );
 
   return (
     <DockviewReact
       theme={themeAbyssSpaced}
-      onReady={onReady}
-      components={components}
-      tabComponents={tabComponents}
+      onReady={handleReady}
+      components={dockviewComponents}
+      tabComponents={dockviewTabComponents}
     />
   );
-}
+};
+
+export { Dockview };
