@@ -163,6 +163,8 @@ model TestcaseData {
   value      String
   testcaseId String
   testcase   Testcase @relation(fields: [testcaseId], references: [id], onDelete: Cascade)
+
+  TestcaseDataConfig TestcaseDataConfig[]
 }
 
 model TestcaseResult {
@@ -235,4 +237,18 @@ model Authenticator {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([userId, credentialID])
+}
+
+// schema.prisma
+model TestcaseDataConfig {
+  id             String       @id @default(cuid())
+  testcaseDataId String       @unique
+  testcaseData   TestcaseData @relation(fields: [testcaseDataId], references: [id])
+  type           String       // 存储INT/FLOAT/STRING/BOOLEAN
+  min            Int?         // 数值最小值
+  max            Int?         // 数值最大值
+  length         Int?         // 字符串长度
+  pattern        String?      // 正则表达式模式
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
 }
