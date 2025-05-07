@@ -93,7 +93,7 @@ const LSPCard = () => {
   );
 };
 
-export function PrimaryFeatures() {
+const PrimaryFeatures = () => {
   const t = useTranslations("HomePage.PrimaryFeatures");
 
   return (
@@ -110,4 +110,6 @@ export function PrimaryFeatures() {
       </div>
     </div>
   );
-}
+};
+
+export { PrimaryFeatures };

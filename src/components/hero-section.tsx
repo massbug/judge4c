@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Container } from "@/components/container";
 import { TypingEffect } from "@/components/typing-effect";
 
-export function MainView() {
+const HeroSection = () => {
   const t = useTranslations("HomePage.MainView");
 
   return (
@@ -29,17 +29,13 @@ export function MainView() {
                 className="rounded-2xl bg-muted text-muted-foreground shadow hover:bg-muted/50"
                 asChild
               >
-                <Link href="/problemset" prefetch>
-                  {t("quickStart")}
-                </Link>
+                <Link href="/problemset">{t("quickStart")}</Link>
               </Button>
               <Button
                 size="sm"
                 className="rounded-2xl bg-accent text-accent-foreground shadow hover:bg-accent/50"
               >
-                <Link href={siteConfig.url.repo.github}>
-                  {t("contactUs")}
-                </Link>
+                <Link href={siteConfig.url.repo.github}>{t("contactUs")}</Link>
               </Button>
             </div>
           </div>
@@ -59,4 +55,6 @@ export function MainView() {
       </Container>
     </div>
   );
-}
+};
+
+export { HeroSection };

@@ -1,6 +1,6 @@
 import { useTranslations } from "next-intl";
 
-export default function FAQs() {
+const FAQs = () => {
   const t = useTranslations("HomePage.FAQs");
 
   const faqs = [
@@ -23,7 +23,7 @@ export default function FAQs() {
       id: 4,
       question: t("questions.question4"),
       answer: t("questions.answer4"),
-    }
+    },
   ];
   return (
     <div className="border-t">
@@ -53,4 +53,6 @@ export default function FAQs() {
       </div>
     </div>
   );
-}
+};
+
+export { FAQs };

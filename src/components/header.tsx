@@ -4,7 +4,7 @@ import { Container } from "@/components/container";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LanguageSettings } from "@/components/language-settings";
 
-export async function Header() {
+const Header = () => {
   return (
     <header>
       <nav>
@@ -22,4 +22,6 @@ export async function Header() {
       </nav>
     </header>
   );
-}
+};
+
+export { Header };
