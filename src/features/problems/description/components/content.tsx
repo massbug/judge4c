@@ -4,11 +4,11 @@ import { MdxRenderer } from "@/components/content/mdx-renderer";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 interface DescriptionContentProps {
-  id: string;
+  problemId: string;
 }
 
-const DescriptionContent = async ({ id }: DescriptionContentProps) => {
-  const problem = await getCachedProblem(id);
+const DescriptionContent = async ({ problemId }: DescriptionContentProps) => {
+  const problem = await getCachedProblem(problemId);
 
   return (
     <ScrollArea className="h-full">

@@ -61,52 +61,60 @@ export const getCachedProblems = cache(
   )
 );
 
-const getProblem = async (id: string) => {
+const getProblem = async (problemId: string) => {
   const startTime = Date.now();
-  log.debug({ id }, "Fetching single problem");
+  log.debug({ problemId }, "Fetching single problem");
   try {
-    const problem = await prisma.problem.findUnique({ where: { id } });
+    const problem = await prisma.problem.findUnique({
+      where: { id: problemId },
+    });
     if (problem) {
-      log.debug({ id, durationMs: Date.now() - startTime }, "Problem found");
+      log.debug(
+        { problemId, durationMs: Date.now() - startTime },
+        "Problem found"
+      );
     } else {
-      log.warn({ id, durationMs: Date.now() - startTime }, "Problem not found");
+      log.warn(
+        { problemId, durationMs: Date.now() - startTime },
+        "Problem not found"
+      );
     }
     return problem;
   } catch (error) {
     log.error(
-      { id, durationMs: Date.now() - startTime, error },
+      { problemId, durationMs: Date.now() - startTime, error },
       "Failed to fetch problem"
     );
     throw error;
   }
 };
 
-export const getCachedProblem = cache((id: string) =>
+export const getCachedProblem = cache((problemId: string) =>
   unstable_cache(
     async () => {
       const startTime = Date.now();
       log.debug(
-        { id },
+        { problemId },
         "Calling getProblemCached (expect cache hit if warmed)"
       );
       try {
-        const result = await getProblem(id);
+        const result = await getProblem(problemId);
         log.info(
-          { id, durationMs: Date.now() - startTime },
+          { problemId, durationMs: Date.now() - startTime },
           "getProblemCached finished"
         );
         return result;
       } catch (error) {
         log.error(
-          { id, durationMs: Date.now() - startTime, error },
+          { problemId, durationMs: Date.now() - startTime, error },
           "getProblemCached failed"
         );
         throw error;
       }
     },
-    ["getProblem", id],
+    ["getProblem", problemId],
     {
-      tags: [`problem-${id}`],
+      tags: [`problem-${problemId}`],
     }
   )()
 );
