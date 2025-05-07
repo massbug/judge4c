@@ -30,8 +30,8 @@ model User {
   // Optional for WebAuthn support
   Authenticator Authenticator[]
 
-  role       Role         @default(GUEST)
-  problems   Problem[]
+  role        Role         @default(GUEST)
+  problems    Problem[]
   submissions Submission[]
 
   createdAt DateTime @default(now())
@@ -45,23 +45,58 @@ enum Difficulty {
 }
 
 model Problem {
-  id          String       @id @default(cuid())
-  displayId   Int          @unique
-  title       String
-  description String
-  solution    String
-  difficulty  Difficulty   @default(EASY)
-  published   Boolean      @default(false)
-  userId      String
-  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  timeLimit   Int          @default(1000)
-  memoryLimit Int          @default(128)
-  templates   Template[]
-  testcases   Testcase[]
+  id           String               @id @default(cuid())
+  displayId    Int                  @unique
+  titles       ProblemTitle[]
+  descriptions ProblemDescription[]
+  solutions    ProblemSolution[]
+  difficulty   Difficulty           @default(EASY)
+  published    Boolean              @default(false)
+  userId       String
+  user         User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  timeLimit    Int                  @default(1000)
+  memoryLimit  Int                  @default(128)
+  templates    Template[]
+  testcases    Testcase[]
   submissions  Submission[]
 
   @@index([userId])
   @@index([difficulty])
+}
+
+enum Language {
+  en
+  zh
+}
+
+model ProblemTitle {
+  id        String   @id @default(cuid())
+  language  Language
+  content   String
+  problemId String
+  problem   Problem  @relation(fields: [problemId], references: [id], onDelete: Cascade)
+
+  @@unique([problemId, language])
+}
+
+model ProblemDescription {
+  id        String   @id @default(cuid())
+  language  Language
+  content   String
+  problemId String
+  problem   Problem  @relation(fields: [problemId], references: [id], onDelete: Cascade)
+
+  @@unique([problemId, language])
+}
+
+model ProblemSolution {
+  id        String   @id @default(cuid())
+  language  Language
+  content   String
+  problemId String
+  problem   Problem  @relation(fields: [problemId], references: [id], onDelete: Cascade)
+
+  @@unique([problemId, language])
 }
 
 enum EditorLanguage {
@@ -148,11 +183,11 @@ model Submission {
 }
 
 model Testcase {
-  id             String           @id @default(cuid())
-  problemId      String
-  problem        Problem          @relation(fields: [problemId], references: [id], onDelete: Cascade)
-  data           TestcaseData[]
-  expectedOutput String
+  id              String           @id @default(cuid())
+  problemId       String
+  problem         Problem          @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  data            TestcaseData[]
+  expectedOutput  String
   testcaseResults TestcaseResult[]
 }
 
