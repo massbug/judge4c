@@ -51,6 +51,28 @@ const editorLanguageConfigData: Prisma.EditorLanguageConfigCreateInput[] = [
   },
 ];
 
+const testcaseDataConfigData = [
+  {
+    label: "l1",
+    value: "[2,4,3]",
+    index: 0,
+    config: {
+      type: "STRING",
+      pattern: "^\\[(\\d+,)*\\d+\\]$",
+    },
+  },
+  {
+    label: "l2",
+    value: "[5,6,4]",
+    index: 1,
+    config: {
+      type: "STRING",
+      pattern: "^\\[(\\d+,)*\\d+\\]$",
+    },
+  },
+];
+
+
 const userData: Prisma.UserCreateInput[] = [
   {
     name: "cfngc4594",
@@ -1099,6 +1121,25 @@ export async function main() {
 
   for (const u of userData) {
     await prisma.user.create({ data: u });
+  }
+
+  // 插入 TestcaseData 和其配置
+  for (const item of testcaseDataConfigData) {
+    const testcaseData = await prisma.testcaseData.create({
+      data: {
+        label: item.label,
+        value: item.value,
+        index: item.index,
+      },
+    });
+
+    await prisma.testcaseDataConfig.create({
+      data: {
+        testcaseDataId: testcaseData.id,
+        type: item.config.type,
+        pattern: item.config.pattern,
+      },
+    });
   }
 }
 
