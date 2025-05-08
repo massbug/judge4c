@@ -111,7 +111,8 @@
 .dockview-theme-abyss-spaced .dv-tabs-overflow-container,
 .dockview-theme-abyss-spaced .dv-tabs-overflow-dropdown-default {
   border-radius: 8px;
-  height: unset !important;
+  /* height: unset !important; */
+  height: 100%;
 }
 
 .dockview-theme-abyss-spaced .dv-tab {
