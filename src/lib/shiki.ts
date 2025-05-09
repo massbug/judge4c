@@ -9,7 +9,7 @@ const languages = [...Object.values(EditorLanguage), "markdown"];
 // Use lazy initialization for highlighter
 let highlighter: Highlighter;
 
-async function initializeHighlighter() {
+const initializeHighlighter = async () => {
   try {
     highlighter = await createHighlighter({
       themes: themes, // Use all values from the Theme enum
