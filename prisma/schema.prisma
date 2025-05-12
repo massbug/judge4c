@@ -1,41 +1,16 @@
-generator client {
-  provider = "prisma-client-js"
-  output   = "../src/generated/client"
-}
-
-generator zod {
-  provider = "zod-prisma-types"
-  output   = "../src/generated/zod"
-}
-
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/client"
+}
+
 enum Role {
   ADMIN
   GUEST
-}
-
-model User {
-  id            String          @id @default(cuid())
-  name          String?
-  email         String?         @unique
-  password      String?
-  emailVerified DateTime?
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
-  // Optional for WebAuthn support
-  Authenticator Authenticator[]
-
-  role        Role         @default(GUEST)
-  problems    Problem[]
-  submissions Submission[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
 
 enum Difficulty {
@@ -44,106 +19,19 @@ enum Difficulty {
   HARD
 }
 
-model Problem {
-  id           String               @id @default(cuid())
-  displayId    Int                  @unique
-  titles       ProblemTitle[]
-  descriptions ProblemDescription[]
-  solutions    ProblemSolution[]
-  difficulty   Difficulty           @default(EASY)
-  published    Boolean              @default(false)
-  userId       String
-  user         User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
-  timeLimit    Int                  @default(1000)
-  memoryLimit  Int                  @default(128)
-  templates    Template[]
-  testcases    Testcase[]
-  submissions  Submission[]
-
-  @@index([userId])
-  @@index([difficulty])
-}
-
-enum Language {
+enum Locale {
   en
   zh
 }
 
-model ProblemTitle {
-  id        String   @id @default(cuid())
-  language  Language
-  content   String
-  problemId String
-  problem   Problem  @relation(fields: [problemId], references: [id], onDelete: Cascade)
-
-  @@unique([problemId, language])
-}
-
-model ProblemDescription {
-  id        String   @id @default(cuid())
-  language  Language
-  content   String
-  problemId String
-  problem   Problem  @relation(fields: [problemId], references: [id], onDelete: Cascade)
-
-  @@unique([problemId, language])
-}
-
-model ProblemSolution {
-  id        String   @id @default(cuid())
-  language  Language
-  content   String
-  problemId String
-  problem   Problem  @relation(fields: [problemId], references: [id], onDelete: Cascade)
-
-  @@unique([problemId, language])
-}
-
-enum EditorLanguage {
+enum Language {
   c
   cpp
 }
 
-model EditorLanguageConfig {
-  language             EditorLanguage        @unique
-  label                String
-  fileName             String
-  fileExtension        String
-  languageServerConfig LanguageServerConfig? @relation
-  dockerConfig         DockerConfig?         @relation
-}
-
-enum LanguageServerProtocol {
+enum Protocol {
   ws
   wss
-}
-
-model LanguageServerConfig {
-  language             EditorLanguage         @unique
-  protocol             LanguageServerProtocol
-  hostname             String
-  port                 Int?
-  path                 String?
-  editorLanguageConfig EditorLanguageConfig   @relation(fields: [language], references: [language])
-}
-
-model DockerConfig {
-  language             EditorLanguage       @unique
-  image                String
-  tag                  String
-  workingDir           String
-  compileOutputLimit   Int
-  runOutputLimit       Int
-  editorLanguageConfig EditorLanguageConfig @relation(fields: [language], references: [language])
-}
-
-model Template {
-  language  EditorLanguage
-  template  String
-  problemId String
-  problem   Problem        @relation(fields: [problemId], references: [id], onDelete: Cascade)
-
-  @@id([problemId, language])
 }
 
 enum Status {
@@ -161,14 +49,85 @@ enum Status {
   SE // System Error
 }
 
+enum ProblemContentType {
+  TITLE
+  DESCRIPTION
+  SOLUTION
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  role          Role      @default(GUEST)
+
+  accounts      Account[]
+  sessions      Session[]
+  // Optional for WebAuthn support
+  Authenticator Authenticator[]
+  problems      Problem[]
+  submissions   Submission[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Problem {
+  id          String     @id @default(cuid())
+  displayId   Int        @unique
+  difficulty  Difficulty @default(EASY)
+  isPublished Boolean    @default(false)
+  timeLimit   Int        @default(1000)
+  memoryLimit Int        @default(134217728)
+
+  localizations ProblemLocalization[]
+  templates     Template[]
+  testcases     Testcase[]
+  submissions   Submission[]
+
+  userId String?
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ProblemLocalization {
+  problemId String
+  locale    Locale
+  type      ProblemContentType
+
+  content String
+
+  problem Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
+
+  @@id([problemId, locale, type])
+}
+
+model Template {
+  problemId String
+  language  Language
+
+  content String
+
+  problem Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
+
+  @@id([problemId, language])
+}
+
 model Submission {
-  id            String         @id @default(cuid())
-  language      EditorLanguage
-  code          String
-  status        Status
-  message       String?
-  executionTime Int?
-  memoryUsage   Int?
+  id          String   @id @default(cuid())
+  language    Language
+  content     String
+  status      Status
+  message     String?
+  timeUsage   Int?
+  memoryUsage Int?
+
+  testcaseResults TestcaseResult[]
 
   userId    String
   problemId String
@@ -176,45 +135,82 @@ model Submission {
   user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   problem Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
 
-  testcaseResults TestcaseResult[]
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Testcase {
-  id              String           @id @default(cuid())
-  problemId       String
-  problem         Problem          @relation(fields: [problemId], references: [id], onDelete: Cascade)
-  data            TestcaseData[]
-  expectedOutput  String
+  id             String @id @default(cuid())
+  expectedOutput String
+
+  inputs          TestcaseInput[]
   testcaseResults TestcaseResult[]
-}
 
-model TestcaseData {
-  id         String   @id @default(cuid())
-  index      Int
-  label      String
-  value      String
-  testcaseId String
-  testcase   Testcase @relation(fields: [testcaseId], references: [id], onDelete: Cascade)
-}
+  problemId String
 
-model TestcaseResult {
-  id        String  @id @default(cuid())
-  isCorrect Boolean
-  output    String
-
-  executionTime Int?
-  memoryUsage   Int?
-
-  submissionId String
-  testcaseId   String
-  submission   Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
-  testcase     Testcase   @relation(fields: [testcaseId], references: [id], onDelete: Cascade)
+  problem Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model TestcaseInput {
+  id    String @id @default(cuid())
+  index Int
+  name  String
+  value String
+
+  testcaseId String
+
+  testcase Testcase @relation(fields: [testcaseId], references: [id], onDelete: Cascade)
+}
+
+model TestcaseResult {
+  id          String  @id @default(cuid())
+  isCorrect   Boolean
+  output      String
+  timeUsage   Int?
+  memoryUsage Int?
+
+  submissionId String
+  testcaseId   String
+
+  submission Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  testcase   Testcase   @relation(fields: [testcaseId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model LanguageConfig {
+  language      Language @id
+  displayName   String
+  fileName      String
+  fileExtension String
+
+  dockerConfig         DockerConfig?
+  languageServerConfig LanguageServerConfig?
+}
+
+model DockerConfig {
+  language           Language @id
+  image              String
+  tag                String
+  workingDir         String
+  compileOutputLimit Int      @default(1048576)
+  runOutputLimit     Int      @default(1048576)
+
+  languageConfig LanguageConfig @relation(fields: [language], references: [language], onDelete: Cascade)
+}
+
+model LanguageServerConfig {
+  language Language @id
+  protocol Protocol
+  hostname String
+  port     Int?
+  path     String?
+
+  languageConfig LanguageConfig @relation(fields: [language], references: [language], onDelete: Cascade)
 }
 
 model Account {
@@ -230,10 +226,10 @@ model Account {
   id_token          String?
   session_state     String?
 
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([provider, providerAccountId])
 }
@@ -242,7 +238,8 @@ model Session {
   sessionToken String   @unique
   userId       String
   expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
