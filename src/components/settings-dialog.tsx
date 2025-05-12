@@ -28,11 +28,11 @@ import {
 import { useTranslations } from "next-intl";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useSettingsStore } from "@/stores/useSettingsStore";
+import { LocaleSwitcher } from "@/components/locale-switcher";
 import AppearanceSettings from "@/components/appearance-settings";
-import { LanguageSettings } from "@/components/language-settings";
 import { CodeXml, Globe, Paintbrush, Settings } from "lucide-react";
 
-export function SettingsDialog() {
+export const SettingsDialog = () => {
   const t = useTranslations("SettingsDialog");
   const data = {
     nav: [
@@ -42,7 +42,8 @@ export function SettingsDialog() {
       { id: "Advanced", name: t("nav.Advanced"), icon: Settings },
     ],
   };
-  const { isDialogOpen, activeSetting, setDialogOpen, setActiveSetting } = useSettingsStore();
+  const { isDialogOpen, activeSetting, setDialogOpen, setActiveSetting } =
+    useSettingsStore();
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
@@ -86,7 +87,9 @@ export function SettingsDialog() {
                     </BreadcrumbItem>
                     <BreadcrumbSeparator className="hidden md:block" />
                     <BreadcrumbItem>
-                      <BreadcrumbPage>{t(`nav.${activeSetting}`)}</BreadcrumbPage>
+                      <BreadcrumbPage>
+                        {t(`nav.${activeSetting}`)}
+                      </BreadcrumbPage>
                     </BreadcrumbItem>
                   </BreadcrumbList>
                 </Breadcrumb>
@@ -95,7 +98,7 @@ export function SettingsDialog() {
             <ScrollArea className="flex-1 overflow-y-auto p-4 pt-0">
               <div className="flex flex-col gap-4">
                 {activeSetting === "Appearance" && <AppearanceSettings />}
-                {activeSetting === "Language" && <LanguageSettings />}
+                {activeSetting === "Language" && <LocaleSwitcher />}
               </div>
             </ScrollArea>
           </main>
@@ -103,4 +106,4 @@ export function SettingsDialog() {
       </DialogContent>
     </Dialog>
   );
-}
+};

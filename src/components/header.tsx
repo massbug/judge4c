@@ -2,9 +2,9 @@ import Link from "next/link";
 import { Logo } from "@/components/logo";
 import { Container } from "@/components/container";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { LanguageSettings } from "@/components/language-settings";
+import { LocaleSwitcher } from "@/components/locale-switcher";
 
-const Header = () => {
+export const Header = () => {
   return (
     <header>
       <nav>
@@ -15,7 +15,7 @@ const Header = () => {
             </Link>
           </div>
           <div className="flex items-center gap-6">
-            <LanguageSettings />
+            <LocaleSwitcher />
             <ThemeToggle />
           </div>
         </Container>
@@ -23,5 +23,3 @@ const Header = () => {
     </header>
   );
 };
-
-export { Header };
