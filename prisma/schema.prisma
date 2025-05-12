@@ -182,16 +182,6 @@ model TestcaseResult {
   updatedAt DateTime @updatedAt
 }
 
-model LanguageConfig {
-  language      Language @id
-  displayName   String
-  fileName      String
-  fileExtension String
-
-  dockerConfig         DockerConfig?
-  languageServerConfig LanguageServerConfig?
-}
-
 model DockerConfig {
   language           Language @id
   image              String
@@ -199,8 +189,6 @@ model DockerConfig {
   workingDir         String
   compileOutputLimit Int      @default(1048576)
   runOutputLimit     Int      @default(1048576)
-
-  languageConfig LanguageConfig @relation(fields: [language], references: [language], onDelete: Cascade)
 }
 
 model LanguageServerConfig {
@@ -209,8 +197,6 @@ model LanguageServerConfig {
   hostname String
   port     Int?
   path     String?
-
-  languageConfig LanguageConfig @relation(fields: [language], references: [language], onDelete: Cascade)
 }
 
 model Account {
