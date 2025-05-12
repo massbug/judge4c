@@ -1,31 +1,30 @@
-"use server";
+import "server-only";
 
-import {
-  defaultLocale,
-  Locale,
-  LOCALE_COOKIE_NAME,
-  locales
-} from "@/config/i18n";
+import { Locale } from "@/generated/client";
 import { cookies, headers } from "next/headers";
+import { DEFAULT_LOCALE, LOCALE_COOKIE_KEY } from "@/config/i18n";
 
-export async function getUserLocale() {
-  const cookieLocale = (await cookies()).get(LOCALE_COOKIE_NAME)?.value;
+const validLocales = Object.values(Locale);
 
-  if (cookieLocale && locales.includes(cookieLocale as Locale)) {
+export const getUserLocale = async () => {
+  const cookieLocale = (await cookies()).get(LOCALE_COOKIE_KEY)?.value;
+  if (validLocales.includes(cookieLocale as Locale)) {
     return cookieLocale as Locale;
   }
 
-  const acceptLanguage = (await headers()).get("accept-language") || "";
-  const firstLang = acceptLanguage.split(",")[0]?.trim().toLowerCase();
-  const langPrefix = firstLang?.slice(0, 2);
-
-  if (locales.includes(langPrefix as Locale)) {
+  const acceptLanguage = (await headers())
+    .get("accept-language")
+    ?.split(",")[0]
+    ?.trim()
+    .toLowerCase();
+  const langPrefix = acceptLanguage?.slice(0, 2);
+  if (validLocales.includes(langPrefix as Locale)) {
     return langPrefix as Locale;
   }
 
-  return defaultLocale;
-}
+  return DEFAULT_LOCALE;
+};
 
-export async function setUserLocale(locale: Locale) {
-  (await cookies()).set(LOCALE_COOKIE_NAME, locale);
-}
+export const setUserLocale = async (locale: Locale) => {
+  (await cookies()).set(LOCALE_COOKIE_KEY, locale);
+};

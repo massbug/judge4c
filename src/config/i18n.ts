@@ -1,9 +1,5 @@
-// Supported locales
-export const locales = ["en", "zh"] as const;
-export type Locale = (typeof locales)[number];
+import { Locale } from "@/generated/client";
 
-// Default locale
-export const defaultLocale: Locale = "en";
+export const DEFAULT_LOCALE: Locale = Locale.en;
 
-// Cookie key for storing selected locale
-export const LOCALE_COOKIE_NAME = "LOCALE";
+export const LOCALE_COOKIE_KEY = "judge4c_locale";
