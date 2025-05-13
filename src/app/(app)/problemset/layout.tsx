@@ -1,4 +1,4 @@
-import { ProblemsetHeader } from "@/features/problemset/components/problemset-header";
+import { ProblemsetHeader } from "@/features/problemset/components/header";
 
 interface ProblemsetLayoutProps {
   children: React.ReactNode;
