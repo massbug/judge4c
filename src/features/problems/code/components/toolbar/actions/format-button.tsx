@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { TooltipButton } from "@/components/tooltip-button";
 import { useProblemEditorActions } from "@/features/problems/code/hooks/use-problem-editor-actions";
 
-const FormatButton = () => {
+export const FormatButton = () => {
   const t = useTranslations("WorkspaceEditorHeader.FormatButton");
   const { canExecute, handleFormat } = useProblemEditorActions();
 
@@ -20,5 +20,3 @@ const FormatButton = () => {
     </TooltipButton>
   );
 };
-
-export { FormatButton };

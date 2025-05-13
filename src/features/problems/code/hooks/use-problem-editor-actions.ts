@@ -1,8 +1,8 @@
 import { useCallback } from "react";
-import { useProblemEditorStore } from "@/stores/problem-editor-store";
+import { useProblemEditorStore } from "@/stores/problem-editor";
 
 export const useProblemEditorActions = () => {
-  const { editor } = useProblemEditorStore();
+  const { editor, problem, language } = useProblemEditorStore();
 
   const handleCopy = useCallback(async () => {
     try {
@@ -26,11 +26,14 @@ export const useProblemEditorActions = () => {
     editor?.trigger("redo", "redo", null);
   }, [editor]);
 
-  const handleReset = useCallback((template: string) => {
-    if (!editor) return;
+  const handleReset = useCallback(() => {
+    if (!editor || !problem) return;
 
     const model = editor.getModel();
     if (!model) return;
+
+    const template =
+      problem.templates.find((t) => t.language === language)?.content ?? "";
 
     const fullRange = model.getFullModelRange();
     editor.pushUndoStop();
@@ -42,7 +45,7 @@ export const useProblemEditorActions = () => {
       },
     ]);
     editor.pushUndoStop();
-  }, [editor]);
+  }, [editor, language, problem]);
 
   return {
     handleCopy,

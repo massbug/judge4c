@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { TooltipButton } from "@/components/tooltip-button";
 import { useProblemEditorActions } from "@/features/problems/code/hooks/use-problem-editor-actions";
 
-const RedoButton = () => {
+export const RedoButton = () => {
   const t = useTranslations("WorkspaceEditorHeader.RedoButton");
   const { canExecute, handleRedo } = useProblemEditorActions();
 
@@ -20,5 +20,3 @@ const RedoButton = () => {
     </TooltipButton>
   );
 };
-
-export { RedoButton };

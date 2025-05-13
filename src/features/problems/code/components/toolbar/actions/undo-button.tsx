@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { TooltipButton } from "@/components/tooltip-button";
 import { useProblemEditorActions } from "@/features/problems/code/hooks/use-problem-editor-actions";
 
-const UndoButton = () => {
+export const UndoButton = () => {
   const t = useTranslations("WorkspaceEditorHeader.UndoButton");
   const { canExecute, handleUndo } = useProblemEditorActions();
 
@@ -20,5 +20,3 @@ const UndoButton = () => {
     </TooltipButton>
   );
 };
-
-export { UndoButton };

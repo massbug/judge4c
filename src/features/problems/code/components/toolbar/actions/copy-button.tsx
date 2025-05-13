@@ -7,7 +7,7 @@ import { useTranslations } from "next-intl";
 import { TooltipButton } from "@/components/tooltip-button";
 import { useProblemEditorActions } from "@/features/problems/code/hooks/use-problem-editor-actions";
 
-const CopyButton = () => {
+export const CopyButton = () => {
   const t = useTranslations("WorkspaceEditorHeader.CopyButton");
   const [copied, setCopied] = useState(false);
   const { canExecute, handleCopy } = useProblemEditorActions();
@@ -52,5 +52,3 @@ const CopyButton = () => {
     </TooltipButton>
   );
 };
-
-export { CopyButton };
