@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { ProblemHeader } from "@/features/problems/components/problem-header";
+import { ProblemHeader } from "@/features/problems/components/header";
 
 interface ProblemLayoutProps {
   children: React.ReactNode;
