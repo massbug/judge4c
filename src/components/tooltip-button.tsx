@@ -14,7 +14,7 @@ interface TooltipButtonProps extends ButtonProps {
   className?: string;
 }
 
-const TooltipButton = ({
+export const TooltipButton = ({
   children,
   delayDuration = 0,
   tooltipContent,
@@ -43,5 +43,3 @@ const TooltipButton = ({
     </TooltipProvider>
   );
 };
-
-export { TooltipButton };
