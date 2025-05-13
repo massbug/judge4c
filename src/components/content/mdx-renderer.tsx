@@ -1,8 +1,4 @@
 import "@/styles/mdx.css";
-import {
-  DefaultDarkThemeConfig,
-  DefaultLightThemeConfig,
-} from "@/config/monaco-theme";
 import { cn } from "@/lib/utils";
 import "katex/dist/katex.min.css";
 import remarkGfm from "remark-gfm";
@@ -17,7 +13,7 @@ interface MdxRendererProps {
   className?: string;
 }
 
-const MdxRenderer = ({ source, className }: MdxRendererProps) => {
+export const MdxRenderer = ({ source, className }: MdxRendererProps) => {
   return (
     <article className={cn("markdown-body", className)}>
       <MDXRemote
@@ -30,8 +26,8 @@ const MdxRenderer = ({ source, className }: MdxRendererProps) => {
                 rehypePrettyCode,
                 {
                   theme: {
-                    light: DefaultLightThemeConfig.id,
-                    dark: DefaultDarkThemeConfig.id,
+                    light: "github-light-default",
+                    dark: "github-dark-default",
                   },
                   keepBackground: false,
                 },
@@ -45,5 +41,3 @@ const MdxRenderer = ({ source, className }: MdxRendererProps) => {
     </article>
   );
 };
-
-export { MdxRenderer };
