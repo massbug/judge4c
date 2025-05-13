@@ -10,12 +10,12 @@ import { useTranslations } from "next-intl";
 import { ArrowLeftIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-interface NavigateBackButtonProps {
+interface BackButtonProps {
   href: string;
   className?: string;
 }
 
-const NavigateBackButton = ({ href, className }: NavigateBackButtonProps) => {
+export const BackButton = ({ href, className }: BackButtonProps) => {
   const t = useTranslations();
 
   return (
@@ -39,5 +39,3 @@ const NavigateBackButton = ({ href, className }: NavigateBackButtonProps) => {
     </TooltipProvider>
   );
 };
-
-export { NavigateBackButton };
