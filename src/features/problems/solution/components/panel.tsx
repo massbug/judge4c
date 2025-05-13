@@ -8,7 +8,7 @@ interface SolutionPanelProps {
   problemId: string;
 }
 
-const SolutionPanel = ({ problemId }: SolutionPanelProps) => {
+export const SolutionPanel = ({ problemId }: SolutionPanelProps) => {
   return (
     <div className="h-full flex flex-col border border-t-0 border-muted rounded-b-3xl bg-background overflow-hidden">
       <div className="relative flex-1">
@@ -21,5 +21,3 @@ const SolutionPanel = ({ problemId }: SolutionPanelProps) => {
     </div>
   );
 };
-
-export { SolutionPanel };
