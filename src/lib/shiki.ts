@@ -1,25 +1,29 @@
-import { MonacoTheme } from "@/types/monaco-theme";
-import { EditorLanguage } from "@/generated/client";
-import { createHighlighter, Highlighter } from "shiki";
+import {
+  createHighlighterCore,
+  createOnigurumaEngine,
+  HighlighterCore,
+} from "shiki";
 
-// Get all values from the ProgrammingLanguage and Theme enums
-const themes = Object.values(MonacoTheme);
-const languages = [...Object.values(EditorLanguage), "markdown"];
+let highlighter: HighlighterCore;
 
-// Use lazy initialization for highlighter
-let highlighter: Highlighter;
+const initHighlighter = async () => {
+  highlighter = await createHighlighterCore({
+    themes: [
+      import("@shikijs/themes/github-light-default"),
+      import("@shikijs/themes/github-dark-default"),
+    ],
+    langs: [import("@shikijs/langs/c"), import("@shikijs/langs/cpp")],
+    engine: createOnigurumaEngine(import("shiki/wasm")),
+  });
+};
 
-const initializeHighlighter = async () => {
-  try {
-    highlighter = await createHighlighter({
-      themes: themes, // Use all values from the Theme enum
-      langs: languages, // Use all values from the ProgrammingLanguage enum
-    });
-  } catch (error) {
-    console.error("Error initializing highlighter:", error);
+initHighlighter();
+
+export const getHighlighter = () => {
+  if (!highlighter) {
+    throw new Error(
+      "Highlighter not initialized yet! Call initHighlighter() first."
+    );
   }
-}
-
-initializeHighlighter();
-
-export { highlighter };
+  return highlighter;
+};
