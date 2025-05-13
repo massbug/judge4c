@@ -62,7 +62,7 @@ const useDockviewComponents = (
   );
 };
 
-const Dockview = ({
+export const Dockview = ({
   storageKey,
   onApiReady,
   components,
@@ -139,5 +139,3 @@ const Dockview = ({
     />
   );
 };
-
-export { Dockview };
