@@ -1123,21 +1123,42 @@ export async function main() {
     await prisma.user.create({ data: u });
   }
 
-  // 插入 TestcaseData 和其配置
   for (const item of testcaseDataConfigData) {
+    // 1. 先找对应的 Testcase
+    const associatedTestcase = await prisma.testcase.findFirst({
+      where: {
+        data: {
+          some: { label: item.label },
+        },
+      },
+    });
+    if (!associatedTestcase) {
+      throw new Error(`No associated testcase found for label: ${item.label}`);
+    }
+
+    // 2. 创建 TestcaseData，带上 testcaseId 外键
     const testcaseData = await prisma.testcaseData.create({
       data: {
         label: item.label,
         value: item.value,
         index: item.index,
+        // 直接写外键
+        testcaseId: associatedTestcase.id,
+        // 或者：
+        // testcase: { connect: { id: associatedTestcase.id } },
       },
     });
 
+    // 3. 创建 TestcaseDataConfig，此模型只需要 testcaseDataId
     await prisma.testcaseDataConfig.create({
       data: {
         testcaseDataId: testcaseData.id,
         type: item.config.type,
         pattern: item.config.pattern,
+        // 如果你的 item.config 里还有 min/max/length，也一并写进来：
+        // min: item.config.min,
+        // max: item.config.max,
+        // length: item.config.length,
       },
     });
   }
