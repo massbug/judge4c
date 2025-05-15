@@ -30,8 +30,8 @@ model User {
   // Optional for WebAuthn support
   Authenticator Authenticator[]
 
-  role       Role         @default(GUEST)
-  problems   Problem[]
+  role        Role         @default(GUEST)
+  problems    Problem[]
   submissions Submission[]
 
   createdAt DateTime @default(now())
@@ -58,7 +58,7 @@ model Problem {
   memoryLimit Int          @default(128)
   templates   Template[]
   testcases   Testcase[]
-  submissions  Submission[]
+  submissions Submission[]
 
   @@index([userId])
   @@index([difficulty])
@@ -148,11 +148,11 @@ model Submission {
 }
 
 model Testcase {
-  id             String           @id @default(cuid())
-  problemId      String
-  problem        Problem          @relation(fields: [problemId], references: [id], onDelete: Cascade)
-  data           TestcaseData[]
-  expectedOutput String
+  id              String           @id @default(cuid())
+  problemId       String
+  problem         Problem          @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  data            TestcaseData[]
+  expectedOutput  String
   testcaseResults TestcaseResult[]
 }
 
@@ -163,6 +163,8 @@ model TestcaseData {
   value      String
   testcaseId String
   testcase   Testcase @relation(fields: [testcaseId], references: [id], onDelete: Cascade)
+
+  TestcaseDataConfig TestcaseDataConfig[]
 }
 
 model TestcaseResult {
@@ -235,4 +237,18 @@ model Authenticator {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([userId, credentialID])
+}
+
+// schema.prisma
+model TestcaseDataConfig {
+  id             String       @id @default(cuid())
+  testcaseDataId String       @unique
+  testcaseData   TestcaseData @relation(fields: [testcaseDataId], references: [id])
+  type           String // 存储INT/FLOAT/STRING/BOOLEAN
+  min            Int? // 数值最小值
+  max            Int? // 数值最大值
+  length         Int? // 字符串长度
+  pattern        String? // 正则表达式模式
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
 }
