@@ -1,34 +1,41 @@
-"use server";
-
 import {
-    AnalyzeComplexityResponse,
-    AnalyzeComplexityResponseSchema,
-    Complexity,
-} from "@/types/complexity";
+    OptimizeCodeInput,
+    OptimizeCodeOutput,
+    OptimizeCodeOutputSchema
+} from "@/types/ai-improve";
 import { openai } from "@/lib/ai";
 import { CoreMessage, generateText } from "ai";
 
-export const analyzeComplexity = async (
-    content: string
-): Promise<AnalyzeComplexityResponse> => {
+export const optimizeCode = async (
+    input: OptimizeCodeInput
+): Promise<OptimizeCodeOutput> => {
     const model = openai("gpt-4o-mini");
 
     const prompt = `
-  Analyze the time and space complexity of the following programming code snippet.
-  Determine the Big O notation from this list: ${Complexity.options.join(", ")}.
-  Provide your response as a JSON object with one key:
-  1. "time": A string representing the time complexity (e.g., "O(N)", "O(N^2)").
-  2. "space": A string representing the space complexity (e.g., "O(1)", "O(N)").
+    Analyze the following programming code for potential errors, inefficiencies or code style issues.
+    Provide an optimized version of the code with explanations. Focus on:
+    1. Fixing any syntax errors
+    2. Improving performance
+    3. Enhancing code readability
+    4. Following best practices
 
-  Code to analyze:
-  \`\`\`
-  ${content}
-  \`\`\`
+    Original code:
+    \`\`\`
+    ${input.code}
+    \`\`\`
 
-  Respond ONLY with the JSON object. Do not include any other text or markdown formatting like \`\`\`json before or after the object.
-  `;
+    Error message (if any): ${input.error || "No error message provided"}
 
-    const messages: CoreMessage[] = [{role: "user", content: prompt}];
+    Respond ONLY with the JSON object containing the optimized code and explanations.
+    Format:
+    {
+        "optimizedCode": "optimized code here",
+        "explanation": "explanation of changes made",
+        "issuesFixed": ["list of issues fixed"]
+    }
+    `;
+
+    const messages: CoreMessage[] = [{ role: "user", content: prompt }];
 
     let text;
     try {
@@ -53,12 +60,12 @@ export const analyzeComplexity = async (
     }
 
     const validationResult =
-        AnalyzeComplexityResponseSchema.safeParse(llmResponseJson);
+        OptimizeCodeOutputSchema.safeParse(llmResponseJson);
 
     if (!validationResult.success) {
         console.error("Zod validation failed:", validationResult.error.format());
         throw new Error("Response validation failed");
     }
 
-    return validationResult;
-}
+    return validationResult.data;
+};
