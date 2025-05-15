@@ -7,7 +7,8 @@ import {
 } from "@/types/ai-improve";
 import { openai } from "@/lib/ai";
 import { CoreMessage, generateText } from "ai";
-import { prisma } from "@/lib/prisma"; // Prisma客户端
+import { PrismaClient } from '@prisma/client';
+const prisma = new PrismaClient();
 
 /**
  * 调用AI优化代码
