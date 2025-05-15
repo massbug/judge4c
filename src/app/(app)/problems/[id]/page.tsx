@@ -11,6 +11,7 @@ import {
 import { Locale } from "@/config/i18n";
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
+import { usePathname } from "next/navigation";
 import Dockview from "@/components/dockview";
 import { useDockviewStore } from "@/stores/dockview";
 import { AIProblemEditor } from "@/components/ai-optimized-editor";
