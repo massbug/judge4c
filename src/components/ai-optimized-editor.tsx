@@ -1,11 +1,20 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import { DiffEditor } from "@monaco-editor/react";
 import { optimizeCode } from "@/actions/ai-improve";
 import { OptimizeCodeInput } from "@/types/ai-improve";
-import { Loading } from "@/components/loading";
 import dynamic from "next/dynamic";
+import { highlighter } from "@/lib/shiki";
+import type { editor } from "monaco-editor";
+import { Loading } from "@/components/loading";
+import { shikiToMonaco } from "@shikijs/monaco";
+import { useProblem } from "@/hooks/use-problem";
+import type { Monaco } from "@monaco-editor/react";
+import { useCallback, useEffect, useRef } from "react";
+import { connectToLanguageServer } from "@/lib/language-server";
+import type { MonacoLanguageClient } from "monaco-languageclient";
+import { DefaultEditorOptionConfig } from "@/config/editor-option";
 
 // 动态导入Monaco Editor
 const Editor = dynamic(
@@ -59,20 +68,102 @@ export function AIProblemEditor({
   problemId?: string;
   onCodeChange?: (code: string) => void;
 }) {
+  const {
+    editor,
+    setEditor,
+    setMarkers,
+    setWebSocket,
+    currentLang,
+    currentPath,
+    currentTheme,
+    currentValue,
+    changeValue,
+    currentEditorLanguageConfig,
+    currentLanguageServerConfig,
+  } = useProblem();
+
+  const monacoLanguageClientRef = useRef<MonacoLanguageClient | null>(null);
+
+  // 保持原有AI优化的状态
   const [showDiff, setShowDiff] = useState(false);
   const [optimizedCode, setOptimizedCode] = useState("");
   const [isOptimizing, setIsOptimizing] = useState(false);
-  const [currentCode, setCurrentCode] = useState(initialCode);
   const [error, setError] = useState<string | null>(null);
 
+  // 重用useProblem的状态管理
+  const currentCode = currentValue || initialCode;
+  
   const handleCodeChange = useCallback((value: string | undefined) => {
     if (value !== undefined) {
-      setCurrentCode(value);
+      changeValue(value);
       if (onCodeChange) {
         onCodeChange(value);
       }
     }
-  }, [onCodeChange]);
+  }, [onCodeChange, changeValue]);
+
+  // 保持原有LSP连接逻辑
+  const connectLSP = useCallback(async () => {
+    if (!(currentLang && editor)) return;
+
+    if (monacoLanguageClientRef.current) {
+      monacoLanguageClientRef.current.stop();
+      monacoLanguageClientRef.current = null;
+      setWebSocket(null);
+    }
+
+    if (!currentEditorLanguageConfig || !currentLanguageServerConfig) return;
+
+    try {
+      const { client: monacoLanguageClient, webSocket } = await connectToLanguageServer(
+        currentEditorLanguageConfig,
+        currentLanguageServerConfig
+      );
+      monacoLanguageClientRef.current = monacoLanguageClient;
+      setWebSocket(webSocket);
+    } catch (error) {
+      console.error("Failed to connect to LSP:", error);
+    }
+  }, [
+    currentEditorLanguageConfig,
+    currentLang,
+    currentLanguageServerConfig,
+    editor,
+    setWebSocket,
+  ]);
+
+  useEffect(() => {
+    connectLSP();
+  }, [connectLSP]);
+
+  useEffect(() => {
+    return () => {
+      if (monacoLanguageClientRef.current) {
+        monacoLanguageClientRef.current.stop();
+        monacoLanguageClientRef.current = null;
+        setWebSocket(null);
+      }
+    };
+  }, [setWebSocket]);
+
+  const handleEditorWillMount = useCallback((monaco: Monaco) => {
+    shikiToMonaco(highlighter, monaco);
+  }, []);
+
+  const handleOnMount = useCallback(
+    async (editor: editor.IStandaloneCodeEditor) => {
+      setEditor(editor);
+      await connectLSP();
+    },
+    [setEditor, connectLSP]
+  );
+
+  const handleEditorValidation = useCallback(
+    (markers: editor.IMarker[]) => {
+      setMarkers(markers);
+    },
+    [setMarkers]
+  );
 
   const handleOptimizeCode = useCallback(async () => {
     if (!currentCode || !problemId) return;
@@ -99,6 +190,7 @@ export function AIProblemEditor({
 
   return (
     <div className="flex flex-col h-full w-full">
+      {/* 保持原有AI优化按钮 */}
       <div className="flex justify-between items-center p-4">
         <button
           onClick={handleOptimizeCode}
@@ -129,8 +221,8 @@ export function AIProblemEditor({
           <DiffEditor
             original={currentCode}
             modified={optimizedCode}
-            language="typescript"
-            theme="vs-dark"
+            language={currentLang}
+            theme={currentTheme}
             className="h-full w-full"
             options={{
               readOnly: true,
@@ -139,14 +231,16 @@ export function AIProblemEditor({
           />
         ) : (
           <Editor
-            language="typescript"
-            theme="vs-dark"
+            language={currentLang}
+            theme={currentTheme}
+            path={currentPath}
             value={currentCode}
+            beforeMount={handleEditorWillMount}
+            onMount={handleOnMount}
             onChange={handleCodeChange}
-            options={{
-              scrollBeyondLastLine: false,
-              fontSize: 14
-            }}
+            onValidate={handleEditorValidation}
+            options={DefaultEditorOptionConfig}
+            loading={<Loading />}
             className="h-full w-full"
           />
         )}
