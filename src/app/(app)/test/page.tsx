@@ -18,22 +18,22 @@ export default function TestAiEditorPage() {
     };
 
     return (
-        <div className="container mx-auto p-4">
-            <h1 className="text-2xl font-bold mb-4">AI 编辑器测试页</h1>
-            
-            {/* 测试用例展示 */}
-            <div className="mb-6">
+        <div className="flex flex-col h-screen mx-auto p-4">
+            {/* 测试用例展示区域 - 固定高度1/3 */}
+            <div className="mb-6 h-1/3">
                 <h2 className="text-xl font-semibold mb-2">测试用例</h2>
                 <pre className="bg-muted p-4 rounded-md overflow-x-auto">
                     {testInput.code}
                 </pre>
             </div>
 
-            {/* 测试组件 */}
-            <AIProblemEditor 
-                initialCode={testInput.code}
-                problemId={testInput.problemId}
-            />
+            {/* DiffEditor容器 - 占据剩余2/3高度 */}
+            <div className="flex-grow">
+                <AIProblemEditor 
+                    initialCode={testInput.code}
+                    problemId={testInput.problemId}
+                />
+            </div>
         </div>
     );
 }
