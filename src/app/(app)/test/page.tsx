@@ -14,7 +14,7 @@ export default function TestAiEditorPage() {
     }
     return arr;
 }`,
-        problemId: '1',
+        problemId: 'cmapqoqt90001vzcuy84ka6x7',
     };
 
     return (
