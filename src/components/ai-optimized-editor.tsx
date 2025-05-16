@@ -130,6 +130,7 @@ export function AIProblemEditor({
           modified={optimizedCode}
           language="typescript"
           theme="vs-dark"
+          className="h-full w-full"
           options={{
             readOnly: true,
             minimap: { enabled: false }
