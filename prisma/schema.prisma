@@ -168,7 +168,7 @@ model TestcaseInput {
 model TestcaseResult {
   id          String  @id @default(cuid())
   isCorrect   Boolean
-  output      String
+  output      String?
   timeUsage   Int?
   memoryUsage Int?
 
