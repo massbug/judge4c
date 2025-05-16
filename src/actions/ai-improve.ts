@@ -64,6 +64,7 @@ Format:
   "issuesFixed": ["list of issues fixed"]
 }
 `;
+    console.log("Prompt:", prompt);
 
     // 发送请求给OpenAI
     const messages: CoreMessage[] = [{ role: "user", content: prompt }];
@@ -97,5 +98,6 @@ Format:
         throw new Error("Response validation failed");
     }
 
+    console.log("LLM response:", llmResponseJson);
     return validationResult.data;
 };

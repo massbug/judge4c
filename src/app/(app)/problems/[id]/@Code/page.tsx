@@ -1,3 +1,5 @@
+"use client";
+
 import { AIProblemEditor } from "@/components/ai-optimized-editor";
 import { useParams } from "next/navigation";
 
