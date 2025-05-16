@@ -7,8 +7,7 @@ import {
 } from "@/types/ai-improve";
 import { openai } from "@/lib/ai";
 import { CoreMessage, generateText } from "ai";
-import { PrismaClient } from '@/generated/client';
-const prisma = new PrismaClient();
+import prisma from '@/generated/client';
 
 /**
  * 调用AI优化代码
@@ -25,7 +24,7 @@ export const optimizeCode = async (
     if (input.problemId) {
         try {
             const problem = await prisma.problem.findUnique({
-                where: { problemId: input.problemId },
+                where: { id: input.problemId },
             });
             if (problem) {
                 problemDetails = `
