@@ -7,7 +7,7 @@ import {
 } from "@/types/ai-improve";
 import { openai } from "@/lib/ai";
 import { CoreMessage, generateText } from "ai";
-import prisma from '@/generated/client';
+import prisma from "@/lib/prisma";
 
 /**
  * 调用AI优化代码
@@ -31,9 +31,6 @@ export const optimizeCode = async (
 Problem Requirements:
 -------------------
 Description: ${problem.description}
-Input: ${problem.inputSpec}
-Output: ${problem.outputSpec}
-Test Cases: ${JSON.stringify(problem.testCases)}
         `;
             }
         } catch (error) {
