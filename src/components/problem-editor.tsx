@@ -11,51 +11,84 @@ import { useCallback, useEffect, useRef } from "react";
 import { connectToLanguageServer } from "@/lib/language-server";
 import type { MonacoLanguageClient } from "monaco-languageclient";
 import { DefaultEditorOptionConfig } from "@/config/editor-option";
+import { useEditorConfigStore } from '@/lib/store'; // 新增导入
+import * as monaco from 'monaco-editor';
 
-// Dynamically import Monaco Editor with SSR disabled
-const Editor = dynamic(
-  async () => {
-    await import("vscode");
-    const monaco = await import("monaco-editor");
+export const ProblemEditor = () => {
+  const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
+  const monacoRef = useRef<typeof monaco | null>(null);
+  
+  // 使用配置状态
+  const { config } = useEditorConfigStore();
 
-    self.MonacoEnvironment = {
-      getWorker(_, label) {
-        if (label === "json") {
-          return new Worker(
-            new URL("monaco-editor/esm/vs/language/json/json.worker.js", import.meta.url)
-          );
-        }
-        if (label === "css" || label === "scss" || label === "less") {
-          return new Worker(
-            new URL("monaco-editor/esm/vs/language/css/css.worker.js", import.meta.url)
-          );
-        }
-        if (label === "html" || label === "handlebars" || label === "razor") {
-          return new Worker(
-            new URL("monaco-editor/esm/vs/language/html/html.worker.js", import.meta.url)
-          );
-        }
-        if (label === "typescript" || label === "javascript") {
-          return new Worker(
-            new URL("monaco-editor/esm/vs/language/typescript/ts.worker.js", import.meta.url)
-          );
-        }
-        return new Worker(
-          new URL("monaco-editor/esm/vs/editor/editor.worker.js", import.meta.url)
-        );
-      },
-    };
-    const { loader } = await import("@monaco-editor/react");
-    loader.config({ monaco });
-    return (await import("@monaco-editor/react")).Editor;
-  },
-  {
-    ssr: false,
-    loading: () => <Loading />,
-  }
-);
+  useEffect(() => {
+    if (!monacoRef.current || !editorRef.current) return;
 
-export function ProblemEditor() {
+    // 设置语言和主题
+    const { languages } = monaco;
+    monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
+      // target保持使用ScriptTarget
+      target: monaco.languages.typescript.ScriptTarget.ESNext,
+      // module使用正确的ModuleKind类型
+      module: monaco.languages.typescript.ModuleKind.ESNext,
+      strict: true,
+      jsx: monaco.languages.typescript.JsxEmit.React,
+      esModuleInterop: true,
+      isolatedModules: true,
+      experimentalDecorators: true,
+      moduleResolution: monaco.languages.typescript.ModuleResolutionKind.NodeJs,
+      allowJs: true,
+      allowSyntheticDefaultImports: true,
+      typeRoots: ["../node_modules/@types"],
+    });
+
+    // 应用用户配置
+    editorRef.current.updateOptions(config);
+  }, []);
+
+  // Dynamically import Monaco Editor with SSR disabled
+  const Editor = dynamic(
+    async () => {
+      await import("vscode");
+      const monaco = await import("monaco-editor");
+
+      self.MonacoEnvironment = {
+        getWorker(_, label) {
+          if (label === "json") {
+            return new Worker(
+              new URL("monaco-editor/esm/vs/language/json/json.worker.js", import.meta.url)
+            );
+          }
+          if (label === "css" || label === "scss" || label === "less") {
+            return new Worker(
+              new URL("monaco-editor/esm/vs/language/css/css.worker.js", import.meta.url)
+            );
+          }
+          if (label === "html" || label === "handlebars" || label === "razor") {
+            return new Worker(
+              new URL("monaco-editor/esm/vs/language/html/html.worker.js", import.meta.url)
+            );
+          }
+          if (label === "typescript" || label === "javascript") {
+            return new Worker(
+              new URL("monaco-editor/esm/vs/language/typescript/ts.worker.js", import.meta.url)
+            );
+          }
+          return new Worker(
+            new URL("monaco-editor/esm/vs/editor/editor.worker.js", import.meta.url)
+          );
+        },
+      };
+      const { loader } = await import("@monaco-editor/react");
+      loader.config({ monaco });
+      return (await import("@monaco-editor/react")).Editor;
+    },
+    {
+      ssr: false,
+      loading: () => <Loading />,
+    }
+  );
+
   const {
     hydrated,
     editor,
