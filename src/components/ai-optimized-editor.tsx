@@ -98,8 +98,8 @@ export function AIProblemEditor({
   }, [currentCode, problemId]);
 
   return (
-    <div className="space-y-4">
-      <div className="flex justify-between items-center">
+    <div className="flex flex-col h-full w-full">
+      <div className="flex justify-between items-center p-4">
         <button
           onClick={handleOptimizeCode}
           disabled={isOptimizing || !currentCode}
@@ -124,31 +124,33 @@ export function AIProblemEditor({
         </div>
       )}
 
-      {showDiff ? (
-        <DiffEditor
-          original={currentCode}
-          modified={optimizedCode}
-          language="typescript"
-          theme="vs-dark"
-          className="h-full w-full"
-          options={{
-            readOnly: true,
-            minimap: { enabled: false }
-          }}
-        />
-      ) : (
-        <Editor
-          height="500px"
-          language="typescript"
-          theme="vs-dark"
-          value={currentCode}
-          onChange={handleCodeChange}
-          options={{
-            scrollBeyondLastLine: false,
-            fontSize: 14
-          }}
-        />
-      )}
+      <div className="flex-grow overflow-hidden">
+        {showDiff ? (
+          <DiffEditor
+            original={currentCode}
+            modified={optimizedCode}
+            language="typescript"
+            theme="vs-dark"
+            className="h-full w-full"
+            options={{
+              readOnly: true,
+              minimap: { enabled: false }
+            }}
+          />
+        ) : (
+          <Editor
+            language="typescript"
+            theme="vs-dark"
+            value={currentCode}
+            onChange={handleCodeChange}
+            options={{
+              scrollBeyondLastLine: false,
+              fontSize: 14
+            }}
+            className="h-full w-full"
+          />
+        )}
+      </div>
     </div>
   );
 }
