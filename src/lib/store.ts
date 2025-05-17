@@ -32,31 +32,11 @@ export const useEditorConfigStore = create<EditorConfigState>((set) => {
     resetConfig: () => set((state) => {
       localStorage.removeItem('editorConfig');
       return { config: state.defaultConfig };
-    }),
+    })
   };
 });
 
-export interface EditorConfigState {
+interface EditorConfigState2 {
   config: any;
   setConfig: (config: any) => void;
 }
-
-export const useEditorConfigStore = create<EditorConfigState>((set) => {
-  // 从localStorage读取保存的配置
-  let savedConfig = null;
-  if (typeof window !== 'undefined') {
-    savedConfig = localStorage.getItem('editorConfig');
-  }
-  
-  const parsedConfig = savedConfig ? JSON.parse(savedConfig) : {};
-  
-  return {
-    config: parsedConfig,
-    setConfig: (config) => {
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('editorConfig', JSON.stringify(config));
-      }
-      set({ config });
-    }
-  };
-});
