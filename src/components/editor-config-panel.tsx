@@ -1,19 +1,21 @@
-import React from 'react';
+"use client"
+
+import { useState } from 'react';
 import { useEditorConfigStore } from '@/lib/store';
 
-export const EditorConfigPanel = () => {
-  const { config, updateConfig } = useEditorConfigStore();
+export function EditorConfigPanel() {
+  const { config, setConfig } = useEditorConfigStore();
 
   const handleFontFamilyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    updateConfig({ fontFamily: e.target.value });
+    setConfig({ fontFamily: e.target.value });
   };
 
   const handleFontSizeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    updateConfig({ fontSize: parseInt(e.target.value) });
+    setConfig({ fontSize: parseInt(e.target.value) });
   };
 
   const handleLineHeightChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    updateConfig({ lineHeight: parseInt(e.target.value) });
+    setConfig({ lineHeight: parseInt(e.target.value) });
   };
 
   const handleReset = () => {
