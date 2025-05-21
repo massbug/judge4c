@@ -53,7 +53,7 @@
     "lucide-react": "^0.482.0",
     "monaco-editor": "<=0.36.1",
     "monaco-languageclient": "<=5.0.1",
-    "next": "15.1.7",
+    "next": "15.2.4",
     "next-auth": "^5.0.0-beta.25",
     "next-intl": "^4.0.2",
     "next-mdx-remote": "^5.0.0",
