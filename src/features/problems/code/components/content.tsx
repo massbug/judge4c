@@ -12,8 +12,15 @@ export const CodeContent = async ({ problemId }: CodeContentProps) => {
       problemId,
     },
   });
+  const languageServerConfigs = await prisma.languageServerConfig.findMany();
 
-  return <ProblemEditor problemId={problemId} templates={templates} />;
+  return (
+    <ProblemEditor
+      problemId={problemId}
+      templates={templates}
+      languageServerConfigs={languageServerConfigs}
+    />
+  );
 };
 
 export const CodeContentSkeleton = () => {

@@ -4,16 +4,22 @@ import "katex/dist/katex.min.css";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
+import { MDXProvider } from "@mdx-js/react";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import rehypePrettyCode from "rehype-pretty-code";
 import { MdxComponents } from "@/components/content/mdx-components";
 
 interface MdxRendererProps {
   source: string;
+  components?: React.ComponentProps<typeof MDXProvider>["components"];
   className?: string;
 }
 
-export const MdxRenderer = ({ source, className }: MdxRendererProps) => {
+export const MdxRenderer = ({
+  source,
+  className,
+  components = MdxComponents,
+}: MdxRendererProps) => {
   return (
     <article className={cn("markdown-body", className)}>
       <MDXRemote
@@ -36,7 +42,7 @@ export const MdxRenderer = ({ source, className }: MdxRendererProps) => {
             remarkPlugins: [remarkGfm, remarkMath],
           },
         }}
-        components={MdxComponents}
+        components={components}
       />
     </article>
   );

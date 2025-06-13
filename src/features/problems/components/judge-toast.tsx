@@ -1,63 +1,15 @@
-import {
-  AlertTriangleIcon,
-  BanIcon,
-  CircleCheckIcon,
-  XIcon,
-} from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import { useTranslations } from "next-intl";
+import { XIcon } from "lucide-react";
 import { Status } from "@/generated/client";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
+import { getColorClassForStatus, getIconForStatus } from "@/config/status";
 
 interface JudgeToastProps {
   t: number | string;
   status: Status;
 }
-
-const getIconForStatus = (status: Status) => {
-  switch (status) {
-    case Status.PD:
-    case Status.QD:
-    case Status.CP:
-    case Status.CE:
-    case Status.RU:
-    case Status.TLE:
-    case Status.MLE:
-    case Status.RE:
-    case Status.WA:
-      return AlertTriangleIcon;
-    case Status.CS:
-    case Status.AC:
-      return CircleCheckIcon;
-    case Status.SE:
-      return BanIcon;
-  }
-};
-
-const getColorClassForStatus = (status: Status) => {
-  switch (status) {
-    case Status.PD:
-    case Status.QD:
-      return "text-gray-500";
-    case Status.CP:
-    case Status.CE:
-      return "text-yellow-500";
-    case Status.CS:
-    case Status.AC:
-      return "text-green-500";
-    case Status.RU:
-    case Status.TLE:
-      return "text-blue-500";
-    case Status.MLE:
-      return "text-purple-500";
-    case Status.RE:
-      return "text-orange-500";
-    case Status.WA:
-    case Status.SE:
-      return "text-red-500";
-  }
-};
 
 export const JudgeToast = ({ t, status }: JudgeToastProps) => {
   const s = useTranslations("StatusMessage");

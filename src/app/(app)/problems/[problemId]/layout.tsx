@@ -19,7 +19,9 @@ export default async function ProblemLayout({
   return (
     <div className="flex flex-col h-screen">
       <ProblemHeader />
-      {children}
+      <div className="flex w-full flex-grow overflow-y-hidden p-2.5 pt-0">
+        {children}
+      </div>
     </div>
   );
 }

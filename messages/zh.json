@@ -17,13 +17,13 @@
   },
   "BackButton": "返回",
   "Bot": {
-    "title": "询问AI助手",
-    "description": "由Vercel Ai SDK驱动",
-    "placeholder": "AI助手将自动获取您当前的代码"
+    "title": "询问 AI 助手",
+    "description": "由 Vercel Ai SDK 驱动",
+    "placeholder": "AI 助手将自动获取您当前的代码"
   },
   "BotVisibilityToggle": {
-    "open": "打开AI助手",
-    "close": "关闭AI助手"
+    "open": "打开 AI 助手",
+    "close": "关闭 AI 助手"
   },
   "CredentialsSignInForm": {
     "email": "邮箱",
@@ -49,7 +49,7 @@
   "DetailsPage": {
     "BackButton": "所有提交记录",
     "Time": "提交于",
-    "Input": "输入",
+    "Input": "最后执行的输入",
     "ExpectedOutput": "期望输出",
     "ActualOutput": "实际输出",
     "Code": "代码"
@@ -127,7 +127,8 @@
     "description": "请输入你的邮箱以注册账户",
     "or": "或者",
     "haveAccount": "已经有账户了？",
-    "signIn": "登录"
+    "signIn": "登录",
+    "oauth": "使用 {provider} 登录"
   },
   "StatusMessage": {
     "PD": "待处理",
@@ -150,12 +151,25 @@
     "Time": "执行用时",
     "Memory": "消耗内存"
   },
+  "Testcase": {
+    "Table": {
+      "Case": "样例"
+    }
+  },
   "WorkspaceEditorHeader": {
     "LspStatusButton": {
       "TooltipContent": "语言服务"
     },
+    "AnalyzeButton": {
+      "TooltipContent": "分析",
+      "ComplexityAnalysis": "复杂度分析",
+      "TimeComplexity": "时间复杂度：",
+      "SpaceComplexity": "空间复杂度：",
+      "Error": "解析复杂度时出错，请稍后重试。",
+      "Analyzing": "分析中..."
+    },
     "ResetButton": {
-      "TooltipContent": "重置代码"
+      "TooltipContent": "重置"
     },
     "UndoButton": {
       "TooltipContent": "撤销"
@@ -215,5 +229,13 @@
         "answer4": "编辑器采用 @shikijs/monaco, 文档采用 github-markdown-css 样式"
       }
     }
+  },
+  "LoginPromptCard": {
+    "title": "加入 Judge4c 开始编程！",
+    "description": "在此查看您的提交记录",
+    "loginButton": "登录"
+  },
+  "Video": {
+    "unsupportedBrowser": "您的浏览器不支持 HTML5 视频。"
   }
 }

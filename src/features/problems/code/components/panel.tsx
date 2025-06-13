@@ -3,6 +3,7 @@ import {
   CodeContent,
   CodeContentSkeleton,
 } from "@/features/problems/code/components/content";
+import { CodeFooter } from "@/features/problems/code/components/footer";
 import { CodeToolbar } from "@/features/problems/code/components/toolbar/code-toolbar";
 
 interface CodePanelProps {
@@ -11,7 +12,7 @@ interface CodePanelProps {
 
 export const CodePanel = ({ problemId }: CodePanelProps) => {
   return (
-    <div className="h-full flex flex-col border border-t-0 border-muted rounded-b-3xl bg-background overflow-hidden">
+    <div className="h-full flex flex-col border border-t-0 border-muted rounded-b-lg bg-background overflow-hidden">
       <CodeToolbar className="border-b" />
       <div className="relative flex-1">
         <div className="absolute h-full w-full">
@@ -20,6 +21,7 @@ export const CodePanel = ({ problemId }: CodePanelProps) => {
           </Suspense>
         </div>
       </div>
+      <CodeFooter />
     </div>
   );
 };

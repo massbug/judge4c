@@ -14,6 +14,8 @@ type ProblemEditorState = {
   value: string;
   path: string;
   editor: editor.IStandaloneCodeEditor | null;
+  lspWebSocket: WebSocket | null;
+  markers: editor.IMarker[];
 };
 
 type ProblemEditorAction = {
@@ -22,6 +24,8 @@ type ProblemEditorAction = {
   setValue: (value: string) => void;
   setPath: (path: string) => void;
   setEditor: (editor: editor.IStandaloneCodeEditor) => void;
+  setLspWebSocket: (lspWebSocket: WebSocket) => void;
+  setMarkers: (markers: editor.IMarker[]) => void;
 };
 
 type ProblemEditorStore = ProblemEditorState & ProblemEditorAction;
@@ -32,6 +36,8 @@ export const useProblemEditorStore = create<ProblemEditorStore>((set, get) => ({
   value: "",
   path: "",
   editor: null,
+  lspWebSocket: null,
+  markers: [],
   setProblem: (problemId, templates) => {
     const language = getLanguage(problemId);
     const value = getValue(problemId, language, templates);
@@ -60,6 +66,8 @@ export const useProblemEditorStore = create<ProblemEditorStore>((set, get) => ({
   },
   setPath: (path) => set({ path }),
   setEditor: (editor) => set({ editor }),
+  setLspWebSocket: (lspWebSocket) => set({ lspWebSocket }),
+  setMarkers: (markers) => set({ markers }),
 }));
 
 const getStoredItem = <T extends string>(

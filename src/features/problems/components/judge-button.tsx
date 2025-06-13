@@ -3,20 +3,21 @@
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
+import { Actions } from "flexlayout-react";
 import { judge } from "@/app/actions/judge";
 import { useTranslations } from "next-intl";
 import { LoaderCircleIcon, PlayIcon } from "lucide-react";
 import { TooltipButton } from "@/components/tooltip-button";
 import { useProblemEditorStore } from "@/stores/problem-editor";
-import { useProblemDockviewStore } from "@/stores/problem-dockview";
 import { JudgeToast } from "@/features/problems/components/judge-toast";
+import { useProblemFlexLayoutStore } from "@/stores/problem-flexlayout";
 
 interface JudgeButtonProps {
   className?: string;
 }
 
 export const JudgeButton = ({ className }: JudgeButtonProps) => {
-  const { api } = useProblemDockviewStore();
+  const { model } = useProblemFlexLayoutStore();
   const { problem, language, value } = useProblemEditorStore();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const t = useTranslations("PlaygroundHeader.RunCodeButton");
@@ -28,10 +29,10 @@ export const JudgeButton = ({ className }: JudgeButtonProps) => {
     const status = await judge(problem.problemId, language, value);
     toast.custom((t) => <JudgeToast t={t} status={status} />);
 
-    const panel = api?.getPanel("submission");
-    if (panel && !panel.api.isActive) {
-      panel.api.setActive();
+    if (model) {
+      model.doAction(Actions.selectTab("submission"));
     }
+
     setIsLoading(false);
   };
 
@@ -44,9 +45,7 @@ export const JudgeButton = ({ className }: JudgeButtonProps) => {
         className
       )}
       onClick={handleJudge}
-      disabled={
-        isLoading || !problem?.problemId || !api?.getPanel("submission")
-      }
+      disabled={isLoading || !problem?.problemId || !model}
     >
       {isLoading ? (
         <LoaderCircleIcon

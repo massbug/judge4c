@@ -26,7 +26,7 @@ const HeroSection = () => {
             <div className="mt-8 flex flex-wrap gap-x-6 gap-y-4">
               <Button
                 size="sm"
-                className="rounded-2xl bg-muted text-muted-foreground shadow hover:bg-muted/50"
+                className="rounded-2xl bg-purple-500 text-white shadow hover:bg-purple-800"
                 asChild
               >
                 <Link href="/problemset">{t("quickStart")}</Link>
