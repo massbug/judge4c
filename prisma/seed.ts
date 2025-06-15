@@ -41,6 +41,7 @@ const problemData: Prisma.ProblemCreateInput[] = [
     displayId: 1000,
     difficulty: "EASY",
     isPublished: true,
+    trim: true,
     localizations: {
       create: [
         {
@@ -734,6 +735,7 @@ int main() {
     displayId: 1001,
     difficulty: "MEDIUM",
     isPublished: true,
+    trim: true,
     localizations: {
       create: [
         {
@@ -1261,6 +1263,7 @@ int main() {
     displayId: 1002,
     difficulty: "HARD",
     isPublished: true,
+    trim: true,
     localizations: {
       create: [
         {

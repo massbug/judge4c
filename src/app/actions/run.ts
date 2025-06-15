@@ -28,7 +28,8 @@ const startRun = (
   joinedInputs: string,
   timeLimit: number,
   memoryLimit: number,
-  expectedOutput: string
+  expectedOutput: string,
+  trim: boolean,
 ): Promise<Status> => {
   return new Promise<Status>((resolve, reject) => {
     runExec.start({ hijack: true }, async (error, stream) => {
@@ -71,7 +72,10 @@ const startRun = (
         const exitCode = (await runExec.inspect()).ExitCode;
         const timeUsage = Date.now() - startTime;
         if (exitCode === 0) {
-          const isCorrect = stdout.trim() === expectedOutput;
+          let isCorrect = stdout === expectedOutput;
+          if (trim) {
+            isCorrect = stdout.trim() === expectedOutput.trim();
+          }
           await prisma.testcaseResult.create({
             data: {
               isCorrect,
@@ -131,7 +135,8 @@ const executeRun = async (
   submissionId: string,
   timeLimit: number,
   memoryLimit: number,
-  testcases: Testcase[]
+  testcases: Testcase[],
+  trim: boolean
 ): Promise<Status> => {
   for (const testcase of testcases) {
     const inputs = await prisma.testcaseInput.findMany({
@@ -169,7 +174,8 @@ const executeRun = async (
       joinedInputs,
       timeLimit,
       memoryLimit,
-      testcase.expectedOutput
+      testcase.expectedOutput,
+      trim
     );
 
     if (status !== Status.RU) {
@@ -228,7 +234,7 @@ export const run = async (
   testcases: Testcase[]
 ): Promise<Status> => {
   const { runOutputLimit } = config;
-  const { timeLimit, memoryLimit } = problem;
+  const { timeLimit, memoryLimit, trim } = problem;
 
   await prisma.submission.update({
     where: {
@@ -248,6 +254,7 @@ export const run = async (
     submissionId,
     timeLimit,
     memoryLimit,
-    testcases
+    testcases,
+    trim
   );
 };
