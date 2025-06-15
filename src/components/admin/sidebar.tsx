@@ -4,27 +4,19 @@ import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
-  SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { NavMain } from "@/components/nav-main";
 import { NavProjects } from "@/components/nav-projects";
-import { TeamSwitcher } from "@/components/team-switcher";
 import { NavUser } from "@/components/nav-user";
 import {
-  AudioWaveform,
-  Bot,
   Command,
-  Frame,
-  GalleryVerticalEnd,
-  Map,
   PieChart,
   Settings2,
-  SquareTerminal,
 } from "lucide-react";
-import { SessionProvider } from "next-auth/react";
-import { SidebarProvider } from "@/components/ui/sidebar";
 
+import { useEffect, useState } from "react";
+import { PrismaClient } from "@prisma/client";
 
 // 如果 adminData.teams 没有在别处定义，请取消注释下面的代码并提供实际值
 /*
@@ -33,22 +25,6 @@ const teams = [
 ];
 */
 
-// 创建图标映射
-type LucideIconMap = {
-  [key: string]: typeof AudioWaveform;
-};
-
-const lucideIconMap: LucideIconMap = {
-  AudioWaveform,
-  Bot,
-  Command,
-  Frame,
-  GalleryVerticalEnd,
-  Map,
-  PieChart,
-  Settings2,
-  SquareTerminal,
-};
 
 const adminData = {
   // teams: [
@@ -95,10 +71,33 @@ const adminData = {
 
 export const AdminSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
   const { data: session } = useSession();
+  const [userAvatar, setUserAvatar] = useState("");
+
+  useEffect(() => {
+    const fetchUserAvatar = async () => {
+      if (session?.user?.email) {
+        const prisma = new PrismaClient();
+        try {
+          const user = await prisma.user.findUnique({
+            where: { email: session.user.email },
+            select: { image: true }
+          });
+          setUserAvatar(user?.image || "");
+        } catch (error) {
+          console.error("Failed to fetch user avatar:", error);
+        } finally {
+          await prisma.$disconnect();
+        }
+      }
+    };
+
+    fetchUserAvatar();
+  }, [session?.user?.email]);
+
   const user = {
     name: session?.user?.name || "Admin",
     email: session?.user?.email || "admin@example.com",
-    avatar: session?.user?.avatar || ""
+    avatar: userAvatar
   };
   
   return (
