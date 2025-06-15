@@ -5,6 +5,8 @@ import { getLocale } from "next-intl/server";
 import { NextIntlClientProvider } from "next-intl";
 import { ThemeProvider } from "@/components/theme-provider";
 import { SettingsDialog } from "@/components/settings-dialog";
+import { SessionProvider } from "next-auth/react";
+import { SidebarProvider } from "@/components/ui/sidebar";
 
 export const metadata: Metadata = {
   title: "Judge4c",
@@ -29,9 +31,13 @@ export default async function RootLayout({ children }: RootLayoutProps) {
             enableSystem
             disableTransitionOnChange
           >
-            <div className="w-full">{children}</div>
-            <SettingsDialog />
-            <Toaster position="top-right" />
+            <SessionProvider>
+              <SidebarProvider>
+                <div className="w-full">{children}</div>
+                <SettingsDialog />
+                <Toaster position="top-right" />
+              </SidebarProvider>
+            </SessionProvider>
           </ThemeProvider>
         </NextIntlClientProvider>
       </body>
