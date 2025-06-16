@@ -42,6 +42,8 @@ const problemData: Prisma.ProblemCreateInput[] = [
     difficulty: "EASY",
     isPublished: true,
     trim: true,
+    answerType: "INTARRAY",
+    lengthOfArray: [2, 3, 4, 5, 6],
     localizations: {
       create: [
         {
@@ -736,6 +738,8 @@ int main() {
     difficulty: "MEDIUM",
     isPublished: true,
     trim: true,
+    answerType: "INTARRAY",
+    lengthOfArray: [1, 2, 3],
     localizations: {
       create: [
         {
@@ -1264,6 +1268,8 @@ int main() {
     difficulty: "HARD",
     isPublished: true,
     trim: true,
+    answerType: "INTARRAY",
+    lengthOfArray: [1, 2, 3, 4, 5],
     localizations: {
       create: [
         {

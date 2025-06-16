@@ -34,6 +34,17 @@ enum Protocol {
   wss
 }
 
+enum AnswerType {
+  NS // Not Suitable
+  INT // Single Integer
+  FLOAT // Single Float
+  CHAR // Single Character
+  INTARRAY // Integer Array
+  FLOATARRAY // Float Array
+  STRING // Single String
+  MATRIX // Arrays
+}
+
 enum Status {
   PD // PENDING
   QD // QUEUED
@@ -76,21 +87,21 @@ model User {
 }
 
 model Problem {
-  id          String     @id @default(cuid())
-  displayId   Int        @unique
-  difficulty  Difficulty @default(EASY)
-  isPublished Boolean    @default(false)
-  trim        Boolean    @default(false)
-  timeLimit   Int        @default(1000)
-  memoryLimit Int        @default(134217728)
-
-
+  id            String     @id @default(cuid())
+  displayId     Int        @unique
+  difficulty    Difficulty @default(EASY)
+  isPublished   Boolean    @default(false)
+  trim          Boolean    @default(false)
+  timeLimit     Int        @default(1000)
+  memoryLimit   Int        @default(134217728)
+  isRandom      Boolean    @default(false)
+  answerType    AnswerType
+  lengthOfArray Int[]
 
   localizations ProblemLocalization[]
   templates     Template[]
   testcases     Testcase[]
   submissions   Submission[]
-
 
   userId String?
 
