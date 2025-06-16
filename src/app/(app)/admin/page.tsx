@@ -1,6 +1,6 @@
-import { AdminSidebar } from "@/components/admin/sidebar";
+// import { AdminSidebar } from "@/components/admin/sidebar";
 import { Header } from "@/components/header";
-import { AdminDashboard } from "@/components/admin/dashboard";
+import { MonitoringDashboard } from "@/components/admin/monitoring-dashboard";
 import AdminLayout from "@/app/(app)/admin/layout";
 import type { ReactElement } from "react";
 import prisma from "@/lib/prisma";
@@ -13,14 +13,12 @@ export default async function AdminPage(): Promise<ReactElement> {
 
   return (
     <AdminLayout>
-      <div className="flex min-h-screen">
-        <AdminSidebar />
-        <div className="flex-1 flex flex-col">
-          <Header />
-          <main className="flex-1 p-6">
-            <AdminDashboard userCount={userCount} problemCount={problemCount} />
-          </main>
-        </div>
+      <div className="h-full">
+        <Header />
+        <main className="container py-6 h-full">
+          {/* 监控仪表盘替代原有仪表盘 */}
+          <MonitoringDashboard userCount={userCount} problemCount={problemCount} />
+        </main>
       </div>
     </AdminLayout>
   );

@@ -1,21 +1,24 @@
-import { ReactNode } from "react";
 import { AdminSidebar } from "@/components/admin/sidebar";
-import { Header } from "@/components/header";
+import { ReactNode } from "react";
 
-interface AdminLayoutProps {
+export default function AdminLayout({
+  children
+}: {
   children: ReactNode;
-}
-
-export default function AdminLayout({ children }: AdminLayoutProps) {
+}) {
   return (
-    <div className="flex min-h-screen">
-      <AdminSidebar />
-      <div className="flex-1 flex flex-col">
-        {/*<Header />*/}
-        <main className="flex-1 p-6">
+    <div className="flex h-screen">
+      {/* 左侧边栏 */}
+      <aside className="w-64 border-r">
+        <AdminSidebar adminMenuActive={true} />
+      </aside>
+      
+      {/* 主要内容区域 */}
+      <main className="flex-1 overflow-auto">
+        <div className="container py-6">
           {children}
-        </main>
-      </div>
+        </div>
+      </main>
     </div>
   );
 }
