@@ -80,17 +80,14 @@ model Problem {
   displayId   Int        @unique
   difficulty  Difficulty @default(EASY)
   isPublished Boolean    @default(false)
-  trim        Boolean    @default(false)
+  isTrim      Boolean    @default(false)
   timeLimit   Int        @default(1000)
   memoryLimit Int        @default(134217728)
-
-
 
   localizations ProblemLocalization[]
   templates     Template[]
   testcases     Testcase[]
   submissions   Submission[]
-
 
   userId String?
 
