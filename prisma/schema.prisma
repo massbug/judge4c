@@ -42,7 +42,7 @@ enum AnswerType {
   INTARRAY // Integer Array
   FLOATARRAY // Float Array
   STRING // Single String
-  MATRIX // Arrays
+  STRINGARRAY // String Array
 }
 
 enum Status {
@@ -95,7 +95,7 @@ model Problem {
   timeLimit     Int        @default(1000)
   memoryLimit   Int        @default(134217728)
   isRandom      Boolean    @default(false)
-  answerType    AnswerType
+  answerType    AnswerType[]
   lengthOfArray Int[]
 
   localizations ProblemLocalization[]
