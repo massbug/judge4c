@@ -10,6 +10,7 @@ import {CoreEditor} from "@/components/core-editor";
 
 interface EditSolutionPanelProps {
   problemId: string;
+  onUpdate?: (data: { content: string }) => void;
 }
 
 export const EditSolutionPanel = ({
@@ -65,7 +66,7 @@ export const EditSolutionPanel = ({
                 <CoreEditor
                   value={content}
                   onChange={setContent}
-                  language="markdown"
+                  language="``"
                   className="absolute inset-0 rounded-md border border-input"
                 />
               </div>

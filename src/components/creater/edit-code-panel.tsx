@@ -14,6 +14,10 @@ interface Template {
 
 interface EditCodePanelProps {
   problemId: string;
+  onUpdate?: (data: { 
+    content: string; 
+    language: 'c' | 'cpp'; // 移除可选标记
+  }) => void;
 }
 
 export const EditCodePanel = ({
