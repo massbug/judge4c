@@ -12,21 +12,25 @@ import {
 import { toast } from "sonner";
 import { authSchema } from "@/lib/zod";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState, useTransition } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { signUpWithCredentials } from "@/actions/auth";
+import { signUpWithCredentials } from "@/app/actions/auth";
 import { EyeIcon, EyeOffIcon, MailIcon } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
 
 export type CredentialsSignUpFormValues = z.infer<typeof authSchema>;
 
-export function CredentialsSignUpForm() {
+interface CredentialsSignUpFormProps {
+  callbackUrl: string | undefined;
+}
+
+export function CredentialsSignUpForm({
+  callbackUrl,
+}: CredentialsSignUpFormProps) {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const redirectTo = searchParams.get("redirectTo");
   const t = useTranslations("CredentialsSignUpForm");
   const [isPending, startTransition] = useTransition();
   const [isVisible, setIsVisible] = useState(false);
@@ -53,7 +57,10 @@ export function CredentialsSignUpForm() {
         toast.success(t("signUpSuccess"), {
           description: t("signUpSuccessDescription"),
         });
-        router.push(`/sign-in?${redirectTo}`)
+        console.log("callbackUrl:", callbackUrl);
+        router.push(
+          `/sign-in?callbackUrl=${encodeURIComponent(callbackUrl || "/")}`
+        );
       }
     });
   };
@@ -97,7 +104,9 @@ export function CredentialsSignUpForm() {
                     className="text-muted-foreground/80 hover:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 absolute inset-y-0 end-0 flex h-full w-9 items-center justify-center rounded-e-md transition-[color,box-shadow] outline-none focus:z-10 focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
                     type="button"
                     onClick={toggleVisibility}
-                    aria-label={isVisible ? t("hidePassword") : t("showPassword")}
+                    aria-label={
+                      isVisible ? t("hidePassword") : t("showPassword")
+                    }
                     aria-pressed={isVisible}
                     aria-controls="password"
                   >

@@ -7,7 +7,7 @@
       "Dark": "Dark"
     }
   },
-  "AvatarButton": {
+  "UserAvatar": {
     "Settings": "Settings",
     "LogIn": "LogIn",
     "LogOut": "LogOut"
@@ -49,7 +49,7 @@
   "DetailsPage": {
     "BackButton": "All Submissions",
     "Time": "Submitted on",
-    "Input": "Input",
+    "Input": "Last Executed Input",
     "ExpectedOutput": "Expected Output",
     "ActualOutput": "Acutal Output",
     "Code": "Code"
@@ -109,7 +109,8 @@
     "description": "Enter your email below to sign in to your account",
     "or": "Or",
     "noAccount": "Don't have an account?",
-    "signUp": "Sign up"
+    "signUp": "Sign up",
+    "oauth": "Sign in with {provider}"
   },
   "signInWithCredentials": {
     "userNotFound": "User not found.",
@@ -126,7 +127,8 @@
     "description": "Enter your email below to sign up to your account",
     "or": "Or",
     "haveAccount": "Already have an account?",
-    "signIn": "Sign in"
+    "signIn": "Sign in",
+    "oauth": "Sign in with {provider}"
   },
   "StatusMessage": {
     "PD": "Pending",
@@ -149,12 +151,25 @@
     "Time": "Time",
     "Memory": "Memory"
   },
+  "Testcase": {
+    "Table": {
+      "Case": "Case"
+    }
+  },
   "WorkspaceEditorHeader": {
     "LspStatusButton": {
       "TooltipContent": "Language Server"
     },
+    "AnalyzeButton": {
+      "TooltipContent": "Analyze",
+      "ComplexityAnalysis": "Complexity Analysis",
+      "TimeComplexity": "Time Complexity:",
+      "SpaceComplexity": "Space Complexity",
+      "Error": "Error occurred while analyzing complexity, please try again later.",
+      "Analyzing": "Analyzing..."
+    },
     "ResetButton": {
-      "TooltipContent": "Reset Code"
+      "TooltipContent": "Reset"
     },
     "UndoButton": {
       "TooltipContent": "Undo"
@@ -214,5 +229,13 @@
         "answer4": "Editor uses @shikijs/monaco themes, documentation rendered with github-markdown-css"
       }
     }
+  },
+  "LoginPromptCard": {
+    "title": "Join Judge4c to Code!",
+    "description": "View your Submission records here",
+    "loginButton": "Log In"
+  },
+  "Video": {
+    "unsupportedBrowser": "Your browser does not support HTML5 video."
   }
 }

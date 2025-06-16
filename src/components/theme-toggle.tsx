@@ -3,30 +3,11 @@
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { MoonIcon, SunIcon } from "lucide-react";
 
-function SunIcon(props: React.ComponentPropsWithoutRef<"svg">) {
-  return (
-    <svg viewBox="0 0 20 20" fill="none" aria-hidden="true" {...props}>
-      <path d="M12.5 10a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Z" />
-      <path
-        strokeLinecap="round"
-        d="M10 5.5v-1M13.182 6.818l.707-.707M14.5 10h1M13.182 13.182l.707.707M10 15.5v-1M6.11 13.889l.708-.707M4.5 10h1M6.11 6.111l.708.707"
-      />
-    </svg>
-  );
-}
-
-function MoonIcon(props: React.ComponentPropsWithoutRef<"svg">) {
-  return (
-    <svg viewBox="0 0 20 20" fill="none" aria-hidden="true" {...props}>
-      <path d="M15.224 11.724a5.5 5.5 0 0 1-6.949-6.949 5.5 5.5 0 1 0 6.949 6.949Z" />
-    </svg>
-  );
-}
-
-export function ThemeToggle() {
+export const ThemeToggle = () => {
   const { resolvedTheme, setTheme } = useTheme();
-  const otherTheme = resolvedTheme === "dark" ? "light" : "dark";
+  const alternateTheme = resolvedTheme === "dark" ? "light" : "dark";
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -37,12 +18,21 @@ export function ThemeToggle() {
     <Button
       size="icon"
       variant="outline"
-      className="flex h-6 w-6 items-center justify-center rounded-md transition"
-      aria-label={mounted ? `Switch to ${otherTheme} theme` : "Toggle theme"}
-      onClick={() => setTheme(otherTheme)}
+      onClick={() => setTheme(alternateTheme)}
+      aria-label={
+        mounted ? `Switch to ${alternateTheme} theme` : "Toggle theme"
+      }
     >
-      <SunIcon className="h-5 w-5 stroke-foreground dark:hidden" />
-      <MoonIcon className="hidden h-5 w-5 stroke-foreground dark:block" />
+      <MoonIcon
+        size={16}
+        className="shrink-0 scale-0 opacity-0 transition-all dark:scale-100 dark:opacity-100"
+        aria-hidden="true"
+      />
+      <SunIcon
+        size={16}
+        className="absolute shrink-0 scale-100 opacity-100 transition-all dark:scale-0 dark:opacity-0"
+        aria-hidden="true"
+      />
     </Button>
   );
-}
+};

@@ -2,7 +2,7 @@
 
 # 升级到 Node.js v20 或更高版本，以解决 `ReferenceError: File is not defined` 问题
 # 参考链接：https://github.com/vercel/next.js/discussions/56032
-FROM dockerp.com/node:22-alpine AS base
+FROM docker.1ms.run/node:22-alpine AS base
 
 # 仅在需要时安装依赖
 FROM base AS deps

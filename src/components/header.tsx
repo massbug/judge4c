@@ -2,9 +2,9 @@ import Link from "next/link";
 import { Logo } from "@/components/logo";
 import { Container } from "@/components/container";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { LanguageSettings } from "@/components/language-settings";
+import { LocaleSwitcher } from "@/components/locale-switcher";
 
-export async function Header() {
+export const Header = () => {
   return (
     <header>
       <nav>
@@ -15,11 +15,11 @@ export async function Header() {
             </Link>
           </div>
           <div className="flex items-center gap-6">
-            <LanguageSettings />
+            <LocaleSwitcher />
             <ThemeToggle />
           </div>
         </Container>
       </nav>
     </header>
   );
-}
+};

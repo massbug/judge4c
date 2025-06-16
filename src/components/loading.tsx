@@ -6,14 +6,14 @@ interface LoadingProps {
   skeletonClassName?: string;
 }
 
-export function Loading({
-  className,
-  skeletonClassName,
-  ...props
-}: LoadingProps) {
+const Loading = ({ className, skeletonClassName }: LoadingProps) => {
   return (
-    <div className={cn("h-full w-full p-2 bg-background", className)} {...props}>
-      <Skeleton className={cn("h-full w-full rounded-3xl", skeletonClassName)} />
+    <div className={cn("h-full w-full p-2 bg-background", className)}>
+      <Skeleton
+        className={cn("h-full w-full rounded-3xl", skeletonClassName)}
+      />
     </div>
   );
-}
+};
+
+export { Loading };

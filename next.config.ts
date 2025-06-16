@@ -3,7 +3,7 @@ import createNextIntlPlugin from 'next-intl/plugin';
 
 const nextConfig: NextConfig = {
   output: "standalone",
-  serverExternalPackages: ["dockerode"],
+  serverExternalPackages: ["dockerode", "pino", "pino-pretty"],
 };
 
 const withNextIntl = createNextIntlPlugin();

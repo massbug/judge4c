@@ -10,10 +10,10 @@ import { BotIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Toggle } from "@/components/ui/toggle";
-import { useDockviewStore } from "@/stores/dockview";
+import { useProblemDockviewStore } from "@/stores/problem-dockview";
 
 export default function BotVisibilityToggle() {
-  const { api } = useDockviewStore();
+  const { api } = useProblemDockviewStore();
   const t = useTranslations();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isBotVisible, setBotVisible] = useState<boolean>(false);
