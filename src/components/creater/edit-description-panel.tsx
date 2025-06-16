@@ -10,6 +10,7 @@ import {CoreEditor} from "@/components/core-editor";
 
 interface EditDescriptionPanelProps {
   problemId: string;
+  onUpdate?: (data: { content: string }) => void;
 }
 
 export const EditDescriptionPanel = ({
@@ -65,7 +66,7 @@ export const EditDescriptionPanel = ({
                 <CoreEditor
                   value={content}
                   onChange={setContent}
-                  language="markdown"
+                  language="``"
                   className="absolute inset-0 rounded-md border border-input"
                 />
               </div>

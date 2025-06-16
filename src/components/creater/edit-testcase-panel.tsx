@@ -21,6 +21,10 @@ interface TestCase {
 
 interface EditTestcasePanelProps {
   problemId: string;
+  onUpdate?: (data: { 
+    content: string; 
+    inputs: Array<{ index: number; name: string; value: string }>
+  }) => void;
 }
 
 export const EditTestcasePanel = ({
