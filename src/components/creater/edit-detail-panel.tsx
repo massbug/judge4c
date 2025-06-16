@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 
 interface EditDetailPanelProps {
   problemId: string;
+  onUpdate?: (data: { content: string }) => void;
 }
 
 export const EditDetailPanel = ({
