@@ -214,5 +214,24 @@
         "answer4": "编辑器采用 @shikijs/monaco, 文档采用 github-markdown-css 样式"
       }
     }
+  },
+  "Index": {
+    "title": "欢迎使用 Judge4C",
+    "description": "在线评测系统"
+  },
+  "Dashboard": {
+    "title": "教师仪表板",
+    "totalSubmissions": "总提交数",
+    "passRate": "通过率",
+    "activeStudents": "活跃学生",
+    "avgCompletionTime": "平均完成时间",
+    "problemStats": "题目提交统计",
+    "problemStatsDesc": "各题目的提交数和通过率",
+    "recentSubmissions": "最近提交",
+    "recentSubmissionsDesc": "学生最近的提交记录",
+    "viewAll": "查看全部",
+    "week": "本周",
+    "month": "本月",
+    "year": "本年"
   }
 }
