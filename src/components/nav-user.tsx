@@ -1,19 +1,20 @@
-"use client";
+"use client"
 
 import {
   BadgeCheck,
   Bell,
   ChevronsUpDown,
-  CreditCard,
+  UserPen,
   LogOut,
   Sparkles,
-} from "lucide-react";
+} from "lucide-react"
+import { useRouter } from "next/navigation"
+
 import {
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  useSidebar,
-} from "@/components/ui/sidebar";
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/components/ui/avatar"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,21 +23,25 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
-export interface NavUserProps {
-  user: {
-    name: string;
-    email: string;
-    avatar: string;
-  };
-}
+} from "@/components/ui/dropdown-menu"
+import {
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  useSidebar,
+} from "@/components/ui/sidebar"
 
 export function NavUser({
   user,
-}: NavUserProps) {
-  const { isMobile } = useSidebar();
+}: {
+  user: {
+    name: string
+    email: string
+    avatar: string
+  }
+}) {
+  const { isMobile } = useSidebar()
+  const router = useRouter()
 
   return (
     <SidebarMenu>
@@ -80,7 +85,7 @@ export function NavUser({
             <DropdownMenuGroup>
               <DropdownMenuItem>
                 <Sparkles />
-                Upgrade to Pro
+                Update 
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
@@ -89,17 +94,19 @@ export function NavUser({
                 <BadgeCheck />
                 Account
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCard />
-                Billing
+              <DropdownMenuItem onClick={() => router.push("/sign-in")}>
+                <UserPen />
+                Switch User
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem >
                 <Bell />
                 Notifications
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem  onClick={() => {
+              router.replace("/");
+              }}>
               <LogOut />
               Log out
             </DropdownMenuItem>
@@ -107,5 +114,5 @@ export function NavUser({
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>
-  );
+  )
 }
