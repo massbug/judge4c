@@ -1,11 +1,11 @@
 "use client";
 
 import { ProblemFlexLayout } from '@/features/problems/components/problem-flexlayout';
-import { EditDescriptionPanel } from '@/components/creater/edit-description-panel';
-import { EditSolutionPanel } from '@/components/creater/edit-solution-panel';
-import { EditTestcasePanel } from '@/components/creater/edit-testcase-panel';
-import { EditDetailPanel } from '@/components/creater/edit-detail-panel';
-import { EditCodePanel } from '@/components/creater/edit-code-panel';
+import EditDescriptionPanel from '@/components/creater/edit-description-panel';
+import EditSolutionPanel from '@/components/creater/edit-solution-panel';
+import EditTestcasePanel from '@/components/creater/edit-testcase-panel';
+import EditDetailPanel from '@/components/creater/edit-detail-panel';
+import EditCodePanel from '@/components/creater/edit-code-panel';
 import { updateProblem } from '@/app/actions/updateProblem';
 
 interface ProblemEditorPageProps {

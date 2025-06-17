@@ -2,25 +2,18 @@
 'use server';
 
 import prisma from '@/lib/prisma';
-import { Locale } from '@/generated/client';
 import { serialize } from 'next-mdx-remote/serialize';
 
-export async function getProblemData(problemId: string, locale?: string) {
-    const selectedLocale = locale as Locale;
-
+export async function getProblemData(problemId: string) {
     const problem = await prisma.problem.findUnique({
         where: { id: problemId },
         include: {
+            localizations: true,
             templates: true,
             testcases: {
                 include: { inputs: true }
-            },
-            localizations: {
-                where: {
-                    locale: selectedLocale,
-                },
-            },
-        },
+            }
+        }
     });
 
     if (!problem) {
@@ -32,7 +25,9 @@ export async function getProblemData(problemId: string, locale?: string) {
 
     const rawDescription = getContent('DESCRIPTION');
 
+    // MDX序列化，给客户端渲染用
     const mdxDescription = await serialize(rawDescription, {
+        // 可以根据需要添加MDX插件配置
         parseFrontmatter: false,
     });
 
@@ -45,19 +40,19 @@ export async function getProblemData(problemId: string, locale?: string) {
         memoryLimit: problem.memoryLimit,
         title: getContent('TITLE'),
         description: rawDescription,
-        mdxDescription,
+        mdxDescription,  // 新增序列化后的字段
         solution: getContent('SOLUTION'),
         templates: problem.templates.map(t => ({
             language: t.language,
-            content: t.content,
+            content: t.content
         })),
         testcases: problem.testcases.map(tc => ({
             id: tc.id,
             expectedOutput: tc.expectedOutput,
             inputs: tc.inputs.map(input => ({
                 name: input.name,
-                value: input.value,
-            })),
-        })),
+                value: input.value
+            }))
+        }))
     };
 }
