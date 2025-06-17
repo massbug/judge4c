@@ -1,87 +1,105 @@
-"use client";
-
+"use client"
+import { siteConfig } from "@/config/site"
+import * as React from "react"
 import {
-  AudioWaveform,
-  Bot,
+  BookOpen,
   Command,
   Frame,
-  GalleryVerticalEnd,
+  LifeBuoy,
   Map,
   PieChart,
+  Send,
   Settings2,
   SquareTerminal,
-} from "lucide-react";
-import * as React from "react";
+} from "lucide-react"
+
+import { NavMain } from "@/components/nav-main"
+import { NavProjects } from "@/components/nav-projects"
+import { NavSecondary } from "@/components/nav-secondary"
+import { NavUser } from "@/components/nav-user"
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
-  SidebarRail,
-} from "@/components/ui/sidebar";
-import { NavMain } from "@/components/nav-main";
-import { NavProjects } from "@/components/nav-projects";
-import { TeamSwitcher } from "@/components/team-switcher";
-import { NavUser, type NavUserProps } from "@/components/nav-user";
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+} from "@/components/ui/sidebar"
 
 const data = {
-  teams: [
-    {
-      name: "Acme Inc",
-      logo: GalleryVerticalEnd,
-      plan: "Enterprise",
-    },
-    {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
-    },
-  ],
+  user: {
+    name: "shadcn",
+    email: "m@example.com",
+    avatar: "/avatars/shadcn.jpg",
+  },
   navMain: [
     {
-      title: "Problemset",
-      url: "/dashboard/problemset",
+      title: "Dashboard",
+      url: "#",
       icon: SquareTerminal,
       isActive: true,
-    },
-    {
-      title: "Models",
-      url: "#",
-      icon: Bot,
       items: [
         {
-          title: "Genesis",
+          title: "Home",
+          url: "/",
+        },
+        {
+          title: "Personal interface",
           url: "#",
         },
         {
-          title: "Explorer",
+          title: "Problems",
+          url: "/problemset",
+        },
+      ],
+    },
+    
+    {
+      title: "Done Topics",
+      url: "#",
+      icon: BookOpen,
+      items: [
+        {
+          title: "All Coding",
           url: "#",
         },
         {
-          title: "Quantum",
+          title: "Correct Codingset",
+          url: "#",
+        },
+        {
+          title: "Wrong Codingset",
           url: "#",
         },
       ],
     },
     {
       title: "Settings",
-      url: "/dashboard/settings",
+      url: "#",
       icon: Settings2,
       items: [
         {
           title: "General",
-          url: "/general",
+          url: "#",
         },
         {
-          title: "Language Server",
-          url: "/language-server",
+          title: "Language",
+          url: "#",
         },
       ],
+    },
+  ],
+  navSecondary: [
+    {
+      title: "Support",
+      url: "/",
+      icon: LifeBuoy,
+    },
+    {
+      title: "Feedback",
+      url: siteConfig.url.repo.github,
+      icon: Send,
     },
   ],
   projects: [
@@ -101,29 +119,36 @@ const data = {
       icon: Map,
     },
   ],
-};
-
-interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
-  user: NavUserProps["user"];
 }
 
-export function AppSidebar({
-  user,
-  ...props
-}: AppSidebarProps) {
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar collapsible="icon" {...props}>
+    <Sidebar variant="inset" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton size="lg" asChild>
+              <a href="#">
+                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                  <Command className="size-4" />
+                </div>
+                <div className="grid flex-1 text-left text-sm leading-tight">
+                  <span className="truncate font-semibold">Judge4c</span>
+                  <span className="truncate text-xs">Programming Learning</span>
+                </div>
+              </a>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
         <NavProjects projects={data.projects} />
+        <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={user} />
+        <NavUser user={data.user} />
       </SidebarFooter>
-      <SidebarRail />
     </Sidebar>
-  );
+  )
 }

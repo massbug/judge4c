@@ -33,13 +33,13 @@
     --chart-5: 213 16% 16%;
     --radius: 0.5rem;
     --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 213 13% 6%;
-    --sidebar-primary: 213 13% 16%;
-    --sidebar-primary-foreground: 213 13% 76%;
-    --sidebar-accent: 0 0% 85%;
-    --sidebar-accent-foreground: 0 0% 25%;
-    --sidebar-border: 0 0% 95%;
-    --sidebar-ring: 213 13% 16%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
   .dark {
@@ -67,14 +67,14 @@
     --chart-3: 216 28% 22%;
     --chart-4: 210 7% 28%;
     --chart-5: 210 20% 82%;
-    --sidebar-background: 216 28% 5%;
-    --sidebar-foreground: 210 17% 92%;
-    --sidebar-primary: 210 17% 82%;
-    --sidebar-primary-foreground: 210 17% 22%;
-    --sidebar-accent: 216 28% 22%;
-    --sidebar-accent-foreground: 216 28% 82%;
-    --sidebar-border: 216 18% 12%;
-    --sidebar-ring: 210 17% 82%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
   }
 }
 
@@ -118,4 +118,15 @@ code[data-theme*=" "] span {
 .dark code[data-theme*=" "] span {
   color: var(--shiki-dark);
   background-color: var(--shiki-dark-bg);
+}
+
+
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }
