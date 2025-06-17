@@ -1,108 +1,147 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import MdxPreview from "@/components/mdx-preview";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CoreEditor } from '@/components/core-editor';
-import { getProblemData } from '@/app/actions/getProblem';
-import { Accordion } from "@/components/ui/accordion"; // ← 这里导入 Accordion
+import { CoreEditor } from "@/components/core-editor";
+import MdxPreview from "@/components/mdx-preview";
+import { getProblemData } from "@/app/actions/getProblem";
+import { getProblemLocales } from "@/app/actions/getProblemLocales";
+import { Accordion } from "@/components/ui/accordion";
+import { VideoEmbed } from "@/components/content/video-embed";
 
-export default function EditDescriptionPanel({
-                                               problemId,
-                                             }: {
-  problemId: string;
-}) {
-  const [description, setDescription] = useState({
-    title: `Description for Problem ${problemId}`,
-    content: `Description content for Problem ${problemId}...`
-  });
-  const [viewMode, setViewMode] = useState<'edit' | 'preview' | 'compare'>('edit');
+export default function EditDescriptionPanel({ problemId }: { problemId: string }) {
+  const [locales, setLocales] = useState<string[]>([]);
+  const [currentLocale, setCurrentLocale] = useState<string>("");
+  const [customLocale, setCustomLocale] = useState("");
 
+  const [description, setDescription] = useState({ title: "", content: "" });
+  const [viewMode, setViewMode] = useState<"edit" | "preview" | "compare">("edit");
+
+  // 获取语言列表
   useEffect(() => {
-    async function fetchData() {
-      try {
-        const problemData = await getProblemData(problemId);
-        setDescription({
-          title: problemData.title,
-          content: problemData.description
-        });
-      } catch (error) {
-        console.error('获取题目信息失败:', error);
+    async function fetchLocales() {
+      const langs = await getProblemLocales(problemId);
+      setLocales(langs);
+      if (langs.length > 0) {
+        setCurrentLocale(langs[0]);
       }
     }
-
-    fetchData();
+    fetchLocales();
   }, [problemId]);
+
+  // 获取对应语言的题目数据
+  useEffect(() => {
+    if (!currentLocale) return;
+    async function fetchProblem() {
+      const data = await getProblemData(problemId, currentLocale);
+      setDescription({
+        title: data?.title || "",
+        content: data?.description || "",
+      });
+    }
+    fetchProblem();
+  }, [problemId, currentLocale]);
+
+  // 添加新语言（仅前端）
+  function handleAddCustomLocale() {
+    if (customLocale && !locales.includes(customLocale)) {
+      const newLocales = [...locales, customLocale];
+      setLocales(newLocales);
+      setCurrentLocale(customLocale);
+      setCustomLocale("");
+      setDescription({ title: "", content: "" });
+    }
+  }
 
   return (
       <Card className="w-full">
         <CardHeader>
           <CardTitle>题目描述</CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="description-title">标题</Label>
-              <Input
-                  id="description-title"
-                  value={description.title}
-                  onChange={(e) => setDescription({...description, title: e.target.value})}
-                  placeholder="输入题目标题"
-              />
-            </div>
-
+        <CardContent className="space-y-6">
+          {/* 语言切换 */}
+          <div className="space-y-2">
+            <Label>选择语言</Label>
             <div className="flex space-x-2">
-              <Button
-                  type="button"
-                  variant={viewMode === 'edit' ? 'default' : 'outline'}
-                  onClick={() => setViewMode('edit')}
+              <select
+                  value={currentLocale}
+                  onChange={(e) => setCurrentLocale(e.target.value)}
+                  className="border rounded-md px-3 py-2"
               >
-                编辑
-              </Button>
-              <Button
-                  type="button"
-                  variant={viewMode === 'preview' ? 'default' : 'outline'}
-                  onClick={() => setViewMode(viewMode === 'preview' ? 'edit' : 'preview')}
-              >
-                {viewMode === 'preview' ? '取消' : '预览'}
-              </Button>
-              <Button
-                  type="button"
-                  variant={viewMode === 'compare' ? 'default' : 'outline'}
-                  onClick={() => setViewMode('compare')}
-              >
-                对比
-              </Button>
+                {locales.map((locale) => (
+                    <option key={locale} value={locale}>
+                      {locale}
+                    </option>
+                ))}
+              </select>
+              <Input
+                  placeholder="添加新语言"
+                  value={customLocale}
+                  onChange={(e) => setCustomLocale(e.target.value)}
+              />
+              <Button onClick={handleAddCustomLocale}>添加</Button>
             </div>
+          </div>
 
-            <div className={viewMode === 'compare' ? "grid grid-cols-2 gap-6" : "flex flex-col gap-6"}>
-              <div className={viewMode === 'edit' || viewMode === 'compare' ? "block" : "hidden"}>
+          {/* 标题输入 */}
+          <div className="space-y-2">
+            <Label htmlFor="description-title">标题</Label>
+            <Input
+                id="description-title"
+                value={description.title}
+                onChange={(e) => setDescription({ ...description, title: e.target.value })}
+                placeholder="输入题目标题"
+            />
+          </div>
+
+          {/* 编辑/预览切换 */}
+          <div className="flex space-x-2">
+            <Button
+                type="button"
+                variant={viewMode === "edit" ? "default" : "outline"}
+                onClick={() => setViewMode("edit")}
+            >
+              编辑
+            </Button>
+            <Button
+                type="button"
+                variant={viewMode === "preview" ? "default" : "outline"}
+                onClick={() => setViewMode(viewMode === "preview" ? "edit" : "preview")}
+            >
+              {viewMode === "preview" ? "取消" : "预览"}
+            </Button>
+            <Button
+                type="button"
+                variant={viewMode === "compare" ? "default" : "outline"}
+                onClick={() => setViewMode("compare")}
+            >
+              对比
+            </Button>
+          </div>
+
+          {/* 编辑/预览区域 */}
+          <div className={viewMode === "compare" ? "grid grid-cols-2 gap-6" : "flex flex-col gap-6"}>
+            {(viewMode === "edit" || viewMode === "compare") && (
                 <div className="relative h-[600px]">
                   <CoreEditor
                       value={description.content}
-                      onChange={(newContent) =>
-                          setDescription({ ...description, content: newContent || '' })
-                      }
+                      onChange={(newVal) => setDescription({ ...description, content: newVal || "" })}
                       language="markdown"
                       className="absolute inset-0 rounded-md border border-input"
                   />
                 </div>
-              </div>
-              {viewMode !== 'edit' && (
-                  <div className="prose dark:prose-invert">
-                    <MdxPreview
-                        source={description.content}
-                        components={{ Accordion }} // ← 这里传入 Accordion
-                    />
-                  </div>
-              )}
-            </div>
-
-            <Button>保存更改</Button>
+            )}
+            {viewMode !== "edit" && (
+                <div className="prose dark:prose-invert">
+                  <MdxPreview source={description.content} components={{ Accordion, VideoEmbed }} />
+                </div>
+            )}
           </div>
+
+          <Button>保存更改</Button>
         </CardContent>
       </Card>
   );
