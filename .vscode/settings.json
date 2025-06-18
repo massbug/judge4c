@@ -2,5 +2,16 @@
     "i18n-ally.localesPaths": [
         "messages"
     ],
-    "i18n-ally.keystyle": "nested"
+    "i18n-ally.keystyle": "nested",
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "username": "postgres",
+            "database": "abc",
+            "name": "beiyu"
+        }
+    ]
 }
