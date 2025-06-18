@@ -35,56 +35,56 @@ const data = {
   },
   navMain: [
     {
-      title: "Dashboard",
+      title: "页面",
       url: "#",
       icon: SquareTerminal,
       isActive: true,
       items: [
         {
-          title: "Home",
-          url: "/",
+          title: "主页",
+          url: "/dashboard",
         },
         {
-          title: "Personal interface",
+          title: "历史记录",
           url: "#",
         },
         {
-          title: "Problems",
+          title: "题目集",
           url: "/problemset",
         },
       ],
     },
     
     {
-      title: "Done Topics",
+      title: "已完成事项",
       url: "#",
       icon: BookOpen,
       items: [
         {
-          title: "All Coding",
+          title: "全部编程集",
           url: "#",
         },
         {
-          title: "Correct Codingset",
+          title: "错题集",
           url: "#",
         },
-        {
-          title: "Wrong Codingset",
+         {
+          title: "收藏集",
           url: "#",
         },
       ],
     },
     {
-      title: "Settings",
+      title: "设置",
       url: "#",
       icon: Settings2,
       items: [
         {
-          title: "General",
+          title: "一般设置",
           url: "#",
         },
         {
-          title: "Language",
+          title: "语言",
           url: "#",
         },
       ],
@@ -102,21 +102,21 @@ const data = {
       icon: Send,
     },
   ],
-  projects: [
+  wrongProblems: [
     {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
+      id: "abc123",
+      name: "Two Sum",
+      status: "WA",
     },
     {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
+      id: "def456",
+      name: "Reverse Linked List",
+      status: "RE",
     },
     {
-      name: "Travel",
-      url: "#",
-      icon: Map,
+      id: "ghi789",
+      name: "Binary Tree Paths",
+      status: "TLE",
     },
   ],
 }
@@ -143,7 +143,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
+        <NavProjects projects={data.wrongProblems} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
