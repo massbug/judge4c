@@ -214,5 +214,24 @@
         "answer4": "Editor uses @shikijs/monaco themes, documentation rendered with github-markdown-css"
       }
     }
+  },
+  "Index": {
+    "title": "Welcome to Judge4C",
+    "description": "Online Judge System"
+  },
+  "Dashboard": {
+    "title": "Teacher Dashboard",
+    "totalSubmissions": "Total Submissions",
+    "passRate": "Pass Rate",
+    "activeStudents": "Active Students",
+    "avgCompletionTime": "Average Completion Time",
+    "problemStats": "Problem Statistics",
+    "problemStatsDesc": "Submissions and pass rates for each problem",
+    "recentSubmissions": "Recent Submissions",
+    "recentSubmissionsDesc": "Recent student submissions",
+    "viewAll": "View All",
+    "week": "Week",
+    "month": "Month",
+    "year": "Year"
   }
 }
