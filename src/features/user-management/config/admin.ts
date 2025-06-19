@@ -15,18 +15,18 @@ export type Admin = z.infer<typeof adminSchema>
 
 // 添加管理员表单校验 schema
 export const addAdminSchema = z.object({
-  name: z.string().optional(),
+  name: z.string().min(1, "姓名为必填项"),
   email: z.string().email("请输入有效的邮箱地址"),
-  password: z.string().optional(),
+  password: z.string().min(8, "密码长度8-32位").max(32, "密码长度8-32位"),
   createdAt: z.string(),
 })
 
 // 编辑管理员表单校验 schema
 export const editAdminSchema = z.object({
   id: z.string(),
-  name: z.string().optional(),
+  name: z.string().min(1, "姓名为必填项"),
   email: z.string().email("请输入有效的邮箱地址"),
-  password: z.string().optional(),
+  password: z.string().min(8, "密码长度8-32位").max(32, "密码长度8-32位"),
   createdAt: z.string(),
 })
 
@@ -77,8 +77,8 @@ export const adminConfig = {
       key: "name",
       label: "姓名",
       type: "text",
-      placeholder: "请输入管理员姓名（选填）",
-      required: false,
+      placeholder: "请输入管理员姓名",
+      required: true,
     },
     {
       key: "email",
@@ -91,8 +91,8 @@ export const adminConfig = {
       key: "password",
       label: "密码",
       type: "password",
-      placeholder: "请输入密码（选填）",
-      required: false,
+      placeholder: "请输入8-32位密码",
+      required: true,
     },
     {
       key: "createdAt",

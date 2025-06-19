@@ -293,11 +293,11 @@ export function UserTable({ config, data: initialData }: UserTableProps) {
     if (isProblem) {
       problemApi.getProblems()
         .then(setData)
-        .catch(() => toast.error('获取数据失败'))
+        .catch(() => toast.error('获取数据失败', { duration: 1500 }))
     } else {
-      userApi.getUsers(config.userType)
-        .then(setData)
-        .catch(() => toast.error('获取数据失败'))
+    userApi.getUsers(config.userType)
+      .then(setData)
+        .catch(() => toast.error('获取数据失败', { duration: 1500 }))
     }
   }, [config.userType])
 
@@ -335,9 +335,9 @@ export function UserTable({ config, data: initialData }: UserTableProps) {
         await userApi.createUser(config.userType, submitData)
         userApi.getUsers(config.userType).then(setData)
         onOpenChange(false)
-        toast.success('添加成功')
+        toast.success('添加成功', { duration: 1500 })
       } catch {
-        toast.error("添加失败")
+        toast.error('添加失败', { duration: 1500 })
       } finally {
         setIsLoading(false)
       }
@@ -410,9 +410,9 @@ export function UserTable({ config, data: initialData }: UserTableProps) {
         await problemApi.createProblem(submitData)
         problemApi.getProblems().then(setData)
         onOpenChange(false)
-        toast.success('添加成功')
+        toast.success('添加成功', { duration: 1500 })
       } catch {
-        toast.error("添加失败")
+        toast.error('添加失败', { duration: 1500 })
       } finally {
         setIsLoading(false)
       }
@@ -485,9 +485,9 @@ export function UserTable({ config, data: initialData }: UserTableProps) {
         await userApi.updateUser(config.userType, submitData)
         userApi.getUsers(config.userType).then(setData)
         onOpenChange(false)
-        toast.success('修改成功')
+        toast.success('修改成功', { duration: 1500 })
       } catch {
-        toast.error("修改失败")
+        toast.error('修改失败', { duration: 1500 })
       } finally {
         setIsLoading(false)
       }
@@ -558,9 +558,9 @@ export function UserTable({ config, data: initialData }: UserTableProps) {
         await problemApi.updateProblem(submitData)
         problemApi.getProblems().then(setData)
         onOpenChange(false)
-        toast.success('修改成功')
+        toast.success('修改成功', { duration: 1500 })
       } catch {
-        toast.error("修改失败")
+        toast.error('修改失败', { duration: 1500 })
       } finally {
         setIsLoading(false)
       }
@@ -577,26 +577,21 @@ export function UserTable({ config, data: initialData }: UserTableProps) {
           </DialogHeader>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <div className="grid gap-4 py-4">
-              {config.formFields.map((field) => (
-                <div key={field.key} className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor={field.key} className="text-right">
-                    {field.label}
-                  </Label>
-                  <Input
-                    id={field.key}
-                    type={field.type}
-                    {...form.register(field.key as 'displayId' | 'difficulty', field.key === 'displayId' ? { valueAsNumber: true } : {})}
-                    className="col-span-3"
-                    placeholder={field.placeholder}
-                    disabled={field.key === 'id'}
-                  />
-                  {form.formState.errors[field.key as keyof typeof form.formState.errors]?.message && (
-                    <p className="col-span-3 col-start-2 text-sm text-red-500">
-                      {form.formState.errors[field.key as keyof typeof form.formState.errors]?.message as string}
-                    </p>
-                  )}
-                </div>
-              ))}
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="displayId" className="text-right">题目编号</Label>
+                <Input
+                  id="displayId"
+                  type="number"
+                  {...form.register('displayId', { valueAsNumber: true })}
+                  className="col-span-3"
+                  placeholder="请输入题目编号"
+                />
+                {form.formState.errors.displayId?.message && (
+                  <p className="col-span-3 col-start-2 text-sm text-red-500">
+                    {form.formState.errors.displayId?.message as string}
+                  </p>
+                )}
+              </div>
             </div>
             <DialogFooter>
               <Button type="submit" disabled={isLoading}>
@@ -644,6 +639,8 @@ export function UserTable({ config, data: initialData }: UserTableProps) {
                     password: "密码",
                     createdAt: "创建时间",
                     actions: "操作",
+                    displayId: "题目编号",
+                    difficulty: "难度",
                   }
                   return (
                     <DropdownMenuCheckboxItem
@@ -660,15 +657,17 @@ export function UserTable({ config, data: initialData }: UserTableProps) {
                 })}
             </DropdownMenuContent>
           </DropdownMenu>
-          <Button
-            variant="outline"
-            size="sm"
-            className="h-7 gap-1 px-2 text-sm"
-            onClick={() => setIsAddDialogOpen(true)}
-          >
-            <PlusIcon className="h-4 w-4" />
-            {config.actions.add.label}
-          </Button>
+          {config.actions.add && (
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-7 gap-1 px-2 text-sm"
+              onClick={() => setIsAddDialogOpen(true)}
+            >
+              <PlusIcon className="h-4 w-4" />
+              {config.actions.add.label}
+            </Button>
+          )}
           <Button
             variant="destructive"
             size="sm"
@@ -737,16 +736,16 @@ export function UserTable({ config, data: initialData }: UserTableProps) {
             </TableBody>
           </Table>
         </div>
-      </div>
-      
+        </div>
+        
       <div className="flex items-center justify-between px-2">
         <div className="flex-1 text-sm text-muted-foreground">
           共 {table.getFilteredRowModel().rows.length} 条记录
-        </div>
+          </div>
         <div className="flex items-center space-x-6 lg:space-x-8">
           <div className="flex items-center space-x-2">
             <p className="text-sm font-medium">每页显示</p>
-            <Select
+              <Select
               value={`${table.getState().pagination.pageSize}`}
               onValueChange={(value) => {
                 table.setPageSize(Number(value))
@@ -754,20 +753,20 @@ export function UserTable({ config, data: initialData }: UserTableProps) {
             >
               <SelectTrigger className="h-8 w-[70px]">
                 <SelectValue placeholder={table.getState().pagination.pageSize} />
-              </SelectTrigger>
+                </SelectTrigger>
               <SelectContent side="top">
                 {config.pagination.pageSizes.map((pageSize) => (
                   <SelectItem key={pageSize} value={`${pageSize}`}>
                     {pageSize}
                   </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+                  ))}
+                </SelectContent>
+              </Select>
           </div>
           <div className="flex w-[100px] items-center justify-center text-sm font-medium">
             第 {table.getState().pagination.pageIndex + 1} 页，共{" "}
             {table.getPageCount()} 页
-          </div>
+            </div>
           <div className="flex items-center space-x-2">
             <Button
               variant="outline"
@@ -830,11 +829,11 @@ export function UserTable({ config, data: initialData }: UserTableProps) {
       </div>
       
       {/* 添加用户对话框 */}
-      {isProblem ? (
+      {isProblem && config.actions.add ? (
         <AddUserDialogProblem open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen} />
-      ) : (
+      ) : !isProblem && config.actions.add ? (
         <AddUserDialogUser open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen} />
-      )}
+      ) : null}
       
       {/* 编辑用户对话框 */}
       {isProblem && editingUser ? (
@@ -849,7 +848,7 @@ export function UserTable({ config, data: initialData }: UserTableProps) {
           <DialogHeader>
             <DialogTitle>确认删除</DialogTitle>
             <DialogDescription>
-              {deleteBatch 
+              {deleteBatch
                 ? `确定要删除选中的 ${table.getFilteredSelectedRowModel().rows.length} 条记录吗？此操作不可撤销。`
                 : "确定要删除这条记录吗？此操作不可撤销。"
               }
@@ -859,11 +858,11 @@ export function UserTable({ config, data: initialData }: UserTableProps) {
             <Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>
               取消
             </Button>
-            <Button 
-              variant="destructive" 
+            <Button
+              variant="destructive"
               onClick={async () => {
                 try {
-                  if (deleteBatch) {
+                if (deleteBatch) {
                     const selectedRows = table.getFilteredSelectedRowModel().rows
                     for (const row of selectedRows) {
                       if (isProblem) {
@@ -871,23 +870,23 @@ export function UserTable({ config, data: initialData }: UserTableProps) {
                         problemApi.getProblems().then(setData)
                       } else {
                         await userApi.deleteUser(config.userType, row.original.id)
-                        userApi.getUsers(config.userType).then(setData)
+                  userApi.getUsers(config.userType).then(setData)
                       }
                     }
-                    toast.success(`成功删除 ${selectedRows.length} 条记录`)
-                  } else if (deleteTargetId) {
+                    toast.success(`成功删除 ${selectedRows.length} 条记录`, { duration: 1500 })
+                } else if (deleteTargetId) {
                     if (isProblem) {
                       await problemApi.deleteProblem(deleteTargetId)
                       problemApi.getProblems().then(setData)
                     } else {
-                      await userApi.deleteUser(config.userType, deleteTargetId)
-                      userApi.getUsers(config.userType).then(setData)
+                  await userApi.deleteUser(config.userType, deleteTargetId)
+                  userApi.getUsers(config.userType).then(setData)
                     }
-                    toast.success('删除成功')
+                    toast.success('删除成功', { duration: 1500 })
                   }
                   setDeleteDialogOpen(false)
                 } catch {
-                  toast.error("删除失败")
+                  toast.error('删除失败', { duration: 1500 })
                 }
               }}
             >

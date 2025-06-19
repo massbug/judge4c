@@ -26,14 +26,12 @@ export const problemConfig = {
     { key: "id", label: "ID", sortable: true },
     { key: "displayId", label: "题目编号", sortable: true, searchable: true, placeholder: "搜索编号" },
     { key: "difficulty", label: "难度", sortable: true, searchable: true, placeholder: "搜索难度" },
-    { key: "createdAt", label: "创建时间", sortable: true },
   ],
   formFields: [
     { key: "displayId", label: "题目编号", type: "number", required: true },
     { key: "difficulty", label: "难度", type: "text", required: true },
   ],
   actions: {
-    add: { label: "添加题目", icon: "PlusIcon" },
     edit: { label: "编辑", icon: "PencilIcon" },
     delete: { label: "删除", icon: "TrashIcon" },
     batchDelete: { label: "批量删除", icon: "TrashIcon" },
