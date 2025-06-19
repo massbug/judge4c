@@ -27,51 +27,45 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 
-
 const data = {
   user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
+    name: "teacher",
+    email: "teacher@example.com",
+    avatar: "/avatars/teacher.jpg",
   },
   navMain: [
     {
-      title: "页面",
-      url: "#",
+      title: "教师首页",
+      url: "/teacher/dashboard",
       icon: SquareTerminal,
       isActive: true,
       items: [
         {
-          title: "主页",
-          url: "/student/dashboard",
+          title: "课程管理",
+          url: "/teacher/courses",
         },
         {
-          title: "历史记录",
-          url: "#",
+          title: "学生管理",
+          url: "/teacher/students",
         },
         {
-          title: "题目集",
-          url: "/problemset",
+          title: "题库管理",
+          url: "/teacher/problems",
         },
       ],
     },
-    
     {
-      title: "已完成事项",
-      url: "#",
-      icon: BookOpen,
+      title: "统计分析",
+      url: "/teacher/statistics",
+      icon: PieChart,
       items: [
         {
-          title: "全部编程集",
-          url: "#",
+          title: "成绩统计",
+          url: "/teacher/statistics/grades",
         },
         {
-          title: "错题集",
-          url: "#",
-        },
-         {
-          title: "收藏集",
-          url: "#",
+          title: "错题分析",
+          url: "/teacher/statistics/activity",
         },
       ],
     },
@@ -82,11 +76,11 @@ const data = {
       items: [
         {
           title: "一般设置",
-          url: "#",
+          url: "/teacher/profile",
         },
         {
           title: "语言",
-          url: "#",
+          url: "/teacher/settings",
         },
       ],
     },
@@ -103,26 +97,9 @@ const data = {
       icon: Send,
     },
   ],
-  wrongProblems: [
-    {
-      id: "abc123",
-      name: "Two Sum",
-      status: "WA",
-    },
-    {
-      id: "def456",
-      name: "Reverse Linked List",
-      status: "RE",
-    },
-    {
-      id: "ghi789",
-      name: "Binary Tree Paths",
-      status: "TLE",
-    },
-  ],
 }
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function TeacherSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar variant="inset" {...props}>
       <SidebarHeader>
@@ -134,8 +111,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   <Command className="size-4" />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">Judge4c</span>
-                  <span className="truncate text-xs">Programming Learning</span>
+                  <span className="truncate font-semibold">Judge4c 教师端</span>
+                  <span className="truncate text-xs">Teaching Platform</span>
                 </div>
               </a>
             </SidebarMenuButton>
@@ -144,7 +121,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavProjects projects={data.wrongProblems} />
+        {/* 教师端可自定义更多内容 */}
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
