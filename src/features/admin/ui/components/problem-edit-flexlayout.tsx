@@ -1,15 +1,17 @@
 "use client";
 
-import { FlexLayout } from "./flexlayout";
-import { useProblemFlexLayoutStore } from "@/stores/flexlayout";
+import { useProblemEditFlexLayoutStore } from "@/stores/flexlayout";
+import { FlexLayout } from "@/features/problems/components/flexlayout";
 
-interface ProblemFlexLayoutProps {
+interface ProblemEditFlexLayoutProps {
   components: Record<string, React.ReactNode>;
 }
 
-export const ProblemFlexLayout = ({ components }: ProblemFlexLayoutProps) => {
+export const ProblemEditFlexLayout = ({
+  components,
+}: ProblemEditFlexLayoutProps) => {
   const { hasHydrated, model, jsonModel, setModel, setJsonModel } =
-    useProblemFlexLayoutStore();
+    useProblemEditFlexLayoutStore();
 
   return (
     <FlexLayout
