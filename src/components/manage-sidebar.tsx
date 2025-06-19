@@ -1,13 +1,12 @@
-import * as React from "react"
-import { ChevronRight } from "lucide-react"
+import * as React from "react";
+import { ChevronRight } from "lucide-react";
 
-import { SearchForm } from "@/components/search-form"
-import { VersionSwitcher } from "@/components/version-switcher"
+import { VersionSwitcher } from "@/components/manage-switcher";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible"
+} from "@/components/ui/collapsible";
 import {
   Sidebar,
   SidebarContent,
@@ -19,72 +18,29 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
 
-// This is sample data.
+// 自定义数据：包含用户相关菜单项
 const data = {
   versions: ["1.0.1", "1.1.0-alpha", "2.0.0-beta1"],
-  navMain: [
+  navUser: [
     {
-      title: "学生",
+      title: "个人中心",
       url: "#",
       items: [
-        {
-          title: "学生列表",
-          url: "#",
-        },
-        {
-          title: "学生详情",
-          url: "#",
-        },
-        {
-          title: "学生仪表盘",
-          url: "#",
-        },
+        { title: "登录信息", url: "#", key: "profile" },
+        { title: "修改密码", url: "#", key: "change-password" },
       ],
     },
-    {
-      title: "教师",
-      url: "#",
-      items: [
-        {
-          title: "教师列表",
-          url: "#",
-        },
-        {
-          title: "教师详情",
-          url: "#",
-          isActive: true,
-        },
-        {
-          title: "教师仪表盘",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "管理员",
-      url: "#",
-      items: [
-        {
-          title: "管理员列表",
-          url: "#",
-        },
-        {
-          title: "管理员详情",
-          url: "#",
-        },
-        {
-          title: "Functions",
-          url: "#",
-        },
-      ],
-    },
-  
   ],
+};
+
+// 显式定义 props 类型
+interface AppSidebarProps {
+  onItemClick?: (key: string) => void;
 }
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({ onItemClick = (key: string) => {}, ...props }: AppSidebarProps) {
   return (
     <Sidebar {...props}>
       <SidebarHeader>
@@ -92,11 +48,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           versions={data.versions}
           defaultVersion={data.versions[0]}
         />
-        <SearchForm />
       </SidebarHeader>
       <SidebarContent className="gap-0">
-        {/* We create a collapsible SidebarGroup for each parent. */}
-        {data.navMain.map((item) => (
+        {/* 渲染用户相关的侧边栏菜单 */}
+        {data.navUser.map((item) => (
           <Collapsible
             key={item.title}
             title={item.title}
@@ -109,17 +64,23 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 className="group/label text-sm text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
               >
                 <CollapsibleTrigger>
-                  {item.title}{" "}
+                  {item.title}
                   <ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
                 </CollapsibleTrigger>
               </SidebarGroupLabel>
               <CollapsibleContent>
                 <SidebarGroupContent>
                   <SidebarMenu>
-                    {item.items.map((item) => (
-                      <SidebarMenuItem key={item.title}>
-                        <SidebarMenuButton asChild isActive={item.isActive}>
-                          <a href={item.url}>{item.title}</a>
+                    {item.items.map((subItem) => (
+                      <SidebarMenuItem key={subItem.title}>
+                        <SidebarMenuButton
+                          asChild
+                          onClick={(e) => {
+                            e.preventDefault();
+                            onItemClick(subItem.key);
+                          }}
+                        >
+                          <a href="#">{subItem.title}</a>
                         </SidebarMenuButton>
                       </SidebarMenuItem>
                     ))}
@@ -132,5 +93,5 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarContent>
       <SidebarRail />
     </Sidebar>
-  )
+  );
 }
