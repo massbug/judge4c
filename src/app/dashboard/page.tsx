@@ -1,4 +1,4 @@
-import { TeacherSidebar } from "@/components/sidebar/teacher-sidebar"
+import { AppSidebar } from "@/components/sidebar/app-sidebar"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -17,7 +17,7 @@ import {
 export default function Page() {
   return (
     <SidebarProvider>
-      <TeacherSidebar />
+      <AppSidebar />
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2">
           <div className="flex items-center gap-2 px-4">
