@@ -2,11 +2,8 @@
 import { siteConfig } from "@/config/site"
 import * as React from "react"
 import {
-  BookOpen,
   Command,
-  Frame,
   LifeBuoy,
-  Map,
   PieChart,
   Send,
   Settings2,
@@ -14,7 +11,6 @@ import {
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
-import { NavProjects } from "@/components/nav-projects"
 import { NavSecondary } from "@/components/nav-secondary"
 import { NavUser } from "@/components/nav-user"
 import {

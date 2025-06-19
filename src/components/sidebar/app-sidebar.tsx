@@ -4,10 +4,7 @@ import * as React from "react"
 import {
   BookOpen,
   Command,
-  Frame,
   LifeBuoy,
-  Map,
-  PieChart,
   Send,
   Settings2,
   SquareTerminal,

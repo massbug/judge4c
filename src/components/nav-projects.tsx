@@ -10,15 +10,10 @@ import {
   X,
   Info,
   AlertTriangle,
-  type LucideIcon,
 } from "lucide-react"
 import React, { useState } from "react"
 import {
   Dialog,
-  DialogTrigger,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
 } from "@/components/ui/dialog"
 
 import {
@@ -37,7 +32,6 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
-import { Badge } from "@/components/ui/badge"
 import { WrongbookDialog } from "@/components/UncompletedProject/wrongbook-dialog"
 import { ShareDialogContent } from "@/components/UncompletedProject/sharedialog"
 
