@@ -4,7 +4,7 @@ import { Actions } from "flexlayout-react";
 import { useTranslations } from "next-intl";
 import { ArrowLeftIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useProblemFlexLayoutStore } from "@/stores/problem-flexlayout";
+import { useProblemFlexLayoutStore } from "@/stores/flexlayout";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 export const DetailHeader = () => {

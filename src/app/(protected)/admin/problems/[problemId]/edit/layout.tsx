@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { ProblemHeader } from "@/features/problems/components/header";
+import { ProblemEditLayout } from "@/features/admin/ui/layouts/problem-edit-layout";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -13,14 +13,7 @@ const Layout = async ({ children, params }: LayoutProps) => {
     return notFound();
   }
 
-  return (
-    <div className="flex flex-col h-screen">
-      <ProblemHeader />
-      <div className="flex w-full flex-grow overflow-y-hidden p-2.5 pt-0">
-        {children}
-      </div>
-    </div>
-  );
+  return <ProblemEditLayout>{children}</ProblemEditLayout>;
 };
 
 export default Layout;

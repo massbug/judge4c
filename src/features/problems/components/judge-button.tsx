@@ -10,7 +10,7 @@ import { LoaderCircleIcon, PlayIcon } from "lucide-react";
 import { TooltipButton } from "@/components/tooltip-button";
 import { useProblemEditorStore } from "@/stores/problem-editor";
 import { JudgeToast } from "@/features/problems/components/judge-toast";
-import { useProblemFlexLayoutStore } from "@/stores/problem-flexlayout";
+import { useProblemFlexLayoutStore } from "@/stores/flexlayout";
 
 interface JudgeButtonProps {
   className?: string;
