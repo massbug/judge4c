@@ -7,6 +7,7 @@ import { compile } from "./compile";
 import { auth, signIn } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { Language, Status } from "@/generated/client";
+import { analyzeCode } from "@/app/actions/analyze-code";
 import { createContainer, createTarStream, prepareEnvironment } from "./docker";
 
 export const judge = async (
@@ -117,6 +118,11 @@ export const judge = async (
         userId,
         problemId,
       },
+    });
+
+    await analyzeCode({
+      content,
+      submissionId: submission.id,
     });
 
     // Upload code to the container

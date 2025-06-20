@@ -1,11 +1,12 @@
 import { TestcasePanel } from "@/features/problems/testcase/panel";
-import { BotPanel } from "@/features/problems/bot/components/panel";
+// import { BotPanel } from "@/features/problems/bot/components/panel";
 import { CodePanel } from "@/features/problems/code/components/panel";
 import { DetailPanel } from "@/features/problems/detail/components/panel";
 import { SolutionPanel } from "@/features/problems/solution/components/panel";
 import { SubmissionPanel } from "@/features/problems/submission/components/panel";
 import { DescriptionPanel } from "@/features/problems/description/components/panel";
 import { ProblemFlexLayout } from "@/features/problems/components/problem-flexlayout";
+import { AnalysisPanel } from "@/features/problems/analysis/components/panel";
 
 interface ProblemPageProps {
   params: Promise<{ problemId: string }>;
@@ -28,7 +29,7 @@ export default async function ProblemPage({
     detail: <DetailPanel submissionId={submissionId} />,
     code: <CodePanel problemId={problemId} />,
     testcase: <TestcasePanel problemId={problemId} />,
-    bot: <BotPanel problemId={problemId} />,
+    bot: <AnalysisPanel submissionId={submissionId} />,
   };
 
   return (
