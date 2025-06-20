@@ -1,6 +1,7 @@
-"use client"
-import { siteConfig } from "@/config/site"
-import * as React from "react"
+"use client";
+
+import { siteConfig } from "@/config/site";
+import * as React from "react";
 import {
   BookOpen,
   Command,
@@ -8,12 +9,12 @@ import {
   Send,
   Settings2,
   SquareTerminal,
-} from "lucide-react"
+} from "lucide-react";
 
-import { NavMain } from "@/components/nav-main"
-import { NavProjects } from "@/components/nav-projects"
-import { NavSecondary } from "@/components/nav-secondary"
-import { NavUser } from "@/components/nav-user"
+import { NavMain } from "@/components/nav-main";
+import { NavProjects } from "@/components/nav-projects";
+import { NavSecondary } from "@/components/nav-secondary";
+import { NavUser } from "@/components/nav-user";
 import {
   Sidebar,
   SidebarContent,
@@ -22,15 +23,13 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
+import { User } from "next-auth";
 
+// import { useEffect, useState } from "react"
+// import { auth, signIn } from "@/lib/auth"
 
 const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
   navMain: [
     {
       title: "页面",
@@ -52,7 +51,7 @@ const data = {
         },
       ],
     },
-    
+
     {
       title: "已完成事项",
       url: "#",
@@ -66,7 +65,7 @@ const data = {
           title: "错题集",
           url: "#",
         },
-         {
+        {
           title: "收藏集",
           url: "#",
         },
@@ -77,10 +76,6 @@ const data = {
       url: "#",
       icon: Settings2,
       items: [
-        {
-          title: "一般设置",
-          url: "#",
-        },
         {
           title: "语言",
           url: "#",
@@ -117,11 +112,50 @@ const data = {
       status: "TLE",
     },
   ],
+};
+
+// // 获取当前登录用户信息的 API
+// async function fetchCurrentUser() {
+//   try {
+//     const res = await fetch("/api/auth/session");
+//     if (!res.ok) return null;
+//     const session = await res.json();
+//     return {
+//       name: session?.user?.name ?? "未登录用户",
+//       email: session?.user?.email ?? "",
+//       avatar: session?.user?.image ?? "/avatars/default.jpg",
+//     };
+//   } catch {
+//     return {
+//       name: "未登录用户",
+//       email: "",
+//       avatar: "/avatars/default.jpg",
+//     };
+//   }
+// }
+
+interface AppSidebarProps{
+  user:User
 }
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({ user, ...props }: AppSidebarProps) {
+  // const [user, setUser] = useState({
+  //   name: "未登录用户",
+  //   email: "",
+  //   avatar: "/avatars/default.jpg",
+  // });
+
+  // useEffect(() => {
+  //   fetchCurrentUser().then(u => u && setUser(u));
+  // }, []);
+  const userInfo = {
+    name: user.name ?? "",
+    email: user.email ?? "",
+    avatar: user.image ?? "",
+  };
+
   return (
-    <Sidebar variant="inset" {...props}>
+    <Sidebar {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
@@ -145,8 +179,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={userInfo} />
       </SidebarFooter>
     </Sidebar>
-  )
+  );
 }
