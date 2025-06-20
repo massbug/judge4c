@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -11,6 +11,9 @@ import { getProblemData } from "@/app/actions/getProblem";
 import { getProblemLocales } from "@/app/actions/getProblemLocales";
 import { Accordion } from "@/components/ui/accordion";
 import { VideoEmbed } from "@/components/content/video-embed";
+import { toast } from "sonner";
+import { updateProblemSolution } from '@/components/creater/problem-maintain';
+import { Locale } from "@/generated/client";
 
 export default function EditSolutionPanel({ problemId }: { problemId: string }) {
   const [locales, setLocales] = useState<string[]>([]);
@@ -22,9 +25,14 @@ export default function EditSolutionPanel({ problemId }: { problemId: string }) 
 
   useEffect(() => {
     async function fetchLocales() {
-      const langs = await getProblemLocales(problemId);
-      setLocales(langs);
-      if (langs.length > 0) setCurrentLocale(langs[0]);
+      try {
+        const langs = await getProblemLocales(problemId);
+        setLocales(langs);
+        if (langs.length > 0) setCurrentLocale(langs[0]);
+      } catch (err) {
+        console.error(err);
+        toast.error('获取语言列表失败');
+      }
     }
     fetchLocales();
   }, [problemId]);
@@ -32,24 +40,44 @@ export default function EditSolutionPanel({ problemId }: { problemId: string }) 
   useEffect(() => {
     if (!currentLocale) return;
     async function fetchSolution() {
-      const data = await getProblemData(problemId, currentLocale);
-      setSolution({
-        title: (data?.title || "") + " 解析",
-        content: data?.solution || "",
-      });
+      try {
+        const data = await getProblemData(problemId, currentLocale);
+        setSolution({ title: (data?.title || "") + " 解析", content: data?.solution || "" });
+      } catch (err) {
+        console.error(err);
+        toast.error('加载题目解析失败');
+      }
     }
     fetchSolution();
   }, [problemId, currentLocale]);
 
-  function handleAddCustomLocale() {
+  const handleAddCustomLocale = () => {
     if (customLocale && !locales.includes(customLocale)) {
-      const newLocales = [...locales, customLocale];
-      setLocales(newLocales);
+      setLocales(prev => [...prev, customLocale]);
       setCurrentLocale(customLocale);
       setCustomLocale("");
       setSolution({ title: "", content: "" });
     }
-  }
+  };
+
+  const handleSave = async (): Promise<void> => {
+    if (!currentLocale) {
+      toast.error('请选择语言');
+      return;
+    }
+    try {
+      const locale = currentLocale as Locale;
+      const res = await updateProblemSolution(problemId, locale, solution.content);
+      if (res.success) {
+        toast.success('保存成功');
+      } else {
+        toast.error('保存失败');
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error('保存异常');
+    }
+  };
 
   return (
       <Card className="w-full">
@@ -77,11 +105,11 @@ export default function EditSolutionPanel({ problemId }: { problemId: string }) 
                   value={customLocale}
                   onChange={(e) => setCustomLocale(e.target.value)}
               />
-              <Button onClick={handleAddCustomLocale}>添加</Button>
+              <Button type="button" onClick={handleAddCustomLocale}>添加</Button>
             </div>
           </div>
 
-          {/* 标题输入 */}
+          {/* 标题输入 (仅展示) */}
           <div className="space-y-2">
             <Label htmlFor="solution-title">题解标题</Label>
             <Input
@@ -89,32 +117,17 @@ export default function EditSolutionPanel({ problemId }: { problemId: string }) 
                 value={solution.title}
                 onChange={(e) => setSolution({ ...solution, title: e.target.value })}
                 placeholder="输入题解标题"
+                disabled
             />
           </div>
 
           {/* 编辑/预览切换 */}
           <div className="flex space-x-2">
-            <Button
-                type="button"
-                variant={viewMode === "edit" ? "default" : "outline"}
-                onClick={() => setViewMode("edit")}
-            >
-              编辑
-            </Button>
-            <Button
-                type="button"
-                variant={viewMode === "preview" ? "default" : "outline"}
-                onClick={() => setViewMode(viewMode === "preview" ? "edit" : "preview")}
-            >
+            <Button type="button" variant={viewMode === "edit" ? "default" : "outline"} onClick={() => setViewMode("edit")}>编辑</Button>
+            <Button type="button" variant={viewMode === "preview" ? "default" : "outline"} onClick={() => setViewMode(viewMode === "preview" ? "edit" : "preview")}>
               {viewMode === "preview" ? "取消" : "预览"}
             </Button>
-            <Button
-                type="button"
-                variant={viewMode === "compare" ? "default" : "outline"}
-                onClick={() => setViewMode("compare")}
-            >
-              对比
-            </Button>
+            <Button type="button" variant={viewMode === "compare" ? "default" : "outline"} onClick={() => setViewMode("compare")}>对比</Button>
           </div>
 
           {/* 编辑/预览区域 */}
@@ -136,7 +149,7 @@ export default function EditSolutionPanel({ problemId }: { problemId: string }) 
             )}
           </div>
 
-          <Button>保存更改</Button>
+          <Button type="button" onClick={handleSave}>保存更改</Button>
         </CardContent>
       </Card>
   );

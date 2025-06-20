@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -11,6 +11,9 @@ import { getProblemData } from "@/app/actions/getProblem";
 import { getProblemLocales } from "@/app/actions/getProblemLocales";
 import { Accordion } from "@/components/ui/accordion";
 import { VideoEmbed } from "@/components/content/video-embed";
+import { toast } from "sonner";
+import { updateProblemDescription, updateProblemTitle } from '@/components/creater/problem-maintain';
+import { Locale } from "@/generated/client";
 
 export default function EditDescriptionPanel({ problemId }: { problemId: string }) {
   const [locales, setLocales] = useState<string[]>([]);
@@ -20,33 +23,35 @@ export default function EditDescriptionPanel({ problemId }: { problemId: string 
   const [description, setDescription] = useState({ title: "", content: "" });
   const [viewMode, setViewMode] = useState<"edit" | "preview" | "compare">("edit");
 
-  // 获取语言列表
   useEffect(() => {
     async function fetchLocales() {
-      const langs = await getProblemLocales(problemId);
-      setLocales(langs);
-      if (langs.length > 0) {
-        setCurrentLocale(langs[0]);
+      try {
+        const langs = await getProblemLocales(problemId);
+        setLocales(langs);
+        if (langs.length > 0) setCurrentLocale(langs[0]);
+      } catch (err) {
+        console.error(err);
+        toast.error('获取语言列表失败');
       }
     }
     fetchLocales();
   }, [problemId]);
 
-  // 获取对应语言的题目数据
   useEffect(() => {
     if (!currentLocale) return;
     async function fetchProblem() {
-      const data = await getProblemData(problemId, currentLocale);
-      setDescription({
-        title: data?.title || "",
-        content: data?.description || "",
-      });
+      try {
+        const data = await getProblemData(problemId, currentLocale);
+        setDescription({ title: data?.title || "", content: data?.description || "" });
+      } catch (err) {
+        console.error(err);
+        toast.error('加载题目描述失败');
+      }
     }
     fetchProblem();
   }, [problemId, currentLocale]);
 
-  // 添加新语言（仅前端）
-  function handleAddCustomLocale() {
+  const handleAddCustomLocale = () => {
     if (customLocale && !locales.includes(customLocale)) {
       const newLocales = [...locales, customLocale];
       setLocales(newLocales);
@@ -54,7 +59,27 @@ export default function EditDescriptionPanel({ problemId }: { problemId: string 
       setCustomLocale("");
       setDescription({ title: "", content: "" });
     }
-  }
+  };
+
+  const handleSave = async (): Promise<void> => {
+    if (!currentLocale) {
+      toast.error('请选择语言');
+      return;
+    }
+    try {
+      const locale = currentLocale as Locale;
+      const resTitle = await updateProblemTitle(problemId, locale, description.title);
+      const resDesc = await updateProblemDescription(problemId, locale, description.content);
+      if (resTitle.success && resDesc.success) {
+        toast.success('保存成功');
+      } else {
+        toast.error('保存失败');
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error('保存异常');
+    }
+  };
 
   return (
       <Card className="w-full">
@@ -141,7 +166,7 @@ export default function EditDescriptionPanel({ problemId }: { problemId: string 
             )}
           </div>
 
-          <Button>保存更改</Button>
+          <Button onClick={handleSave}>保存更改</Button>
         </CardContent>
       </Card>
   );

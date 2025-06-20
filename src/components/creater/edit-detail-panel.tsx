@@ -1,19 +1,19 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getProblemData } from "@/app/actions/getProblem";
+import { toast } from "sonner";
+import { updateProblemDetail } from '@/components/creater/problem-maintain';
+import { Difficulty } from "@/generated/client";
 
-export default function EditDetailPanel({
-                                          problemId,
-                                        }: {
-  problemId: string;
-}) {
+export default function EditDetailPanel({ problemId }: { problemId: string }) {
   const [problemDetails, setProblemDetails] = useState({
     displayId: 1000,
-    difficulty: "EASY" as "EASY" | "MEDIUM" | "HARD",
+    difficulty: "EASY" as Difficulty,
     timeLimit: 1000,
     memoryLimit: 134217728,
     isPublished: false,
@@ -32,6 +32,7 @@ export default function EditDetailPanel({
         });
       } catch (error) {
         console.error("获取题目信息失败:", error);
+        toast.error('加载详情失败');
       }
     }
     fetchData();
@@ -51,9 +52,27 @@ export default function EditDetailPanel({
   };
 
   const handleDifficultyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value;
-    if (value === "EASY" || value === "MEDIUM" || value === "HARD") {
-      setProblemDetails({ ...problemDetails, difficulty: value });
+    const value = e.target.value as Difficulty;
+    setProblemDetails({ ...problemDetails, difficulty: value });
+  };
+
+  const handleSave = async () => {
+    try {
+      const res = await updateProblemDetail(problemId, {
+        displayId: problemDetails.displayId,
+        difficulty: problemDetails.difficulty,
+        timeLimit: problemDetails.timeLimit,
+        memoryLimit: problemDetails.memoryLimit,
+        isPublished: problemDetails.isPublished,
+      });
+      if (res.success) {
+        toast.success('保存成功');
+      } else {
+        toast.error('保存失败');
+      }
+    } catch (err) {
+      console.error('保存异常:', err);
+      toast.error('保存异常');
     }
   };
 
@@ -121,15 +140,16 @@ export default function EditDetailPanel({
                   onChange={(e) =>
                       setProblemDetails({ ...problemDetails, isPublished: e.target.checked })
                   }
-                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
               />
-              <Label
-                  htmlFor="is-published"
-                  className="text-sm font-medium text-gray-700 dark:text-gray-300"
-              >
+              <Label htmlFor="is-published" className="text-sm font-medium">
                 是否发布
               </Label>
             </div>
+
+            <Button type="button" onClick={handleSave}>
+              保存更改
+            </Button>
           </div>
         </CardContent>
       </Card>
