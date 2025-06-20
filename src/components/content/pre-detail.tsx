@@ -1,13 +1,13 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import { Actions } from "flexlayout-react";
 import { Button } from "@/components/ui/button";
 import { ReactNode, useRef, useState } from "react";
 import { CheckIcon, CopyIcon, RepeatIcon } from "lucide-react";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { useProblemEditorStore } from "@/stores/problem-editor";
-import { useProblemFlexLayoutStore } from "@/stores/problem-flexlayout";
-import { Actions } from "flexlayout-react";
+import { useProblemFlexLayoutStore } from "@/stores/flexlayout";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 interface PreDetailProps {
   children?: ReactNode;
