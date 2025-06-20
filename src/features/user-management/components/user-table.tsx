@@ -70,11 +70,12 @@ import {
 } from "@/components/ui/tabs"
 
 import { createAdmin, updateAdmin, deleteAdmin } from '@/app/(app)/usermanagement/_actions/adminActions'
-import { createTeacher, updateTeacher, deleteTeacher } from '@/app/(app)/usermanagement/_actions/teacherActions'
-import { createGuest, updateGuest, deleteGuest } from '@/app/(app)/usermanagement/_actions/guestActions'
+import { createTeacher, updateTeacher } from '@/app/(app)/usermanagement/_actions/teacherActions'
+import { createGuest, updateGuest } from '@/app/(app)/usermanagement/_actions/guestActions'
 import { createProblem, updateProblem, deleteProblem } from '@/app/(app)/usermanagement/_actions/problemActions'
+import type { User, Problem } from '@/generated/client'
+import { Difficulty, Role } from '@/generated/client'
 
-// 通用用户类型
 export interface UserConfig {
   userType: string
   title: string
@@ -106,69 +107,85 @@ export interface UserConfig {
   }
 }
 
-interface UserTableProps {
-  config: UserConfig
-  data: any[]
+type UserTableProps =
+  | { config: UserConfig; data: User[] }
+  | { config: UserConfig; data: Problem[] }
+
+type UserForm = {
+  id?: string
+  name: string
+  email: string
+  password: string
+  createdAt: string
+  role: Role
+  image: string | null
+  emailVerified: Date | null
 }
 
-// 在组件内部定义 schema
+// 新增用户表单类型
+type AddUserForm = Omit<UserForm, 'id'>
+
 const addUserSchema = z.object({
-  name: z.string().optional(),
-  email: z.string().email("请输入有效的邮箱地址"),
-  password: z.string().optional(),
-  createdAt: z.string().optional(),
+  name: z.string(),
+  email: z.string().email(),
+  password: z.string(),
+  createdAt: z.string(),
+  image: z.string().nullable(),
+  emailVerified: z.date().nullable(),
+  role: z.nativeEnum(Role),
 })
 
 const editUserSchema = z.object({
-  id: z.string(),
-  name: z.string().optional(),
-  email: z.string().email("请输入有效的邮箱地址"),
-  password: z.string().optional(),
-  role: z.string().optional(),
+  id: z.string().default(''),
+  name: z.string(),
+  email: z.string().email(),
+  password: z.string(),
   createdAt: z.string(),
+  image: z.string().nullable(),
+  emailVerified: z.date().nullable(),
+  role: z.nativeEnum(Role),
 })
 
+// 题目表单 schema 兼容 null/undefined
 const addProblemSchema = z.object({
-  displayId: z.number(),
-  difficulty: z.string(),
+  displayId: z.number().optional().default(0),
+  difficulty: z.nativeEnum(Difficulty).default(Difficulty.EASY),
 })
 
 const editProblemSchema = z.object({
-  id: z.string(),
-  displayId: z.number(),
-  difficulty: z.string(),
+  id: z.string().default(''),
+  displayId: z.number().optional().default(0),
+  difficulty: z.nativeEnum(Difficulty).default(Difficulty.EASY),
 })
 
-export function UserTable({ config, data }: UserTableProps) {
+export function UserTable(props: UserTableProps) {
+  const isProblem = props.config.userType === 'problem'
+  const router = useRouter()
+  const problemData = isProblem ? (props.data as Problem[]) : undefined
+
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
-  const [editingUser, setEditingUser] = useState<any>(null)
+  const [editingUser, setEditingUser] = useState<User | Problem | null>(null)
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const [deleteBatch, setDeleteBatch] = useState(false)
   const [rowSelection, setRowSelection] = useState({})
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [sorting, setSorting] = useState<SortingState>([])
   const [pagination, setPagination] = useState({
     pageIndex: 0,
-    pageSize: config.pagination.defaultPageSize,
+    pageSize: props.config.pagination.defaultPageSize,
   })
-
-  // 删除确认对话框相关state
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
-  const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null)
-  const [deleteBatch, setDeleteBatch] = useState(false)
-
-  // 页码输入本地state
   const [pageInput, setPageInput] = useState(pagination.pageIndex + 1)
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false)
+  const [pendingDeleteItem, setPendingDeleteItem] = useState<User | Problem | null>(null)
   useEffect(() => {
     setPageInput(pagination.pageIndex + 1)
   }, [pagination.pageIndex])
 
-  // 判断是否为题目管理
-  const isProblem = config.userType === "problem"
-
-  // 动态生成表格列
-  const tableColumns = React.useMemo<ColumnDef<any>[]>(() => {
-    const columns: ColumnDef<any>[] = [
+  // 表格列
+  const tableColumns = React.useMemo<ColumnDef<User | Problem>[]>(() => {
+    const columns: ColumnDef<User | Problem>[] = [
       {
         id: "select",
         header: ({ table }) => (
@@ -189,34 +206,17 @@ export function UserTable({ config, data }: UserTableProps) {
         enableHiding: false,
       },
     ]
-
-    // 添加配置的列
-    config.columns.forEach((col) => {
-      const column: ColumnDef<any> = {
+    props.config.columns.forEach((col) => {
+      const column: ColumnDef<User | Problem> = {
         accessorKey: col.key,
-        header: ({ column: tableColumn }) => {
-          if (col.searchable) {
-            return (
-              <div className="flex items-center gap-1">
-                <span>{col.label}</span>
-                <Input
-                  placeholder={col.placeholder || "搜索"}
-                  className="h-6 w-24 text-xs px-1"
-                  value={(() => {
-                    const v = tableColumn.getFilterValue()
-                    return typeof v === 'string' ? v : ''
-                  })()}
-                  onChange={e => tableColumn.setFilterValue(e.target.value)}
-                  style={{ minWidth: 0 }}
-                />
-              </div>
-            )
-          }
-          return col.label
-        },
+        header: col.label,
         cell: ({ row }) => {
-          const value = row.getValue(col.key)
-          if (col.key === 'createdAt' || col.key === 'updatedAt') {
+          // 类型安全分流
+          if (col.key === 'displayId' && isProblem) {
+            return (row.original as Problem).displayId
+          }
+          if ((col.key === 'createdAt' || col.key === 'updatedAt')) {
+            const value = row.getValue(col.key)
             if (value instanceof Date) {
               return value.toLocaleString()
             }
@@ -224,7 +224,7 @@ export function UserTable({ config, data }: UserTableProps) {
               return new Date(value).toLocaleString()
             }
           }
-          return value
+          return row.getValue(col.key)
         },
         enableSorting: col.sortable !== false,
         filterFn: col.searchable ? (row, columnId, value) => {
@@ -235,13 +235,11 @@ export function UserTable({ config, data }: UserTableProps) {
       }
       columns.push(column)
     })
-
-    // 添加操作列
     columns.push({
       id: "actions",
       header: () => <div className="text-right">操作</div>,
       cell: ({ row }) => {
-        const user = row.original
+        const item = row.original
         return (
           <div className="flex justify-end gap-2">
             <Button
@@ -249,35 +247,33 @@ export function UserTable({ config, data }: UserTableProps) {
               size="sm"
               className="h-8 gap-1"
               onClick={() => {
-                setEditingUser(user)
+                setEditingUser(item)
                 setIsEditDialogOpen(true)
               }}
             >
-              <PencilIcon className="size-4 mr-1" /> {config.actions.edit.label}
+              <PencilIcon className="size-4 mr-1" /> {props.config.actions.edit.label}
             </Button>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="h-8 gap-1 text-destructive hover:text-destructive" 
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-8 gap-1 text-destructive hover:text-destructive"
               onClick={() => {
-                setDeleteTargetId(user.id)
-                setDeleteBatch(false)
-                setDeleteDialogOpen(true)
+                setPendingDeleteItem(item)
+                setDeleteConfirmOpen(true)
               }}
               aria-label="Delete"
             >
-              <TrashIcon className="size-4 mr-1" /> {config.actions.delete.label}
+              <TrashIcon className="size-4 mr-1" /> {props.config.actions.delete.label}
             </Button>
           </div>
         )
       },
     })
-
     return columns
-  }, [config])
+  }, [props.config, router, isProblem])
 
   const table = useReactTable({
-    data,
+    data: props.data,
     columns: tableColumns,
     state: {
       sorting,
@@ -300,50 +296,33 @@ export function UserTable({ config, data }: UserTableProps) {
     getFacetedUniqueValues: getFacetedUniqueValues(),
   })
 
-  // 生成唯一ID
-  function generateUniqueId(existingIds: string[]): string {
-    let id: string
-    do {
-      id = Math.random().toString(36).substr(2, 9)
-    } while (existingIds.includes(id))
-    return id
-  }
-
   // 添加用户对话框组件（仅用户）
   function AddUserDialogUser({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
     const [isLoading, setIsLoading] = useState(false)
-    const form = useForm({
+    const form = useForm<AddUserForm>({
       resolver: zodResolver(addUserSchema),
-      defaultValues: { name: "", email: "", password: "", createdAt: "" },
+      defaultValues: { name: '', email: '', password: '', createdAt: '', image: null, emailVerified: null, role: Role.GUEST },
     })
     React.useEffect(() => {
       if (open) {
-        form.reset({ name: "", email: "", password: "", createdAt: "" })
+        form.reset({ name: '', email: '', password: '', createdAt: '', image: null, emailVerified: null, role: Role.GUEST })
       }
     }, [open, form])
-    async function onSubmit(formData: any) {
+    async function onSubmit(data: AddUserForm) {
       try {
         setIsLoading(true)
         const submitData = {
-          ...formData,
-          // 移除手动生成的 id，让数据库自动生成
-          // 移除 createdAt，让数据库自动设置
+          ...data,
+          image: data.image ?? null,
+          emailVerified: data.emailVerified ?? null,
+          role: data.role ?? Role.GUEST,
         }
-        // 清理空字段
-        if (!submitData.name) delete submitData.name
-        if (!submitData.password) delete submitData.password
-        if (!submitData.createdAt) delete submitData.createdAt
-        
-        // 如果用户提供了创建时间，转换为完整的 ISO-8601 格式
-        if (submitData.createdAt) {
-          const date = new Date(submitData.createdAt)
-          submitData.createdAt = date.toISOString()
-        }
-        
-        if (config.userType === 'admin') await createAdmin(submitData)
-        else if (config.userType === 'teacher') await createTeacher(submitData)
-        else if (config.userType === 'guest') await createGuest(submitData)
-        else if (config.userType === 'problem') await createProblem(submitData)
+        if (!submitData.name) submitData.name = ''
+        if (!submitData.createdAt) submitData.createdAt = new Date().toISOString()
+        else submitData.createdAt = new Date(submitData.createdAt).toISOString()
+        if (props.config.userType === 'admin') await createAdmin(submitData)
+        else if (props.config.userType === 'teacher') await createTeacher(submitData)
+        else if (props.config.userType === 'guest') await createGuest(submitData)
         onOpenChange(false)
         toast.success('添加成功', { duration: 1500 })
         router.refresh()
@@ -354,33 +333,32 @@ export function UserTable({ config, data }: UserTableProps) {
         setIsLoading(false)
       }
     }
-    
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>{config.actions.add.label}</DialogTitle>
+            <DialogTitle>{props.config.actions.add.label}</DialogTitle>
             <DialogDescription>
               请填写信息，ID自动生成。
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <div className="grid gap-4 py-4">
-              {config.formFields.map((field) => (
+              {props.config.formFields.filter(field => field.key !== 'id').map((field) => (
                 <div key={field.key} className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor={field.key} className="text-right">
                     {field.label}
                   </Label>
                   {field.type === 'select' && field.options ? (
                     <Select
-                      value={String(form.watch(field.key as string) ?? '')}
-                      onValueChange={value => form.setValue(field.key as string, value)}
+                      value={form.watch(field.key as 'name' | 'email' | 'password' | 'createdAt' | 'role') ?? ''}
+                      onValueChange={value => form.setValue(field.key as 'name' | 'email' | 'password' | 'createdAt' | 'role', value)}
                     >
                       <SelectTrigger className="col-span-3">
                         <SelectValue placeholder={`请选择${field.label}`} />
                       </SelectTrigger>
                       <SelectContent>
-                        {field.options.map((opt: any) => (
+                        {field.options.map((opt) => (
                           <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
                         ))}
                       </SelectContent>
@@ -389,7 +367,7 @@ export function UserTable({ config, data }: UserTableProps) {
                     <Input
                       id={field.key}
                       type={field.type}
-                      {...form.register(field.key as any)}
+                      {...form.register(field.key as 'name' | 'email' | 'password' | 'createdAt' | 'role')}
                       className="col-span-3"
                       placeholder={field.placeholder}
                     />
@@ -416,27 +394,28 @@ export function UserTable({ config, data }: UserTableProps) {
   // 添加题目对话框组件（仅题目）
   function AddUserDialogProblem({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
     const [isLoading, setIsLoading] = useState(false)
-    const form = useForm({
+    const form = useForm<Partial<Problem>>({
       resolver: zodResolver(addProblemSchema),
-      defaultValues: { displayId: 0, difficulty: "" },
+      defaultValues: { displayId: 0, difficulty: Difficulty.EASY },
     })
     React.useEffect(() => {
       if (open) {
-        form.reset({ displayId: 0, difficulty: "" })
+        form.reset({ displayId: 0, difficulty: Difficulty.EASY })
       }
     }, [open, form])
-    async function onSubmit(formData: any) {
+    async function onSubmit(formData: Partial<Problem>) {
       try {
         setIsLoading(true)
-        const submitData = {
-          ...formData,
-          displayId: Number(formData.displayId),
-          // 移除手动生成的 id，让数据库自动生成
-        }
-        if (config.userType === 'admin') await createAdmin(submitData)
-        else if (config.userType === 'teacher') await createTeacher(submitData)
-        else if (config.userType === 'guest') await createGuest(submitData)
-        else if (config.userType === 'problem') await createProblem(submitData)
+        const submitData: Partial<Problem> = { ...formData, displayId: Number(formData.displayId) }
+        await createProblem({
+          displayId: Number(submitData.displayId),
+          difficulty: submitData.difficulty ?? Difficulty.EASY,
+          isPublished: false,
+          isTrim: false,
+          timeLimit: 1000,
+          memoryLimit: 134217728,
+          userId: null,
+        })
         onOpenChange(false)
         toast.success('添加成功', { duration: 1500 })
         router.refresh()
@@ -447,30 +426,45 @@ export function UserTable({ config, data }: UserTableProps) {
         setIsLoading(false)
       }
     }
-    
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>{config.actions.add.label}</DialogTitle>
+            <DialogTitle>{props.config.actions.add.label}</DialogTitle>
             <DialogDescription>
               请填写信息，ID自动生成。
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <div className="grid gap-4 py-4">
-              {config.formFields.map((field) => (
+              {props.config.formFields.map((field) => (
                 <div key={field.key} className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor={field.key} className="text-right">
                     {field.label}
                   </Label>
-                  <Input
-                    id={field.key}
-                    type={field.type}
-                    {...form.register(field.key as 'displayId' | 'difficulty', field.key === 'displayId' ? { valueAsNumber: true } : {})}
-                    className="col-span-3"
-                    placeholder={field.placeholder}
-                  />
+                  {field.key === 'difficulty' ? (
+                    <Select
+                      value={form.watch('difficulty') ?? Difficulty.EASY}
+                      onValueChange={value => form.setValue('difficulty', value as typeof Difficulty.EASY | typeof Difficulty.MEDIUM | typeof Difficulty.HARD)}
+                    >
+                      <SelectTrigger className="col-span-3">
+                        <SelectValue placeholder="请选择难度" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value={Difficulty.EASY}>简单</SelectItem>
+                        <SelectItem value={Difficulty.MEDIUM}>中等</SelectItem>
+                        <SelectItem value={Difficulty.HARD}>困难</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  ) : (
+                    <Input
+                      id={field.key}
+                      type={field.type}
+                      {...form.register(field.key as 'displayId' | 'difficulty' | 'id', field.key === 'displayId' ? { valueAsNumber: true } : {})}
+                      className="col-span-3"
+                      placeholder={field.placeholder}
+                    />
+                  )}
                   {form.formState.errors[field.key as keyof typeof form.formState.errors]?.message && (
                     <p className="col-span-3 col-start-2 text-sm text-red-500">
                       {form.formState.errors[field.key as keyof typeof form.formState.errors]?.message as string}
@@ -491,31 +485,49 @@ export function UserTable({ config, data }: UserTableProps) {
   }
 
   // 编辑用户对话框组件（仅用户）
-  function EditUserDialogUser({ open, onOpenChange, user }: { open: boolean; onOpenChange: (open: boolean) => void; user: any }) {
+  function EditUserDialogUser({ open, onOpenChange, user }: { open: boolean; onOpenChange: (open: boolean) => void; user: User }) {
     const [isLoading, setIsLoading] = useState(false)
-    const form = useForm({
+    const editForm = useForm<UserForm>({
       resolver: zodResolver(editUserSchema),
-      defaultValues: { id: user.id, name: user.name || "", email: user.email || "", password: "", role: user.role || "", createdAt: user.createdAt ? new Date(user.createdAt).toISOString().slice(0, 16) : new Date().toISOString().slice(0, 16) },
+      defaultValues: {
+        id: typeof user.id === 'string' ? user.id : '',
+        name: user.name ?? '',
+        email: user.email ?? '',
+        password: '',
+        role: user.role ?? Role.GUEST,
+        createdAt: user.createdAt ? new Date(user.createdAt).toISOString().slice(0, 16) : '',
+        image: user.image ?? null,
+        emailVerified: user.emailVerified ?? null,
+      },
     })
     React.useEffect(() => {
       if (open) {
-        form.reset({ id: user.id, name: user.name || "", email: user.email || "", password: "", role: user.role || "", createdAt: user.createdAt ? new Date(user.createdAt).toISOString().slice(0, 16) : new Date().toISOString().slice(0, 16) })
+        editForm.reset({
+          id: typeof user.id === 'string' ? user.id : '',
+          name: user.name ?? '',
+          email: user.email ?? '',
+          password: '',
+          role: user.role ?? Role.GUEST,
+          createdAt: user.createdAt ? new Date(user.createdAt).toISOString().slice(0, 16) : '',
+          image: user.image ?? null,
+          emailVerified: user.emailVerified ?? null,
+        })
       }
-    }, [open, user, form])
-    async function onSubmit(formData: any) {
+    }, [open, user, editForm])
+    async function onSubmit(data: UserForm) {
       try {
         setIsLoading(true)
         const submitData = {
-          ...formData,
-          createdAt: formData.createdAt ? new Date(formData.createdAt).toISOString() : new Date().toISOString(),
+          ...data,
+          createdAt: data.createdAt ? new Date(data.createdAt).toISOString() : new Date().toISOString(),
+          image: data.image ?? null,
+          emailVerified: data.emailVerified ?? null,
+          role: data.role ?? Role.GUEST,
         }
-        if (!submitData.password) {
-          delete submitData.password;
-        }
-        if (config.userType === 'admin') await updateAdmin(submitData.id, submitData)
-        else if (config.userType === 'teacher') await updateTeacher(submitData.id, submitData)
-        else if (config.userType === 'guest') await updateGuest(submitData.id, submitData)
-        else if (config.userType === 'problem') await updateProblem(submitData.id, submitData)
+        const id = typeof submitData.id === 'string' ? submitData.id : ''
+        if (props.config.userType === 'admin') await updateAdmin(id, submitData)
+        else if (props.config.userType === 'teacher') await updateTeacher(id, submitData)
+        else if (props.config.userType === 'guest') await updateGuest(id, submitData)
         onOpenChange(false)
         toast.success('修改成功', { duration: 1500 })
       } catch {
@@ -524,19 +536,18 @@ export function UserTable({ config, data }: UserTableProps) {
         setIsLoading(false)
       }
     }
-    
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>{config.actions.edit.label}</DialogTitle>
+            <DialogTitle>{props.config.actions.edit.label}</DialogTitle>
             <DialogDescription>
               修改信息
             </DialogDescription>
           </DialogHeader>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={editForm.handleSubmit(onSubmit)} className="space-y-4">
             <div className="grid gap-4 py-4">
-              {config.formFields.map((field) => (
+              {props.config.formFields.map((field) => (
                 <div key={field.key} className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor={field.key} className="text-right">
                     {field.label}
@@ -544,40 +555,39 @@ export function UserTable({ config, data }: UserTableProps) {
                   <Input
                     id={field.key}
                     type={field.type}
-                    {...form.register(field.key as 'name' | 'email' | 'password' | 'createdAt' | 'id')}
+                    {...editForm.register(field.key as 'name' | 'email' | 'password' | 'createdAt' | 'role')}
                     className="col-span-3"
                     placeholder={field.placeholder}
                     disabled={field.key === 'id'}
                   />
-                  {form.formState.errors[field.key as keyof typeof form.formState.errors]?.message && (
+                  {editForm.formState.errors[field.key as keyof typeof editForm.formState.errors]?.message && (
                     <p className="col-span-3 col-start-2 text-sm text-red-500">
-                      {form.formState.errors[field.key as keyof typeof form.formState.errors]?.message as string}
+                      {editForm.formState.errors[field.key as keyof typeof editForm.formState.errors]?.message as string}
                     </p>
                   )}
                 </div>
               ))}
-              
               {/* 编辑时显示角色选择 */}
-              {config.userType !== 'problem' && (
+              {props.config.userType !== 'problem' && (
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="role" className="text-right">
                     角色
                   </Label>
                   <Select
-                    value={form.watch('role' as 'role')}
-                    onValueChange={value => form.setValue('role' as 'role', value)}
+                    value={editForm.watch('role') ?? ''}
+                    onValueChange={value => editForm.setValue('role', value as Role)}
                   >
                     <SelectTrigger className="col-span-3">
                       <SelectValue placeholder="请选择角色" />
                     </SelectTrigger>
                     <SelectContent>
-                      {config.userType === 'guest' && (
+                      {props.config.userType === 'guest' && (
                         <>
                           <SelectItem value="GUEST">学生</SelectItem>
                           <SelectItem value="TEACHER">老师</SelectItem>
                         </>
                       )}
-                      {(config.userType === 'teacher' || config.userType === 'admin') && (
+                      {(props.config.userType === 'teacher' || props.config.userType === 'admin') && (
                         <>
                           <SelectItem value="ADMIN">管理员</SelectItem>
                           <SelectItem value="TEACHER">老师</SelectItem>
@@ -586,9 +596,9 @@ export function UserTable({ config, data }: UserTableProps) {
                       )}
                     </SelectContent>
                   </Select>
-                  {form.formState.errors.role?.message && (
+                  {editForm.formState.errors.role?.message && (
                     <p className="col-span-3 col-start-2 text-sm text-red-500">
-                      {form.formState.errors.role?.message as string}
+                      {editForm.formState.errors.role?.message as string}
                     </p>
                   )}
                 </div>
@@ -606,28 +616,30 @@ export function UserTable({ config, data }: UserTableProps) {
   }
 
   // 编辑题目对话框组件（仅题目）
-  function EditUserDialogProblem({ open, onOpenChange, user }: { open: boolean; onOpenChange: (open: boolean) => void; user: any }) {
+  function EditUserDialogProblem({ open, onOpenChange, user }: { open: boolean; onOpenChange: (open: boolean) => void; user: Problem }) {
     const [isLoading, setIsLoading] = useState(false)
-    const form = useForm({
+    const form = useForm<Partial<Problem>>({
       resolver: zodResolver(editProblemSchema),
-      defaultValues: { id: user.id, displayId: Number(user.displayId), difficulty: user.difficulty || "" },
+      defaultValues: {
+        id: user.id,
+        displayId: user.displayId ?? 0,
+        difficulty: user.difficulty ?? Difficulty.EASY,
+      },
     })
     React.useEffect(() => {
       if (open) {
-        form.reset({ id: user.id, displayId: Number(user.displayId), difficulty: user.difficulty || "" })
+        form.reset({
+          id: user.id,
+          displayId: user.displayId ?? 0,
+          difficulty: user.difficulty ?? Difficulty.EASY,
+        })
       }
     }, [open, user, form])
-    async function onSubmit(formData: any) {
+    async function onSubmit(formData: Partial<Problem>) {
       try {
         setIsLoading(true)
-        const submitData = {
-          ...formData,
-          displayId: Number(formData.displayId),
-        }
-        if (config.userType === 'admin') await updateAdmin(submitData.id, submitData)
-        else if (config.userType === 'teacher') await updateTeacher(submitData.id, submitData)
-        else if (config.userType === 'guest') await updateGuest(submitData.id, submitData)
-        else if (config.userType === 'problem') await updateProblem(submitData.id, submitData)
+        const submitData: Partial<Problem> = { ...formData, displayId: Number(formData.displayId) }
+        await updateProblem(submitData.id!, submitData)
         onOpenChange(false)
         toast.success('修改成功', { duration: 1500 })
       } catch {
@@ -636,12 +648,11 @@ export function UserTable({ config, data }: UserTableProps) {
         setIsLoading(false)
       }
     }
-    
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>{config.actions.edit.label}</DialogTitle>
+            <DialogTitle>{props.config.actions.edit.label}</DialogTitle>
             <DialogDescription>
               修改信息
             </DialogDescription>
@@ -666,16 +677,16 @@ export function UserTable({ config, data }: UserTableProps) {
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="difficulty" className="text-right">难度</Label>
                 <Select
-                  value={form.watch('difficulty')}
-                  onValueChange={value => form.setValue('difficulty', value)}
+                  value={form.watch('difficulty') ?? Difficulty.EASY}
+                  onValueChange={value => form.setValue('difficulty', value as typeof Difficulty.EASY | typeof Difficulty.MEDIUM | typeof Difficulty.HARD)}
                 >
                   <SelectTrigger className="col-span-3">
                     <SelectValue placeholder="请选择难度" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="EASY">简单</SelectItem>
-                    <SelectItem value="MEDIUM">中等</SelectItem>
-                    <SelectItem value="HARD">困难</SelectItem>
+                    <SelectItem value={Difficulty.EASY}>简单</SelectItem>
+                    <SelectItem value={Difficulty.MEDIUM}>中等</SelectItem>
+                    <SelectItem value={Difficulty.HARD}>困难</SelectItem>
                   </SelectContent>
                 </Select>
                 {form.formState.errors.difficulty?.message && (
@@ -697,16 +708,14 @@ export function UserTable({ config, data }: UserTableProps) {
   }
 
   // 用ref保证获取最新data
-  const dataRef = React.useRef<any[]>(data)
-  React.useEffect(() => { dataRef.current = data }, [data])
-
-  const router = useRouter()
+  const dataRef = React.useRef<User[] | Problem[]>(props.data)
+  React.useEffect(() => { dataRef.current = props.data }, [props.data])
 
   return (
     <Tabs defaultValue="outline" className="flex w-full flex-col gap-6">
       <div className="flex items-center justify-between px-2 lg:px-4 py-2">
         <div className="flex items-center gap-1 text-sm font-medium">
-          {config.title}
+          {props.config.title}
         </div>
         <div className="flex items-center gap-1">
           <DropdownMenu>
@@ -751,25 +760,32 @@ export function UserTable({ config, data }: UserTableProps) {
                 })}
             </DropdownMenuContent>
           </DropdownMenu>
-          {isProblem && config.actions.add && (
+          {isProblem && props.config.actions.add && (
             <Button
               variant="outline"
               size="sm"
               className="h-7 gap-1 px-2 text-sm"
               onClick={async () => {
-                // 获取当前最大 displayId
-                const maxDisplayId = Array.isArray(data) && data.length > 0
-                  ? Math.max(...data.map(item => Number(item.displayId) || 0), 1000)
+                const maxDisplayId = Array.isArray(problemData) && problemData.length > 0
+                  ? Math.max(...problemData.map(item => Number(item.displayId) || 0), 1000)
                   : 1000;
-                await createProblem({ displayId: maxDisplayId + 1, difficulty: "EASY" });
+                await createProblem({
+                  displayId: maxDisplayId + 1,
+                  difficulty: Difficulty.EASY,
+                  isPublished: false,
+                  isTrim: false,
+                  timeLimit: 1000,
+                  memoryLimit: 134217728,
+                  userId: null,
+                });
                 router.refresh();
               }}
             >
               <PlusIcon className="h-4 w-4" />
-              {config.actions.add.label}
+              {props.config.actions.add.label}
             </Button>
           )}
-          {!isProblem && config.actions.add && (
+          {!isProblem && props.config.actions.add && (
             <Button
               variant="outline"
               size="sm"
@@ -777,7 +793,7 @@ export function UserTable({ config, data }: UserTableProps) {
               onClick={() => setIsAddDialogOpen(true)}
             >
               <PlusIcon className="h-4 w-4" />
-              {config.actions.add.label}
+              {props.config.actions.add.label}
             </Button>
           )}
           <Button
@@ -791,11 +807,10 @@ export function UserTable({ config, data }: UserTableProps) {
             }}
           >
             <TrashIcon className="h-4 w-4" />
-            {config.actions.batchDelete.label}
+            {props.config.actions.batchDelete.label}
           </Button>
         </div>
       </div>
-      
       <div className="rounded-md border">
         <div style={{ maxHeight: 500, overflowY: 'auto' }}>
           <Table className="text-sm">
@@ -848,16 +863,15 @@ export function UserTable({ config, data }: UserTableProps) {
             </TableBody>
           </Table>
         </div>
-        </div>
-        
+      </div>
       <div className="flex items-center justify-between px-2">
         <div className="flex-1 text-sm text-muted-foreground">
           共 {table.getFilteredRowModel().rows.length} 条记录
-          </div>
+        </div>
         <div className="flex items-center space-x-6 lg:space-x-8">
           <div className="flex items-center space-x-2">
             <p className="text-sm font-medium">每页显示</p>
-              <Select
+            <Select
               value={`${table.getState().pagination.pageSize}`}
               onValueChange={(value) => {
                 table.setPageSize(Number(value))
@@ -865,20 +879,20 @@ export function UserTable({ config, data }: UserTableProps) {
             >
               <SelectTrigger className="h-8 w-[70px]">
                 <SelectValue placeholder={table.getState().pagination.pageSize} />
-                </SelectTrigger>
+              </SelectTrigger>
               <SelectContent side="top">
-                {config.pagination.pageSizes.map((pageSize) => (
+                {props.config.pagination.pageSizes.map((pageSize) => (
                   <SelectItem key={pageSize} value={`${pageSize}`}>
                     {pageSize}
                   </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           <div className="flex w-[100px] items-center justify-center text-sm font-medium">
             第 {table.getState().pagination.pageIndex + 1} 页，共{" "}
             {table.getPageCount()} 页
-            </div>
+          </div>
           <div className="flex items-center space-x-2">
             <Button
               variant="outline"
@@ -939,21 +953,18 @@ export function UserTable({ config, data }: UserTableProps) {
           </div>
         </div>
       </div>
-      
       {/* 添加用户对话框 */}
-      {isProblem && config.actions.add ? (
+      {isProblem && props.config.actions.add ? (
         <AddUserDialogProblem open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen} />
-      ) : !isProblem && config.actions.add ? (
+      ) : !isProblem && props.config.actions.add ? (
         <AddUserDialogUser open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen} />
       ) : null}
-      
       {/* 编辑用户对话框 */}
       {isProblem && editingUser ? (
-        <EditUserDialogProblem open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen} user={editingUser} />
+        <EditUserDialogProblem open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen} user={editingUser as Problem} />
       ) : editingUser ? (
-        <EditUserDialogUser open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen} user={editingUser} />
+        <EditUserDialogUser open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen} user={editingUser as User} />
       ) : null}
-      
       {/* 删除确认对话框 */}
       <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <DialogContent>
@@ -974,29 +985,51 @@ export function UserTable({ config, data }: UserTableProps) {
               variant="destructive"
               onClick={async () => {
                 try {
-                if (deleteBatch) {
+                  if (deleteBatch) {
                     const selectedRows = table.getFilteredSelectedRowModel().rows
                     for (const row of selectedRows) {
                       if (isProblem) {
-                        await deleteProblem(row.original.id)
+                        await deleteProblem((row.original as Problem).id)
                       } else {
-                        await deleteAdmin(row.original.id)
+                        await deleteAdmin((row.original as User).id)
                       }
                     }
                     toast.success(`成功删除 ${selectedRows.length} 条记录`, { duration: 1500 })
-                } else if (deleteTargetId) {
-                    if (isProblem) {
-                      await deleteProblem(deleteTargetId)
-                    } else {
-                      await deleteAdmin(deleteTargetId)
-                    }
-                    toast.success('删除成功', { duration: 1500 })
                   }
                   setDeleteDialogOpen(false)
                   router.refresh()
                 } catch {
                   toast.error('删除失败', { duration: 1500 })
                 }
+              }}
+            >
+              确认删除
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      <Dialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>确认删除</DialogTitle>
+          </DialogHeader>
+          <div>确定要删除该条数据吗？此操作不可撤销。</div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDeleteConfirmOpen(false)}>取消</Button>
+            <Button
+              variant="destructive"
+              onClick={async () => {
+                if (pendingDeleteItem) {
+                  if (isProblem) {
+                    await deleteProblem((pendingDeleteItem as Problem).id)
+                  } else {
+                    await deleteAdmin((pendingDeleteItem as User).id)
+                  }
+                  toast.success('删除成功', { duration: 1500 })
+                  router.refresh()
+                }
+                setDeleteConfirmOpen(false)
+                setPendingDeleteItem(null)
               }}
             >
               确认删除
