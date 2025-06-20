@@ -43,6 +43,19 @@ export function NavUser({
   const { isMobile } = useSidebar()
   const router = useRouter()
 
+  async function handleLogout() {
+    await fetch("/api/auth/signout", { method: "POST" });
+    router.replace("/sign-in");
+  }
+
+  function handleAccount() {
+    if (user && user.email) {
+      router.replace("/user/profile");
+    } else {
+      router.replace("/sign-in");
+    }
+  }
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -90,11 +103,11 @@ export function NavUser({
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={handleAccount}>
                 <BadgeCheck />
                 Account
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => router.push("/sign-in")}>
+              <DropdownMenuItem onClick={() => router.push("/sign-in")}> 
                 <UserPen />
                 Switch User
               </DropdownMenuItem>
@@ -104,9 +117,7 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem  onClick={() => {
-              router.replace("/");
-              }}>
+            <DropdownMenuItem onClick={handleLogout}>
               <LogOut />
               Log out
             </DropdownMenuItem>

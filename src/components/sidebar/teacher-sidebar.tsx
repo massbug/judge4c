@@ -37,10 +37,6 @@ const data = {
       isActive: true,
       items: [
         {
-          title: "课程管理",
-          url: "/teacher/courses",
-        },
-        {
           title: "学生管理",
           url: "/teacher/students",
         },
@@ -56,11 +52,11 @@ const data = {
       icon: PieChart,
       items: [
         {
-          title: "成绩统计",
+          title: "完成情况",
           url: "/teacher/statistics/grades",
         },
         {
-          title: "错题分析",
+          title: "错题统计",
           url: "/teacher/statistics/activity",
         },
       ],
