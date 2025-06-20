@@ -2,11 +2,11 @@
 'use server';
 
 import prisma from '@/lib/prisma';
-import { Locale } from '@/generated/client'; // ✅ 导入 enum Locale
+import { Locale } from '@/generated/client';
 import { serialize } from 'next-mdx-remote/serialize';
 
-export async function getProblemData(problemId: string, locale: string) {
-    const selectedLocale = locale as Locale; // ✅ 强制转换 string 为 Prisma enum
+export async function getProblemData(problemId: string, locale?: string) {
+    const selectedLocale = locale as Locale;
 
     const problem = await prisma.problem.findUnique({
         where: { id: problemId },
@@ -17,7 +17,7 @@ export async function getProblemData(problemId: string, locale: string) {
             },
             localizations: {
                 where: {
-                    locale: selectedLocale, // ✅ 这里使用枚举
+                    locale: selectedLocale,
                 },
             },
         },
