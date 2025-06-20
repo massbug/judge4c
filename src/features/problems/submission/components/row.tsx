@@ -7,7 +7,7 @@ import { Locale, Submission } from "@/generated/client";
 import { Actions, DockLocation } from "flexlayout-react";
 import { getColorClassForStatus } from "@/config/status";
 import { TableCell, TableRow } from "@/components/ui/table";
-import { useProblemFlexLayoutStore } from "@/stores/problem-flexlayout";
+import { useProblemFlexLayoutStore } from "@/stores/flexlayout";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { getIconForLanguage, getLabelForLanguage } from "@/config/language";
 

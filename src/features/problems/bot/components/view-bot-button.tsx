@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Toggle } from "@/components/ui/toggle";
 import { Actions, DockLocation } from "flexlayout-react";
-import { useProblemFlexLayoutStore } from "@/stores/problem-flexlayout";
+import { useProblemFlexLayoutStore } from "@/stores/flexlayout";
 
 export const ViewBotButton = () => {
   const t = useTranslations();

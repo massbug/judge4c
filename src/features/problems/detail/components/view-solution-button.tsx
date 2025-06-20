@@ -3,7 +3,7 @@
 import { Actions } from "flexlayout-react";
 import { BookOpenIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useProblemFlexLayoutStore } from "@/stores/problem-flexlayout";
+import { useProblemFlexLayoutStore } from "@/stores/flexlayout";
 
 export const ViewSolutionButton = () => {
   const { model } = useProblemFlexLayoutStore();
