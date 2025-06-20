@@ -1,21 +1,19 @@
-import {z} from "zod";
+import { z } from "zod";
 
 export const AITestCaseInputSchema = z.object({
-    problemId: z.string(),
-})
+  problemId: z.string(),
+});
 
-export type AITestCaseInput = z.infer<typeof AITestCaseInputSchema>
+export type AITestCaseInput = z.infer<typeof AITestCaseInputSchema>;
 
 const input = z.object({
-    name: z.string(),
-    value: z.string()
-})
+  name: z.string(),
+  value: z.string(),
+});
 
 export const AITestCaseOutputSchema = z.object({
-    expectedOutput: z.string(),
-    inputs: z.array(input)
-})
+  expectedOutput: z.string(),
+  inputs: z.array(input),
+});
 
-export type AITestCaseOutput = z.infer<typeof AITestCaseOutputSchema>
-
-
+export type AITestCaseOutput = z.infer<typeof AITestCaseOutputSchema>;
