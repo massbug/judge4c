@@ -24,7 +24,7 @@ export default function EditTestcasePanel({ problemId }: { problemId: string }) 
     const [testcases, setTestcases] = useState<Testcase[]>([]);
     const [isGenerating, setIsGenerating] = useState(false);
 
-    // 1) Load existing testcases
+    // 加载测试用例
     useEffect(() => {
         async function fetch() {
             try {
@@ -38,21 +38,21 @@ export default function EditTestcasePanel({ problemId }: { problemId: string }) 
         fetch();
     }, [problemId]);
 
-    // 2) Local add
+    // 本地添加测试用例
     const handleAddTestcase = () =>
         setTestcases((prev) => [
             ...prev,
-            { id: `new-${Date.now()}`, expectedOutput: "", inputs: [{ name: "input1", value: "" }] },
+            { id: `new-${Date.now()}-${Math.random()}`, expectedOutput: "", inputs: [{ name: "input1", value: "" }] },
         ]);
 
-    // 3) AI generation
+    // AI 生成测试用例
     const handleAITestcase = async () => {
         setIsGenerating(true);
         try {
             const ai = await generateAITestcase({ problemId });
             setTestcases((prev) => [
                 ...prev,
-                { id: `new-${Date.now()}`, expectedOutput: ai.expectedOutput, inputs: ai.inputs },
+                { id: `new-${Date.now()}-${Math.random()}`, expectedOutput: ai.expectedOutput, inputs: ai.inputs },
             ]);
             window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
         } catch (err) {
@@ -63,7 +63,7 @@ export default function EditTestcasePanel({ problemId }: { problemId: string }) 
         }
     };
 
-    // 4) Remove (local + remote if existing)
+    // 删除测试用例（本地 + 服务器）
     const handleRemoveTestcase = async (idx: number) => {
         const tc = testcases[idx];
         if (!tc.id.startsWith("new-")) {
@@ -79,14 +79,15 @@ export default function EditTestcasePanel({ problemId }: { problemId: string }) 
         setTestcases((prev) => prev.filter((_, i) => i !== idx));
     };
 
-    // 5) Field updates
+    // 修改预期输出
     const handleExpectedOutputChange = (idx: number, val: string) =>
         setTestcases((prev) => {
             const c = [...prev];
-            c[idx].expectedOutput = val;
+            c[idx] = { ...c[idx], expectedOutput: val };
             return c;
         });
 
+    // 修改输入参数
     const handleInputChange = (
         tIdx: number,
         iIdx: number,
@@ -95,43 +96,58 @@ export default function EditTestcasePanel({ problemId }: { problemId: string }) 
     ) =>
         setTestcases((prev) => {
             const c = [...prev];
-            c[tIdx].inputs[iIdx][field] = val;
+            const newInputs = [...c[tIdx].inputs];
+            newInputs[iIdx] = { ...newInputs[iIdx], [field]: val };
+            c[tIdx] = { ...c[tIdx], inputs: newInputs };
             return c;
         });
 
+    // 添加输入参数
     const handleAddInput = (tIdx: number) =>
         setTestcases((prev) => {
             const c = [...prev];
-            c[tIdx].inputs.push({ name: `input${c[tIdx].inputs.length + 1}`, value: "" });
+            const inputs = [...c[tIdx].inputs, { name: `input${c[tIdx].inputs.length + 1}`, value: "" }];
+            c[tIdx] = { ...c[tIdx], inputs };
             return c;
         });
 
+    // 删除输入参数
     const handleRemoveInput = (tIdx: number, iIdx: number) =>
         setTestcases((prev) => {
             const c = [...prev];
-            c[tIdx].inputs.splice(iIdx, 1);
+            const inputs = c[tIdx].inputs.filter((_, i) => i !== iIdx);
+            c[tIdx] = { ...c[tIdx], inputs };
             return c;
         });
 
-    // 6) Persist all changes
+    // 保存所有测试用例，并刷新最新数据
     const handleSaveAll = async () => {
         try {
-            for (const tc of testcases) {
+            for (let i = 0; i < testcases.length; i++) {
+                const tc = testcases[i];
+                if (tc.expectedOutput.trim() === "" || tc.inputs.some(inp => !inp.name.trim() || !inp.value.trim())) {
+                    toast.error(`第 ${i + 1} 个测试用例存在空的输入或输出，保存失败`);
+                    return;
+                }
+
                 if (tc.id.startsWith("new-")) {
                     const res = await addProblemTestcase(problemId, tc.expectedOutput, tc.inputs);
-                    if (res.success) toast.success("新增测试用例成功");
-                    else toast.error("新增测试用例失败");
+                    if (res.success) {
+                        toast.success(`新增测试用例 ${i + 1} 成功`);
+                    } else {
+                        toast.error(`新增测试用例 ${i + 1} 失败`);
+                    }
                 } else {
-                    const res = await updateProblemTestcase(
-                        problemId,
-                        tc.id,
-                        tc.expectedOutput,
-                        tc.inputs
-                    );
-                    if (res.success) toast.success("更新测试用例成功");
-                    else toast.error("更新测试用例失败");
+                    const res = await updateProblemTestcase(problemId, tc.id, tc.expectedOutput, tc.inputs);
+                    if (res.success) toast.success(`更新测试用例 ${i + 1} 成功`);
+                    else toast.error(`更新测试用例 ${i + 1} 失败`);
                 }
             }
+
+            // 保存完成后刷新最新测试用例
+            const data = await getProblemData(problemId);
+            setTestcases(data.testcases || []);
+            toast.success("测试用例保存并刷新成功");
         } catch (err) {
             console.error(err);
             toast.error("保存测试用例异常");
