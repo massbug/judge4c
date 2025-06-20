@@ -1,14 +1,16 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { toast } from "sonner";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getProblemData } from "@/app/actions/getProblem";
-import { toast } from "sonner";
-import { updateProblemDetail } from "@/components/creater/problem-maintain";
 import { Difficulty } from "@/generated/client";
+import React, { useState, useEffect } from "react";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { getProblemData } from "@/app/actions/getProblem";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { PanelLayout } from "@/features/problems/layouts/panel-layout";
+import { updateProblemDetail } from "@/components/creater/problem-maintain";
 
 export default function EditDetailPanel({ problemId }: { problemId: string }) {
   const [problemDetails, setProblemDetails] = useState({
@@ -77,84 +79,91 @@ export default function EditDetailPanel({ problemId }: { problemId: string }) {
   };
 
   return (
-    <Card className="w-full">
-      <CardHeader>
-        <CardTitle>题目详情</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-6">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="display-id">显示ID</Label>
-              <Input
-                id="display-id"
-                type="number"
-                value={problemDetails.displayId}
-                onChange={(e) => handleNumberInputChange(e, "displayId")}
-                placeholder="输入显示ID"
-              />
+    <PanelLayout>
+      <ScrollArea className="h-full">
+        <Card className="w-full rounded-none border-none bg-background">
+          <CardHeader className="px-6 py-4">
+            <div className="flex items-center justify-between">
+              <span>题目详情</span>
+              <Button type="button" onClick={handleSave}>
+                保存
+              </Button>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="difficulty-select">难度等级</Label>
-              <select
-                id="difficulty-select"
-                className="block w-full p-2 border border-gray-300 rounded-md dark:bg-gray-800 dark:border-gray-700"
-                value={problemDetails.difficulty}
-                onChange={handleDifficultyChange}
-              >
-                <option value="EASY">简单</option>
-                <option value="MEDIUM">中等</option>
-                <option value="HARD">困难</option>
-              </select>
-            </div>
-          </div>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-6">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="display-id">显示ID</Label>
+                  <Input
+                    id="display-id"
+                    type="number"
+                    value={problemDetails.displayId}
+                    onChange={(e) => handleNumberInputChange(e, "displayId")}
+                    placeholder="输入显示ID"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="difficulty-select">难度等级</Label>
+                  <select
+                    id="difficulty-select"
+                    className="block w-full p-2 border border-gray-300 rounded-md dark:bg-gray-800 dark:border-gray-700"
+                    value={problemDetails.difficulty}
+                    onChange={handleDifficultyChange}
+                  >
+                    <option value="EASY">简单</option>
+                    <option value="MEDIUM">中等</option>
+                    <option value="HARD">困难</option>
+                  </select>
+                </div>
+              </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="time-limit">时间限制 (ms)</Label>
-              <Input
-                id="time-limit"
-                type="number"
-                value={problemDetails.timeLimit}
-                onChange={(e) => handleNumberInputChange(e, "timeLimit")}
-                placeholder="输入时间限制"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="memory-limit">内存限制 (字节)</Label>
-              <Input
-                id="memory-limit"
-                type="number"
-                value={problemDetails.memoryLimit}
-                onChange={(e) => handleNumberInputChange(e, "memoryLimit")}
-                placeholder="输入内存限制"
-              />
-            </div>
-          </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="time-limit">时间限制 (ms)</Label>
+                  <Input
+                    id="time-limit"
+                    type="number"
+                    value={problemDetails.timeLimit}
+                    onChange={(e) => handleNumberInputChange(e, "timeLimit")}
+                    placeholder="输入时间限制"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="memory-limit">内存限制 (字节)</Label>
+                  <Input
+                    id="memory-limit"
+                    type="number"
+                    value={problemDetails.memoryLimit}
+                    onChange={(e) => handleNumberInputChange(e, "memoryLimit")}
+                    placeholder="输入内存限制"
+                  />
+                </div>
+              </div>
 
-          <div className="flex items-center space-x-2">
-            <input
-              id="is-published"
-              type="checkbox"
-              checked={problemDetails.isPublished}
-              onChange={(e) =>
-                setProblemDetails({
-                  ...problemDetails,
-                  isPublished: e.target.checked,
-                })
-              }
-              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
-            />
-            <Label htmlFor="is-published" className="text-sm font-medium">
-              是否发布
-            </Label>
-          </div>
-
-          <Button type="button" onClick={handleSave}>
-            保存更改
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <input
+                    id="is-published"
+                    type="checkbox"
+                    checked={problemDetails.isPublished}
+                    onChange={(e) =>
+                      setProblemDetails({
+                        ...problemDetails,
+                        isPublished: e.target.checked,
+                      })
+                    }
+                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
+                  />
+                  <Label htmlFor="is-published" className="text-sm font-medium">
+                    是否发布
+                  </Label>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </ScrollArea>
+    </PanelLayout>
   );
 }

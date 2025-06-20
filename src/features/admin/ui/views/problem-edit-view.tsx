@@ -11,9 +11,9 @@ interface ProblemEditViewProps {
 
 export const ProblemEditView = ({ problemId }: ProblemEditViewProps) => {
   const components: Record<string, React.ReactNode> = {
+    detail: <EditDetailPanel problemId={problemId} />,
     description: <EditDescriptionPanel problemId={problemId} />,
     solution: <EditSolutionPanel problemId={problemId} />,
-    detail: <EditDetailPanel problemId={problemId} />,
     code: <EditCodePanel problemId={problemId} />,
     testcase: <EditTestcasePanel problemId={problemId} />,
   };

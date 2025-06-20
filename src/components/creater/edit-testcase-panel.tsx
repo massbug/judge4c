@@ -1,18 +1,20 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { generateAITestcase } from "@/app/actions/ai-testcase";
-import { getProblemData } from "@/app/actions/getProblem";
+import { toast } from "sonner";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   addProblemTestcase,
   updateProblemTestcase,
   deleteProblemTestcase,
 } from "@/components/creater/problem-maintain";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { toast } from "sonner";
+import React, { useState, useEffect } from "react";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { getProblemData } from "@/app/actions/getProblem";
+import { generateAITestcase } from "@/app/actions/ai-testcase";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { PanelLayout } from "@/features/problems/layouts/panel-layout";
 
 interface Testcase {
   id: string;
@@ -182,82 +184,95 @@ export default function EditTestcasePanel({
   };
 
   return (
-    <Card className="w-full">
-      <CardHeader>
-        <CardTitle>测试用例</CardTitle>
-        <div className="flex items-center space-x-2">
-          <Button onClick={handleAddTestcase}>添加测试用例</Button>
-          <Button onClick={handleAITestcase} disabled={isGenerating}>
-            {isGenerating ? "生成中..." : "使用AI生成测试用例"}
-          </Button>
-          <Button variant="secondary" onClick={handleSaveAll}>
-            保存测试用例
-          </Button>
-        </div>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        {testcases.map((tc, idx) => (
-          <div key={tc.id} className="border p-4 rounded space-y-4">
-            <div className="flex justify-between items-center">
-              <h3 className="font-medium">测试用例 {idx + 1}</h3>
-              <Button
-                variant="destructive"
-                onClick={() => handleRemoveTestcase(idx)}
-              >
-                删除
-              </Button>
-            </div>
-            <div className="space-y-2">
-              <Label>预期输出</Label>
-              <Input
-                value={tc.expectedOutput}
-                onChange={(e) =>
-                  handleExpectedOutputChange(idx, e.target.value)
-                }
-                placeholder="输入预期输出"
-              />
-            </div>
-            <div className="space-y-2">
-              <div className="flex justify-between items-center">
-                <Label>输入参数</Label>
-                <Button onClick={() => handleAddInput(idx)}>添加输入</Button>
+    <PanelLayout>
+      <ScrollArea className="h-full">
+        <Card className="w-full rounded-none border-none bg-background">
+          <CardHeader className="px-6 py-4">
+            <div className="flex items-center justify-between">
+              <span>测试用例</span>
+              <div className="flex items-center space-x-2">
+                <Button onClick={handleAITestcase} disabled={isGenerating}>
+                  {isGenerating ? "生成中..." : "AI生成"}
+                </Button>
+                <Button onClick={handleAddTestcase}>添加</Button>
+                <Button variant="secondary" onClick={handleSaveAll}>
+                  保存
+                </Button>
               </div>
-              {tc.inputs.map((inp, iIdx) => (
-                <div key={iIdx} className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label>名称</Label>
-                    <Input
-                      value={inp.name}
-                      onChange={(e) =>
-                        handleInputChange(idx, iIdx, "name", e.target.value)
-                      }
-                      placeholder="参数名称"
-                    />
-                  </div>
-                  <div>
-                    <Label>值</Label>
-                    <Input
-                      value={inp.value}
-                      onChange={(e) =>
-                        handleInputChange(idx, iIdx, "value", e.target.value)
-                      }
-                      placeholder="参数值"
-                    />
-                  </div>
-                  {iIdx > 0 && (
-                    <Button
-                      variant="outline"
-                      onClick={() => handleRemoveInput(idx, iIdx)}
-                    >
-                      删除输入
-                    </Button>
-                  )}
-                </div>
-              ))}
             </div>
-          </div>
-        ))}
-      </CardContent>
-    </Card>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {testcases.map((tc, idx) => (
+              <div key={tc.id} className="border p-4 rounded space-y-4">
+                <div className="flex justify-between items-center">
+                  <h3 className="font-medium">测试用例 {idx + 1}</h3>
+                  <Button
+                    variant="destructive"
+                    onClick={() => handleRemoveTestcase(idx)}
+                  >
+                    删除
+                  </Button>
+                </div>
+                <div className="space-y-2">
+                  <Label>预期输出</Label>
+                  <Input
+                    value={tc.expectedOutput}
+                    onChange={(e) =>
+                      handleExpectedOutputChange(idx, e.target.value)
+                    }
+                    placeholder="输入预期输出"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <Label>输入参数</Label>
+                    <Button onClick={() => handleAddInput(idx)}>
+                      添加输入
+                    </Button>
+                  </div>
+                  {tc.inputs.map((inp, iIdx) => (
+                    <div key={iIdx} className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label>名称</Label>
+                        <Input
+                          value={inp.name}
+                          onChange={(e) =>
+                            handleInputChange(idx, iIdx, "name", e.target.value)
+                          }
+                          placeholder="参数名称"
+                        />
+                      </div>
+                      <div>
+                        <Label>值</Label>
+                        <Input
+                          value={inp.value}
+                          onChange={(e) =>
+                            handleInputChange(
+                              idx,
+                              iIdx,
+                              "value",
+                              e.target.value
+                            )
+                          }
+                          placeholder="参数值"
+                        />
+                      </div>
+                      {iIdx > 0 && (
+                        <Button
+                          variant="outline"
+                          onClick={() => handleRemoveInput(idx, iIdx)}
+                        >
+                          删除输入
+                        </Button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      </ScrollArea>
+    </PanelLayout>
   );
 }

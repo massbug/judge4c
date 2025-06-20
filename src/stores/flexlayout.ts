@@ -146,6 +146,13 @@ const initialProblemEditFlexLayoutJsonModel: IJsonModel = {
         children: [
           {
             type: "tab",
+            id: "detail",
+            name: "Details",
+            component: "detail",
+            enableClose: false,
+          },
+          {
+            type: "tab",
             id: "description",
             name: "Description",
             component: "description",
@@ -156,13 +163,6 @@ const initialProblemEditFlexLayoutJsonModel: IJsonModel = {
             id: "solution",
             name: "Solutions",
             component: "solution",
-            enableClose: false,
-          },
-          {
-            type: "tab",
-            id: "detail",
-            name: "Details",
-            component: "detail",
             enableClose: false,
           },
         ],

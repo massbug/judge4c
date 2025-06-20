@@ -1,14 +1,16 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { getProblemData } from "@/app/actions/getProblem";
-import { updateProblemTemplate } from "@/components/creater/problem-maintain";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CoreEditor } from "@/components/core-editor";
-import { Language } from "@/generated/client";
 import { toast } from "sonner";
+import { Label } from "@/components/ui/label";
+import { Language } from "@/generated/client";
+import { Button } from "@/components/ui/button";
+import React, { useEffect, useState } from "react";
+import { CoreEditor } from "@/components/core-editor";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { getProblemData } from "@/app/actions/getProblem";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { PanelLayout } from "@/features/problems/layouts/panel-layout";
+import { updateProblemTemplate } from "@/components/creater/problem-maintain";
 
 interface Template {
   language: string;
@@ -67,45 +69,50 @@ export default function EditCodePanel({ problemId }: EditCodePanelProps) {
   };
 
   return (
-    <Card className="w-full">
-      <CardHeader>
-        <CardTitle>代码模板</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-6">
-          <div className="space-y-2">
-            <Label htmlFor="language-select">编程语言</Label>
-            <select
-              id="language-select"
-              className="block w-full p-2 border border-gray-300 rounded-md dark:bg-gray-800 dark:border-gray-700"
-              value={codeTemplate.language}
-              onChange={(e) => handleLanguageChange(e.target.value)}
-            >
-              {templates.map((t) => (
-                <option key={t.language} value={t.language}>
-                  {t.language.toUpperCase()}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="code-editor">代码模板内容</Label>
-            <div className="border rounded-md h-[500px]">
-              <CoreEditor
-                language={codeTemplate.language}
-                value={codeTemplate.content}
-                path={`/${problemId}.${codeTemplate.language}`}
-                onChange={(value) =>
-                  setCodeTemplate({ ...codeTemplate, content: value || "" })
-                }
-              />
+    <PanelLayout>
+      <ScrollArea className="h-full">
+        <Card className="w-full rounded-none border-none bg-background">
+          <CardHeader className="px-6 py-4">
+            <div className="flex items-center justify-between">
+              <span>代码模板</span>
+              <Button onClick={handleSave}>保存</Button>
             </div>
-          </div>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="language-select">编程语言</Label>
+                <select
+                  id="language-select"
+                  className="block w-full p-2 border border-gray-300 rounded-md dark:bg-gray-800 dark:border-gray-700"
+                  value={codeTemplate.language}
+                  onChange={(e) => handleLanguageChange(e.target.value)}
+                >
+                  {templates.map((t) => (
+                    <option key={t.language} value={t.language}>
+                      {t.language.toUpperCase()}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-          <Button onClick={handleSave}>保存代码模板</Button>
-        </div>
-      </CardContent>
-    </Card>
+              <div className="space-y-2">
+                <Label htmlFor="code-editor">代码模板内容</Label>
+                <div className="border rounded-md h-[500px]">
+                  <CoreEditor
+                    language={codeTemplate.language}
+                    value={codeTemplate.content}
+                    path={`/${problemId}.${codeTemplate.language}`}
+                    onChange={(value) =>
+                      setCodeTemplate({ ...codeTemplate, content: value || "" })
+                    }
+                  />
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </ScrollArea>
+    </PanelLayout>
   );
 }
