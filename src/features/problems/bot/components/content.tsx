@@ -37,13 +37,7 @@ export const BotContent = async ({ problemId }: BotContentProps) => {
 
   const description = getLocalizedDescription(descriptions, locale as Locale);
 
-  return (
-    <div className="relative flex-1">
-      <div className="absolute h-full w-full">
-        <BotForm description={description} />
-      </div>
-    </div>
-  );
+  return <BotForm description={description} />;
 };
 
 export const BotContentSkeleton = () => {

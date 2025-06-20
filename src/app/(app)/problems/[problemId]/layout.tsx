@@ -1,3 +1,4 @@
+import prisma from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { ProblemHeader } from "@/features/problems/components/header";
 
@@ -10,6 +11,19 @@ const Layout = async ({ children, params }: LayoutProps) => {
   const { problemId } = await params;
 
   if (!problemId) {
+    return notFound();
+  }
+
+  const problem = await prisma.problem.findUnique({
+    select: {
+      isPublished: true,
+    },
+    where: {
+      id: problemId,
+    },
+  });
+
+  if (!problem?.isPublished) {
     return notFound();
   }
 
