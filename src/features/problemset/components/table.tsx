@@ -44,6 +44,9 @@ export const ProblemsetTable = async () => {
         },
       },
     },
+    where: {
+      isPublished: true,
+    },
   });
 
   const completedProblems = new Set<string>();
@@ -85,45 +88,47 @@ export const ProblemsetTable = async () => {
         </TableRow>
       </TableHeader>
       <TableBody className="[&_td:first-child]:rounded-l-lg [&_td:last-child]:rounded-r-lg">
-        {problems.map((problem, index) => (
-          <TableRow
-            key={problem.id}
-            className="h-10 border-b-0 odd:bg-muted/50 hover:text-blue-500 hover:bg-muted"
-          >
-            <TableCell className="py-2.5">
-              {userId &&
-                (completedProblems.has(problem.id) ? (
-                  <CircleCheckBigIcon
-                    className="text-green-500"
-                    size={18}
-                    aria-hidden="true"
-                  />
-                ) : attemptedProblems.has(problem.id) ? (
-                  <CircleDotIcon
-                    className="text-yellow-500"
-                    size={18}
-                    aria-hidden="true"
-                  />
-                ) : null)}
-            </TableCell>
-            <TableCell className="py-2.5">
-              <Link
-                href={`/problems/${problem.id}`}
-                className="hover:text-blue-500"
-              >
-                {index + 1}.{" "}
-                {getLocalizedTitle(problem.localizations, locale as Locale)}
-              </Link>
-            </TableCell>
-            <TableCell
-              className={`py-2.5 ${getColorClassForDifficulty(
-                problem.difficulty
-              )}`}
+        {problems
+          .sort((a, b) => a.displayId - b.displayId)
+          .map((problem) => (
+            <TableRow
+              key={problem.id}
+              className="h-10 border-b-0 odd:bg-muted/50 hover:text-blue-500 hover:bg-muted"
             >
-              {t(`Difficulty.${problem.difficulty}`)}
-            </TableCell>
-          </TableRow>
-        ))}
+              <TableCell className="py-2.5">
+                {userId &&
+                  (completedProblems.has(problem.id) ? (
+                    <CircleCheckBigIcon
+                      className="text-green-500"
+                      size={18}
+                      aria-hidden="true"
+                    />
+                  ) : attemptedProblems.has(problem.id) ? (
+                    <CircleDotIcon
+                      className="text-yellow-500"
+                      size={18}
+                      aria-hidden="true"
+                    />
+                  ) : null)}
+              </TableCell>
+              <TableCell className="py-2.5">
+                <Link
+                  href={`/problems/${problem.id}`}
+                  className="hover:text-blue-500"
+                >
+                  {problem.displayId}.{" "}
+                  {getLocalizedTitle(problem.localizations, locale as Locale)}
+                </Link>
+              </TableCell>
+              <TableCell
+                className={`py-2.5 ${getColorClassForDifficulty(
+                  problem.difficulty
+                )}`}
+              >
+                {t(`Difficulty.${problem.difficulty}`)}
+              </TableCell>
+            </TableRow>
+          ))}
       </TableBody>
     </Table>
   );
