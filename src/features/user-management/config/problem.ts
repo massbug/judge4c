@@ -32,6 +32,7 @@ export const problemConfig = {
     { key: "difficulty", label: "难度", type: "text", required: true },
   ],
   actions: {
+    add: { label: "添加题目", icon: "PlusIcon" },
     edit: { label: "编辑", icon: "PencilIcon" },
     delete: { label: "删除", icon: "TrashIcon" },
     batchDelete: { label: "批量删除", icon: "TrashIcon" },

@@ -30,6 +30,7 @@ import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
+import { useRouter } from "next/navigation"
 
 import {
   Dialog,
@@ -68,8 +69,10 @@ import {
   Tabs,
 } from "@/components/ui/tabs"
 
-import * as userApi from "@/api/user"
-import * as problemApi from "@/api/problem"
+import { createAdmin, updateAdmin, deleteAdmin } from '@/app/(app)/usermanagement/_actions/adminActions'
+import { createTeacher, updateTeacher, deleteTeacher } from '@/app/(app)/usermanagement/_actions/teacherActions'
+import { createGuest, updateGuest, deleteGuest } from '@/app/(app)/usermanagement/_actions/guestActions'
+import { createProblem, updateProblem, deleteProblem } from '@/app/(app)/usermanagement/_actions/problemActions'
 
 // 通用用户类型
 export interface UserConfig {
@@ -89,6 +92,7 @@ export interface UserConfig {
     type: string
     placeholder?: string
     required?: boolean
+    options?: Array<{ value: string; label: string }>
   }>
   actions: {
     add: { label: string; icon: string }
@@ -112,7 +116,7 @@ const addUserSchema = z.object({
   name: z.string().optional(),
   email: z.string().email("请输入有效的邮箱地址"),
   password: z.string().optional(),
-  createdAt: z.string(),
+  createdAt: z.string().optional(),
 })
 
 const editUserSchema = z.object({
@@ -120,6 +124,7 @@ const editUserSchema = z.object({
   name: z.string().optional(),
   email: z.string().email("请输入有效的邮箱地址"),
   password: z.string().optional(),
+  role: z.string().optional(),
   createdAt: z.string(),
 })
 
@@ -134,8 +139,7 @@ const editProblemSchema = z.object({
   difficulty: z.string(),
 })
 
-export function UserTable({ config, data: initialData }: UserTableProps) {
-  const [data, setData] = useState<any[]>(initialData)
+export function UserTable({ config, data }: UserTableProps) {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
   const [editingUser, setEditingUser] = useState<any>(null)
@@ -212,6 +216,14 @@ export function UserTable({ config, data: initialData }: UserTableProps) {
         },
         cell: ({ row }) => {
           const value = row.getValue(col.key)
+          if (col.key === 'createdAt' || col.key === 'updatedAt') {
+            if (value instanceof Date) {
+              return value.toLocaleString()
+            }
+            if (typeof value === 'string' && !isNaN(Date.parse(value))) {
+              return new Date(value).toLocaleString()
+            }
+          }
           return value
         },
         enableSorting: col.sortable !== false,
@@ -288,19 +300,6 @@ export function UserTable({ config, data: initialData }: UserTableProps) {
     getFacetedUniqueValues: getFacetedUniqueValues(),
   })
 
-  // 数据加载与API对接
-  useEffect(() => {
-    if (isProblem) {
-      problemApi.getProblems()
-        .then(setData)
-        .catch(() => toast.error('获取数据失败', { duration: 1500 }))
-    } else {
-    userApi.getUsers(config.userType)
-      .then(setData)
-        .catch(() => toast.error('获取数据失败', { duration: 1500 }))
-    }
-  }, [config.userType])
-
   // 生成唯一ID
   function generateUniqueId(existingIds: string[]): string {
     let id: string
@@ -315,28 +314,41 @@ export function UserTable({ config, data: initialData }: UserTableProps) {
     const [isLoading, setIsLoading] = useState(false)
     const form = useForm({
       resolver: zodResolver(addUserSchema),
-      defaultValues: { name: "", email: "", password: "", createdAt: new Date().toISOString().slice(0, 16) },
+      defaultValues: { name: "", email: "", password: "", createdAt: "" },
     })
     React.useEffect(() => {
       if (open) {
-        form.reset({ name: "", email: "", password: "", createdAt: new Date().toISOString().slice(0, 16) })
+        form.reset({ name: "", email: "", password: "", createdAt: "" })
       }
     }, [open, form])
     async function onSubmit(formData: any) {
       try {
         setIsLoading(true)
-        const existingIds = dataRef.current.map(item => item.id)
-        const id = generateUniqueId(existingIds)
         const submitData = {
           ...formData,
-          id,
-          createdAt: formData.createdAt ? new Date(formData.createdAt).toISOString() : new Date().toISOString(),
+          // 移除手动生成的 id，让数据库自动生成
+          // 移除 createdAt，让数据库自动设置
         }
-        await userApi.createUser(config.userType, submitData)
-        userApi.getUsers(config.userType).then(setData)
+        // 清理空字段
+        if (!submitData.name) delete submitData.name
+        if (!submitData.password) delete submitData.password
+        if (!submitData.createdAt) delete submitData.createdAt
+        
+        // 如果用户提供了创建时间，转换为完整的 ISO-8601 格式
+        if (submitData.createdAt) {
+          const date = new Date(submitData.createdAt)
+          submitData.createdAt = date.toISOString()
+        }
+        
+        if (config.userType === 'admin') await createAdmin(submitData)
+        else if (config.userType === 'teacher') await createTeacher(submitData)
+        else if (config.userType === 'guest') await createGuest(submitData)
+        else if (config.userType === 'problem') await createProblem(submitData)
         onOpenChange(false)
         toast.success('添加成功', { duration: 1500 })
-      } catch {
+        router.refresh()
+      } catch (error) {
+        console.error('添加失败:', error)
         toast.error('添加失败', { duration: 1500 })
       } finally {
         setIsLoading(false)
@@ -359,13 +371,29 @@ export function UserTable({ config, data: initialData }: UserTableProps) {
                   <Label htmlFor={field.key} className="text-right">
                     {field.label}
                   </Label>
-                  <Input
-                    id={field.key}
-                    type={field.type}
-                    {...form.register(field.key as 'name' | 'email' | 'password' | 'createdAt')}
-                    className="col-span-3"
-                    placeholder={field.placeholder}
-                  />
+                  {field.type === 'select' && field.options ? (
+                    <Select
+                      value={String(form.watch(field.key as string) ?? '')}
+                      onValueChange={value => form.setValue(field.key as string, value)}
+                    >
+                      <SelectTrigger className="col-span-3">
+                        <SelectValue placeholder={`请选择${field.label}`} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {field.options.map((opt: any) => (
+                          <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  ) : (
+                    <Input
+                      id={field.key}
+                      type={field.type}
+                      {...form.register(field.key as any)}
+                      className="col-span-3"
+                      placeholder={field.placeholder}
+                    />
+                  )}
                   {form.formState.errors[field.key as keyof typeof form.formState.errors]?.message && (
                     <p className="col-span-3 col-start-2 text-sm text-red-500">
                       {form.formState.errors[field.key as keyof typeof form.formState.errors]?.message as string}
@@ -400,18 +428,20 @@ export function UserTable({ config, data: initialData }: UserTableProps) {
     async function onSubmit(formData: any) {
       try {
         setIsLoading(true)
-        const existingIds = dataRef.current.map(item => item.id)
-        const id = generateUniqueId(existingIds)
         const submitData = {
           ...formData,
           displayId: Number(formData.displayId),
-          id,
+          // 移除手动生成的 id，让数据库自动生成
         }
-        await problemApi.createProblem(submitData)
-        problemApi.getProblems().then(setData)
+        if (config.userType === 'admin') await createAdmin(submitData)
+        else if (config.userType === 'teacher') await createTeacher(submitData)
+        else if (config.userType === 'guest') await createGuest(submitData)
+        else if (config.userType === 'problem') await createProblem(submitData)
         onOpenChange(false)
         toast.success('添加成功', { duration: 1500 })
-      } catch {
+        router.refresh()
+      } catch (error) {
+        console.error('添加失败:', error)
         toast.error('添加失败', { duration: 1500 })
       } finally {
         setIsLoading(false)
@@ -465,11 +495,11 @@ export function UserTable({ config, data: initialData }: UserTableProps) {
     const [isLoading, setIsLoading] = useState(false)
     const form = useForm({
       resolver: zodResolver(editUserSchema),
-      defaultValues: { id: user.id, name: user.name || "", email: user.email || "", password: "", createdAt: user.createdAt ? new Date(user.createdAt).toISOString().slice(0, 16) : new Date().toISOString().slice(0, 16) },
+      defaultValues: { id: user.id, name: user.name || "", email: user.email || "", password: "", role: user.role || "", createdAt: user.createdAt ? new Date(user.createdAt).toISOString().slice(0, 16) : new Date().toISOString().slice(0, 16) },
     })
     React.useEffect(() => {
       if (open) {
-        form.reset({ id: user.id, name: user.name || "", email: user.email || "", password: "", createdAt: user.createdAt ? new Date(user.createdAt).toISOString().slice(0, 16) : new Date().toISOString().slice(0, 16) })
+        form.reset({ id: user.id, name: user.name || "", email: user.email || "", password: "", role: user.role || "", createdAt: user.createdAt ? new Date(user.createdAt).toISOString().slice(0, 16) : new Date().toISOString().slice(0, 16) })
       }
     }, [open, user, form])
     async function onSubmit(formData: any) {
@@ -482,8 +512,10 @@ export function UserTable({ config, data: initialData }: UserTableProps) {
         if (!submitData.password) {
           delete submitData.password;
         }
-        await userApi.updateUser(config.userType, submitData)
-        userApi.getUsers(config.userType).then(setData)
+        if (config.userType === 'admin') await updateAdmin(submitData.id, submitData)
+        else if (config.userType === 'teacher') await updateTeacher(submitData.id, submitData)
+        else if (config.userType === 'guest') await updateGuest(submitData.id, submitData)
+        else if (config.userType === 'problem') await updateProblem(submitData.id, submitData)
         onOpenChange(false)
         toast.success('修改成功', { duration: 1500 })
       } catch {
@@ -524,6 +556,43 @@ export function UserTable({ config, data: initialData }: UserTableProps) {
                   )}
                 </div>
               ))}
+              
+              {/* 编辑时显示角色选择 */}
+              {config.userType !== 'problem' && (
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="role" className="text-right">
+                    角色
+                  </Label>
+                  <Select
+                    value={form.watch('role' as 'role')}
+                    onValueChange={value => form.setValue('role' as 'role', value)}
+                  >
+                    <SelectTrigger className="col-span-3">
+                      <SelectValue placeholder="请选择角色" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {config.userType === 'guest' && (
+                        <>
+                          <SelectItem value="GUEST">学生</SelectItem>
+                          <SelectItem value="TEACHER">老师</SelectItem>
+                        </>
+                      )}
+                      {(config.userType === 'teacher' || config.userType === 'admin') && (
+                        <>
+                          <SelectItem value="ADMIN">管理员</SelectItem>
+                          <SelectItem value="TEACHER">老师</SelectItem>
+                          <SelectItem value="GUEST">学生</SelectItem>
+                        </>
+                      )}
+                    </SelectContent>
+                  </Select>
+                  {form.formState.errors.role?.message && (
+                    <p className="col-span-3 col-start-2 text-sm text-red-500">
+                      {form.formState.errors.role?.message as string}
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
             <DialogFooter>
               <Button type="submit" disabled={isLoading}>
@@ -555,8 +624,10 @@ export function UserTable({ config, data: initialData }: UserTableProps) {
           ...formData,
           displayId: Number(formData.displayId),
         }
-        await problemApi.updateProblem(submitData)
-        problemApi.getProblems().then(setData)
+        if (config.userType === 'admin') await updateAdmin(submitData.id, submitData)
+        else if (config.userType === 'teacher') await updateTeacher(submitData.id, submitData)
+        else if (config.userType === 'guest') await updateGuest(submitData.id, submitData)
+        else if (config.userType === 'problem') await updateProblem(submitData.id, submitData)
         onOpenChange(false)
         toast.success('修改成功', { duration: 1500 })
       } catch {
@@ -592,6 +663,27 @@ export function UserTable({ config, data: initialData }: UserTableProps) {
                   </p>
                 )}
               </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="difficulty" className="text-right">难度</Label>
+                <Select
+                  value={form.watch('difficulty')}
+                  onValueChange={value => form.setValue('difficulty', value)}
+                >
+                  <SelectTrigger className="col-span-3">
+                    <SelectValue placeholder="请选择难度" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="EASY">简单</SelectItem>
+                    <SelectItem value="MEDIUM">中等</SelectItem>
+                    <SelectItem value="HARD">困难</SelectItem>
+                  </SelectContent>
+                </Select>
+                {form.formState.errors.difficulty?.message && (
+                  <p className="col-span-3 col-start-2 text-sm text-red-500">
+                    {form.formState.errors.difficulty?.message as string}
+                  </p>
+                )}
+              </div>
             </div>
             <DialogFooter>
               <Button type="submit" disabled={isLoading}>
@@ -607,6 +699,8 @@ export function UserTable({ config, data: initialData }: UserTableProps) {
   // 用ref保证获取最新data
   const dataRef = React.useRef<any[]>(data)
   React.useEffect(() => { dataRef.current = data }, [data])
+
+  const router = useRouter()
 
   return (
     <Tabs defaultValue="outline" className="flex w-full flex-col gap-6">
@@ -657,7 +751,25 @@ export function UserTable({ config, data: initialData }: UserTableProps) {
                 })}
             </DropdownMenuContent>
           </DropdownMenu>
-          {config.actions.add && (
+          {isProblem && config.actions.add && (
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-7 gap-1 px-2 text-sm"
+              onClick={async () => {
+                // 获取当前最大 displayId
+                const maxDisplayId = Array.isArray(data) && data.length > 0
+                  ? Math.max(...data.map(item => Number(item.displayId) || 0), 1000)
+                  : 1000;
+                await createProblem({ displayId: maxDisplayId + 1, difficulty: "EASY" });
+                router.refresh();
+              }}
+            >
+              <PlusIcon className="h-4 w-4" />
+              {config.actions.add.label}
+            </Button>
+          )}
+          {!isProblem && config.actions.add && (
             <Button
               variant="outline"
               size="sm"
@@ -866,25 +978,22 @@ export function UserTable({ config, data: initialData }: UserTableProps) {
                     const selectedRows = table.getFilteredSelectedRowModel().rows
                     for (const row of selectedRows) {
                       if (isProblem) {
-                        await problemApi.deleteProblem(row.original.id)
-                        problemApi.getProblems().then(setData)
+                        await deleteProblem(row.original.id)
                       } else {
-                        await userApi.deleteUser(config.userType, row.original.id)
-                  userApi.getUsers(config.userType).then(setData)
+                        await deleteAdmin(row.original.id)
                       }
                     }
                     toast.success(`成功删除 ${selectedRows.length} 条记录`, { duration: 1500 })
                 } else if (deleteTargetId) {
                     if (isProblem) {
-                      await problemApi.deleteProblem(deleteTargetId)
-                      problemApi.getProblems().then(setData)
+                      await deleteProblem(deleteTargetId)
                     } else {
-                  await userApi.deleteUser(config.userType, deleteTargetId)
-                  userApi.getUsers(config.userType).then(setData)
+                      await deleteAdmin(deleteTargetId)
                     }
                     toast.success('删除成功', { duration: 1500 })
                   }
                   setDeleteDialogOpen(false)
+                  router.refresh()
                 } catch {
                   toast.error('删除失败', { duration: 1500 })
                 }

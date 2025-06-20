@@ -14,6 +14,6 @@ export interface Admin extends UserBase {
 export interface Teacher extends UserBase {
   // 教师特有字段（如有）
 }
-export interface Student extends UserBase {
+export interface Guest extends UserBase {
   // 学生特有字段（如有）
 } 

@@ -61,10 +61,6 @@ export const adminConfig = {
       placeholder: "搜索邮箱",
     },
     {
-      key: "password",
-      label: "密码",
-    },
-    {
       key: "createdAt",
       label: "创建时间",
       sortable: true,
@@ -98,7 +94,7 @@ export const adminConfig = {
       key: "createdAt",
       label: "创建时间",
       type: "datetime-local",
-      required: true,
+      required: false,
     },
   ],
   

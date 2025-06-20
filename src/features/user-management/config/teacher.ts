@@ -33,14 +33,13 @@ export const teacherConfig = {
     { key: "id", label: "ID", sortable: true },
     { key: "name", label: "姓名", sortable: true, searchable: true, placeholder: "搜索姓名" },
     { key: "email", label: "邮箱", sortable: true, searchable: true, placeholder: "搜索邮箱" },
-    { key: "password", label: "密码" },
     { key: "createdAt", label: "创建时间", sortable: true },
   ],
   formFields: [
     { key: "name", label: "姓名", type: "text", placeholder: "请输入教师姓名", required: true },
     { key: "email", label: "邮箱", type: "email", placeholder: "请输入教师邮箱", required: true },
     { key: "password", label: "密码", type: "password", placeholder: "请输入8-32位密码", required: true },
-    { key: "createdAt", label: "创建时间", type: "datetime-local", required: true },
+    { key: "createdAt", label: "创建时间", type: "datetime-local", required: false },
   ],
   actions: {
     add: { label: "添加教师", icon: "PlusIcon" },

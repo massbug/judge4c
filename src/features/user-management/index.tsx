@@ -3,11 +3,11 @@
 import { UserTable } from "./components/user-table"
 import { adminConfig } from "./config/admin"
 import { teacherConfig } from "./config/teacher"
-import { studentConfig } from "./config/student"
+import { guestConfig } from "./config/guest"
 import { problemConfig } from "./config/problem"
 
 interface UserManagementProps {
-  userType: "admin" | "teacher" | "student" | "problem"
+  userType: "admin" | "teacher" | "guest" | "problem"
 }
 
 export function UserManagement({ userType }: UserManagementProps) {
@@ -28,10 +28,10 @@ export function UserManagement({ userType }: UserManagementProps) {
       />
     )
   }
-  if (userType === "student") {
+  if (userType === "guest") {
     return (
       <UserTable
-        config={studentConfig}
+        config={guestConfig}
         data={[]}
       />
     )
@@ -45,6 +45,5 @@ export function UserManagement({ userType }: UserManagementProps) {
     )
   }
   
-  // 后续可以添加 teacher 和 student 的配置
   return <div>暂不支持 {userType} 类型</div>
 } 
