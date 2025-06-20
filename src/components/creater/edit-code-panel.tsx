@@ -1,11 +1,14 @@
-'use client';
+"use client"
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { getProblemData } from '@/app/actions/getProblem';
+import { updateProblemTemplate } from '@/components/creater/problem-maintain';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CoreEditor } from "@/components/core-editor";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { CoreEditor } from '@/components/core-editor';
+import { Language } from '@/generated/client';
+import { toast } from 'sonner';
 
 interface Template {
   language: string;
@@ -14,65 +17,50 @@ interface Template {
 
 interface EditCodePanelProps {
   problemId: string;
-  onUpdate?: (data: Template) => Promise<{ success: boolean }>;
 }
 
-// 模拟保存函数
-async function saveTemplate(data: Template): Promise<{ success: boolean }> {
-  try {
-    console.log('保存模板数据:', data);
-    await new Promise(resolve => setTimeout(resolve, 500));
-    return { success: true };
-  } catch {
-    return { success: false };
-  }
-}
-
-export default function EditCodePanel({ problemId, onUpdate = saveTemplate }: EditCodePanelProps) {
+export default function EditCodePanel({ problemId }: EditCodePanelProps) {
   const [codeTemplate, setCodeTemplate] = useState<Template>({
     language: 'cpp',
     content: `// 默认代码模板 for Problem ${problemId}`,
   });
-
   const [templates, setTemplates] = useState<Template[]>([]);
 
   useEffect(() => {
-    async function fetch() {
+    async function fetchTemplates() {
       try {
         const problem = await getProblemData(problemId);
         setTemplates(problem.templates);
-        const cppTemplate = problem.templates.find(t => t.language === 'cpp');
-        setCodeTemplate(cppTemplate || problem.templates[0]);
+        const sel = problem.templates.find(t => t.language === 'cpp') || problem.templates[0];
+        if (sel) setCodeTemplate(sel);
       } catch (err) {
         console.error('加载问题数据失败:', err);
+        toast.error('加载问题数据失败');
       }
     }
-    fetch();
+    fetchTemplates();
   }, [problemId]);
 
   const handleLanguageChange = (language: string) => {
-    const selected = templates.find(t => t.language === language);
-    if (selected) {
-      setCodeTemplate(selected);
-    }
+    const sel = templates.find(t => t.language === language);
+    if (sel) setCodeTemplate(sel);
   };
 
-  // 事件处理函数返回 Promise<void>，不要返回具体数据
   const handleSave = async (): Promise<void> => {
-    if (!onUpdate) {
-      alert('保存函数未传入，无法保存');
-      return;
-    }
     try {
-      const result = await onUpdate(codeTemplate);
-      if (result.success) {
-        alert('保存成功');
+      const res = await updateProblemTemplate(
+          problemId,
+          codeTemplate.language as Language,
+          codeTemplate.content
+      );
+      if (res.success) {
+        toast.success('保存成功');
       } else {
-        alert('保存失败');
+        toast.error('保存失败');
       }
     } catch (error) {
-      console.error(error);
-      alert('保存异常');
+      console.error('保存异常:', error);
+      toast.error('保存异常');
     }
   };
 
@@ -89,9 +77,9 @@ export default function EditCodePanel({ problemId, onUpdate = saveTemplate }: Ed
                   id="language-select"
                   className="block w-full p-2 border border-gray-300 rounded-md dark:bg-gray-800 dark:border-gray-700"
                   value={codeTemplate.language}
-                  onChange={(e) => handleLanguageChange(e.target.value)}
+                  onChange={e => handleLanguageChange(e.target.value)}
               >
-                {templates.map((t) => (
+                {templates.map(t => (
                     <option key={t.language} value={t.language}>
                       {t.language.toUpperCase()}
                     </option>
@@ -106,7 +94,7 @@ export default function EditCodePanel({ problemId, onUpdate = saveTemplate }: Ed
                     language={codeTemplate.language}
                     value={codeTemplate.content}
                     path={`/${problemId}.${codeTemplate.language}`}
-                    onChange={(value) =>
+                    onChange={value =>
                         setCodeTemplate({ ...codeTemplate, content: value || '' })
                     }
                 />
