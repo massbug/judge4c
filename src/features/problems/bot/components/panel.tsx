@@ -3,6 +3,7 @@ import {
   BotContent,
   BotContentSkeleton,
 } from "@/features/problems/bot/components/content";
+import { PanelLayout } from "@/features/problems/layouts/panel-layout";
 
 interface BotPanelProps {
   problemId: string;
@@ -10,10 +11,10 @@ interface BotPanelProps {
 
 export const BotPanel = ({ problemId }: BotPanelProps) => {
   return (
-    <div className="h-full flex flex-col border border-t-0 border-muted rounded-b-lg bg-background overflow-hidden">
+    <PanelLayout>
       <Suspense fallback={<BotContentSkeleton />}>
         <BotContent problemId={problemId} />
       </Suspense>
-    </div>
+    </PanelLayout>
   );
 };

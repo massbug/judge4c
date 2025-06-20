@@ -3,6 +3,7 @@ import {
   DescriptionContent,
   DescriptionContentSkeleton,
 } from "@/features/problems/description/components/content";
+import { PanelLayout } from "@/features/problems/layouts/panel-layout";
 
 interface DescriptionPanelProps {
   problemId: string;
@@ -10,14 +11,10 @@ interface DescriptionPanelProps {
 
 export const DescriptionPanel = ({ problemId }: DescriptionPanelProps) => {
   return (
-    <div className="h-full flex flex-col border border-t-0 border-muted rounded-b-lg bg-background overflow-hidden">
-      <div className="relative flex-1">
-        <div className="absolute h-full w-full">
-          <Suspense fallback={<DescriptionContentSkeleton />}>
-            <DescriptionContent problemId={problemId} />
-          </Suspense>
-        </div>
-      </div>
-    </div>
+    <PanelLayout>
+      <Suspense fallback={<DescriptionContentSkeleton />}>
+        <DescriptionContent problemId={problemId} />
+      </Suspense>
+    </PanelLayout>
   );
 };
