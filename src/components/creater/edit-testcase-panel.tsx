@@ -10,9 +10,9 @@ import {
 } from "@/components/creater/problem-maintain";
 import { Button } from "@/components/ui/button";
 import React, { useState, useEffect } from "react";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { getProblemData } from "@/app/actions/getProblem";
 import { generateAITestcase } from "@/app/actions/ai-testcase";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { PanelLayout } from "@/features/problems/layouts/panel-layout";
 
@@ -272,6 +272,7 @@ export default function EditTestcasePanel({
             ))}
           </CardContent>
         </Card>
+        <ScrollBar orientation="horizontal" />
       </ScrollArea>
     </PanelLayout>
   );
