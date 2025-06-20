@@ -9,10 +9,10 @@ import MdxPreview from "@/components/mdx-preview";
 import React, { useEffect, useState } from "react";
 import { Accordion } from "@/components/ui/accordion";
 import { CoreEditor } from "@/components/core-editor";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { getProblemData } from "@/app/actions/getProblem";
 import { VideoEmbed } from "@/components/content/video-embed";
 import { getProblemLocales } from "@/app/actions/getProblemLocales";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { PanelLayout } from "@/features/problems/layouts/panel-layout";
 import { updateProblemSolution } from "@/components/creater/problem-maintain";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -204,6 +204,7 @@ export default function EditSolutionPanel({
             </Button>
           </CardContent>
         </Card>
+        <ScrollBar orientation="horizontal" />
       </ScrollArea>
     </PanelLayout>
   );

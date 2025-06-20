@@ -6,8 +6,8 @@ import { Language } from "@/generated/client";
 import { Button } from "@/components/ui/button";
 import React, { useEffect, useState } from "react";
 import { CoreEditor } from "@/components/core-editor";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { getProblemData } from "@/app/actions/getProblem";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { PanelLayout } from "@/features/problems/layouts/panel-layout";
 import { updateProblemTemplate } from "@/components/creater/problem-maintain";
@@ -112,6 +112,7 @@ export default function EditCodePanel({ problemId }: EditCodePanelProps) {
             </div>
           </CardContent>
         </Card>
+        <ScrollBar orientation="horizontal" />
       </ScrollArea>
     </PanelLayout>
   );
