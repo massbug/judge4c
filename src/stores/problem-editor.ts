@@ -16,6 +16,8 @@ type ProblemEditorState = {
   editor: editor.IStandaloneCodeEditor | null;
   lspWebSocket: WebSocket | null;
   markers: editor.IMarker[];
+  useAIEditor: boolean;
+  loading: boolean;
 };
 
 type ProblemEditorAction = {
@@ -26,6 +28,8 @@ type ProblemEditorAction = {
   setEditor: (editor: editor.IStandaloneCodeEditor) => void;
   setLspWebSocket: (lspWebSocket: WebSocket) => void;
   setMarkers: (markers: editor.IMarker[]) => void;
+  setUseAIEditor: (flag: boolean) => void;
+  setLoading: (flag: boolean) => void;
 };
 
 type ProblemEditorStore = ProblemEditorState & ProblemEditorAction;
@@ -38,6 +42,10 @@ export const useProblemEditorStore = create<ProblemEditorStore>((set, get) => ({
   editor: null,
   lspWebSocket: null,
   markers: [],
+  useAIEditor: false,
+  loading: false,
+  setLoading: (loading) => set({loading}),
+  setUseAIEditor: (loading) => set({ useAIEditor: loading }),
   setProblem: (problemId, templates) => {
     const language = getLanguage(problemId);
     const value = getValue(problemId, language, templates);

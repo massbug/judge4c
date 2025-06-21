@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { CoreEditor } from "@/components/core-editor";
 import { useProblemEditorStore } from "@/stores/problem-editor";
 import type { LanguageServerConfig, Template } from "@/generated/client";
@@ -26,9 +26,10 @@ export const ProblemEditor = ({
         setEditor,
         setLspWebSocket,
         setMarkers,
+        useAIEditor,
+        // setUseAIEditor
     } = useProblemEditorStore();
 
-    const [useAIEditor, setUseAIEditor] = useState(false);
 
     useEffect(() => {
         setProblem(problemId, templates);
@@ -38,12 +39,12 @@ export const ProblemEditor = ({
         <div className="w-full h-[85vh] relative">
             {!useAIEditor ? (
                 <>
-                    <button
-                        className="absolute right-4 top-4 bg-blue-600 text-white px-3 py-1 rounded z-10"
-                        onClick={() => setUseAIEditor(true)}
-                    >
-                        AI 优化代码
-                    </button>
+                    {/*<button*/}
+                    {/*    className="absolute right-4 top-4 bg-blue-600 text-white px-3 py-1 rounded z-10"*/}
+                    {/*    onClick={() => setUseAIEditor(true)}*/}
+                    {/*>*/}
+                    {/*    AI 优化代码*/}
+                    {/*</button>*/}
                     <CoreEditor
                         language={language}
                         value={value}
@@ -57,11 +58,7 @@ export const ProblemEditor = ({
                     />
                 </>
             ) : (
-                <AIEditorWrapper
-                    language={language}
-                    originalCode={value}
-                    onReset={() => setUseAIEditor(false)}
-                />
+                <AIEditorWrapper/>
             )}
         </div>
     );
