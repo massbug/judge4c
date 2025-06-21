@@ -13,7 +13,7 @@ interface CodePanelProps {
 
 export const CodePanel = ({ problemId }: CodePanelProps) => {
   return (
-    <PanelLayout>
+    <PanelLayout isScroll={false}>
       <div className="h-full flex flex-col">
         <CodeToolbar className="border-b" />
         <Suspense fallback={<CodeContentSkeleton />}>

@@ -3,7 +3,6 @@ import { CodeXmlIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { SubmissionTable } from "@/features/problems/submission/components/table";
 
 interface SubmissionContentProps {
@@ -45,11 +44,12 @@ export const SubmissionContent = async ({
   const session = await auth();
   const userId = session?.user?.id;
 
-  return (
-    <ScrollArea className="h-full px-3">
-      {userId ? <SubmissionTable problemId={problemId} /> : <LoginPromptCard />}
-      <ScrollBar orientation="horizontal" />
-    </ScrollArea>
+  return userId ? (
+    <div className="px-3">
+      <SubmissionTable problemId={problemId} />
+    </div>
+  ) : (
+    <LoginPromptCard />
   );
 };
 
