@@ -1,6 +1,7 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { DetailTable } from "@/features/problems/detail/components/table";
+import { AnalysisContent } from "@/features/problems/analysis/components/content";
 
 interface DetailContentProps {
   submissionId: string;
@@ -10,6 +11,7 @@ export const DetailContent = ({ submissionId }: DetailContentProps) => {
   return (
     <ScrollArea className="h-full">
       <DetailTable submissionId={submissionId} />
+      <AnalysisContent submissionId={submissionId} />
       <ScrollBar orientation="horizontal" />
     </ScrollArea>
   );
