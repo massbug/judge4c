@@ -5,9 +5,9 @@ import {
   OptimizeCodeOutput,
   OptimizeCodeOutputSchema,
 } from "@/types/ai-improve";
+import prisma from "@/lib/prisma";
 import { deepseek } from "@/lib/ai";
 import { CoreMessage, generateText } from "ai";
-import prisma from "@/lib/prisma";
 
 /**
  * 调用AI优化代码
@@ -17,13 +17,29 @@ import prisma from "@/lib/prisma";
 export const optimizeCode = async (
   input: OptimizeCodeInput
 ): Promise<OptimizeCodeOutput> => {
-  const model = deepseek("chat");
+  const model = deepseek("deepseek-chat");
 
   // 获取题目详情（如果提供了problemId）
   let problemDetails = "";
+  let templateDetails = "";
 
   if (input.problemId) {
     try {
+      const templates = await prisma.template.findMany({
+        where: { problemId: input.problemId },
+      });
+      if (templates && templates.length > 0) {
+        const tplStrings = templates
+          .map(
+            (t) =>
+              `Template (${t.language}):\n-------------------\n\`\`\`\n${t.content}\n\`\`\``
+          )
+          .join("\n");
+        templateDetails = `\nCode Templates:\n-------------------\n${tplStrings}`;
+      } else {
+        templateDetails = "\nNo code templates found for this problem.";
+      }
+
       // 尝试获取英文描述
       const problemLocalizationEn = await prisma.problemLocalization.findUnique(
         {
@@ -102,6 +118,12 @@ Error message (if any): ${input.error || "No error message provided"}
 
 ${problemDetails}
 
+The following is the code template section, do not modify the part that gives the same code as the code template
+
+${templateDetails}
+
+Write the code in conjunction with the topic and fill in the gaps in the code
+
 Respond ONLY with the JSON object containing the optimized code and explanations.
 Format:
 {
@@ -127,9 +149,13 @@ Format:
   }
 
   // 解析LLM响应
+  const fenceMatch = text.match(/```(?:json)?\s*([\s\S]*?)```/);
+  const jsonMatch = fenceMatch ? fenceMatch[1] : text.match(/\{[\s\S]*}/)?.[0];
+  const jsonString = jsonMatch ? jsonMatch.trim() : text.trim();
+
   let llmResponseJson;
   try {
-    const cleanedText = text.trim();
+    const cleanedText = jsonString.trim();
     llmResponseJson = JSON.parse(cleanedText);
   } catch (error) {
     console.error("Failed to parse LLM response as JSON:", error);
