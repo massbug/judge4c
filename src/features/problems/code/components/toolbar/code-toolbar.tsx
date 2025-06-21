@@ -10,6 +10,7 @@ import {
 import { AnalyzeButton } from "./actions/analyze-button";
 import { LspConnectionIndicator } from "./controls/lsp-connection-indicator";
 import {AIOptimizeButton} from "@/features/problems/code/components/toolbar/actions/AIOptimizeButton";
+import {AIDisplayButton} from "@/features/problems/code/components/toolbar/actions/AIDisplayButton";
 
 interface CodeToolbarProps {
   className?: string;
@@ -27,6 +28,7 @@ export const CodeToolbar = async ({ className }: CodeToolbarProps) => {
         </div>
         <div className="flex items-center gap-2">
           <AIOptimizeButton />
+          <AIDisplayButton />
           <AnalyzeButton />
           <ResetButton />
           <UndoButton />

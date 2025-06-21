@@ -5,24 +5,27 @@ import { DiffEditor } from "@monaco-editor/react";
 import { useMonacoTheme } from "@/hooks/use-monaco-theme";
 import { optimizeCode } from "@/app/actions/ai-improve";
 import { useProblemEditorStore } from "@/stores/problem-editor";
-// import {LanguageServerConfig} from "@/generated/client";
-// import type {editor} from "monaco-editor";
 
-export const AIEditorWrapper = (
-) => {
+export const AIEditorWrapper = () => {
     const {
         language,
         value: originalCode,
-        // setUseAIEditor,
         setLoading,
+        AIgenerate,
+        LastOptimizedCode,
+        setLastOptimizedCode,
     } = useProblemEditorStore();
 
     const [optimizedCode, setOptimizedCode] = useState<string>("");
     const { theme } = useMonacoTheme();
 
     useEffect(() => {
-        handleOptimize();
-    }, []);
+        if (AIgenerate) {
+            handleOptimize();
+        } else if (LastOptimizedCode) {
+            setOptimizedCode(LastOptimizedCode);
+        }
+    }, [AIgenerate]);
 
     const handleOptimize = async () => {
         setLoading(true);
@@ -33,6 +36,7 @@ export const AIEditorWrapper = (
                 problemId: "",
             });
             setOptimizedCode(res.optimizedCode);
+            setLastOptimizedCode(res.optimizedCode);
         } catch (err) {
             console.error("优化失败", err);
             setOptimizedCode("// 优化失败，请稍后重试");

@@ -18,6 +18,8 @@ type ProblemEditorState = {
   markers: editor.IMarker[];
   useAIEditor: boolean;
   loading: boolean;
+  AIgenerate: boolean;
+  LastOptimizedCode: string;
 };
 
 type ProblemEditorAction = {
@@ -30,6 +32,8 @@ type ProblemEditorAction = {
   setMarkers: (markers: editor.IMarker[]) => void;
   setUseAIEditor: (flag: boolean) => void;
   setLoading: (flag: boolean) => void;
+  setAIgenerate: (flag: boolean) => void;
+  setLastOptimizedCode: (code: string) => void;
 };
 
 type ProblemEditorStore = ProblemEditorState & ProblemEditorAction;
@@ -44,6 +48,10 @@ export const useProblemEditorStore = create<ProblemEditorStore>((set, get) => ({
   markers: [],
   useAIEditor: false,
   loading: false,
+  AIgenerate: false,
+  LastOptimizedCode: "",
+  setLastOptimizedCode: (code) => set({ LastOptimizedCode: code }),
+  setAIgenerate: (flag) => set({ AIgenerate: flag }),
   setLoading: (loading) => set({loading}),
   setUseAIEditor: (loading) => set({ useAIEditor: loading }),
   setProblem: (problemId, templates) => {
