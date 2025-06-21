@@ -1,5 +1,9 @@
-import GenericLayout from "../_components/GenericLayout";
+import GenericLayout from "../components/GenericLayout";
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+export default function AdminLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return <GenericLayout allowedRoles={["ADMIN"]}>{children}</GenericLayout>;
-} 
+}

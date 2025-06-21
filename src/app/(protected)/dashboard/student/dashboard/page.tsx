@@ -1,7 +1,5 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
 import {
   Table,
   TableBody,
@@ -10,9 +8,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import { useEffect, useState } from "react";
-import { getStudentDashboardData } from "@/app/(protected)/dashboard/(userdashboard)/_actions/student-dashboard";
+import { Progress } from "@/components/ui/progress";
+import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { getStudentDashboardData } from "@/app/(protected)/dashboard/actions/student-dashboard";
 
 interface DashboardData {
   completionData: {
@@ -86,13 +86,19 @@ export default function StudentDashboard() {
     );
   }
 
-  const { completionData, errorData, difficultProblems, pieChartData, errorPieChartData } = data;
+  const {
+    completionData,
+    errorData,
+    difficultProblems,
+    pieChartData,
+    errorPieChartData,
+  } = data;
   const COLORS = ["#4CAF50", "#FFC107"];
 
   return (
     <div className="container mx-auto p-6 space-y-6">
       <h1 className="text-3xl font-bold mb-6">学生仪表板</h1>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* 题目完成比例模块 */}
         <Card>
@@ -102,8 +108,12 @@ export default function StudentDashboard() {
           <CardContent>
             <div className="space-y-4">
               <div className="flex justify-between items-center">
-                <span>已完成题目：{completionData.completed}/{completionData.total}</span>
-                <span className="text-green-500">{completionData.percentage}%</span>
+                <span>
+                  已完成题目：{completionData.completed}/{completionData.total}
+                </span>
+                <span className="text-green-500">
+                  {completionData.percentage}%
+                </span>
               </div>
               <Progress value={completionData.percentage} className="h-2" />
               <div className="h-[200px]">
@@ -119,9 +129,17 @@ export default function StudentDashboard() {
                       paddingAngle={5}
                       dataKey="value"
                     >
-                      {pieChartData.map((entry: { name: string; value: number }, index: number) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                      ))}
+                      {pieChartData.map(
+                        (
+                          entry: { name: string; value: number },
+                          index: number
+                        ) => (
+                          <Cell
+                            key={`cell-${index}`}
+                            fill={COLORS[index % COLORS.length]}
+                          />
+                        )
+                      )}
                     </Pie>
                   </PieChart>
                 </ResponsiveContainer>
@@ -138,7 +156,9 @@ export default function StudentDashboard() {
           <CardContent>
             <div className="space-y-4">
               <div className="flex justify-between items-center">
-                <span>错题数量：{errorData.wrong}/{errorData.total}</span>
+                <span>
+                  错题数量：{errorData.wrong}/{errorData.total}
+                </span>
                 <span className="text-yellow-500">{errorData.percentage}%</span>
               </div>
               <Progress value={errorData.percentage} className="h-2" />
@@ -155,9 +175,17 @@ export default function StudentDashboard() {
                       paddingAngle={5}
                       dataKey="value"
                     >
-                      {errorPieChartData.map((entry: { name: string; value: number }, index: number) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                      ))}
+                      {errorPieChartData.map(
+                        (
+                          entry: { name: string; value: number },
+                          index: number
+                        ) => (
+                          <Cell
+                            key={`cell-${index}`}
+                            fill={COLORS[index % COLORS.length]}
+                          />
+                        )
+                      )}
                     </Pie>
                   </PieChart>
                 </ResponsiveContainer>
@@ -188,14 +216,21 @@ export default function StudentDashboard() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {difficultProblems.map((problem: { id: string | number; title: string; difficulty: string; errorCount: number }) => (
-                    <TableRow key={problem.id}>
-                      <TableCell>{problem.id}</TableCell>
-                      <TableCell>{problem.title}</TableCell>
-                      <TableCell>{problem.difficulty}</TableCell>
-                      <TableCell>{problem.errorCount}</TableCell>
-                    </TableRow>
-                  ))}
+                  {difficultProblems.map(
+                    (problem: {
+                      id: string | number;
+                      title: string;
+                      difficulty: string;
+                      errorCount: number;
+                    }) => (
+                      <TableRow key={problem.id}>
+                        <TableCell>{problem.id}</TableCell>
+                        <TableCell>{problem.title}</TableCell>
+                        <TableCell>{problem.difficulty}</TableCell>
+                        <TableCell>{problem.errorCount}</TableCell>
+                      </TableRow>
+                    )
+                  )}
                 </TableBody>
               </Table>
             ) : (
@@ -208,4 +243,4 @@ export default function StudentDashboard() {
       </Card>
     </div>
   );
-} 
+}

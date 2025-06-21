@@ -16,4 +16,4 @@ const Layout = async ({ children, params }: LayoutProps) => {
   return <ProblemEditLayout>{children}</ProblemEditLayout>;
 };
 
-export default Layout; 
+export default Layout;

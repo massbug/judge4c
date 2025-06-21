@@ -1,5 +1,9 @@
-import GenericLayout from "../_components/GenericLayout";
+import GenericLayout from "../components/GenericLayout";
 
-export default function TeacherLayout({ children }: { children: React.ReactNode }) {
+export default function TeacherLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return <GenericLayout allowedRoles={["ADMIN"]}>{children}</GenericLayout>;
-} 
+}

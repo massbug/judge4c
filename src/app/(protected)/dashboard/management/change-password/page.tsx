@@ -1,7 +1,8 @@
-// src/app/(app)/management/change-password/page.tsx
 "use client";
 
 import { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { changePassword } from "@/app/(protected)/dashboard/management/actions/changePassword";
 
 export default function ChangePasswordPage() {
@@ -51,40 +52,46 @@ export default function ChangePasswordPage() {
       setShowSuccess(true);
       setTimeout(() => setShowSuccess(false), 3000);
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : '修改密码失败';
+      const errorMessage =
+        error instanceof Error ? error.message : "修改密码失败";
       alert(errorMessage);
     }
   };
 
   return (
     <div className="h-full w-full p-6">
-      <div className="h-full w-full bg-white shadow-lg rounded-xl p-8 flex flex-col">
+      <div className="h-full w-full bg-card shadow-lg rounded-xl p-8 flex flex-col">
         <h1 className="text-2xl font-bold mb-6">修改密码</h1>
-        <form onSubmit={handleSubmit} className="space-y-5 flex-1 flex flex-col">
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-5 flex-1 flex flex-col"
+        >
           <div>
             <label className="block text-sm font-medium mb-1">旧密码</label>
-            <input
+            <Input
               type="password"
               value={oldPassword}
               onChange={(e) => setOldPassword(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
           </div>
 
           <div>
             <label className="block text-sm font-medium mb-1">新密码</label>
-            <input
+            <Input
               type="password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
             {newPassword && (
-              <p className="mt-1 text-xs text-gray-500">
+              <p className="mt-1 text-xs">
                 密码强度：
-                <span className={`inline-block w-12 h-2 rounded ${strengthColor}`}></span>
+                <span
+                  className={`inline-block w-12 h-2 rounded ${strengthColor}`}
+                ></span>
                 &nbsp;
                 <span className="text-sm">{strengthLabel}</span>
               </p>
@@ -93,25 +100,27 @@ export default function ChangePasswordPage() {
 
           <div>
             <label className="block text-sm font-medium mb-1">确认新密码</label>
-            <input
+            <Input
               type="password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
-            {newPassword && confirmPassword && newPassword !== confirmPassword && (
-              <p className="mt-1 text-xs text-red-500">密码不一致</p>
-            )}
+            {newPassword &&
+              confirmPassword &&
+              newPassword !== confirmPassword && (
+                <p className="mt-1 text-xs text-red-500">密码不一致</p>
+              )}
           </div>
 
           <div className="mt-auto">
-            <button
+            <Button
               type="submit"
-              className="w-full bg-black hover:bg-gray-800 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+              className="w-full font-semibold py-2 px-4 rounded-lg transition-colors"
             >
               提交
-            </button>
+            </Button>
           </div>
         </form>
       </div>

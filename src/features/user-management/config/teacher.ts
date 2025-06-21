@@ -1,5 +1,10 @@
+import {
+  createUserConfig,
+  baseUserSchema,
+  baseAddUserSchema,
+  baseEditUserSchema,
+} from "./base-config";
 import { z } from "zod";
-import { createUserConfig, baseUserSchema, baseAddUserSchema, baseEditUserSchema } from './base-config'
 
 export const teacherSchema = baseUserSchema;
 export type Teacher = z.infer<typeof teacherSchema>;
@@ -16,4 +21,4 @@ export const teacherConfig = createUserConfig(
   "添加教师",
   "请输入教师姓名",
   "请输入教师邮箱"
-); 
+);

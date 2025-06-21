@@ -1,16 +1,16 @@
-import { AppSidebar } from "@/components/sidebar/app-sidebar";
-import { AdminSidebar } from "@/components/sidebar/admin-sidebar";
-import { TeacherSidebar } from "@/components/sidebar/teacher-sidebar";
-import { DynamicBreadcrumb } from "@/components/dynamic-breadcrumb";
-import { Separator } from "@/components/ui/separator";
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
+import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import { Separator } from "@/components/ui/separator";
+import { AppSidebar } from "@/components/sidebar/app-sidebar";
+import { AdminSidebar } from "@/components/sidebar/admin-sidebar";
+import { DynamicBreadcrumb } from "@/components/dynamic-breadcrumb";
+import { TeacherSidebar } from "@/components/sidebar/teacher-sidebar";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -33,7 +33,7 @@ export default async function Layout({ children }: LayoutProps) {
   // 获取用户的完整信息（包括角色）
   const fullUser = await prisma.user.findUnique({
     where: { id: user.id },
-    select: { id: true, name: true, email: true, image: true, role: true }
+    select: { id: true, name: true, email: true, image: true, role: true },
   });
 
   if (!fullUser) {

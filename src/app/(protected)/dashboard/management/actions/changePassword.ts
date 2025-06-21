@@ -1,9 +1,8 @@
-// changePassword.ts
 "use server";
 
+import bcrypt from "bcryptjs";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
-import bcrypt from "bcryptjs";
 
 export async function changePassword(formData: FormData) {
   const oldPassword = formData.get("oldPassword") as string;

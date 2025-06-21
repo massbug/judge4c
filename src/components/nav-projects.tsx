@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
   BookX,
@@ -9,19 +9,7 @@ import {
   X,
   Info,
   AlertTriangle,
-} from "lucide-react"
-import React, { useState } from "react"
-import { useRouter } from "next/navigation"
-import {
-  Dialog,
-} from "@/components/ui/dialog"
-
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "lucide-react";
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -30,24 +18,33 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar"
-import { WrongbookDialog } from "@/components/UncompletedProject/wrongbook-dialog"
-import { ShareDialogContent } from "@/components/UncompletedProject/sharedialog"
+} from "@/components/ui/sidebar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Dialog } from "@/components/ui/dialog";
+import { ShareDialogContent } from "@/components/UncompletedProject/sharedialog";
+import { WrongbookDialog } from "@/components/UncompletedProject/wrongbook-dialog";
 
 export function NavProjects({
   projects,
 }: {
   projects: {
-    id: string
-    name: string
-    status: string
-    url?: string
-  }[]
+    id: string;
+    name: string;
+    status: string;
+    url?: string;
+  }[];
 }) {
-  const { isMobile } = useSidebar()
-  const [shareOpen, setShareOpen] = useState(false)
-  const [shareLink, setShareLink] = useState("")
-  const router = useRouter()
+  const { isMobile } = useSidebar();
+  const [shareOpen, setShareOpen] = useState(false);
+  const [shareLink, setShareLink] = useState("");
+  const router = useRouter();
 
   return (
     <>
@@ -59,7 +56,7 @@ export function NavProjects({
               <SidebarMenuButton asChild>
                 <a href={item.url}>
                   <BookX />
-                   <span className="flex w-full items-center">
+                  <span className="flex w-full items-center">
                     <span
                       className="truncate max-w-[120px] flex-1"
                       title={item.name}
@@ -73,28 +70,30 @@ export function NavProjects({
                             <Check className="w-3 h-3" />
                             {item.status}
                           </span>
-                        )
+                        );
                       } else if (item.status === "WA") {
                         return (
                           <span className="ml-2 min-w-[60px] text-xs text-right px-2 py-0.5 rounded-full border flex items-center gap-1 border-red-500 bg-red-500 text-white">
                             <X className="w-3 h-3" />
                             {item.status}
                           </span>
-                        )
-                      } else if (["RE", "CE", "MLE", "TLE"].includes(item.status)) {
+                        );
+                      } else if (
+                        ["RE", "CE", "MLE", "TLE"].includes(item.status)
+                      ) {
                         return (
                           <span className="ml-2 min-w-[60px] text-xs text-right px-2 py-0.5 rounded-full border flex items-center gap-1 border-orange-500 bg-orange-500 text-white">
                             <AlertTriangle className="w-3 h-3" />
                             {item.status}
                           </span>
-                        )
+                        );
                       } else {
                         return (
                           <span className="ml-2 min-w-[60px] text-xs text-right px-2 py-0.5 rounded-full border flex items-center gap-1 border-gray-400 bg-gray-100 text-gray-700">
                             <Info className="w-3 h-3" />
                             {item.status}
                           </span>
-                        )
+                        );
                       }
                     })()}
                   </span>
@@ -114,11 +113,11 @@ export function NavProjects({
                 >
                   <DropdownMenuItem
                     onClick={(e) => {
-                      e.stopPropagation()
+                      e.stopPropagation();
                       if (item.url) {
-                        router.push(item.url)
+                        router.push(item.url);
                       } else {
-                        router.push(`/problems/${item.id}`)
+                        router.push(`/problems/${item.id}`);
                       }
                     }}
                   >
@@ -127,9 +126,11 @@ export function NavProjects({
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={(e) => {
-                      e.stopPropagation()
-                      setShareLink(`${window.location.origin}/problems/${item.id}`)
-                      setShareOpen(true)
+                      e.stopPropagation();
+                      setShareLink(
+                        `${window.location.origin}/problems/${item.id}`
+                      );
+                      setShareOpen(true);
                     }}
                   >
                     <Share className="text-muted-foreground mr-2" />
@@ -153,5 +154,5 @@ export function NavProjects({
         <ShareDialogContent link={shareLink} />
       </Dialog>
     </>
-  )
+  );
 }

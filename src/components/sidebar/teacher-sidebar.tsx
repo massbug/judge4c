@@ -1,18 +1,13 @@
-"use client"
-import { siteConfig } from "@/config/site"
-import * as React from "react"
+"use client";
+
 import {
   Command,
   LifeBuoy,
   PieChart,
   Send,
-  // Settings2,
   SquareTerminal,
-} from "lucide-react"
-
-import { NavMain } from "@/components/nav-main"
-import { NavSecondary } from "@/components/nav-secondary"
-import { NavUser } from "@/components/nav-user"
+} from "lucide-react";
+import * as React from "react";
 import {
   Sidebar,
   SidebarContent,
@@ -21,8 +16,12 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
-import { User } from "next-auth"
+} from "@/components/ui/sidebar";
+import { User } from "next-auth";
+import { siteConfig } from "@/config/site";
+import { NavMain } from "@/components/nav-main";
+import { NavUser } from "@/components/nav-user";
+import { NavSecondary } from "@/components/nav-secondary";
 
 const data = {
   navMain: [
@@ -81,13 +80,16 @@ const data = {
       icon: Send,
     },
   ],
-}
+};
 
 interface TeacherSidebarProps {
   user: User;
 }
 
-export function TeacherSidebar({ user, ...props }: TeacherSidebarProps & React.ComponentProps<typeof Sidebar>) {
+export function TeacherSidebar({
+  user,
+  ...props
+}: TeacherSidebarProps & React.ComponentProps<typeof Sidebar>) {
   const userInfo = {
     name: user.name ?? "",
     email: user.email ?? "",
@@ -121,5 +123,5 @@ export function TeacherSidebar({ user, ...props }: TeacherSidebarProps & React.C
         <NavUser user={userInfo} />
       </SidebarFooter>
     </Sidebar>
-  )
+  );
 }

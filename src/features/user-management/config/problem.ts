@@ -24,8 +24,20 @@ export const problemConfig = {
   apiPath: "/api/problem",
   columns: [
     { key: "id", label: "ID", sortable: true },
-    { key: "displayId", label: "题目编号", sortable: true, searchable: true, placeholder: "搜索编号" },
-    { key: "difficulty", label: "难度", sortable: true, searchable: true, placeholder: "搜索难度" },
+    {
+      key: "displayId",
+      label: "题目编号",
+      sortable: true,
+      searchable: true,
+      placeholder: "搜索编号",
+    },
+    {
+      key: "difficulty",
+      label: "难度",
+      sortable: true,
+      searchable: true,
+      placeholder: "搜索难度",
+    },
   ],
   formFields: [
     { key: "displayId", label: "题目编号", type: "number", required: true },
@@ -38,4 +50,4 @@ export const problemConfig = {
     batchDelete: { label: "批量删除", icon: "TrashIcon" },
   },
   pagination: { pageSizes: [10, 50, 100, 500], defaultPageSize: 10 },
-}; 
+};

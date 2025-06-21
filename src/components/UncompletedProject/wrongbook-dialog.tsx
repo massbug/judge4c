@@ -1,37 +1,54 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import {
+  Check,
+  X,
+  Info,
+  AlertTriangle,
+  Copy,
+  Check as CheckIcon,
+} from "lucide-react";
+import Link from "next/link";
+import * as React from "react";
 import {
   Dialog,
   DialogTrigger,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-import { Check, X, Info, AlertTriangle, Copy, Check as CheckIcon } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import Link from "next/link"
+} from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
-export function WrongbookDialog({ problems, children }: { problems: { id: string; name: string; status: string; url?: string }[]; children?: React.ReactNode }) {
-  const [copiedId, setCopiedId] = React.useState<string | null>(null)
+export function WrongbookDialog({
+  problems,
+  children,
+}: {
+  problems: { id: string; name: string; status: string; url?: string }[];
+  children?: React.ReactNode;
+}) {
+  const [copiedId, setCopiedId] = React.useState<string | null>(null);
 
   const handleCopyLink = async (item: { id: string; url?: string }) => {
-    const link = `${window.location.origin}/problems/${item.id}`
+    const link = `${window.location.origin}/problems/${item.id}`;
     try {
-      await navigator.clipboard.writeText(link)
-      setCopiedId(item.id)
-      setTimeout(() => setCopiedId(null), 2000) // 2秒后重置状态
+      await navigator.clipboard.writeText(link);
+      setCopiedId(item.id);
+      setTimeout(() => setCopiedId(null), 2000); // 2秒后重置状态
     } catch (err) {
-      console.error('Failed to copy link:', err)
+      console.error("Failed to copy link:", err);
     }
-  }
+  };
 
   return (
     <Dialog>
       <DialogTrigger asChild>
-        {children ? children : (
-          <button className="px-4 py-2 rounded bg-primary text-primary-foreground hover:bg-primary/90">全部错题</button>
+        {children ? (
+          children
+        ) : (
+          <button className="px-4 py-2 rounded bg-primary text-primary-foreground hover:bg-primary/90">
+            全部错题
+          </button>
         )}
       </DialogTrigger>
       <DialogContent className="max-w-2xl p-0">
@@ -44,13 +61,18 @@ export function WrongbookDialog({ problems, children }: { problems: { id: string
               <thead>
                 <tr className="border-b bg-muted/50">
                   <th className="px-3 py-2 text-left font-semibold">操作</th>
-                  <th className="px-3 py-2 text-left font-semibold">题目名称</th>
+                  <th className="px-3 py-2 text-left font-semibold">
+                    题目名称
+                  </th>
                   <th className="px-3 py-2 text-left font-semibold">状态</th>
                 </tr>
               </thead>
               <tbody>
                 {problems.map((item) => (
-                  <tr key={item.id} className="border-b last:border-0 hover:bg-muted/30 transition">
+                  <tr
+                    key={item.id}
+                    className="border-b last:border-0 hover:bg-muted/30 transition"
+                  >
                     <td className="px-3 py-2">
                       <Button
                         variant="ghost"
@@ -66,7 +88,10 @@ export function WrongbookDialog({ problems, children }: { problems: { id: string
                       </Button>
                     </td>
                     <td className="px-3 py-2">
-                      <Link href={item.url || `/problems/${item.id}`} className="text-primary underline underline-offset-2 hover:text-primary/80">
+                      <Link
+                        href={item.url || `/problems/${item.id}`}
+                        className="text-primary underline underline-offset-2 hover:text-primary/80"
+                      >
                         {item.name}
                       </Link>
                     </td>
@@ -74,28 +99,46 @@ export function WrongbookDialog({ problems, children }: { problems: { id: string
                       {(() => {
                         if (item.status === "AC") {
                           return (
-                            <Badge className="bg-green-500 text-white" variant="default">
-                              <Check className="w-3 h-3 mr-1" />{item.status}
+                            <Badge
+                              className="bg-green-500 text-white"
+                              variant="default"
+                            >
+                              <Check className="w-3 h-3 mr-1" />
+                              {item.status}
                             </Badge>
-                          )
+                          );
                         } else if (item.status === "WA") {
                           return (
-                            <Badge className="bg-red-500 text-white" variant="destructive">
-                              <X className="w-3 h-3 mr-1" />{item.status}
+                            <Badge
+                              className="bg-red-500 text-white"
+                              variant="destructive"
+                            >
+                              <X className="w-3 h-3 mr-1" />
+                              {item.status}
                             </Badge>
-                          )
-                        } else if (["RE", "CE", "MLE", "TLE"].includes(item.status)) {
+                          );
+                        } else if (
+                          ["RE", "CE", "MLE", "TLE"].includes(item.status)
+                        ) {
                           return (
-                            <Badge className="bg-orange-500 text-white" variant="secondary">
-                              <AlertTriangle className="w-3 h-3 mr-1" />{item.status}
+                            <Badge
+                              className="bg-orange-500 text-white"
+                              variant="secondary"
+                            >
+                              <AlertTriangle className="w-3 h-3 mr-1" />
+                              {item.status}
                             </Badge>
-                          )
+                          );
                         } else {
                           return (
-                            <Badge className="bg-gray-200 text-gray-700" variant="secondary">
-                              <Info className="w-3 h-3 mr-1" />{item.status}
+                            <Badge
+                              className="bg-gray-200 text-gray-700"
+                              variant="secondary"
+                            >
+                              <Info className="w-3 h-3 mr-1" />
+                              {item.status}
                             </Badge>
-                          )
+                          );
                         }
                       })()}
                     </td>
@@ -107,5 +150,5 @@ export function WrongbookDialog({ problems, children }: { problems: { id: string
         </div>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

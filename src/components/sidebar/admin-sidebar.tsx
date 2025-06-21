@@ -1,15 +1,6 @@
-"use client"
-import { siteConfig } from "@/config/site"
-import * as React from "react"
-import {
-  LifeBuoy,
-  Send,
-  Shield,
-} from "lucide-react"
+"use client";
 
-import { NavMain } from "@/components/nav-main"
-import { NavSecondary } from "@/components/nav-secondary"
-import { NavUser } from "@/components/nav-user"
+import * as React from "react";
 import {
   Sidebar,
   SidebarContent,
@@ -18,14 +9,19 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
-import { User } from "next-auth"
+} from "@/components/ui/sidebar";
+import { User } from "next-auth";
+import { siteConfig } from "@/config/site";
+import { NavMain } from "@/components/nav-main";
+import { NavUser } from "@/components/nav-user";
+import { LifeBuoy, Send, Shield } from "lucide-react";
+import { NavSecondary } from "@/components/nav-secondary";
 
 const adminData = {
   navMain: [
     {
       title: "管理面板",
-      url: "#",
+      url: "/dashboard",
       icon: Shield,
       isActive: true,
       items: [
@@ -35,19 +31,21 @@ const adminData = {
         { title: "题目管理", url: "/dashboard/usermanagement/problem" },
       ],
     },
-   
   ],
   navSecondary: [
     { title: "帮助", url: "/", icon: LifeBuoy },
     { title: "反馈", url: siteConfig.url.repo.github, icon: Send },
   ],
-}
+};
 
 interface AdminSidebarProps {
   user: User;
 }
 
-export function AdminSidebar({ user, ...props }: AdminSidebarProps & React.ComponentProps<typeof Sidebar>) {
+export function AdminSidebar({
+  user,
+  ...props
+}: AdminSidebarProps & React.ComponentProps<typeof Sidebar>) {
   const userInfo = {
     name: user.name ?? "管理员",
     email: user.email ?? "",
@@ -81,5 +79,5 @@ export function AdminSidebar({ user, ...props }: AdminSidebarProps & React.Compo
         <NavUser user={userInfo} />
       </SidebarFooter>
     </Sidebar>
-  )
+  );
 }

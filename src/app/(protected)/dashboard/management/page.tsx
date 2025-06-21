@@ -1,58 +1,50 @@
-"use client"
-import React, { useState } from "react"
-import { Separator } from "@/components/ui/separator"
-import ProfilePage from "./profile/page"
-import ChangePasswordPage from "./change-password/page"
+"use client";
+
+import { cn } from "@/lib/utils";
+import React, { useState } from "react";
+import ProfilePage from "./profile/page";
+import { Button } from "@/components/ui/button";
+import ChangePasswordPage from "./change-password/page";
 
 export default function ManagementDefaultPage() {
-  const [activePage, setActivePage] = useState("profile")
+  const [activePage, setActivePage] = useState("profile");
 
   const renderContent = () => {
     switch (activePage) {
       case "profile":
-        return <ProfilePage />
+        return <ProfilePage />;
       case "change-password":
-        return <ChangePasswordPage />
+        return <ChangePasswordPage />;
       default:
-        return <ProfilePage />
+        return <ProfilePage />;
     }
-  }
+  };
 
   return (
     <div className="flex h-full w-full flex-col">
       {/* 顶部导航栏 */}
       <header className="bg-background sticky top-0 z-10 flex h-16 shrink-0 items-center gap-2 border-b px-4">
-        <Separator orientation="vertical" className="mr-2 h-4" />
-
         {/* 页面切换按钮 */}
         <div className="ml-auto flex space-x-2">
-          <button
+          <Button
+            className={cn("px-3 py-1 rounded-md text-sm transition-colors")}
+            variant={activePage === "profile" ? "default" : "secondary"}
             onClick={() => setActivePage("profile")}
-            className={`px-3 py-1 rounded-md text-sm transition-colors ${
-              activePage === "profile"
-                ? "bg-black text-white"
-                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-            }`}
           >
             登录信息
-          </button>
-          <button
+          </Button>
+          <Button
+            className={cn("px-3 py-1 rounded-md text-sm transition-colors")}
+            variant={activePage === "change-password" ? "default" : "secondary"}
             onClick={() => setActivePage("change-password")}
-            className={`px-3 py-1 rounded-md text-sm transition-colors ${
-              activePage === "change-password"
-                ? "bg-black text-white"
-                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-            }`}
           >
             修改密码
-          </button>
+          </Button>
         </div>
       </header>
 
       {/* 主体内容 */}
-      <main className="flex-1 overflow-auto">
-        {renderContent()}
-      </main>
+      <main className="flex-1 overflow-auto">{renderContent()}</main>
     </div>
-  )
+  );
 }

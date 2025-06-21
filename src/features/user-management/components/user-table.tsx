@@ -1,6 +1,25 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  ChevronsLeftIcon,
+  ChevronsRightIcon,
+  PlusIcon,
+  PencilIcon,
+  TrashIcon,
+  ListFilter,
+} from "lucide-react";
+import { z } from "zod";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import * as React from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -14,24 +33,15 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-} from "@tanstack/react-table"
+} from "@tanstack/react-table";
+import { toast } from "sonner";
 import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  ChevronsLeftIcon,
-  ChevronsRightIcon,
-  PlusIcon,
-  PencilIcon,
-  TrashIcon,
-  ListFilter,
-} from "lucide-react"
-import { toast } from "sonner"
-import { useState, useEffect } from "react"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { z } from "zod"
-import { useRouter } from "next/navigation"
-
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Dialog,
   DialogContent,
@@ -39,89 +49,82 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
+} from "@/components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+} from "@/components/ui/dropdown-menu";
+import { useForm } from "react-hook-form";
+import { Tabs } from "@/components/ui/tabs";
+import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Difficulty, Role } from "@/generated/client";
+import type { User, Problem } from "@/generated/client";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+  createUser,
+  updateUser,
+  deleteUser,
+} from "@/app/(protected)/dashboard/usermanagement/actions/userActions";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import {
-  Tabs,
-} from "@/components/ui/tabs"
-
-import { createUser, updateUser, deleteUser } from '@/app/(protected)/dashboard/usermanagement/_actions/userActions'
-import { createProblem, deleteProblem } from '@/app/(protected)/dashboard/usermanagement/_actions/problemActions'
-import type { User, Problem } from '@/generated/client'
-import { Difficulty, Role } from '@/generated/client'
+  createProblem,
+  deleteProblem,
+} from "@/app/(protected)/dashboard/usermanagement/actions/problemActions";
 
 export interface UserConfig {
-  userType: string
-  title: string
-  apiPath: string
+  userType: string;
+  title: string;
+  apiPath: string;
   columns: Array<{
-    key: string
-    label: string
-    sortable?: boolean
-    searchable?: boolean
-    placeholder?: string
-  }>
+    key: string;
+    label: string;
+    sortable?: boolean;
+    searchable?: boolean;
+    placeholder?: string;
+  }>;
   formFields: Array<{
-    key: string
-    label: string
-    type: string
-    placeholder?: string
-    required?: boolean
-    options?: Array<{ value: string; label: string }>
-  }>
+    key: string;
+    label: string;
+    type: string;
+    placeholder?: string;
+    required?: boolean;
+    options?: Array<{ value: string; label: string }>;
+  }>;
   actions: {
-    add: { label: string; icon: string }
-    edit: { label: string; icon: string }
-    delete: { label: string; icon: string }
-    batchDelete: { label: string; icon: string }
-  }
+    add: { label: string; icon: string };
+    edit: { label: string; icon: string };
+    delete: { label: string; icon: string };
+    batchDelete: { label: string; icon: string };
+  };
   pagination: {
-    pageSizes: number[]
-    defaultPageSize: number
-  }
+    pageSizes: number[];
+    defaultPageSize: number;
+  };
 }
 
 type UserTableProps =
   | { config: UserConfig; data: User[] }
-  | { config: UserConfig; data: Problem[] }
+  | { config: UserConfig; data: Problem[] };
 
 type UserForm = {
-  id?: string
-  name: string
-  email: string
-  password: string
-  createdAt: string
-  role: Role
-  image: string | null
-  emailVerified: Date | null
-}
+  id?: string;
+  name: string;
+  email: string;
+  password: string;
+  createdAt: string;
+  role: Role;
+  image: string | null;
+  emailVerified: Date | null;
+};
 
 // 新增用户表单类型
-type AddUserForm = Omit<UserForm, 'id'>
+type AddUserForm = Omit<UserForm, "id">;
 
 const addUserSchema = z.object({
   name: z.string(),
@@ -131,10 +134,10 @@ const addUserSchema = z.object({
   image: z.string().nullable(),
   emailVerified: z.date().nullable(),
   role: z.nativeEnum(Role),
-})
+});
 
 const editUserSchema = z.object({
-  id: z.string().default(''),
+  id: z.string().default(""),
   name: z.string(),
   email: z.string().email(),
   password: z.string(),
@@ -142,38 +145,40 @@ const editUserSchema = z.object({
   image: z.string().nullable(),
   emailVerified: z.date().nullable(),
   role: z.nativeEnum(Role),
-})
+});
 
 // 题目表单 schema 兼容 null/undefined
 const addProblemSchema = z.object({
   displayId: z.number().optional().default(0),
   difficulty: z.nativeEnum(Difficulty).default(Difficulty.EASY),
-})
+});
 
 export function UserTable(props: UserTableProps) {
-  const isProblem = props.config.userType === 'problem'
-  const router = useRouter()
-  const problemData = isProblem ? (props.data as Problem[]) : undefined
+  const isProblem = props.config.userType === "problem";
+  const router = useRouter();
+  const problemData = isProblem ? (props.data as Problem[]) : undefined;
 
-  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
-  const [editingUser, setEditingUser] = useState<User | Problem | null>(null)
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
-  const [deleteBatch, setDeleteBatch] = useState(false)
-  const [rowSelection, setRowSelection] = useState({})
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
-  const [sorting, setSorting] = useState<SortingState>([])
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [editingUser, setEditingUser] = useState<User | Problem | null>(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deleteBatch, setDeleteBatch] = useState(false);
+  const [rowSelection, setRowSelection] = useState({});
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [sorting, setSorting] = useState<SortingState>([]);
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: props.config.pagination.defaultPageSize,
-  })
-  const [pageInput, setPageInput] = useState(pagination.pageIndex + 1)
-  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false)
-  const [pendingDeleteItem, setPendingDeleteItem] = useState<User | Problem | null>(null)
+  });
+  const [pageInput, setPageInput] = useState(pagination.pageIndex + 1);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [pendingDeleteItem, setPendingDeleteItem] = useState<
+    User | Problem | null
+  >(null);
   useEffect(() => {
-    setPageInput(pagination.pageIndex + 1)
-  }, [pagination.pageIndex])
+    setPageInput(pagination.pageIndex + 1);
+  }, [pagination.pageIndex]);
 
   // 表格列
   const tableColumns = React.useMemo<ColumnDef<User | Problem>[]>(() => {
@@ -183,7 +188,9 @@ export function UserTable(props: UserTableProps) {
         header: ({ table }) => (
           <Checkbox
             checked={table.getIsAllPageRowsSelected()}
-            onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+            onCheckedChange={(value) =>
+              table.toggleAllPageRowsSelected(!!value)
+            }
             aria-label="选择所有"
           />
         ),
@@ -197,41 +204,43 @@ export function UserTable(props: UserTableProps) {
         enableSorting: false,
         enableHiding: false,
       },
-    ]
+    ];
     props.config.columns.forEach((col) => {
       const column: ColumnDef<User | Problem> = {
         accessorKey: col.key,
         header: col.label,
         cell: ({ row }) => {
           // 类型安全分流
-          if (col.key === 'displayId' && isProblem) {
-            return (row.original as Problem).displayId
+          if (col.key === "displayId" && isProblem) {
+            return (row.original as Problem).displayId;
           }
-          if ((col.key === 'createdAt' || col.key === 'updatedAt')) {
-            const value = row.getValue(col.key)
+          if (col.key === "createdAt" || col.key === "updatedAt") {
+            const value = row.getValue(col.key);
             if (value instanceof Date) {
-              return value.toLocaleString()
+              return value.toLocaleString();
             }
-            if (typeof value === 'string' && !isNaN(Date.parse(value))) {
-              return new Date(value).toLocaleString()
+            if (typeof value === "string" && !isNaN(Date.parse(value))) {
+              return new Date(value).toLocaleString();
             }
           }
-          return row.getValue(col.key)
+          return row.getValue(col.key);
         },
         enableSorting: col.sortable !== false,
-        filterFn: col.searchable ? (row, columnId, value) => {
-          const searchValue = String(value).toLowerCase()
-          const cellValue = String(row.getValue(columnId)).toLowerCase()
-          return cellValue.includes(searchValue)
-        } : undefined,
-      }
-      columns.push(column)
-    })
+        filterFn: col.searchable
+          ? (row, columnId, value) => {
+              const searchValue = String(value).toLowerCase();
+              const cellValue = String(row.getValue(columnId)).toLowerCase();
+              return cellValue.includes(searchValue);
+            }
+          : undefined,
+      };
+      columns.push(column);
+    });
     columns.push({
       id: "actions",
       header: () => <div className="text-right">操作</div>,
       cell: ({ row }) => {
-        const item = row.original
+        const item = row.original;
         return (
           <div className="flex justify-end gap-2">
             <Button
@@ -241,35 +250,37 @@ export function UserTable(props: UserTableProps) {
               onClick={() => {
                 if (isProblem) {
                   // 如果是problem类型，跳转到编辑路由，使用displayId
-                  const problem = item as Problem
-                  router.push(`/admin/problems/${problem.displayId}/edit`)
+                  const problem = item as Problem;
+                  router.push(`/admin/problems/${problem.displayId}/edit`);
                 } else {
                   // 如果是用户类型，打开编辑弹窗
-                  setEditingUser(item)
-                  setIsEditDialogOpen(true)
+                  setEditingUser(item);
+                  setIsEditDialogOpen(true);
                 }
               }}
             >
-              <PencilIcon className="size-4 mr-1" /> {props.config.actions.edit.label}
+              <PencilIcon className="size-4 mr-1" />{" "}
+              {props.config.actions.edit.label}
             </Button>
             <Button
               variant="outline"
               size="sm"
               className="h-8 gap-1 text-destructive hover:text-destructive"
               onClick={() => {
-                setPendingDeleteItem(item)
-                setDeleteConfirmOpen(true)
+                setPendingDeleteItem(item);
+                setDeleteConfirmOpen(true);
               }}
               aria-label="Delete"
             >
-              <TrashIcon className="size-4 mr-1" /> {props.config.actions.delete.label}
+              <TrashIcon className="size-4 mr-1" />{" "}
+              {props.config.actions.delete.label}
             </Button>
           </div>
-        )
+        );
       },
-    })
-    return columns
-  }, [props.config, router, isProblem])
+    });
+    return columns;
+  }, [props.config, router, isProblem]);
 
   const table = useReactTable({
     data: props.data,
@@ -293,50 +304,77 @@ export function UserTable(props: UserTableProps) {
     getSortedRowModel: getSortedRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
-  })
+  });
 
   // 添加用户对话框组件（仅用户）
-  function AddUserDialogUser({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
-    const [isLoading, setIsLoading] = useState(false)
+  function AddUserDialogUser({
+    open,
+    onOpenChange,
+  }: {
+    open: boolean;
+    onOpenChange: (open: boolean) => void;
+  }) {
+    const [isLoading, setIsLoading] = useState(false);
     const form = useForm<AddUserForm>({
       resolver: zodResolver(addUserSchema),
-      defaultValues: { name: '', email: '', password: '', createdAt: '', image: null, emailVerified: null, role: Role.GUEST },
-    })
+      defaultValues: {
+        name: "",
+        email: "",
+        password: "",
+        createdAt: "",
+        image: null,
+        emailVerified: null,
+        role: Role.GUEST,
+      },
+    });
     React.useEffect(() => {
       if (open) {
-        form.reset({ name: '', email: '', password: '', createdAt: '', image: null, emailVerified: null, role: Role.GUEST })
+        form.reset({
+          name: "",
+          email: "",
+          password: "",
+          createdAt: "",
+          image: null,
+          emailVerified: null,
+          role: Role.GUEST,
+        });
       }
-    }, [open, form])
+    }, [open, form]);
     async function onSubmit(data: AddUserForm) {
       try {
-        setIsLoading(true)
-        
+        setIsLoading(true);
+
         // 验证必填字段
-        if (!data.password || data.password.trim() === '') {
-          toast.error('密码不能为空', { duration: 1500 })
-          return
+        if (!data.password || data.password.trim() === "") {
+          toast.error("密码不能为空", { duration: 1500 });
+          return;
         }
-        
+
         const submitData = {
           ...data,
           image: data.image ?? null,
           emailVerified: data.emailVerified ?? null,
           role: data.role ?? Role.GUEST,
-        }
-        if (!submitData.name) submitData.name = ''
-        if (!submitData.createdAt) submitData.createdAt = new Date().toISOString()
-        else submitData.createdAt = new Date(submitData.createdAt).toISOString()
-        if (props.config.userType === 'admin') await createUser('admin', submitData)
-        else if (props.config.userType === 'teacher') await createUser('teacher', submitData)
-        else if (props.config.userType === 'guest') await createUser('guest', submitData)
-        onOpenChange(false)
-        toast.success('添加成功', { duration: 1500 })
-        router.refresh()
+        };
+        if (!submitData.name) submitData.name = "";
+        if (!submitData.createdAt)
+          submitData.createdAt = new Date().toISOString();
+        else
+          submitData.createdAt = new Date(submitData.createdAt).toISOString();
+        if (props.config.userType === "admin")
+          await createUser("admin", submitData);
+        else if (props.config.userType === "teacher")
+          await createUser("teacher", submitData);
+        else if (props.config.userType === "guest")
+          await createUser("guest", submitData);
+        onOpenChange(false);
+        toast.success("添加成功", { duration: 1500 });
+        router.refresh();
       } catch (error) {
-        console.error('添加失败:', error)
-        toast.error('添加失败', { duration: 1500 })
+        console.error("添加失败:", error);
+        toast.error("添加失败", { duration: 1500 });
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
     }
     return (
@@ -344,47 +382,84 @@ export function UserTable(props: UserTableProps) {
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>{props.config.actions.add.label}</DialogTitle>
-            <DialogDescription>
-              请填写信息，ID自动生成。
-            </DialogDescription>
+            <DialogDescription>请填写信息，ID自动生成。</DialogDescription>
           </DialogHeader>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <div className="grid gap-4 py-4">
-              {props.config.formFields.filter(field => field.key !== 'id').map((field) => (
-                <div key={field.key} className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor={field.key} className="text-right">
-                    {field.label}
-                  </Label>
-                  {field.type === 'select' && field.options ? (
-                    <Select
-                      value={form.watch(field.key as 'name' | 'email' | 'password' | 'createdAt' | 'role') ?? ''}
-                      onValueChange={value => form.setValue(field.key as 'name' | 'email' | 'password' | 'createdAt' | 'role', value)}
-                    >
-                      <SelectTrigger className="col-span-3">
-                        <SelectValue placeholder={`请选择${field.label}`} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {field.options.map((opt) => (
-                          <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  ) : (
-                    <Input
-                      id={field.key}
-                      type={field.type}
-                      {...form.register(field.key as 'name' | 'email' | 'password' | 'createdAt' | 'role')}
-                      className="col-span-3"
-                      placeholder={field.placeholder}
-                    />
-                  )}
-                  {form.formState.errors[field.key as keyof typeof form.formState.errors]?.message && (
-                    <p className="col-span-3 col-start-2 text-sm text-red-500">
-                      {form.formState.errors[field.key as keyof typeof form.formState.errors]?.message as string}
-                    </p>
-                  )}
-                </div>
-              ))}
+              {props.config.formFields
+                .filter((field) => field.key !== "id")
+                .map((field) => (
+                  <div
+                    key={field.key}
+                    className="grid grid-cols-4 items-center gap-4"
+                  >
+                    <Label htmlFor={field.key} className="text-right">
+                      {field.label}
+                    </Label>
+                    {field.type === "select" && field.options ? (
+                      <Select
+                        value={
+                          form.watch(
+                            field.key as
+                              | "name"
+                              | "email"
+                              | "password"
+                              | "createdAt"
+                              | "role"
+                          ) ?? ""
+                        }
+                        onValueChange={(value) =>
+                          form.setValue(
+                            field.key as
+                              | "name"
+                              | "email"
+                              | "password"
+                              | "createdAt"
+                              | "role",
+                            value
+                          )
+                        }
+                      >
+                        <SelectTrigger className="col-span-3">
+                          <SelectValue placeholder={`请选择${field.label}`} />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {field.options.map((opt) => (
+                            <SelectItem key={opt.value} value={opt.value}>
+                              {opt.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    ) : (
+                      <Input
+                        id={field.key}
+                        type={field.type}
+                        {...form.register(
+                          field.key as
+                            | "name"
+                            | "email"
+                            | "password"
+                            | "createdAt"
+                            | "role"
+                        )}
+                        className="col-span-3"
+                        placeholder={field.placeholder}
+                      />
+                    )}
+                    {form.formState.errors[
+                      field.key as keyof typeof form.formState.errors
+                    ]?.message && (
+                      <p className="col-span-3 col-start-2 text-sm text-red-500">
+                        {
+                          form.formState.errors[
+                            field.key as keyof typeof form.formState.errors
+                          ]?.message as string
+                        }
+                      </p>
+                    )}
+                  </div>
+                ))}
             </div>
             <DialogFooter>
               <Button type="submit" disabled={isLoading}>
@@ -394,25 +469,34 @@ export function UserTable(props: UserTableProps) {
           </form>
         </DialogContent>
       </Dialog>
-    )
+    );
   }
 
   // 添加题目对话框组件（仅题目）
-  function AddUserDialogProblem({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
-    const [isLoading, setIsLoading] = useState(false)
+  function AddUserDialogProblem({
+    open,
+    onOpenChange,
+  }: {
+    open: boolean;
+    onOpenChange: (open: boolean) => void;
+  }) {
+    const [isLoading, setIsLoading] = useState(false);
     const form = useForm<Partial<Problem>>({
       resolver: zodResolver(addProblemSchema),
       defaultValues: { displayId: 0, difficulty: Difficulty.EASY },
-    })
+    });
     React.useEffect(() => {
       if (open) {
-        form.reset({ displayId: 0, difficulty: Difficulty.EASY })
+        form.reset({ displayId: 0, difficulty: Difficulty.EASY });
       }
-    }, [open, form])
+    }, [open, form]);
     async function onSubmit(formData: Partial<Problem>) {
       try {
-        setIsLoading(true)
-        const submitData: Partial<Problem> = { ...formData, displayId: Number(formData.displayId) }
+        setIsLoading(true);
+        const submitData: Partial<Problem> = {
+          ...formData,
+          displayId: Number(formData.displayId),
+        };
         await createProblem({
           displayId: Number(submitData.displayId),
           difficulty: submitData.difficulty ?? Difficulty.EASY,
@@ -421,15 +505,15 @@ export function UserTable(props: UserTableProps) {
           timeLimit: 1000,
           memoryLimit: 134217728,
           userId: null,
-        })
-        onOpenChange(false)
-        toast.success('添加成功', { duration: 1500 })
-        router.refresh()
+        });
+        onOpenChange(false);
+        toast.success("添加成功", { duration: 1500 });
+        router.refresh();
       } catch (error) {
-        console.error('添加失败:', error)
-        toast.error('添加失败', { duration: 1500 })
+        console.error("添加失败:", error);
+        toast.error("添加失败", { duration: 1500 });
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
     }
     return (
@@ -437,21 +521,30 @@ export function UserTable(props: UserTableProps) {
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>{props.config.actions.add.label}</DialogTitle>
-            <DialogDescription>
-              请填写信息，ID自动生成。
-            </DialogDescription>
+            <DialogDescription>请填写信息，ID自动生成。</DialogDescription>
           </DialogHeader>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <div className="grid gap-4 py-4">
               {props.config.formFields.map((field) => (
-                <div key={field.key} className="grid grid-cols-4 items-center gap-4">
+                <div
+                  key={field.key}
+                  className="grid grid-cols-4 items-center gap-4"
+                >
                   <Label htmlFor={field.key} className="text-right">
                     {field.label}
                   </Label>
-                  {field.key === 'difficulty' ? (
+                  {field.key === "difficulty" ? (
                     <Select
-                      value={form.watch('difficulty') ?? Difficulty.EASY}
-                      onValueChange={value => form.setValue('difficulty', value as typeof Difficulty.EASY | typeof Difficulty.MEDIUM | typeof Difficulty.HARD)}
+                      value={form.watch("difficulty") ?? Difficulty.EASY}
+                      onValueChange={(value) =>
+                        form.setValue(
+                          "difficulty",
+                          value as
+                            | typeof Difficulty.EASY
+                            | typeof Difficulty.MEDIUM
+                            | typeof Difficulty.HARD
+                        )
+                      }
                     >
                       <SelectTrigger className="col-span-3">
                         <SelectValue placeholder="请选择难度" />
@@ -466,14 +559,23 @@ export function UserTable(props: UserTableProps) {
                     <Input
                       id={field.key}
                       type={field.type}
-                      {...form.register(field.key as 'displayId' | 'difficulty' | 'id', field.key === 'displayId' ? { valueAsNumber: true } : {})}
+                      {...form.register(
+                        field.key as "displayId" | "difficulty" | "id",
+                        field.key === "displayId" ? { valueAsNumber: true } : {}
+                      )}
                       className="col-span-3"
                       placeholder={field.placeholder}
                     />
                   )}
-                  {form.formState.errors[field.key as keyof typeof form.formState.errors]?.message && (
+                  {form.formState.errors[
+                    field.key as keyof typeof form.formState.errors
+                  ]?.message && (
                     <p className="col-span-3 col-start-2 text-sm text-red-500">
-                      {form.formState.errors[field.key as keyof typeof form.formState.errors]?.message as string}
+                      {
+                        form.formState.errors[
+                          field.key as keyof typeof form.formState.errors
+                        ]?.message as string
+                      }
                     </p>
                   )}
                 </div>
@@ -487,59 +589,76 @@ export function UserTable(props: UserTableProps) {
           </form>
         </DialogContent>
       </Dialog>
-    )
+    );
   }
 
   // 编辑用户对话框组件（仅用户）
-  function EditUserDialogUser({ open, onOpenChange, user }: { open: boolean; onOpenChange: (open: boolean) => void; user: User }) {
-    const [isLoading, setIsLoading] = useState(false)
+  function EditUserDialogUser({
+    open,
+    onOpenChange,
+    user,
+  }: {
+    open: boolean;
+    onOpenChange: (open: boolean) => void;
+    user: User;
+  }) {
+    const [isLoading, setIsLoading] = useState(false);
     const editForm = useForm<UserForm>({
       resolver: zodResolver(editUserSchema),
       defaultValues: {
-        id: typeof user.id === 'string' ? user.id : '',
-        name: user.name ?? '',
-        email: user.email ?? '',
-        password: '',
+        id: typeof user.id === "string" ? user.id : "",
+        name: user.name ?? "",
+        email: user.email ?? "",
+        password: "",
         role: user.role ?? Role.GUEST,
-        createdAt: user.createdAt ? new Date(user.createdAt).toISOString().slice(0, 16) : '',
+        createdAt: user.createdAt
+          ? new Date(user.createdAt).toISOString().slice(0, 16)
+          : "",
         image: user.image ?? null,
         emailVerified: user.emailVerified ?? null,
       },
-    })
+    });
     React.useEffect(() => {
       if (open) {
         editForm.reset({
-          id: typeof user.id === 'string' ? user.id : '',
-          name: user.name ?? '',
-          email: user.email ?? '',
-          password: '',
+          id: typeof user.id === "string" ? user.id : "",
+          name: user.name ?? "",
+          email: user.email ?? "",
+          password: "",
           role: user.role ?? Role.GUEST,
-          createdAt: user.createdAt ? new Date(user.createdAt).toISOString().slice(0, 16) : '',
+          createdAt: user.createdAt
+            ? new Date(user.createdAt).toISOString().slice(0, 16)
+            : "",
           image: user.image ?? null,
           emailVerified: user.emailVerified ?? null,
-        })
+        });
       }
-    }, [open, user, editForm])
+    }, [open, user, editForm]);
     async function onSubmit(data: UserForm) {
       try {
-        setIsLoading(true)
+        setIsLoading(true);
         const submitData = {
           ...data,
-          createdAt: data.createdAt ? new Date(data.createdAt).toISOString() : new Date().toISOString(),
+          createdAt: data.createdAt
+            ? new Date(data.createdAt).toISOString()
+            : new Date().toISOString(),
           image: data.image ?? null,
           emailVerified: data.emailVerified ?? null,
           role: data.role ?? Role.GUEST,
-        }
-        const id = typeof submitData.id === 'string' ? submitData.id : ''
-        if (props.config.userType === 'admin') await updateUser('admin', id, submitData)
-        else if (props.config.userType === 'teacher') await updateUser('teacher', id, submitData)
-        else if (props.config.userType === 'guest') await updateUser('guest', id, submitData)
-        onOpenChange(false)
-        toast.success('修改成功', { duration: 1500 })
+        };
+        const id = typeof submitData.id === "string" ? submitData.id : "";
+        if (props.config.userType === "admin")
+          await updateUser("admin", id, submitData);
+        else if (props.config.userType === "teacher")
+          await updateUser("teacher", id, submitData);
+        else if (props.config.userType === "guest")
+          await updateUser("guest", id, submitData);
+        onOpenChange(false);
+        toast.success("修改成功", { duration: 1500 });
       } catch {
-        toast.error('修改失败', { duration: 1500 })
+        toast.error("修改失败", { duration: 1500 });
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
     }
     return (
@@ -547,53 +666,73 @@ export function UserTable(props: UserTableProps) {
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>{props.config.actions.edit.label}</DialogTitle>
-            <DialogDescription>
-              修改信息
-            </DialogDescription>
+            <DialogDescription>修改信息</DialogDescription>
           </DialogHeader>
-          <form onSubmit={editForm.handleSubmit(onSubmit)} className="space-y-4">
+          <form
+            onSubmit={editForm.handleSubmit(onSubmit)}
+            className="space-y-4"
+          >
             <div className="grid gap-4 py-4">
               {props.config.formFields.map((field) => (
-                <div key={field.key} className="grid grid-cols-4 items-center gap-4">
+                <div
+                  key={field.key}
+                  className="grid grid-cols-4 items-center gap-4"
+                >
                   <Label htmlFor={field.key} className="text-right">
                     {field.label}
                   </Label>
                   <Input
                     id={field.key}
                     type={field.type}
-                    {...editForm.register(field.key as 'name' | 'email' | 'password' | 'createdAt' | 'role')}
+                    {...editForm.register(
+                      field.key as
+                        | "name"
+                        | "email"
+                        | "password"
+                        | "createdAt"
+                        | "role"
+                    )}
                     className="col-span-3"
                     placeholder={field.placeholder}
-                    disabled={field.key === 'id'}
+                    disabled={field.key === "id"}
                   />
-                  {editForm.formState.errors[field.key as keyof typeof editForm.formState.errors]?.message && (
+                  {editForm.formState.errors[
+                    field.key as keyof typeof editForm.formState.errors
+                  ]?.message && (
                     <p className="col-span-3 col-start-2 text-sm text-red-500">
-                      {editForm.formState.errors[field.key as keyof typeof editForm.formState.errors]?.message as string}
+                      {
+                        editForm.formState.errors[
+                          field.key as keyof typeof editForm.formState.errors
+                        ]?.message as string
+                      }
                     </p>
                   )}
                 </div>
               ))}
               {/* 编辑时显示角色选择 */}
-              {props.config.userType !== 'problem' && (
+              {props.config.userType !== "problem" && (
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="role" className="text-right">
                     角色
                   </Label>
                   <Select
-                    value={editForm.watch('role') ?? ''}
-                    onValueChange={value => editForm.setValue('role', value as Role)}
+                    value={editForm.watch("role") ?? ""}
+                    onValueChange={(value) =>
+                      editForm.setValue("role", value as Role)
+                    }
                   >
                     <SelectTrigger className="col-span-3">
                       <SelectValue placeholder="请选择角色" />
                     </SelectTrigger>
                     <SelectContent>
-                      {props.config.userType === 'guest' && (
+                      {props.config.userType === "guest" && (
                         <>
                           <SelectItem value="GUEST">学生</SelectItem>
                           <SelectItem value="TEACHER">老师</SelectItem>
                         </>
                       )}
-                      {(props.config.userType === 'teacher' || props.config.userType === 'admin') && (
+                      {(props.config.userType === "teacher" ||
+                        props.config.userType === "admin") && (
                         <>
                           <SelectItem value="ADMIN">管理员</SelectItem>
                           <SelectItem value="TEACHER">老师</SelectItem>
@@ -618,12 +757,14 @@ export function UserTable(props: UserTableProps) {
           </form>
         </DialogContent>
       </Dialog>
-    )
+    );
   }
 
   // 用ref保证获取最新data
-  const dataRef = React.useRef<User[] | Problem[]>(props.data)
-  React.useEffect(() => { dataRef.current = props.data }, [props.data])
+  const dataRef = React.useRef<User[] | Problem[]>(props.data);
+  React.useEffect(() => {
+    dataRef.current = props.data;
+  }, [props.data]);
 
   return (
     <Tabs defaultValue="outline" className="flex w-full flex-col gap-6">
@@ -658,7 +799,7 @@ export function UserTable(props: UserTableProps) {
                     actions: "操作",
                     displayId: "题目编号",
                     difficulty: "难度",
-                  }
+                  };
                   return (
                     <DropdownMenuCheckboxItem
                       key={column.id}
@@ -670,7 +811,7 @@ export function UserTable(props: UserTableProps) {
                     >
                       {columnNameMap[column.id] || column.id}
                     </DropdownMenuCheckboxItem>
-                  )
+                  );
                 })}
             </DropdownMenuContent>
           </DropdownMenu>
@@ -680,9 +821,15 @@ export function UserTable(props: UserTableProps) {
               size="sm"
               className="h-7 gap-1 px-2 text-sm"
               onClick={async () => {
-                const maxDisplayId = Array.isArray(problemData) && problemData.length > 0
-                  ? Math.max(...problemData.map(item => Number(item.displayId) || 0), 1000)
-                  : 1000;
+                const maxDisplayId =
+                  Array.isArray(problemData) && problemData.length > 0
+                    ? Math.max(
+                        ...problemData.map(
+                          (item) => Number(item.displayId) || 0
+                        ),
+                        1000
+                      )
+                    : 1000;
                 await createProblem({
                   displayId: maxDisplayId + 1,
                   difficulty: Difficulty.EASY,
@@ -716,8 +863,8 @@ export function UserTable(props: UserTableProps) {
             className="h-7 gap-1 px-2 text-sm"
             disabled={table.getFilteredSelectedRowModel().rows.length === 0}
             onClick={() => {
-              setDeleteBatch(true)
-              setDeleteDialogOpen(true)
+              setDeleteBatch(true);
+              setDeleteDialogOpen(true);
             }}
           >
             <TrashIcon className="h-4 w-4" />
@@ -726,7 +873,7 @@ export function UserTable(props: UserTableProps) {
         </div>
       </div>
       <div className="rounded-md border">
-        <div style={{ maxHeight: 500, overflowY: 'auto' }}>
+        <div style={{ maxHeight: 500, overflowY: "auto" }}>
           <Table className="text-sm">
             <TableHeader>
               {table.getHeaderGroups().map((headerGroup) => (
@@ -741,7 +888,7 @@ export function UserTable(props: UserTableProps) {
                               header.getContext()
                             )}
                       </TableHead>
-                    )
+                    );
                   })}
                 </TableRow>
               ))}
@@ -788,11 +935,13 @@ export function UserTable(props: UserTableProps) {
             <Select
               value={`${table.getState().pagination.pageSize}`}
               onValueChange={(value) => {
-                table.setPageSize(Number(value))
+                table.setPageSize(Number(value));
               }}
             >
               <SelectTrigger className="h-8 w-[70px]">
-                <SelectValue placeholder={table.getState().pagination.pageSize} />
+                <SelectValue
+                  placeholder={table.getState().pagination.pageSize}
+                />
               </SelectTrigger>
               <SelectContent side="top">
                 {props.config.pagination.pageSizes.map((pageSize) => (
@@ -835,10 +984,10 @@ export function UserTable(props: UserTableProps) {
                 value={pageInput}
                 onChange={(e) => setPageInput(Number(e.target.value))}
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    const page = pageInput - 1
+                  if (e.key === "Enter") {
+                    const page = pageInput - 1;
                     if (page >= 0 && page < table.getPageCount()) {
-                      table.setPageIndex(page)
+                      table.setPageIndex(page);
                     }
                   }
                 }}
@@ -869,13 +1018,23 @@ export function UserTable(props: UserTableProps) {
       </div>
       {/* 添加用户对话框 */}
       {isProblem && props.config.actions.add ? (
-        <AddUserDialogProblem open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen} />
+        <AddUserDialogProblem
+          open={isAddDialogOpen}
+          onOpenChange={setIsAddDialogOpen}
+        />
       ) : !isProblem && props.config.actions.add ? (
-        <AddUserDialogUser open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen} />
+        <AddUserDialogUser
+          open={isAddDialogOpen}
+          onOpenChange={setIsAddDialogOpen}
+        />
       ) : null}
       {/* 编辑用户对话框 */}
       {!isProblem && editingUser ? (
-        <EditUserDialogUser open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen} user={editingUser as User} />
+        <EditUserDialogUser
+          open={isEditDialogOpen}
+          onOpenChange={setIsEditDialogOpen}
+          user={editingUser as User}
+        />
       ) : null}
       {/* 删除确认对话框 */}
       <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
@@ -884,13 +1043,17 @@ export function UserTable(props: UserTableProps) {
             <DialogTitle>确认删除</DialogTitle>
             <DialogDescription>
               {deleteBatch
-                ? `确定要删除选中的 ${table.getFilteredSelectedRowModel().rows.length} 条记录吗？此操作不可撤销。`
-                : "确定要删除这条记录吗？此操作不可撤销。"
-              }
+                ? `确定要删除选中的 ${
+                    table.getFilteredSelectedRowModel().rows.length
+                  } 条记录吗？此操作不可撤销。`
+                : "确定要删除这条记录吗？此操作不可撤销。"}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>
+            <Button
+              variant="outline"
+              onClick={() => setDeleteDialogOpen(false)}
+            >
               取消
             </Button>
             <Button
@@ -898,20 +1061,29 @@ export function UserTable(props: UserTableProps) {
               onClick={async () => {
                 try {
                   if (deleteBatch) {
-                    const selectedRows = table.getFilteredSelectedRowModel().rows
+                    const selectedRows =
+                      table.getFilteredSelectedRowModel().rows;
                     for (const row of selectedRows) {
                       if (isProblem) {
-                        await deleteProblem((row.original as Problem).id)
+                        await deleteProblem((row.original as Problem).id);
                       } else {
-                        await deleteUser(props.config.userType as 'admin' | 'teacher' | 'guest', (row.original as User).id)
+                        await deleteUser(
+                          props.config.userType as
+                            | "admin"
+                            | "teacher"
+                            | "guest",
+                          (row.original as User).id
+                        );
                       }
                     }
-                    toast.success(`成功删除 ${selectedRows.length} 条记录`, { duration: 1500 })
+                    toast.success(`成功删除 ${selectedRows.length} 条记录`, {
+                      duration: 1500,
+                    });
                   }
-                  setDeleteDialogOpen(false)
-                  router.refresh()
+                  setDeleteDialogOpen(false);
+                  router.refresh();
                 } catch {
-                  toast.error('删除失败', { duration: 1500 })
+                  toast.error("删除失败", { duration: 1500 });
                 }
               }}
             >
@@ -927,21 +1099,29 @@ export function UserTable(props: UserTableProps) {
           </DialogHeader>
           <div>确定要删除该条数据吗？此操作不可撤销。</div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setDeleteConfirmOpen(false)}>取消</Button>
+            <Button
+              variant="outline"
+              onClick={() => setDeleteConfirmOpen(false)}
+            >
+              取消
+            </Button>
             <Button
               variant="destructive"
               onClick={async () => {
                 if (pendingDeleteItem) {
                   if (isProblem) {
-                    await deleteProblem((pendingDeleteItem as Problem).id)
+                    await deleteProblem((pendingDeleteItem as Problem).id);
                   } else {
-                    await deleteUser(props.config.userType as 'admin' | 'teacher' | 'guest', (pendingDeleteItem as User).id)
+                    await deleteUser(
+                      props.config.userType as "admin" | "teacher" | "guest",
+                      (pendingDeleteItem as User).id
+                    );
                   }
-                  toast.success('删除成功', { duration: 1500 })
-                  router.refresh()
+                  toast.success("删除成功", { duration: 1500 });
+                  router.refresh();
                 }
-                setDeleteConfirmOpen(false)
-                setPendingDeleteItem(null)
+                setDeleteConfirmOpen(false);
+                setPendingDeleteItem(null);
               }}
             >
               确认删除
@@ -950,5 +1130,5 @@ export function UserTable(props: UserTableProps) {
         </DialogContent>
       </Dialog>
     </Tabs>
-  )
-} 
+  );
+}

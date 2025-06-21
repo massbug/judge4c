@@ -1,10 +1,13 @@
 "use client";
 
-import { TrendingUp } from "lucide-react";
-import { Bar, BarChart, XAxis, YAxis, LabelList, CartesianGrid } from "recharts";
-import { Button } from "@/components/ui/button";
-import { useState, useEffect } from "react";
-
+import {
+  Bar,
+  BarChart,
+  XAxis,
+  YAxis,
+  LabelList,
+  CartesianGrid,
+} from "recharts";
 import {
   Card,
   CardContent,
@@ -27,7 +30,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { getDashboardStats, ProblemCompletionData, DifficultProblemData } from "@/app/(protected)/dashboard/(userdashboard)/_actions/teacher-dashboard";
+import { TrendingUp } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  getDashboardStats,
+  ProblemCompletionData,
+  DifficultProblemData,
+} from "@/app/(protected)/dashboard/actions/teacher-dashboard";
 
 const ITEMS_PER_PAGE = 5; // 每页显示的题目数量
 
@@ -45,7 +55,9 @@ const chartConfig = {
 export default function TeacherDashboard() {
   const [currentPage, setCurrentPage] = useState(1);
   const [chartData, setChartData] = useState<ProblemCompletionData[]>([]);
-  const [difficultProblems, setDifficultProblems] = useState<DifficultProblemData[]>([]);
+  const [difficultProblems, setDifficultProblems] = useState<
+    DifficultProblemData[]
+  >([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -57,8 +69,8 @@ export default function TeacherDashboard() {
         setChartData(data.problemData);
         setDifficultProblems(data.difficultProblems);
       } catch (err) {
-        setError(err instanceof Error ? err.message : '获取数据失败');
-        console.error('Failed to fetch dashboard data:', err);
+        setError(err instanceof Error ? err.message : "获取数据失败");
+        console.error("Failed to fetch dashboard data:", err);
       } finally {
         setLoading(false);
       }
@@ -68,7 +80,7 @@ export default function TeacherDashboard() {
   }, []);
 
   const totalPages = Math.ceil(chartData.length / ITEMS_PER_PAGE);
-  
+
   // 获取当前页的数据
   const currentPageData = chartData.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
@@ -128,9 +140,9 @@ export default function TeacherDashboard() {
                     barCategoryGap={20}
                   >
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis 
-                      type="number" 
-                      domain={[0, 100]} 
+                    <XAxis
+                      type="number"
+                      domain={[0, 100]}
                       tickFormatter={(value) => `${value}%`}
                     />
                     <YAxis
@@ -144,30 +156,30 @@ export default function TeacherDashboard() {
                       cursor={false}
                       content={<ChartTooltipContent />}
                     />
-                    <Bar 
-                      dataKey="completedPercent" 
-                      name="已完成" 
-                      fill={chartConfig.completed.color} 
+                    <Bar
+                      dataKey="completedPercent"
+                      name="已完成"
+                      fill={chartConfig.completed.color}
                       radius={[4, 4, 0, 0]}
                     >
-                      <LabelList 
-                        dataKey="completed" 
-                        position="right" 
-                        fill="#000" 
-                        formatter={(value: number) => `${value}人`} 
+                      <LabelList
+                        dataKey="completed"
+                        position="right"
+                        fill="#000"
+                        formatter={(value: number) => `${value}人`}
                       />
                     </Bar>
-                    <Bar 
-                      dataKey="uncompletedPercent" 
-                      name="未完成" 
-                      fill={chartConfig.uncompleted.color} 
+                    <Bar
+                      dataKey="uncompletedPercent"
+                      name="未完成"
+                      fill={chartConfig.uncompleted.color}
                       radius={[4, 4, 0, 0]}
                     >
-                      <LabelList 
-                        dataKey="uncompleted" 
-                        position="right" 
-                        fill="#000" 
-                        formatter={(value: number) => `${value}人`} 
+                      <LabelList
+                        dataKey="uncompleted"
+                        position="right"
+                        fill="#000"
+                        formatter={(value: number) => `${value}人`}
                       />
                     </Bar>
                   </BarChart>
@@ -178,7 +190,9 @@ export default function TeacherDashboard() {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                      onClick={() =>
+                        setCurrentPage((prev) => Math.max(prev - 1, 1))
+                      }
                       disabled={currentPage === 1}
                     >
                       上一页
@@ -189,7 +203,9 @@ export default function TeacherDashboard() {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                      onClick={() =>
+                        setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                      }
                       disabled={currentPage === totalPages}
                     >
                       下一页
@@ -222,7 +238,9 @@ export default function TeacherDashboard() {
               </div>
               {difficultProblems.length === 0 ? (
                 <div className="flex items-center justify-center h-64">
-                  <div className="text-lg text-muted-foreground">暂无易错题数据</div>
+                  <div className="text-lg text-muted-foreground">
+                    暂无易错题数据
+                  </div>
                 </div>
               ) : (
                 <Table>
@@ -236,7 +254,10 @@ export default function TeacherDashboard() {
                   <TableBody>
                     {difficultProblems.map((problem) => (
                       <TableRow key={problem.id}>
-                        <TableCell>{problem.problemDisplayId || problem.id.substring(0, 8)}</TableCell>
+                        <TableCell>
+                          {problem.problemDisplayId ||
+                            problem.id.substring(0, 8)}
+                        </TableCell>
                         <TableCell>{problem.problemTitle}</TableCell>
                         <TableCell>{problem.problemCount}</TableCell>
                       </TableRow>

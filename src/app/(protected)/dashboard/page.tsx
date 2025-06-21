@@ -1,22 +1,28 @@
-import { auth } from "@/lib/auth";
-import prisma from "@/lib/prisma";
-import { redirect } from "next/navigation";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import { 
-  Users, 
-  BookOpen, 
-  CheckCircle, 
-  Clock, 
-  TrendingUp, 
+import {
+  Users,
+  BookOpen,
+  CheckCircle,
+  Clock,
+  TrendingUp,
   AlertCircle,
   BarChart3,
   Target,
-  Activity
+  Activity,
 } from "lucide-react";
 import Link from "next/link";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import prisma from "@/lib/prisma";
+import { auth } from "@/lib/auth";
+import { redirect } from "next/navigation";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
 
 interface Stats {
   totalUsers?: number;
@@ -37,7 +43,7 @@ interface Activity {
 export default async function DashboardPage() {
   const session = await auth();
   const user = session?.user;
-  
+
   if (!user) {
     redirect("/sign-in");
   }
@@ -45,7 +51,7 @@ export default async function DashboardPage() {
   // 获取用户的完整信息
   const fullUser = await prisma.user.findUnique({
     where: { id: user.id },
-    select: { id: true, name: true, email: true, image: true, role: true }
+    select: { id: true, name: true, email: true, image: true, role: true },
   });
 
   if (!fullUser) {
@@ -58,62 +64,81 @@ export default async function DashboardPage() {
 
   if (fullUser.role === "ADMIN") {
     // 管理员统计
-    const [totalUsers, totalProblems, totalSubmissions, recentUsers] = await Promise.all([
-      prisma.user.count(),
-      prisma.problem.count(),
-      prisma.submission.count(),
-      prisma.user.findMany({
-        take: 5,
-        orderBy: { createdAt: "desc" },
-        select: { id: true, name: true, email: true, role: true, createdAt: true }
-      })
-    ]);
+    const [totalUsers, totalProblems, totalSubmissions, recentUsers] =
+      await Promise.all([
+        prisma.user.count(),
+        prisma.problem.count(),
+        prisma.submission.count(),
+        prisma.user.findMany({
+          take: 5,
+          orderBy: { createdAt: "desc" },
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            role: true,
+            createdAt: true,
+          },
+        }),
+      ]);
 
     stats = { totalUsers, totalProblems, totalSubmissions };
-    recentActivity = recentUsers.map(user => ({
+    recentActivity = recentUsers.map((user) => ({
       type: "新用户注册",
       title: user.name || user.email,
       description: `角色: ${user.role}`,
-      time: user.createdAt
+      time: user.createdAt,
     }));
   } else if (fullUser.role === "TEACHER") {
     // 教师统计
-    const [totalStudents, totalProblems, totalSubmissions, recentSubmissions] = await Promise.all([
-      prisma.user.count({ where: { role: "GUEST" } }),
-      prisma.problem.count({ where: { isPublished: true } }),
-      prisma.submission.count(),
-      prisma.submission.findMany({
-        take: 5,
-        orderBy: { createdAt: "desc" },
-        include: {
-          user: { select: { name: true, email: true } },
-          problem: { 
-            select: { 
-              displayId: true,
-              localizations: { where: { type: "TITLE", locale: "zh" }, select: { content: true } }
-            }
-          }
-        }
-      })
-    ]);
+    const [totalStudents, totalProblems, totalSubmissions, recentSubmissions] =
+      await Promise.all([
+        prisma.user.count({ where: { role: "GUEST" } }),
+        prisma.problem.count({ where: { isPublished: true } }),
+        prisma.submission.count(),
+        prisma.submission.findMany({
+          take: 5,
+          orderBy: { createdAt: "desc" },
+          include: {
+            user: { select: { name: true, email: true } },
+            problem: {
+              select: {
+                displayId: true,
+                localizations: {
+                  where: { type: "TITLE", locale: "zh" },
+                  select: { content: true },
+                },
+              },
+            },
+          },
+        }),
+      ]);
 
     stats = { totalStudents, totalProblems, totalSubmissions };
-    recentActivity = recentSubmissions.map(sub => ({
+    recentActivity = recentSubmissions.map((sub) => ({
       type: "学生提交",
-      title: `${sub.user.name || sub.user.email} 提交了题目 ${sub.problem.displayId}`,
-      description: sub.problem.localizations[0]?.content || `题目${sub.problem.displayId}`,
+      title: `${sub.user.name || sub.user.email} 提交了题目 ${
+        sub.problem.displayId
+      }`,
+      description:
+        sub.problem.localizations[0]?.content || `题目${sub.problem.displayId}`,
       time: sub.createdAt,
-      status: sub.status
+      status: sub.status,
     }));
   } else {
     // 学生统计
-    const [totalProblems, completedProblems, totalSubmissions, recentSubmissions] = await Promise.all([
+    const [
+      totalProblems,
+      completedProblems,
+      totalSubmissions,
+      recentSubmissions,
+    ] = await Promise.all([
       prisma.problem.count({ where: { isPublished: true } }),
-      prisma.submission.count({ 
-        where: { 
-          userId: user.id, 
-          status: "AC" 
-        }
+      prisma.submission.count({
+        where: {
+          userId: user.id,
+          status: "AC",
+        },
       }),
       prisma.submission.count({ where: { userId: user.id } }),
       prisma.submission.findMany({
@@ -121,23 +146,27 @@ export default async function DashboardPage() {
         take: 5,
         orderBy: { createdAt: "desc" },
         include: {
-          problem: { 
-            select: { 
+          problem: {
+            select: {
               displayId: true,
-              localizations: { where: { type: "TITLE", locale: "zh" }, select: { content: true } }
-            }
-          }
-        }
-      })
+              localizations: {
+                where: { type: "TITLE", locale: "zh" },
+                select: { content: true },
+              },
+            },
+          },
+        },
+      }),
     ]);
 
     stats = { totalProblems, completedProblems, totalSubmissions };
-    recentActivity = recentSubmissions.map(sub => ({
+    recentActivity = recentSubmissions.map((sub) => ({
       type: "我的提交",
       title: `题目 ${sub.problem.displayId}`,
-      description: sub.problem.localizations[0]?.content || `题目${sub.problem.displayId}`,
+      description:
+        sub.problem.localizations[0]?.content || `题目${sub.problem.displayId}`,
       time: sub.createdAt,
-      status: sub.status
+      status: sub.status,
     }));
   }
 
@@ -148,52 +177,129 @@ export default async function DashboardPage() {
           title: "系统管理后台",
           description: "管理整个系统的用户、题目和统计数据",
           stats: [
-            { label: "总用户数", value: stats.totalUsers, icon: Users, color: "text-blue-600" },
-            { label: "总题目数", value: stats.totalProblems, icon: BookOpen, color: "text-green-600" },
-            { label: "总提交数", value: stats.totalSubmissions, icon: Activity, color: "text-purple-600" }
+            {
+              label: "总用户数",
+              value: stats.totalUsers,
+              icon: Users,
+              color: "text-blue-600",
+            },
+            {
+              label: "总题目数",
+              value: stats.totalProblems,
+              icon: BookOpen,
+              color: "text-green-600",
+            },
+            {
+              label: "总提交数",
+              value: stats.totalSubmissions,
+              icon: Activity,
+              color: "text-purple-600",
+            },
           ],
           actions: [
-            { label: "用户管理", href: "/dashboard/usermanagement/guest", icon: Users },
-            { label: "题目管理", href: "/dashboard/usermanagement/problem", icon: BookOpen },
-            { label: "管理员设置", href: "/dashboard/management", icon: Target }
-          ]
+            {
+              label: "用户管理",
+              href: "/dashboard/usermanagement/guest",
+              icon: Users,
+            },
+            {
+              label: "题目管理",
+              href: "/dashboard/usermanagement/problem",
+              icon: BookOpen,
+            },
+            {
+              label: "管理员设置",
+              href: "/dashboard/management",
+              icon: Target,
+            },
+          ],
         };
       case "TEACHER":
         return {
           title: "教师教学平台",
           description: "查看学生学习情况，管理教学资源",
           stats: [
-            { label: "学生数量", value: stats.totalStudents, icon: Users, color: "text-blue-600" },
-            { label: "题目数量", value: stats.totalProblems, icon: BookOpen, color: "text-green-600" },
-            { label: "提交数量", value: stats.totalSubmissions, icon: Activity, color: "text-purple-600" }
+            {
+              label: "学生数量",
+              value: stats.totalStudents,
+              icon: Users,
+              color: "text-blue-600",
+            },
+            {
+              label: "题目数量",
+              value: stats.totalProblems,
+              icon: BookOpen,
+              color: "text-green-600",
+            },
+            {
+              label: "提交数量",
+              value: stats.totalSubmissions,
+              icon: Activity,
+              color: "text-purple-600",
+            },
           ],
           actions: [
-            { label: "学生管理", href: "/dashboard/usermanagement/guest", icon: Users },
-            { label: "题目管理", href: "/dashboard/usermanagement/problem", icon: BookOpen },
-            { label: "统计分析", href: "/dashboard/teacher/dashboard", icon: BarChart3 }
-          ]
+            {
+              label: "学生管理",
+              href: "/dashboard/usermanagement/guest",
+              icon: Users,
+            },
+            {
+              label: "题目管理",
+              href: "/dashboard/usermanagement/problem",
+              icon: BookOpen,
+            },
+            {
+              label: "统计分析",
+              href: "/dashboard/teacher/dashboard",
+              icon: BarChart3,
+            },
+          ],
         };
       default:
         return {
           title: "我的学习中心",
           description: "继续您的编程学习之旅",
           stats: [
-            { label: "总题目数", value: stats.totalProblems, icon: BookOpen, color: "text-blue-600" },
-            { label: "已完成", value: stats.completedProblems, icon: CheckCircle, color: "text-green-600" },
-            { label: "提交次数", value: stats.totalSubmissions, icon: Activity, color: "text-purple-600" }
+            {
+              label: "总题目数",
+              value: stats.totalProblems,
+              icon: BookOpen,
+              color: "text-blue-600",
+            },
+            {
+              label: "已完成",
+              value: stats.completedProblems,
+              icon: CheckCircle,
+              color: "text-green-600",
+            },
+            {
+              label: "提交次数",
+              value: stats.totalSubmissions,
+              icon: Activity,
+              color: "text-purple-600",
+            },
           ],
           actions: [
             { label: "开始做题", href: "/problemset", icon: BookOpen },
-            { label: "我的进度", href: "/dashboard/student/dashboard", icon: TrendingUp },
-            { label: "个人设置", href: "/dashboard/management", icon: Target }
-          ]
+            {
+              label: "我的进度",
+              href: "/dashboard/student/dashboard",
+              icon: TrendingUp,
+            },
+            { label: "个人设置", href: "/dashboard/management", icon: Target },
+          ],
         };
     }
   };
 
   const config = getRoleConfig();
-  const completionRate = fullUser.role === "GUEST" ? 
-    ((stats.totalProblems || 0) > 0 ? ((stats.completedProblems || 0) / (stats.totalProblems || 1)) * 100 : 0) : 0;
+  const completionRate =
+    fullUser.role === "GUEST"
+      ? (stats.totalProblems || 0) > 0
+        ? ((stats.completedProblems || 0) / (stats.totalProblems || 1)) * 100
+        : 0
+      : 0;
 
   return (
     <div className="space-y-6 p-6">
@@ -214,7 +320,9 @@ export default async function DashboardPage() {
         {config.stats.map((stat, index) => (
           <Card key={index}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">{stat.label}</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                {stat.label}
+              </CardTitle>
               <stat.icon className={`h-4 w-4 ${stat.color}`} />
             </CardHeader>
             <CardContent>
@@ -233,7 +341,8 @@ export default async function DashboardPage() {
               学习进度
             </CardTitle>
             <CardDescription>
-              已完成 {stats.completedProblems || 0} / {stats.totalProblems || 0} 道题目
+              已完成 {stats.completedProblems || 0} / {stats.totalProblems || 0}{" "}
+              道题目
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -287,7 +396,9 @@ export default async function DashboardPage() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium">{activity.title}</p>
-                    <p className="text-sm text-muted-foreground">{activity.description}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {activity.description}
+                    </p>
                   </div>
                   <div className="text-sm text-muted-foreground">
                     {new Date(activity.time).toLocaleDateString()}

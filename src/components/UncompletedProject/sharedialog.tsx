@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button"
 import {
   DialogContent,
   DialogDescription,
@@ -6,9 +5,10 @@ import {
   DialogHeader,
   DialogTitle,
   DialogClose,
-} from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 
 export function ShareDialogContent({ link }: { link: string }) {
   return (
@@ -35,5 +35,5 @@ export function ShareDialogContent({ link }: { link: string }) {
         </DialogClose>
       </DialogFooter>
     </DialogContent>
-  )
+  );
 }

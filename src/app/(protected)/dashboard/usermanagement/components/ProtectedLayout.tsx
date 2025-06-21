@@ -1,5 +1,5 @@
-import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
+import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 
 interface ProtectedLayoutProps {
@@ -7,7 +7,10 @@ interface ProtectedLayoutProps {
   allowedRoles: string[];
 }
 
-export default async function ProtectedLayout({ children, allowedRoles }: ProtectedLayoutProps) {
+export default async function ProtectedLayout({
+  children,
+  allowedRoles,
+}: ProtectedLayoutProps) {
   const session = await auth();
   const userId = session?.user?.id;
 
@@ -17,7 +20,7 @@ export default async function ProtectedLayout({ children, allowedRoles }: Protec
 
   const user = await prisma.user.findUnique({
     where: { id: userId },
-    select: { role: true }
+    select: { role: true },
   });
 
   if (!user || !allowedRoles.includes(user.role)) {
@@ -25,4 +28,4 @@ export default async function ProtectedLayout({ children, allowedRoles }: Protec
   }
 
   return <div className="w-full h-full">{children}</div>;
-} 
+}

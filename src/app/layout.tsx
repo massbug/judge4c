@@ -6,7 +6,6 @@ import { NextIntlClientProvider } from "next-intl";
 import { ThemeProvider } from "@/components/theme-provider";
 import { SettingsDialog } from "@/components/settings-dialog";
 
-
 export const metadata: Metadata = {
   title: "Judge4c",
   description:

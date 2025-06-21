@@ -1,5 +1,10 @@
+import {
+  createUserConfig,
+  baseUserSchema,
+  baseAddUserSchema,
+  baseEditUserSchema,
+} from "./base-config";
 import { z } from "zod";
-import { createUserConfig, baseUserSchema, baseAddUserSchema, baseEditUserSchema } from './base-config'
 
 export const guestSchema = baseUserSchema;
 export type Guest = z.infer<typeof guestSchema>;
@@ -16,4 +21,4 @@ export const guestConfig = createUserConfig(
   "添加客户",
   "请输入客户姓名",
   "请输入客户邮箱"
-); 
+);
