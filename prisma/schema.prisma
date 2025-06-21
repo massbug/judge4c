@@ -130,12 +130,34 @@ model Submission {
   memoryUsage Int?
 
   testcaseResults TestcaseResult[]
+  codeAnalysis    CodeAnalysis?
 
   userId    String
   problemId String
 
   user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   problem Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CodeAnalysis {
+  id           String @id @default(cuid())
+  submissionId String @unique
+
+  timeComplexity  String?
+  spaceComplexity String?
+
+  overallScore     Int?
+  styleScore       Int?
+  readabilityScore Int?
+  efficiencyScore  Int?
+  correctnessScore Int?
+
+  feedback String?
+
+  submission Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
