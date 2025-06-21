@@ -5,8 +5,11 @@ import {
   AnalyzeComplexityResponseSchema,
   Complexity,
 } from "@/types/complexity";
+import prisma from "@/lib/prisma";
 import { openai } from "@/lib/ai";
+import { auth } from "@/lib/auth";
 import { CoreMessage, generateText } from "ai";
+import { CodeAnalysis } from "@/generated/client";
 
 export const analyzeComplexity = async (
   content: string
@@ -61,4 +64,24 @@ export const analyzeComplexity = async (
   }
 
   return validationResult.data;
+};
+
+export const getAnalysis = async (submissionId: string):Promise<CodeAnalysis> => {
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    throw new Error(
+      "Authentication required: Please log in to submit code for analysis"
+    );
+  }
+
+  const analysis = await prisma.codeAnalysis.findUnique({
+    where: { submissionId: submissionId },
+  });
+
+  if (!analysis) {
+    throw new Error("Analysis not found");
+  }
+
+  return analysis;
 };

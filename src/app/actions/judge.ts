@@ -120,10 +120,14 @@ export const judge = async (
       },
     });
 
-    await analyzeCode({
-      content,
-      submissionId: submission.id,
-    });
+    const executeAnalyzeCode = async () => {
+      await analyzeCode({
+        content,
+        submissionId: submission.id,
+      });
+    }
+
+    executeAnalyzeCode()
 
     // Upload code to the container
     const tarStream = createTarStream(

@@ -15,8 +15,21 @@ export const analyzeCode = async ({
   content,
   submissionId,
 }: analyzeCodeProps) => {
+  const analysis = await prisma.codeAnalysis.create({
+    data: {
+      submissionId,
+      status: "QUEUED"
+    },
+  });
   try {
-    const result = await generateText({
+    await prisma.codeAnalysis.update({
+      where: { id: analysis.id },
+      data: {
+        status: "PROCESSING"
+      },
+    });
+
+    await generateText({
       model: deepseek("deepseek-chat"),
       system: `You are an AI assistant that rigorously analyzes code for time and space complexity, and assesses overall code quality.
 
@@ -114,9 +127,12 @@ export const analyzeCode = async ({
             correctnessScore,
             feedback,
           }) => {
-            const codeAnalysis = await prisma.codeAnalysis.create({
+            await prisma.codeAnalysis.update({
+              where: {
+                id: analysis.id
+              },
               data: {
-                submissionId,
+                status: "COMPLETED",
                 timeComplexity,
                 spaceComplexity,
                 overallScore,
@@ -127,20 +143,21 @@ export const analyzeCode = async ({
                 feedback,
               },
             });
-            return {
-              success: true,
-              message: "Code analysis saved successfully",
-              data: codeAnalysis,
-            };
           },
         }),
       },
       toolChoice: { type: "tool", toolName: "saveCodeAnalysis" },
     });
-
-    return result;
   } catch (error) {
     console.error("Error analyzing code:", error);
+    await prisma.codeAnalysis.update({
+      where: {
+        id: analysis.id
+      },
+      data: {
+        status: "FAILED"
+      },
+    });
     throw new Error("Failed to analyze code");
   }
 };

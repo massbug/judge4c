@@ -142,9 +142,19 @@ model Submission {
   updatedAt DateTime @updatedAt
 }
 
+enum AnalysisStatus {
+  PENDING
+  QUEUED
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
 model CodeAnalysis {
   id           String @id @default(cuid())
   submissionId String @unique
+
+  status AnalysisStatus @default(PENDING)
 
   timeComplexity  String?
   spaceComplexity String?
