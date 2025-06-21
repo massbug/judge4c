@@ -72,7 +72,7 @@ import {
 import { createAdmin, updateAdmin, deleteAdmin } from '@/app/(app)/usermanagement/_actions/adminActions'
 import { createTeacher, updateTeacher } from '@/app/(app)/usermanagement/_actions/teacherActions'
 import { createGuest, updateGuest } from '@/app/(app)/usermanagement/_actions/guestActions'
-import { createProblem, updateProblem, deleteProblem } from '@/app/(app)/usermanagement/_actions/problemActions'
+import { createProblem, deleteProblem } from '@/app/(app)/usermanagement/_actions/problemActions'
 import type { User, Problem } from '@/generated/client'
 import { Difficulty, Role } from '@/generated/client'
 
@@ -148,12 +148,6 @@ const editUserSchema = z.object({
 
 // 题目表单 schema 兼容 null/undefined
 const addProblemSchema = z.object({
-  displayId: z.number().optional().default(0),
-  difficulty: z.nativeEnum(Difficulty).default(Difficulty.EASY),
-})
-
-const editProblemSchema = z.object({
-  id: z.string().default(''),
   displayId: z.number().optional().default(0),
   difficulty: z.nativeEnum(Difficulty).default(Difficulty.EASY),
 })
@@ -247,8 +241,15 @@ export function UserTable(props: UserTableProps) {
               size="sm"
               className="h-8 gap-1"
               onClick={() => {
-                setEditingUser(item)
-                setIsEditDialogOpen(true)
+                if (isProblem) {
+                  // 如果是problem类型，跳转到编辑路由，使用displayId
+                  const problem = item as Problem
+                  router.push(`/admin/problems/${problem.displayId}/edit`)
+                } else {
+                  // 如果是用户类型，打开编辑弹窗
+                  setEditingUser(item)
+                  setIsEditDialogOpen(true)
+                }
               }}
             >
               <PencilIcon className="size-4 mr-1" /> {props.config.actions.edit.label}
@@ -615,98 +616,6 @@ export function UserTable(props: UserTableProps) {
     )
   }
 
-  // 编辑题目对话框组件（仅题目）
-  function EditUserDialogProblem({ open, onOpenChange, user }: { open: boolean; onOpenChange: (open: boolean) => void; user: Problem }) {
-    const [isLoading, setIsLoading] = useState(false)
-    const form = useForm<Partial<Problem>>({
-      resolver: zodResolver(editProblemSchema),
-      defaultValues: {
-        id: user.id,
-        displayId: user.displayId ?? 0,
-        difficulty: user.difficulty ?? Difficulty.EASY,
-      },
-    })
-    React.useEffect(() => {
-      if (open) {
-        form.reset({
-          id: user.id,
-          displayId: user.displayId ?? 0,
-          difficulty: user.difficulty ?? Difficulty.EASY,
-        })
-      }
-    }, [open, user, form])
-    async function onSubmit(formData: Partial<Problem>) {
-      try {
-        setIsLoading(true)
-        const submitData: Partial<Problem> = { ...formData, displayId: Number(formData.displayId) }
-        await updateProblem(submitData.id!, submitData)
-        onOpenChange(false)
-        toast.success('修改成功', { duration: 1500 })
-      } catch {
-        toast.error('修改失败', { duration: 1500 })
-      } finally {
-        setIsLoading(false)
-      }
-    }
-    return (
-      <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>{props.config.actions.edit.label}</DialogTitle>
-            <DialogDescription>
-              修改信息
-            </DialogDescription>
-          </DialogHeader>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="displayId" className="text-right">题目编号</Label>
-                <Input
-                  id="displayId"
-                  type="number"
-                  {...form.register('displayId', { valueAsNumber: true })}
-                  className="col-span-3"
-                  placeholder="请输入题目编号"
-                />
-                {form.formState.errors.displayId?.message && (
-                  <p className="col-span-3 col-start-2 text-sm text-red-500">
-                    {form.formState.errors.displayId?.message as string}
-                  </p>
-                )}
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="difficulty" className="text-right">难度</Label>
-                <Select
-                  value={form.watch('difficulty') ?? Difficulty.EASY}
-                  onValueChange={value => form.setValue('difficulty', value as typeof Difficulty.EASY | typeof Difficulty.MEDIUM | typeof Difficulty.HARD)}
-                >
-                  <SelectTrigger className="col-span-3">
-                    <SelectValue placeholder="请选择难度" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value={Difficulty.EASY}>简单</SelectItem>
-                    <SelectItem value={Difficulty.MEDIUM}>中等</SelectItem>
-                    <SelectItem value={Difficulty.HARD}>困难</SelectItem>
-                  </SelectContent>
-                </Select>
-                {form.formState.errors.difficulty?.message && (
-                  <p className="col-span-3 col-start-2 text-sm text-red-500">
-                    {form.formState.errors.difficulty?.message as string}
-                  </p>
-                )}
-              </div>
-            </div>
-            <DialogFooter>
-              <Button type="submit" disabled={isLoading}>
-                {isLoading ? "修改中..." : "确认修改"}
-              </Button>
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
-    )
-  }
-
   // 用ref保证获取最新data
   const dataRef = React.useRef<User[] | Problem[]>(props.data)
   React.useEffect(() => { dataRef.current = props.data }, [props.data])
@@ -960,9 +869,7 @@ export function UserTable(props: UserTableProps) {
         <AddUserDialogUser open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen} />
       ) : null}
       {/* 编辑用户对话框 */}
-      {isProblem && editingUser ? (
-        <EditUserDialogProblem open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen} user={editingUser as Problem} />
-      ) : editingUser ? (
+      {!isProblem && editingUser ? (
         <EditUserDialogUser open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen} user={editingUser as User} />
       ) : null}
       {/* 删除确认对话框 */}
