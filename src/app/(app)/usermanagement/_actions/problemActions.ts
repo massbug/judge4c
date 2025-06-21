@@ -8,11 +8,6 @@ export async function createProblem(data: Omit<Problem, 'id'|'createdAt'|'update
   revalidatePath('/usermanagement/problem')
 }
 
-export async function updateProblem(id: string, data: Partial<Omit<Problem, 'id'|'createdAt'|'updatedAt'>>) {
-  await prisma.problem.update({ where: { id }, data })
-  revalidatePath('/usermanagement/problem')
-}
-
 export async function deleteProblem(id: string) {
   await prisma.problem.delete({ where: { id } })
   revalidatePath('/usermanagement/problem')

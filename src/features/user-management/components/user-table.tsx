@@ -69,9 +69,7 @@ import {
   Tabs,
 } from "@/components/ui/tabs"
 
-import { createAdmin, updateAdmin, deleteAdmin } from '@/app/(app)/usermanagement/_actions/adminActions'
-import { createTeacher, updateTeacher } from '@/app/(app)/usermanagement/_actions/teacherActions'
-import { createGuest, updateGuest } from '@/app/(app)/usermanagement/_actions/guestActions'
+import { createUser, updateUser, deleteUser } from '@/app/(app)/usermanagement/_actions/userActions'
 import { createProblem, deleteProblem } from '@/app/(app)/usermanagement/_actions/problemActions'
 import type { User, Problem } from '@/generated/client'
 import { Difficulty, Role } from '@/generated/client'
@@ -128,7 +126,7 @@ type AddUserForm = Omit<UserForm, 'id'>
 const addUserSchema = z.object({
   name: z.string(),
   email: z.string().email(),
-  password: z.string(),
+  password: z.string().min(1, "密码不能为空").min(8, "密码长度至少8位"),
   createdAt: z.string(),
   image: z.string().nullable(),
   emailVerified: z.date().nullable(),
@@ -312,6 +310,13 @@ export function UserTable(props: UserTableProps) {
     async function onSubmit(data: AddUserForm) {
       try {
         setIsLoading(true)
+        
+        // 验证必填字段
+        if (!data.password || data.password.trim() === '') {
+          toast.error('密码不能为空', { duration: 1500 })
+          return
+        }
+        
         const submitData = {
           ...data,
           image: data.image ?? null,
@@ -321,9 +326,9 @@ export function UserTable(props: UserTableProps) {
         if (!submitData.name) submitData.name = ''
         if (!submitData.createdAt) submitData.createdAt = new Date().toISOString()
         else submitData.createdAt = new Date(submitData.createdAt).toISOString()
-        if (props.config.userType === 'admin') await createAdmin(submitData)
-        else if (props.config.userType === 'teacher') await createTeacher(submitData)
-        else if (props.config.userType === 'guest') await createGuest(submitData)
+        if (props.config.userType === 'admin') await createUser('admin', submitData)
+        else if (props.config.userType === 'teacher') await createUser('teacher', submitData)
+        else if (props.config.userType === 'guest') await createUser('guest', submitData)
         onOpenChange(false)
         toast.success('添加成功', { duration: 1500 })
         router.refresh()
@@ -526,9 +531,9 @@ export function UserTable(props: UserTableProps) {
           role: data.role ?? Role.GUEST,
         }
         const id = typeof submitData.id === 'string' ? submitData.id : ''
-        if (props.config.userType === 'admin') await updateAdmin(id, submitData)
-        else if (props.config.userType === 'teacher') await updateTeacher(id, submitData)
-        else if (props.config.userType === 'guest') await updateGuest(id, submitData)
+        if (props.config.userType === 'admin') await updateUser('admin', id, submitData)
+        else if (props.config.userType === 'teacher') await updateUser('teacher', id, submitData)
+        else if (props.config.userType === 'guest') await updateUser('guest', id, submitData)
         onOpenChange(false)
         toast.success('修改成功', { duration: 1500 })
       } catch {
@@ -898,7 +903,7 @@ export function UserTable(props: UserTableProps) {
                       if (isProblem) {
                         await deleteProblem((row.original as Problem).id)
                       } else {
-                        await deleteAdmin((row.original as User).id)
+                        await deleteUser(props.config.userType as 'admin' | 'teacher' | 'guest', (row.original as User).id)
                       }
                     }
                     toast.success(`成功删除 ${selectedRows.length} 条记录`, { duration: 1500 })
@@ -930,7 +935,7 @@ export function UserTable(props: UserTableProps) {
                   if (isProblem) {
                     await deleteProblem((pendingDeleteItem as Problem).id)
                   } else {
-                    await deleteAdmin((pendingDeleteItem as User).id)
+                    await deleteUser(props.config.userType as 'admin' | 'teacher' | 'guest', (pendingDeleteItem as User).id)
                   }
                   toast.success('删除成功', { duration: 1500 })
                   router.refresh()

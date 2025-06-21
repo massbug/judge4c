@@ -1,5 +1,5 @@
-import ProtectedLayout from "../_components/ProtectedLayout";
+import GenericLayout from "../_components/GenericLayout";
 
 export default function TeacherLayout({ children }: { children: React.ReactNode }) {
-  return <ProtectedLayout allowedRoles={["ADMIN"]}>{children}</ProtectedLayout>;
+  return <GenericLayout allowedRoles={["ADMIN"]}>{children}</GenericLayout>;
 } 

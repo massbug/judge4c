@@ -1,5 +1,5 @@
-import ProtectedLayout from "../_components/ProtectedLayout";
+import GenericLayout from "../_components/GenericLayout";
 
 export default function GuestLayout({ children }: { children: React.ReactNode }) {
-  return <ProtectedLayout allowedRoles={["ADMIN", "TEACHER"]}>{children}</ProtectedLayout>;
+  return <GenericLayout allowedRoles={["ADMIN", "TEACHER"]}>{children}</GenericLayout>;
 } 
