@@ -16,7 +16,7 @@ export const DetailPanel = ({ submissionId }: DetailPanelProps) => {
   }
 
   return (
-    <PanelLayout>
+    <PanelLayout isScroll={false}>
       <DetailHeader />
       <Suspense fallback={<DetailContentSkeleton />}>
         <DetailContent submissionId={submissionId} />

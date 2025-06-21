@@ -1,18 +1,12 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { TestcaseTable } from "@/features/problems/testcase/table";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 interface TestcaseContentProps {
   problemId: string;
 }
 
 export const TestcaseContent = ({ problemId }: TestcaseContentProps) => {
-  return (
-    <ScrollArea className="h-full">
-      <TestcaseTable problemId={problemId} />
-      <ScrollBar orientation="horizontal" />
-    </ScrollArea>
-  );
+  return <TestcaseTable problemId={problemId} />;
 };
 
 export const TestcaseContentSkeleton = () => {

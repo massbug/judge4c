@@ -11,7 +11,7 @@ interface BotPanelProps {
 
 export const BotPanel = ({ problemId }: BotPanelProps) => {
   return (
-    <PanelLayout>
+    <PanelLayout isScroll={false}>
       <Suspense fallback={<BotContentSkeleton />}>
         <BotContent problemId={problemId} />
       </Suspense>

@@ -2,7 +2,6 @@ import prisma from "@/lib/prisma";
 import { getLocale } from "next-intl/server";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MdxRenderer } from "@/components/content/mdx-renderer";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import type { Locale, ProblemLocalization } from "@/generated/client";
 
 const getLocalizedSolution = (
@@ -38,12 +37,7 @@ export const SolutionContent = async ({ problemId }: SolutionContentProps) => {
 
   const solution = getLocalizedSolution(solutions, locale as Locale);
 
-  return (
-    <ScrollArea className="h-full">
-      <MdxRenderer source={solution} className="p-4 md:p-6" />
-      <ScrollBar orientation="horizontal" />
-    </ScrollArea>
-  );
+  return <MdxRenderer source={solution} className="p-4 md:p-6" />;
 };
 
 export const SolutionContentSkeleton = () => {
