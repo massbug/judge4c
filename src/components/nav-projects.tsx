@@ -5,13 +5,13 @@ import {
   Folder,
   MoreHorizontal,
   Share,
-  Trash2,
   Check,
   X,
   Info,
   AlertTriangle,
 } from "lucide-react"
 import React, { useState } from "react"
+import { useRouter } from "next/navigation"
 import {
   Dialog,
 } from "@/components/ui/dialog"
@@ -20,7 +20,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import {
@@ -42,11 +41,13 @@ export function NavProjects({
     id: string
     name: string
     status: string
+    url?: string
   }[]
 }) {
   const { isMobile } = useSidebar()
   const [shareOpen, setShareOpen] = useState(false)
   const [shareLink, setShareLink] = useState("")
+  const router = useRouter()
 
   return (
     <>
@@ -56,9 +57,9 @@ export function NavProjects({
           {projects.slice(0, 1).map((item) => (
             <SidebarMenuItem key={item.id}>
               <SidebarMenuButton asChild>
-                <a href={`/problem/${item.id}`}>
+                <a href={item.url}>
                   <BookX />
-                  <span className="flex w-full items-center">
+                   <span className="flex w-full items-center">
                     <span
                       className="truncate max-w-[120px] flex-1"
                       title={item.name}
@@ -111,24 +112,28 @@ export function NavProjects({
                   side={isMobile ? "bottom" : "right"}
                   align={isMobile ? "end" : "start"}
                 >
-                  <DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      if (item.url) {
+                        router.push(item.url)
+                      } else {
+                        router.push(`/problems/${item.id}`)
+                      }
+                    }}
+                  >
                     <Folder className="text-muted-foreground" />
                     <span>查看</span>
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={(e) => {
                       e.stopPropagation()
-                      setShareLink(`${window.location.origin}/problem/${item.id}`)
+                      setShareLink(`${window.location.origin}/problems/${item.id}`)
                       setShareOpen(true)
                     }}
                   >
                     <Share className="text-muted-foreground mr-2" />
                     <span>复制链接</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem>
-                    <Trash2 className="text-muted-foreground" />
-                    <span>移除</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

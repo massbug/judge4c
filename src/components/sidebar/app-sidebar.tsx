@@ -3,11 +3,11 @@
 import { siteConfig } from "@/config/site";
 import * as React from "react";
 import {
-  BookOpen,
+  // BookOpen,
   Command,
   LifeBuoy,
   Send,
-  Settings2,
+  // Settings2,
   SquareTerminal,
 } from "lucide-react";
 
@@ -26,9 +26,6 @@ import {
 } from "@/components/ui/sidebar";
 import { User } from "next-auth";
 
-// import { useEffect, useState } from "react"
-// import { auth, signIn } from "@/lib/auth"
-
 const data = {
   navMain: [
     {
@@ -39,11 +36,7 @@ const data = {
       items: [
         {
           title: "主页",
-          url: "/student/dashboard",
-        },
-        {
-          title: "历史记录",
-          url: "#",
+          url: "/dashboard/student/dashboard",
         },
         {
           title: "题目集",
@@ -52,36 +45,36 @@ const data = {
       ],
     },
 
-    {
-      title: "已完成事项",
-      url: "#",
-      icon: BookOpen,
-      items: [
-        {
-          title: "全部编程集",
-          url: "#",
-        },
-        {
-          title: "错题集",
-          url: "#",
-        },
-        {
-          title: "收藏集",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "设置",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "语言",
-          url: "#",
-        },
-      ],
-    },
+    // {
+    //   title: "已完成事项",
+    //   url: "#",
+    //   icon: BookOpen,
+    //   items: [
+    //     {
+    //       title: "全部编程集",
+    //       url: "#",
+    //     },
+    //     {
+    //       title: "错题集",
+    //       url: "#",
+    //     },
+    //     {
+    //       title: "收藏集",
+    //       url: "#",
+    //     },
+    //   ],
+    // },
+    // {
+    //   title: "设置",
+    //   url: "#",
+    //   icon: Settings2,
+    //   items: [
+    //     {
+    //       title: "语言",
+    //       url: "#",
+    //     },
+    //   ],
+    // },
   ],
   navSecondary: [
     {
@@ -95,59 +88,18 @@ const data = {
       icon: Send,
     },
   ],
-  wrongProblems: [
-    {
-      id: "abc123",
-      name: "Two Sum",
-      status: "WA",
-    },
-    {
-      id: "def456",
-      name: "Reverse Linked List",
-      status: "RE",
-    },
-    {
-      id: "ghi789",
-      name: "Binary Tree Paths",
-      status: "TLE",
-    },
-  ],
 };
 
-// // 获取当前登录用户信息的 API
-// async function fetchCurrentUser() {
-//   try {
-//     const res = await fetch("/api/auth/session");
-//     if (!res.ok) return null;
-//     const session = await res.json();
-//     return {
-//       name: session?.user?.name ?? "未登录用户",
-//       email: session?.user?.email ?? "",
-//       avatar: session?.user?.image ?? "/avatars/default.jpg",
-//     };
-//   } catch {
-//     return {
-//       name: "未登录用户",
-//       email: "",
-//       avatar: "/avatars/default.jpg",
-//     };
-//   }
-// }
-
-interface AppSidebarProps{
-  user:User
+interface AppSidebarProps {
+  user: User;
+  wrongProblems: {
+    id: string;
+    name: string;
+    status: string;
+  }[];
 }
 
-export function AppSidebar({ user, ...props }: AppSidebarProps) {
-  // const [user, setUser] = useState({
-  //   name: "未登录用户",
-  //   email: "",
-  //   avatar: "/avatars/default.jpg",
-  // });
-
-  // useEffect(() => {
-  //   fetchCurrentUser().then(u => u && setUser(u));
-  // }, []);
+export function AppSidebar({ user, wrongProblems, ...props }: AppSidebarProps) {
   const userInfo = {
     name: user.name ?? "",
     email: user.email ?? "",
@@ -175,7 +127,7 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavProjects projects={data.wrongProblems} />
+        <NavProjects projects={wrongProblems} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>

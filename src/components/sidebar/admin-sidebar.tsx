@@ -8,7 +8,6 @@ import {
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
-import { NavProjects } from "@/components/nav-projects"
 import { NavSecondary } from "@/components/nav-secondary"
 import { NavUser } from "@/components/nav-user"
 import {
@@ -20,8 +19,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-
-import { useEffect, useState } from "react"
+import { User } from "next-auth"
 
 const adminData = {
   navMain: [
@@ -31,10 +29,10 @@ const adminData = {
       icon: Shield,
       isActive: true,
       items: [
-        { title: "管理员管理", url: "/usermanagement/admin" },
-        { title: "用户管理", url: "/usermanagement/guest" },
-        { title: "教师管理", url: "/usermanagement/teacher" },
-        { title: "题目管理", url: "/usermanagement/problem" },
+        { title: "管理员管理", url: "/dashboard/usermanagement/admin" },
+        { title: "用户管理", url: "/dashboard/usermanagement/guest" },
+        { title: "教师管理", url: "/dashboard/usermanagement/teacher" },
+        { title: "题目管理", url: "/dashboard/usermanagement/problem" },
       ],
     },
    
@@ -43,38 +41,18 @@ const adminData = {
     { title: "帮助", url: "/", icon: LifeBuoy },
     { title: "反馈", url: siteConfig.url.repo.github, icon: Send },
   ],
-  wrongProblems: [],
 }
 
-async function fetchCurrentUser() {
-  try {
-    const res = await fetch("/api/auth/session");
-    if (!res.ok) return null;
-    const session = await res.json();
-    return {
-      name: session?.user?.name ?? "未登录管理员",
-      email: session?.user?.email ?? "",
-      avatar: session?.user?.image ?? "/avatars/default.jpg",
-    };
-  } catch {
-    return {
-      name: "未登录管理员",
-      email: "",
-      avatar: "/avatars/default.jpg",
-    };
-  }
+interface AdminSidebarProps {
+  user: User;
 }
 
-export function AdminSidebar(props: React.ComponentProps<typeof Sidebar>) {
-  const [user, setUser] = useState({
-    name: "未登录管理员",
-    email: "",
-    avatar: "/avatars/default.jpg",
-  });
-
-  useEffect(() => {
-    fetchCurrentUser().then(u => u && setUser(u));
-  }, []);
+export function AdminSidebar({ user, ...props }: AdminSidebarProps & React.ComponentProps<typeof Sidebar>) {
+  const userInfo = {
+    name: user.name ?? "管理员",
+    email: user.email ?? "",
+    avatar: user.image ?? "/avatars/default.jpg",
+  };
 
   return (
     <Sidebar {...props}>
@@ -97,11 +75,10 @@ export function AdminSidebar(props: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={adminData.navMain} />
-        <NavProjects projects={adminData.wrongProblems} />
         <NavSecondary items={adminData.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={user} />
+        <NavUser user={userInfo} />
       </SidebarFooter>
     </Sidebar>
   )

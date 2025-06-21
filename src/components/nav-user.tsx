@@ -2,13 +2,14 @@
 
 import {
   BadgeCheck,
-  Bell,
+  // Bell,
   ChevronsUpDown,
   UserPen,
   LogOut,
-  Sparkles,
+  // Sparkles,
 } from "lucide-react"
 import { useRouter } from "next/navigation"
+import { signOut } from "next-auth/react"
 
 import {
   Avatar,
@@ -44,13 +45,15 @@ export function NavUser({
   const router = useRouter()
 
   async function handleLogout() {
-    await fetch("/api/auth/signout", { method: "POST" });
-    router.replace("/sign-in");
+    await signOut({ 
+      callbackUrl: "/sign-in",
+      redirect: true 
+    });
   }
 
   function handleAccount() {
     if (user && user.email) {
-      router.replace("/user/profile");
+      router.replace("/dashboard/management");
     } else {
       router.replace("/sign-in");
     }
@@ -95,13 +98,13 @@ export function NavUser({
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuGroup>
+            {/* <DropdownMenuGroup>
               <DropdownMenuItem>
                 <Sparkles />
                 Update 
               </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
+            </DropdownMenuGroup> */}
+            {/* <DropdownMenuSeparator /> */}
             <DropdownMenuGroup>
               <DropdownMenuItem onClick={handleAccount}>
                 <BadgeCheck />
@@ -111,10 +114,10 @@ export function NavUser({
                 <UserPen />
                 Switch User
               </DropdownMenuItem>
-              <DropdownMenuItem >
+              {/* <DropdownMenuItem >
                 <Bell />
                 Notifications
-              </DropdownMenuItem>
+              </DropdownMenuItem> */}
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleLogout}>

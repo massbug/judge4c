@@ -8,11 +8,25 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { Check, X, Info, AlertTriangle } from "lucide-react"
+import { Check, X, Info, AlertTriangle, Copy, Check as CheckIcon } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import Link from "next/link"
 
-export function WrongbookDialog({ problems, children }: { problems: { id: string; name: string; status: string }[]; children?: React.ReactNode }) {
+export function WrongbookDialog({ problems, children }: { problems: { id: string; name: string; status: string; url?: string }[]; children?: React.ReactNode }) {
+  const [copiedId, setCopiedId] = React.useState<string | null>(null)
+
+  const handleCopyLink = async (item: { id: string; url?: string }) => {
+    const link = `${window.location.origin}/problems/${item.id}`
+    try {
+      await navigator.clipboard.writeText(link)
+      setCopiedId(item.id)
+      setTimeout(() => setCopiedId(null), 2000) // 2秒后重置状态
+    } catch (err) {
+      console.error('Failed to copy link:', err)
+    }
+  }
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -29,7 +43,7 @@ export function WrongbookDialog({ problems, children }: { problems: { id: string
             <table className="min-w-full text-sm">
               <thead>
                 <tr className="border-b bg-muted/50">
-                  <th className="px-3 py-2 text-left font-semibold">ID</th>
+                  <th className="px-3 py-2 text-left font-semibold">操作</th>
                   <th className="px-3 py-2 text-left font-semibold">题目名称</th>
                   <th className="px-3 py-2 text-left font-semibold">状态</th>
                 </tr>
@@ -37,9 +51,22 @@ export function WrongbookDialog({ problems, children }: { problems: { id: string
               <tbody>
                 {problems.map((item) => (
                   <tr key={item.id} className="border-b last:border-0 hover:bg-muted/30 transition">
-                    <td className="px-3 py-2 text-gray-500 font-mono">{item.id}</td>
                     <td className="px-3 py-2">
-                      <Link href={`/problem/${item.id}`} className="text-primary underline underline-offset-2 hover:text-primary/80">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleCopyLink(item)}
+                        className="h-8 w-8 p-0"
+                      >
+                        {copiedId === item.id ? (
+                          <CheckIcon className="h-4 w-4 text-green-600" />
+                        ) : (
+                          <Copy className="h-4 w-4" />
+                        )}
+                      </Button>
+                    </td>
+                    <td className="px-3 py-2">
+                      <Link href={item.url || `/problems/${item.id}`} className="text-primary underline underline-offset-2 hover:text-primary/80">
                         {item.name}
                       </Link>
                     </td>

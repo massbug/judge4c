@@ -6,7 +6,7 @@ import {
   LifeBuoy,
   PieChart,
   Send,
-  Settings2,
+  // Settings2,
   SquareTerminal,
 } from "lucide-react"
 
@@ -22,60 +22,52 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import { User } from "next-auth"
 
 const data = {
-  user: {
-    name: "teacher",
-    email: "teacher@example.com",
-    avatar: "/avatars/teacher.jpg",
-  },
   navMain: [
     {
-      title: "教师首页",
-      url: "/teacher/dashboard",
+      title: "教师管理",
+      url: "#",
       icon: SquareTerminal,
       isActive: true,
       items: [
         {
-          title: "学生管理",
-          url: "/teacher/students",
+          title: "用户管理",
+          url: "/dashboard/usermanagement/guest",
         },
         {
           title: "题库管理",
-          url: "/teacher/problems",
+          url: "/dashboard/usermanagement/problem",
         },
       ],
     },
     {
       title: "统计分析",
-      url: "/teacher/statistics",
+      url: "#",
       icon: PieChart,
       items: [
         {
           title: "完成情况",
-          url: "/teacher/statistics/grades",
+          url: "/dashboard/teacher/dashboard",
         },
-        {
-          title: "错题统计",
-          url: "/teacher/statistics/activity",
-        },
+        // {
+        //   title: "错题统计",
+        //   url: "/dashboard/teacher/dashboard",
+        // },
       ],
     },
-    {
-      title: "设置",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "一般设置",
-          url: "/teacher/profile",
-        },
-        {
-          title: "语言",
-          url: "/teacher/settings",
-        },
-      ],
-    },
+    // {
+    //   title: "设置",
+    //   url: "#",
+    //   icon: Settings2,
+    //   items: [
+    //     {
+    //       title: "语言",
+    //       url: "#",
+    //     },
+    //   ],
+    // },
   ],
   navSecondary: [
     {
@@ -91,7 +83,17 @@ const data = {
   ],
 }
 
-export function TeacherSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+interface TeacherSidebarProps {
+  user: User;
+}
+
+export function TeacherSidebar({ user, ...props }: TeacherSidebarProps & React.ComponentProps<typeof Sidebar>) {
+  const userInfo = {
+    name: user.name ?? "",
+    email: user.email ?? "",
+    avatar: user.image ?? "/avatars/teacher.jpg",
+  };
+
   return (
     <Sidebar variant="inset" {...props}>
       <SidebarHeader>
@@ -113,11 +115,10 @@ export function TeacherSidebar({ ...props }: React.ComponentProps<typeof Sidebar
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        {/* 教师端可自定义更多内容 */}
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={userInfo} />
       </SidebarFooter>
     </Sidebar>
   )
