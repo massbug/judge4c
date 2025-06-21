@@ -1,12 +1,10 @@
 import { useTheme } from "next-themes";
-import { DefaultLightThemeConfig, DefaultDarkThemeConfig } from "@/config/monaco-theme";
 
-export function useMonacoTheme() {
+export const useMonacoTheme = () => {
   const { resolvedTheme } = useTheme();
 
-  const currentTheme = resolvedTheme === "light" ? DefaultLightThemeConfig.id : DefaultDarkThemeConfig.id;
+  const theme =
+    resolvedTheme === "light" ? "github-light-default" : "github-dark-default";
 
-  return {
-    currentTheme,
-  };
-}
+  return { theme };
+};

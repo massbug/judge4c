@@ -1,5 +1,4 @@
-import { Banner } from "@/components/banner";
-import { AvatarButton } from "@/components/avatar-button";
+import { ProblemsetHeader } from "@/features/problemset/components/header";
 
 interface ProblemsetLayoutProps {
   children: React.ReactNode;
@@ -7,14 +6,9 @@ interface ProblemsetLayoutProps {
 
 export default function ProblemsetLayout({ children }: ProblemsetLayoutProps) {
   return (
-    <div className="relative h-screen flex flex-col">
-      <Banner />
-      <div className="absolute top-2 right-4">
-        <AvatarButton />
-      </div>
-      <main className="h-full container mx-auto p-4">
-        {children}
-      </main>
+    <div className="h-full flex flex-col">
+      <ProblemsetHeader />
+      {children}
     </div>
   );
 }

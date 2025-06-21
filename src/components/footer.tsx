@@ -20,7 +20,7 @@ const navigation = {
   ],
 };
 
-export function Footer() {
+const Footer = () => {
   return (
     <footer>
       <Container>
@@ -44,4 +44,6 @@ export function Footer() {
       </Container>
     </footer>
   );
-}
+};
+
+export { Footer };
