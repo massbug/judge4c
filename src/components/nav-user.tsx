@@ -1,14 +1,6 @@
 "use client";
 
 import {
-  BadgeCheck,
-  Bell,
-  ChevronsUpDown,
-  CreditCard,
-  LogOut,
-  Sparkles,
-} from "lucide-react";
-import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -23,20 +15,37 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { BadgeCheck, ChevronsUpDown, UserPen, LogOut } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-export interface NavUserProps {
+export function NavUser({
+  user,
+}: {
   user: {
     name: string;
     email: string;
     avatar: string;
   };
-}
-
-export function NavUser({
-  user,
-}: NavUserProps) {
+}) {
   const { isMobile } = useSidebar();
+  const router = useRouter();
+
+  async function handleLogout() {
+    await signOut({
+      callbackUrl: "/sign-in",
+      redirect: true,
+    });
+  }
+
+  function handleAccount() {
+    if (user && user.email) {
+      router.replace("/dashboard/management");
+    } else {
+      router.replace("/sign-in");
+    }
+  }
 
   return (
     <SidebarMenu>
@@ -78,28 +87,17 @@ export function NavUser({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <Sparkles />
-                Upgrade to Pro
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={handleAccount}>
                 <BadgeCheck />
                 Account
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCard />
-                Billing
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Bell />
-                Notifications
+              <DropdownMenuItem onClick={() => router.push("/sign-in")}>
+                <UserPen />
+                Switch User
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={handleLogout}>
               <LogOut />
               Log out
             </DropdownMenuItem>

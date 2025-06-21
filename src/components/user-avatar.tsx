@@ -13,6 +13,7 @@ import { auth, signIn, signOut } from "@/lib/auth";
 import { getTranslations } from "next-intl/server";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SettingsButton } from "@/components/settings-button";
+import { DashboardButton } from "@/components/dashboard-button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const handleLogIn = async () => {
@@ -88,6 +89,7 @@ const UserAvatar = async () => {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
+              <DashboardButton />
               <SettingsButton />
               <DropdownMenuItem onClick={handleLogOut}>
                 <LogOutIcon />

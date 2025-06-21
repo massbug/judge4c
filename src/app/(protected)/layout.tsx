@@ -1,11 +1,15 @@
-import { AdminProtectedLayout } from "@/features/admin/ui/layouts/admin-protected-layout";
+import { ProtectedLayout } from "@/features/dashboard/layouts/protected-layout";
 
 interface LayoutProps {
   children: React.ReactNode;
 }
 
 const Layout = ({ children }: LayoutProps) => {
-  return <AdminProtectedLayout>{children}</AdminProtectedLayout>;
+  return (
+    <ProtectedLayout roles={["ADMIN", "TEACHER", "GUEST"]}>
+      {children}
+    </ProtectedLayout>
+  );
 };
 
 export default Layout;
