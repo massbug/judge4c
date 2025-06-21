@@ -33,8 +33,8 @@ const adminData = {
     },
   ],
   navSecondary: [
-    { title: "帮助", url: "/", icon: LifeBuoy },
-    { title: "反馈", url: siteConfig.url.repo.github, icon: Send },
+    { title: "帮助", url: `${siteConfig.url.repo.github}/issues`, icon: LifeBuoy },
+    { title: "反馈", url: `${siteConfig.url.repo.github}/pulls`, icon: Send },
   ],
 };
 

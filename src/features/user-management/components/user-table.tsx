@@ -251,7 +251,7 @@ export function UserTable(props: UserTableProps) {
                 if (isProblem) {
                   // 如果是problem类型，跳转到编辑路由，使用displayId
                   const problem = item as Problem;
-                  router.push(`/admin/problems/${problem.displayId}/edit`);
+                  router.push(`/dashboard/admin/problems/${problem.id}/edit`);
                 } else {
                   // 如果是用户类型，打开编辑弹窗
                   setEditingUser(item);

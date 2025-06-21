@@ -16,23 +16,27 @@ import { NavMain } from "@/components/nav-main";
 import { NavUser } from "@/components/nav-user";
 import { NavProjects } from "@/components/nav-projects";
 import { NavSecondary } from "@/components/nav-secondary";
-import { Command, LifeBuoy, Send, SquareTerminal } from "lucide-react";
+import { Command, LifeBuoy, Send, Shield } from "lucide-react";
 
 const data = {
   navMain: [
     {
-      title: "页面",
-      url: "#",
-      icon: SquareTerminal,
+      title: "管理面板",
+      url: "/dashboard",
+      icon: Shield,
       isActive: true,
       items: [
         {
-          title: "主页",
+          title: "我的进度",
           url: "/dashboard/student/dashboard",
         },
         {
-          title: "题目集",
+          title: "开始做题",
           url: "/problemset",
+        },
+        {
+          title: "个人设置",
+          url: "/dashboard/management",
         },
       ],
     },
@@ -71,12 +75,12 @@ const data = {
   navSecondary: [
     {
       title: "帮助",
-      url: "/",
+      url: `${siteConfig.url.repo.github}/issues`,
       icon: LifeBuoy,
     },
     {
       title: "反馈",
-      url: siteConfig.url.repo.github,
+      url: `${siteConfig.url.repo.github}/pulls`,
       icon: Send,
     },
   ],

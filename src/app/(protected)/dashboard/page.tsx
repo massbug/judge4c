@@ -8,6 +8,7 @@ import {
   BarChart3,
   Target,
   Activity,
+  GraduationCapIcon,
 } from "lucide-react";
 import Link from "next/link";
 import {
@@ -198,19 +199,24 @@ export default async function DashboardPage() {
           ],
           actions: [
             {
+              label: "管理员管理",
+              href: "/dashboard/management",
+              icon: Target,
+            },
+            {
               label: "用户管理",
               href: "/dashboard/usermanagement/guest",
               icon: Users,
             },
             {
+              label: "教师管理",
+              href: "/dashboard/usermanagement/teacher",
+              icon: GraduationCapIcon,
+            },
+            {
               label: "题目管理",
               href: "/dashboard/usermanagement/problem",
               icon: BookOpen,
-            },
-            {
-              label: "管理员设置",
-              href: "/dashboard/management",
-              icon: Target,
             },
           ],
         };
@@ -240,7 +246,7 @@ export default async function DashboardPage() {
           ],
           actions: [
             {
-              label: "学生管理",
+              label: "用户管理",
               href: "/dashboard/usermanagement/guest",
               icon: Users,
             },
@@ -250,7 +256,7 @@ export default async function DashboardPage() {
               icon: BookOpen,
             },
             {
-              label: "统计分析",
+              label: "完成情况",
               href: "/dashboard/teacher/dashboard",
               icon: BarChart3,
             },
@@ -281,12 +287,12 @@ export default async function DashboardPage() {
             },
           ],
           actions: [
-            { label: "开始做题", href: "/problemset", icon: BookOpen },
             {
               label: "我的进度",
               href: "/dashboard/student/dashboard",
               icon: TrendingUp,
             },
+            { label: "开始做题", href: "/problemset", icon: BookOpen },
             { label: "个人设置", href: "/dashboard/management", icon: Target },
           ],
         };
@@ -361,7 +367,7 @@ export default async function DashboardPage() {
           <CardDescription>常用功能快速访问</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="grid gap-4 md:grid-cols-4">
             {config.actions.map((action, index) => (
               <Link key={index} href={action.href}>
                 <Button variant="outline" className="w-full justify-start">

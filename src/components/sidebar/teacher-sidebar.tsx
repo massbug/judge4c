@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  Command,
-  LifeBuoy,
-  PieChart,
-  Send,
-  SquareTerminal,
-} from "lucide-react";
+import { Command, LifeBuoy, Send, Shield } from "lucide-react";
 import * as React from "react";
 import {
   Sidebar,
@@ -26,9 +20,9 @@ import { NavSecondary } from "@/components/nav-secondary";
 const data = {
   navMain: [
     {
-      title: "教师管理",
-      url: "#",
-      icon: SquareTerminal,
+      title: "管理面板",
+      url: "/dashboard",
+      icon: Shield,
       isActive: true,
       items: [
         {
@@ -36,47 +30,25 @@ const data = {
           url: "/dashboard/usermanagement/guest",
         },
         {
-          title: "题库管理",
+          title: "题目管理",
           url: "/dashboard/usermanagement/problem",
         },
-      ],
-    },
-    {
-      title: "统计分析",
-      url: "#",
-      icon: PieChart,
-      items: [
         {
           title: "完成情况",
           url: "/dashboard/teacher/dashboard",
         },
-        // {
-        //   title: "错题统计",
-        //   url: "/dashboard/teacher/dashboard",
-        // },
       ],
     },
-    // {
-    //   title: "设置",
-    //   url: "#",
-    //   icon: Settings2,
-    //   items: [
-    //     {
-    //       title: "语言",
-    //       url: "#",
-    //     },
-    //   ],
-    // },
   ],
   navSecondary: [
     {
       title: "帮助",
-      url: "/",
+      url: `${siteConfig.url.repo.github}/issues`,
       icon: LifeBuoy,
     },
     {
       title: "反馈",
-      url: siteConfig.url.repo.github,
+      url: `${siteConfig.url.repo.github}/pulls`,
       icon: Send,
     },
   ],

@@ -1,5 +1,4 @@
 import { notFound } from "next/navigation";
-import { ProblemEditLayout } from "@/features/admin/ui/layouts/problem-edit-layout";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -13,7 +12,7 @@ const Layout = async ({ children, params }: LayoutProps) => {
     return notFound();
   }
 
-  return <ProblemEditLayout>{children}</ProblemEditLayout>;
+  return <>{children}</>;
 };
 
 export default Layout;

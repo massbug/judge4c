@@ -25,7 +25,7 @@ export const ProtectedLayout = async ({
   });
 
   if (!user || !roles.includes(user.role)) {
-    redirect("unauthorized");
+    redirect("/unauthorized");
   }
 
   return <>{children}</>;
