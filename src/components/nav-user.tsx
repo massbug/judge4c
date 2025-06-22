@@ -89,17 +89,17 @@ export function NavUser({
             <DropdownMenuGroup>
               <DropdownMenuItem onClick={handleAccount}>
                 <BadgeCheck />
-                Account
+                账号
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => router.push("/sign-in")}>
                 <UserPen />
-                Switch User
+                切换用户
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleLogout}>
               <LogOut />
-              Log out
+              登出
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
