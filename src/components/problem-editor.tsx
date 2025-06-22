@@ -60,7 +60,7 @@ export const ProblemEditor = ({
   ) : (
     <CoreEditor
       language={language}
-      value={optimizedCode}
+      value={value}
       path={path}
       languageServerConfigs={languageServerConfigs}
       onEditorReady={setEditor}
