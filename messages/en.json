@@ -157,6 +157,14 @@
     }
   },
   "WorkspaceEditorHeader": {
+    "ViewToggleButton": {
+      "ShowCodeView": "Show code view",
+      "ShowDiffView": "Show diff view"
+    },
+    "OptimizeButton":{
+      "TooltipContent": "Optimize Code",
+      "Error": "Error occurred while optimizing code, please try again later."
+    },
     "LspStatusButton": {
       "TooltipContent": "Language Server"
     },

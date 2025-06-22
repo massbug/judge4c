@@ -66,7 +66,9 @@ export const analyzeComplexity = async (
   return validationResult.data;
 };
 
-export const getAnalysis = async (submissionId: string):Promise<CodeAnalysis> => {
+export const getAnalysis = async (
+  submissionId: string
+): Promise<CodeAnalysis> => {
   const session = await auth();
 
   if (!session?.user?.id) {
@@ -84,4 +86,33 @@ export const getAnalysis = async (submissionId: string):Promise<CodeAnalysis> =>
   }
 
   return analysis;
+};
+
+export const optimizeCode = async (content: string): Promise<string> => {
+  const model = openai("gpt-4o-mini");
+
+  const prompt = `
+  Optimize the following code snippet for better performance, readability, and maintainability.
+  Provide ONLY the improved code without any explanations, comments, or additional text.
+  
+  Code to optimize:
+  \`\`\`
+  ${content}
+  \`\`\`
+
+  Respond ONLY with the optimized code. Do not include any other text or markdown formatting like \`\`\`.
+  `;
+
+  const messages: CoreMessage[] = [{ role: "user", content: prompt }];
+
+  try {
+    const response = await generateText({
+      model: model,
+      messages: messages,
+    });
+    return response.text.trim();
+  } catch (error) {
+    console.error("Error optimizing code:", error);
+    throw new Error("Failed to optimize code");
+  }
 };

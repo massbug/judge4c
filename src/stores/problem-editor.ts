@@ -12,28 +12,26 @@ type ProblemEditorState = {
   problem: Problem | null;
   language: Language;
   value: string;
+  optimizedCode: string;
   path: string;
   editor: editor.IStandaloneCodeEditor | null;
+  diffEditor: editor.IStandaloneDiffEditor | null;
   lspWebSocket: WebSocket | null;
   markers: editor.IMarker[];
-  useAIEditor: boolean;
-  loading: boolean;
-  AIgenerate: boolean;
-  LastOptimizedCode: string;
+  showDiffView: boolean;
 };
 
 type ProblemEditorAction = {
   setProblem: (problemId: string, templates: Template[]) => void;
   setLanguage: (language: Language) => void;
   setValue: (value: string) => void;
+  setOptimizedCode: (value: string) => void;
   setPath: (path: string) => void;
   setEditor: (editor: editor.IStandaloneCodeEditor) => void;
+  setDiffEditor: (diffEditor: editor.IStandaloneDiffEditor) => void;
   setLspWebSocket: (lspWebSocket: WebSocket) => void;
   setMarkers: (markers: editor.IMarker[]) => void;
-  setUseAIEditor: (flag: boolean) => void;
-  setLoading: (flag: boolean) => void;
-  setAIgenerate: (flag: boolean) => void;
-  setLastOptimizedCode: (code: string) => void;
+  toggleView: () => void;
 };
 
 type ProblemEditorStore = ProblemEditorState & ProblemEditorAction;
@@ -42,18 +40,13 @@ export const useProblemEditorStore = create<ProblemEditorStore>((set, get) => ({
   problem: null,
   language: Language.c,
   value: "",
+  optimizedCode: "",
   path: "",
   editor: null,
+  diffEditor: null,
   lspWebSocket: null,
   markers: [],
-  useAIEditor: false,
-  loading: false,
-  AIgenerate: false,
-  LastOptimizedCode: "",
-  setLastOptimizedCode: (code) => set({ LastOptimizedCode: code }),
-  setAIgenerate: (flag) => set({ AIgenerate: flag }),
-  setLoading: (loading) => set({ loading }),
-  setUseAIEditor: (loading) => set({ useAIEditor: loading }),
+  showDiffView: false,
   setProblem: (problemId, templates) => {
     const language = getLanguage(problemId);
     const value = getValue(problemId, language, templates);
@@ -80,10 +73,13 @@ export const useProblemEditorStore = create<ProblemEditorStore>((set, get) => ({
     }
     set({ value });
   },
+  setOptimizedCode: (optimizedCode) => set({ optimizedCode }),
   setPath: (path) => set({ path }),
   setEditor: (editor) => set({ editor }),
+  setDiffEditor: (diffEditor) => set({ diffEditor }),
   setLspWebSocket: (lspWebSocket) => set({ lspWebSocket }),
   setMarkers: (markers) => set({ markers }),
+  toggleView: () => set((state) => ({ showDiffView: !state.showDiffView })),
 }));
 
 const getStoredItem = <T extends string>(
