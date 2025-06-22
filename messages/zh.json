@@ -157,6 +157,14 @@
     }
   },
   "WorkspaceEditorHeader": {
+    "ViewToggleButton": {
+      "ShowCodeView": "查看源代码",
+      "ShowDiffView": "查看优化代码"
+    },
+    "OptimizeButton":{
+      "TooltipContent": "优化代码",
+      "Error": "优化代码时出错，请稍后重试。"
+    },
     "LspStatusButton": {
       "TooltipContent": "语言服务"
     },

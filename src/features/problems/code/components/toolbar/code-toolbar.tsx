@@ -1,3 +1,5 @@
+"use client";
+
 import { cn } from "@/lib/utils";
 import {
   CopyButton,
@@ -7,16 +9,19 @@ import {
   ResetButton,
   UndoButton,
 } from "@/features/problems/code/components/toolbar";
-import { AnalyzeButton } from "./actions/analyze-button";
-import { LspConnectionIndicator } from "./controls/lsp-connection-indicator";
-import { AIDisplayButton } from "@/features/problems/code/components/toolbar/actions/AIDisplayButton";
-import { AIOptimizeButton } from "@/features/problems/code/components/toolbar/actions/AIOptimizeButton";
+import { useProblemEditorStore } from "@/stores/problem-editor";
+import { AnalyzeButton } from "@/features/problems/code/components/toolbar/actions/analyze-button";
+import { OptimizeButton } from "@/features/problems/code/components/toolbar/actions/optimize-button";
+import { ViewToggleButton } from "@/features/problems/code/components/toolbar/actions/view-toggle-button";
+import { LspConnectionIndicator } from "@/features/problems/code/components/toolbar/controls/lsp-connection-indicator";
 
 interface CodeToolbarProps {
   className?: string;
 }
 
-export const CodeToolbar = async ({ className }: CodeToolbarProps) => {
+export const CodeToolbar = ({ className }: CodeToolbarProps) => {
+  const { optimizedCode } = useProblemEditorStore();
+
   return (
     <header
       className={cn("relative flex h-8 flex-none items-center", className)}
@@ -27,8 +32,8 @@ export const CodeToolbar = async ({ className }: CodeToolbarProps) => {
           <LspConnectionIndicator />
         </div>
         <div className="flex items-center gap-2">
-          <AIOptimizeButton />
-          <AIDisplayButton />
+          {optimizedCode && <ViewToggleButton />}
+          <OptimizeButton />
           <AnalyzeButton />
           <ResetButton />
           <UndoButton />
