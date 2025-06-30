@@ -55,25 +55,25 @@ We maintain the following controls and hygiene measures:
 - Docker-based sandboxing for isolated C-program execution; resource-limited.
 - Recommend TLS (HTTPS) for all network access and secure authentication tokens.
 - Strict access controls: only administrators and teachers can perform sensitive operations.
-- Dependabot and/or CodeQL for dependency & code scanning :contentReference[oaicite:1]{index=1}.
-- GitHub branch protections on both `main` and `develop`, including required reviews, status checks, and no force-push. :contentReference[oaicite:2]{index=2}
-- Secret scanning enabled to prevent API key leakage. :contentReference[oaicite:3]{index=3}
+- Dependabot and/or CodeQL for dependency & code scanning.
+- GitHub branch protections on both `main` and `develop`, including required reviews, status checks, and no force-push.
+- Secret scanning enabled to prevent API key leakage.
 
 ---
 
 ## 👨‍💻 Secure Development Tips
 
-- Avoid committing secrets: use environment variables and secret management tools. :contentReference[oaicite:4]{index=4}
-- Regular dependency updates—automated monthly scans are recommended. :contentReference[oaicite:5]{index=5}
-- Enforce 2FA for all contributors to reduce unauthorized access risks. :contentReference[oaicite:6]{index=6}
+- Avoid committing secrets: use environment variables and secret management tools.
+- Regular dependency updates—automated monthly scans are recommended.
+- Enforce 2FA for all contributors to reduce unauthorized access risks.
 
 ---
 
 ## 📚 References & Resources
 
-- GitHub best practices for security policies :contentReference[oaicite:7]{index=7}
-- OWASP Vulnerability Disclosure guidelines :contentReference[oaicite:8]{index=8}
-- Coordinated Vulnerability Disclosure in open-source :contentReference[oaicite:9]{index=9}
+- GitHub best practices for security policies
+- OWASP Vulnerability Disclosure guidelines
+- Coordinated Vulnerability Disclosure in open-source
 
 ---
 
