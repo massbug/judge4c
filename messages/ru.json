@@ -1,0 +1,218 @@
+{
+  "AppearanceSettings": {
+    "title": "Выберите тему",
+    "items": {
+      "System": "Система",
+      "Light": "Светлая",
+      "Dark": "Темная"
+    }
+  },
+  "AvatarButton": {
+    "Settings": "Настройки",
+    "LogIn": "Войти",
+    "LogOut": "Выйти"
+  },
+  "Banner": {
+    "Text": "Поставьте звезду этому проекту, если он вам нравится."
+  },
+  "BackButton": "Назад",
+  "Bot": {
+    "title": "Спросить бота",
+    "description": "Работает на Vercel Ai SDK",
+    "placeholder": "Бот автоматически получит ваш текущий код"
+  },
+  "BotVisibilityToggle": {
+    "open": "Открыть бота",
+    "close": "Закрыть бота"
+  },
+  "CredentialsSignInForm": {
+    "email": "Электронная почта",
+    "password": "Пароль",
+    "signIn": "Войти",
+    "signingIn": "Вход...",
+    "signInSuccess": "Успешный вход",
+    "signInFailed": "Ошибка входа",
+    "showPassword": "Показать пароль",
+    "hidePassword": "Скрыть пароль"
+  },
+  "CredentialsSignUpForm": {
+    "email": "Электронная почта",
+    "password": "Пароль",
+    "signUp": "Зарегистрироваться",
+    "creatingAccount": "Создание аккаунта...",
+    "signUpSuccess": "Аккаунт создан",
+    "signUpSuccessDescription": "Теперь вы можете войти с вашими учетными данными",
+    "signUpFailed": "Ошибка регистрации",
+    "showPassword": "Показать пароль",
+    "hidePassword": "Скрыть пароль"
+  },
+  "DetailsPage": {
+    "BackButton": "Все отправления",
+    "Time": "Отправлено",
+    "Input": "Входные данные",
+    "ExpectedOutput": "Ожидаемый результат",
+    "ActualOutput": "Фактический результат",
+    "Code": "Код"
+  },
+  "Difficulty": {
+    "EASY": "ЛЕГКО",
+    "MEDIUM": "СРЕДНЕ",
+    "HARD": "СЛОЖНО"
+  },
+  "GithubSignInForm": "Продолжить с GitHub",
+  "LanguageSettings": {
+    "en": {
+      "flag": "🇺🇸",
+      "name": "Английский"
+    },
+    "zh": {
+      "flag": "🇨🇳",
+      "name": "Китайский"
+    }
+  },
+  "PlaygroundHeader": {
+    "RunCodeButton": {
+      "TooltipTrigger": {
+        "loading": "Выполняется...",
+        "ready": "Запустить"
+      },
+      "TooltipContent": "Запустить код"
+    }
+  },
+  "ProblemPage": {
+    "Description": "Описание",
+    "Solutions": "Решения",
+    "Submissions": "Отправления",
+    "Details": "Подробности",
+    "Code": "Код",
+    "Testcase": "Тестовый случай",
+    "Bot": "Бот"
+  },
+  "ProblemsetPage": {
+    "Status": "Статус",
+    "Title": "Название",
+    "Difficulty": "Сложность"
+  },
+  "SettingsDialog": {
+    "title": "Настройки",
+    "description": "Настройте свои параметры здесь.",
+    "breadcrumb": "Настройки",
+    "nav": {
+      "Appearance": "Внешний вид",
+      "Language": "Язык",
+      "CodeEditor": "Редактор кода",
+      "Advanced": "Дополнительно"
+    }
+  },
+  "SignInForm": {
+    "title": "Войдите в свой аккаунт",
+    "description": "Введите вашу электронную почту ниже, чтобы войти в свой аккаунт",
+    "or": "Или",
+    "noAccount": "У вас нет аккаунта?",
+    "signUp": "Зарегистрироваться"
+  },
+  "signInWithCredentials": {
+    "userNotFound": "Пользователь не найден.",
+    "invalidCredentials": "Неверные учетные данные.",
+    "incorrectPassword": "Неверный пароль.",
+    "signInFailedFallback": "Не удалось войти. Пожалуйста, попробуйте снова."
+  },
+  "signUpWithCredentials": {
+    "userAlreadyExists": "Пользователь уже существует.",
+    "registrationFailedFallback": "Регистрация не удалась. Пожалуйста, попробуйте снова."
+  },
+  "SignUpForm": {
+    "title": "Зарегистрируйтесь в аккаунте",
+    "description": "Введите вашу электронную почту ниже, чтобы зарегистрироваться в аккаунте",
+    "or": "Или",
+    "haveAccount": "Уже есть аккаунт?",
+    "signIn": "Войти"
+  },
+  "StatusMessage": {
+    "PD": "В ожидании",
+    "QD": "В очереди",
+    "CP": "Компилируется",
+    "CE": "Ошибка компиляции",
+    "CS": "Успешная компиляция",
+    "RU": "Выполняется",
+    "TLE": "Превышен лимит времени",
+    "MLE": "Превышен лимит памяти",
+    "RE": "Ошибка выполнения",
+    "AC": "Принято",
+    "WA": "Неверный ответ",
+    "SE": "Системная ошибка"
+  },
+  "SubmissionsTable": {
+    "Index": "Индекс",
+    "Status": "Статус",
+    "Language": "Язык",
+    "Time": "Время",
+    "Memory": "Память"
+  },
+  "WorkspaceEditorHeader": {
+    "LspStatusButton": {
+      "TooltipContent": "Служба языка"
+    },
+    "ResetButton": {
+      "TooltipContent": "Сбросить код"
+    },
+    "UndoButton": {
+      "TooltipContent": "Отменить"
+    },
+    "RedoButton": {
+      "TooltipContent": "Повторить"
+    },
+    "FormatButton": {
+      "TooltipContent": "Форматировать"
+    },
+    "CopyButton": {
+      "TooltipContent": "Копировать"
+    }
+  },
+  "WorkspaceEditorFooter": {
+    "Row": "Строка",
+    "Column": "Столбец"
+  },
+  "HomePage": {
+    "MainView": {
+      "title": "Judge4c",
+      "description": "Все в одном месте для поддержки обучения и преподавания программирования:",
+      "features": {
+        "feature1": "Интегрированные языковые службы с автодополнением и диагностикой",
+        "feature2": "Поддержка множества языков + обратная связь в реальном времени для ускоренного обучения",
+        "feature3": "Первая в мире открытая реализация Next.js + Monaco LSP"
+      },
+      "quickStart": "Быстрый старт",
+      "contactUs": "Свяжитесь с нами"
+    },
+    "PrimaryFeatures": {
+      "title": "Функции",
+      "MobileFriendlyCard": {
+        "title": "Подходит для мобильных устройств",
+        "description": "Адаптивный дизайн с TailwindCSS, автоматически подстраивается под разные устройства (адаптация интерфейса викторин еще в разработке)"
+      },
+      "DockerCard": {
+        "title": "Готов к использованию",
+        "description": "Предварительно собранные образы Docker для быстрого развертывания, экономия времени на настройке"
+      },
+      "LSPCard": {
+        "title": "Скажи прощай примитивным редакторам",
+        "description": "Интегрировано с обнаружением в реальном времени, автодополнением и подсказками типов"
+      }
+    },
+    "FAQs": {
+      "title": "Часто задаваемые вопросы",
+      "description": "Не нашли ответ? Свяжитесь с нами!",
+      "questions": {
+        "question1": "Какой редактор кода используется?",
+        "answer1": "Создано с использованием редактора Monaco от Microsoft",
+        "question2": "Какие языки программирования поддерживаются?",
+        "answer2": "Полная поддержка C/C++ (с интеграцией LSP), подсветка синтаксиса для других языков",
+        "question3": "Как работают настройки темы и языка?",
+        "answer3": "Темы переключаются автоматически (с учетом системы) или могут быть установлены вручную; язык по умолчанию зависит от предпочтений браузера с возможностью ручной настройки",
+        "question4": "Какие решения для стилизации используются для редактора и документации?",
+        "answer4": "Редактор использует темы @shikijs/monaco, документация отображается с github-markdown-css"
+      }
+    }
+  }
+}
