@@ -1,13 +1,29 @@
 import "server-only";
 
-import { createOpenAI } from "@ai-sdk/openai";
-import { createDeepSeek } from "@ai-sdk/deepseek";
+import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
 
-export const deepseek = createDeepSeek({
-  apiKey: process.env.DEEPSEEK_API_KEY ?? "",
+const getRequiredEnv = (
+  name: "AI_API_KEY" | "AI_BASE_URL" | "AI_MODEL",
+): string => {
+  const value = process.env[name];
+
+  if (!value) {
+    throw new Error(`Missing required environment variable: ${name}`);
+  }
+
+  return value;
+};
+
+const apiKey = getRequiredEnv("AI_API_KEY");
+
+const baseURL = getRequiredEnv("AI_BASE_URL");
+
+export const modelId = getRequiredEnv("AI_MODEL");
+
+export const aiProvider = createOpenAICompatible({
+  name: "ai",
+  apiKey,
+  baseURL,
 });
 
-export const openai = createOpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-  baseURL: process.env.OPENAI_BASE_URL,
-});
+export const model = aiProvider(modelId);

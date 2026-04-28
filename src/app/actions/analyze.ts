@@ -6,7 +6,7 @@ import {
   Complexity,
 } from "@/types/complexity";
 import prisma from "@/lib/prisma";
-import { openai } from "@/lib/ai";
+import { model } from "@/lib/ai";
 import { auth } from "@/lib/auth";
 import { CoreMessage, generateText } from "ai";
 import { CodeAnalysis } from "@/generated/client";
@@ -14,8 +14,6 @@ import { CodeAnalysis } from "@/generated/client";
 export const analyzeComplexity = async (
   content: string
 ): Promise<AnalyzeComplexityResponse> => {
-  const model = openai("gpt-4o-mini");
-
   const prompt = `
   Analyze the time and space complexity of the following programming code snippet.
   Determine the Big O notation from this list: ${Complexity.options.join(", ")}.
@@ -89,8 +87,6 @@ export const getAnalysis = async (
 };
 
 export const optimizeCode = async (content: string): Promise<string> => {
-  const model = openai("gpt-4o-mini");
-
   const prompt = `
   Optimize the following code snippet for better performance, readability, and maintainability.
   Provide ONLY the improved code without any explanations, comments, or additional text.

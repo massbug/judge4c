@@ -1,5 +1,5 @@
 import { streamText } from "ai";
-import { deepseek } from "@/lib/ai";
+import { model } from "@/lib/ai";
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
@@ -20,7 +20,7 @@ For the best response, please take your time to carefully consider my questions,
 ** Reply in the user's language ! **`;
 
   const result = streamText({
-    model: deepseek("deepseek-chat"),
+    model,
     system: system,
     messages: messages,
   });

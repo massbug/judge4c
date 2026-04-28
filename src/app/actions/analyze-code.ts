@@ -3,7 +3,7 @@ import "server-only";
 import { z } from "zod";
 import prisma from "@/lib/prisma";
 import { generateText, tool } from "ai";
-import { deepseek } from "@ai-sdk/deepseek";
+import { model } from "@/lib/ai";
 import { Complexity } from "@/types/complexity";
 
 interface analyzeCodeProps {
@@ -30,7 +30,7 @@ export const analyzeCode = async ({
     });
 
     await generateText({
-      model: deepseek("deepseek-chat"),
+      model,
       system: `You are an AI assistant that rigorously analyzes code for time and space complexity, and assesses overall code quality.
 
 **Time/Space Complexity MUST be one of these values:**

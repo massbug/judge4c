@@ -6,7 +6,7 @@ import {
   OptimizeCodeOutputSchema,
 } from "@/types/ai-improve";
 import prisma from "@/lib/prisma";
-import { deepseek } from "@/lib/ai";
+import { model } from "@/lib/ai";
 import { CoreMessage, generateText } from "ai";
 
 /**
@@ -17,8 +17,6 @@ import { CoreMessage, generateText } from "ai";
 export const optimizeCode = async (
   input: OptimizeCodeInput
 ): Promise<OptimizeCodeOutput> => {
-  const model = deepseek("deepseek-chat");
-
   // 获取题目详情（如果提供了problemId）
   let problemDetails = "";
   let templateDetails = "";
@@ -134,7 +132,7 @@ Format:
 `;
   console.log("Prompt:", prompt);
 
-  // 发送请求给OpenAI
+  // 发送请求给 AI provider
   const messages: CoreMessage[] = [{ role: "user", content: prompt }];
   let text;
   try {
@@ -144,8 +142,8 @@ Format:
     });
     text = response.text;
   } catch (error) {
-    console.error("Error generating text with OpenAI:", error);
-    throw new Error("Failed to generate response from OpenAI");
+    console.error("Error generating text with AI provider:", error);
+    throw new Error("Failed to generate response from AI provider");
   }
 
   // 解析LLM响应

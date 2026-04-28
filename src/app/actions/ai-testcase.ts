@@ -6,7 +6,7 @@ import {
   AITestCaseOutputSchema,
 } from "@/types/ai-testcase";
 
-import { deepseek } from "@/lib/ai";
+import { model } from "@/lib/ai";
 import { CoreMessage, generateText } from "ai";
 import prisma from "@/lib/prisma";
 
@@ -18,8 +18,6 @@ import prisma from "@/lib/prisma";
 export const generateAITestcase = async (
   input: AITestCaseInput
 ): Promise<AITestCaseOutput> => {
-  const model = deepseek("deepseek-chat");
-
   let problemDetails = "";
 
   if (input.problemId) {
@@ -119,7 +117,7 @@ Respond **ONLY** with this JSON structure.
 
 `;
 
-  // 发送请求给OpenAI
+  // 发送请求给 AI provider
   const messages: CoreMessage[] = [{ role: "user", content: prompt }];
   let text;
   try {
@@ -129,8 +127,8 @@ Respond **ONLY** with this JSON structure.
     });
     text = response.text;
   } catch (error) {
-    console.error("Error generating text with OpenAI:", error);
-    throw new Error("Failed to generate response from OpenAI");
+    console.error("Error generating text with AI provider:", error);
+    throw new Error("Failed to generate response from AI provider");
   }
 
   // 解析LLM响应

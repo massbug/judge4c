@@ -123,11 +123,12 @@ bun install
      AUTH_URL="http://localhost:3000"  # Replace with your production URL if deployed
      ```
    
-   - **OpenAI API Configuration** (Optional):
-     If you use OpenAI-based features, provide your API key and custom endpoint (if applicable):
+  - **AI Provider Configuration**:
+    If you use AI features, provide your API key, model, and custom endpoint:
      ```sh
-     OPENAI_API_KEY="your_openai_api_key"              # Required for AI features
-     OPENAI_BASE_URL="your_openai_base_url_if_custom"  # Optional, for self-hosted proxies
+    AI_API_KEY="your_ai_api_key"                # Required for AI features
+    AI_BASE_URL="your_ai_base_url_if_custom"    # Required, for OpenAI-compatible endpoints
+    AI_MODEL="your_ai_model_id"                 # Required
      ```
 
    - **Docker Remote Access Configuration** (Optional):
