@@ -260,6 +260,11 @@ export default async function DashboardPage() {
               href: "/dashboard/teacher/dashboard",
               icon: BarChart3,
             },
+            {
+              label: "课程管理",
+              href: "/dashboard/teacher/courses",
+              icon: BookOpen,
+            },
           ],
         };
       default:
@@ -291,6 +296,11 @@ export default async function DashboardPage() {
               label: "我的进度",
               href: "/dashboard/student/dashboard",
               icon: TrendingUp,
+            },
+            {
+              label: "我的课程",
+              href: "/dashboard/student/courses",
+              icon: GraduationCapIcon,
             },
             { label: "开始做题", href: "/problemset", icon: BookOpen },
             { label: "个人设置", href: "/dashboard/management", icon: Target },

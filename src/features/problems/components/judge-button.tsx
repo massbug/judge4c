@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Actions } from "flexlayout-react";
 import { judge } from "@/app/actions/judge";
 import { useTranslations } from "next-intl";
+import { useSearchParams } from "next/navigation";
 import { LoaderCircleIcon, PlayIcon } from "lucide-react";
 import { TooltipButton } from "@/components/tooltip-button";
 import { useProblemEditorStore } from "@/stores/problem-editor";
@@ -19,6 +20,7 @@ interface JudgeButtonProps {
 export const JudgeButton = ({ className }: JudgeButtonProps) => {
   const { model } = useProblemFlexLayoutStore();
   const { problem, language, value } = useProblemEditorStore();
+  const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const t = useTranslations("PlaygroundHeader.RunCodeButton");
 
@@ -26,7 +28,8 @@ export const JudgeButton = ({ className }: JudgeButtonProps) => {
     if (!problem?.problemId) return;
     setIsLoading(true);
 
-    const status = await judge(problem.problemId, language, value);
+    const assignmentId = searchParams.get("assignmentId") || undefined;
+    const status = await judge(problem.problemId, language, value, assignmentId);
     toast.custom((t) => <JudgeToast t={t} status={status} />);
 
     if (model) {

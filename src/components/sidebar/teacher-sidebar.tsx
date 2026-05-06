@@ -37,6 +37,10 @@ const data = {
           title: "完成情况",
           url: "/dashboard/teacher/dashboard",
         },
+        {
+          title: "课程管理",
+          url: "/dashboard/teacher/courses",
+        },
       ],
     },
   ],

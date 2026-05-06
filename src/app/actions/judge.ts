@@ -13,7 +13,8 @@ import { createContainer, createTarStream, prepareEnvironment } from "./docker";
 export const judge = async (
   problemId: string,
   language: Language,
-  content: string
+  content: string,
+  assignmentId?: string
 ): Promise<Status> => {
   const session = await auth();
   const userId = session?.user?.id;
@@ -25,6 +26,102 @@ export const judge = async (
   let container: Docker.Container | null = null;
 
   try {
+    const actor = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { id: true, role: true },
+    });
+
+    if (!actor) {
+      return Status.SE;
+    }
+
+    const createSystemErrorSubmission = async (
+      message: string,
+      options?: { assignmentId?: string | null }
+    ) => {
+      await prisma.submission.create({
+        data: {
+          language,
+          content,
+          status: Status.SE,
+          message,
+          userId,
+          problemId,
+          assignmentId: options?.assignmentId ?? null,
+        },
+      });
+    };
+
+    let validatedAssignmentId: string | undefined;
+    if (assignmentId) {
+      const assignment = await prisma.assignment.findUnique({
+        where: { id: assignmentId },
+        select: {
+          id: true,
+          published: true,
+          course: {
+            select: {
+              archived: true,
+              teacherId: true,
+              enrollments: {
+                where: { userId },
+                select: { userId: true },
+              },
+            },
+          },
+          problems: {
+            where: { problemId },
+            select: { problemId: true },
+          },
+        },
+      });
+
+      if (!assignment) {
+        await createSystemErrorSubmission("Assignment not found");
+        return Status.SE;
+      }
+
+      const isTeacherOwner = assignment.course.teacherId === userId;
+      const isStudentEnrolled = assignment.course.enrollments.length > 0;
+      const canAccessAssignment =
+        actor.role === "ADMIN" ||
+        (actor.role === "TEACHER" && isTeacherOwner) ||
+        (actor.role === "GUEST" && isStudentEnrolled);
+
+      if (!canAccessAssignment) {
+        await createSystemErrorSubmission("No permission for assignment", {
+          assignmentId: assignment.id,
+        });
+        return Status.SE;
+      }
+
+      if (assignment.course.archived) {
+        await createSystemErrorSubmission("Course is archived", {
+          assignmentId: assignment.id,
+        });
+        return Status.SE;
+      }
+
+      if (!assignment.published && actor.role === "GUEST") {
+        await createSystemErrorSubmission("Assignment is not published", {
+          assignmentId: assignment.id,
+        });
+        return Status.SE;
+      }
+
+      if (assignment.problems.length === 0) {
+        await createSystemErrorSubmission(
+          "Problem does not belong to assignment",
+          {
+            assignmentId: assignment.id,
+          }
+        );
+        return Status.SE;
+      }
+
+      validatedAssignmentId = assignment.id;
+    }
+
     const problem = await prisma.problem.findUnique({
       where: {
         id: problemId,
@@ -32,15 +129,8 @@ export const judge = async (
     });
 
     if (!problem) {
-      await prisma.submission.create({
-        data: {
-          language,
-          content,
-          status: Status.SE,
-          message: "Problem not found",
-          userId,
-          problemId,
-        },
+      await createSystemErrorSubmission("Problem not found", {
+        assignmentId: validatedAssignmentId,
       });
       return Status.SE;
     }
@@ -52,16 +142,10 @@ export const judge = async (
     });
 
     if (!testcases.length) {
-      await prisma.submission.create({
-        data: {
-          language,
-          content,
-          status: Status.SE,
-          message: "No testcases available for this problem",
-          userId,
-          problemId,
-        },
-      });
+      await createSystemErrorSubmission(
+        "No testcases available for this problem",
+        { assignmentId: validatedAssignmentId }
+      );
       return Status.SE;
     }
 
@@ -72,16 +156,10 @@ export const judge = async (
     });
 
     if (!dockerConfig) {
-      await prisma.submission.create({
-        data: {
-          language,
-          content,
-          status: Status.SE,
-          message: `Docker configuration not found for language: ${language}`,
-          userId,
-          problemId,
-        },
-      });
+      await createSystemErrorSubmission(
+        `Docker configuration not found for language: ${language}`,
+        { assignmentId: validatedAssignmentId }
+      );
       return Status.SE;
     }
 
@@ -105,6 +183,7 @@ export const judge = async (
           message: `Docker image not found: ${dockerConfig.image}:${dockerConfig.tag}`,
           userId,
           problemId,
+          assignmentId: validatedAssignmentId,
         },
       });
       return Status.SE;
@@ -117,6 +196,7 @@ export const judge = async (
         status: Status.PD,
         userId,
         problemId,
+        assignmentId: validatedAssignmentId,
       },
     });
 

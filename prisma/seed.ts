@@ -1731,6 +1731,125 @@ export async function main() {
       data: problem,
     });
   }
+
+  // Seed demo users for course/assignment MVP
+  const teacher = await prisma.user.upsert({
+    where: { email: "teacher@judge4c.local" },
+    update: {
+      name: "课程教师",
+      role: "TEACHER",
+    },
+    create: {
+      name: "课程教师",
+      email: "teacher@judge4c.local",
+      role: "TEACHER",
+    },
+  });
+
+  const students = await Promise.all(
+    ["student1@judge4c.local", "student2@judge4c.local"].map((email, index) =>
+      prisma.user.upsert({
+        where: { email },
+        update: {
+          name: `学生${index + 1}`,
+          role: "GUEST",
+        },
+        create: {
+          name: `学生${index + 1}`,
+          email,
+          role: "GUEST",
+        },
+      })
+    )
+  );
+
+  const selectedProblems = await prisma.problem.findMany({
+    orderBy: { displayId: "asc" },
+    take: 2,
+    select: { id: true },
+  });
+
+  if (selectedProblems.length > 0) {
+    let course = await prisma.course.findFirst({
+      where: {
+        title: "程序设计基础",
+        teacherId: teacher.id,
+      },
+    });
+
+    if (!course) {
+      course = await prisma.course.create({
+        data: {
+          title: "程序设计基础",
+          description: "课程作业 MVP 示例课程",
+          teacherId: teacher.id,
+        },
+      });
+    }
+
+    for (const student of students) {
+      await prisma.courseEnrollment.upsert({
+        where: {
+          courseId_userId: {
+            courseId: course.id,
+            userId: student.id,
+          },
+        },
+        update: {},
+        create: {
+          courseId: course.id,
+          userId: student.id,
+          role: "STUDENT",
+        },
+      });
+    }
+
+    const dueAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+    let assignment = await prisma.assignment.findFirst({
+      where: {
+        courseId: course.id,
+        title: "第一次编程作业",
+      },
+      select: { id: true },
+    });
+
+    if (!assignment) {
+      assignment = await prisma.assignment.create({
+        data: {
+          courseId: course.id,
+          title: "第一次编程作业",
+          description: "完成基础题目，熟悉在线评测流程",
+          dueAt,
+          published: true,
+          createdById: teacher.id,
+        },
+        select: { id: true },
+      });
+    } else {
+      await prisma.assignment.update({
+        where: { id: assignment.id },
+        data: {
+          dueAt,
+          published: true,
+          description: "完成基础题目，熟悉在线评测流程",
+        },
+      });
+    }
+
+    await prisma.assignmentProblem.deleteMany({
+      where: { assignmentId: assignment.id },
+    });
+
+    await prisma.assignmentProblem.createMany({
+      data: selectedProblems.map((problem, index) => ({
+        assignmentId: assignment.id,
+        problemId: problem.id,
+        maxPoints: 100,
+        order: index + 1,
+      })),
+      skipDuplicates: true,
+    });
+  }
 }
 
 main();

@@ -3,6 +3,7 @@
 import prisma from "@/lib/prisma";
 import { getLocale } from "next-intl/server";
 import { Locale, Status, ProblemLocalization } from "@/generated/client";
+import { assertTeacherOrAdmin, getAuthenticatedActor } from "./course-auth";
 
 const getLocalizedTitle = (
   localizations: ProblemLocalization[],
@@ -41,6 +42,9 @@ export interface DifficultProblemData {
 export async function getProblemCompletionData(): Promise<
   ProblemCompletionData[]
 > {
+  const actor = await getAuthenticatedActor();
+  assertTeacherOrAdmin(actor);
+
   // 获取所有提交记录，按题目分组统计
   const submissions = await prisma.submission.findMany({
     include: {
@@ -124,6 +128,9 @@ export async function getProblemCompletionData(): Promise<
 export async function getDifficultProblemsData(): Promise<
   DifficultProblemData[]
 > {
+  const actor = await getAuthenticatedActor();
+  assertTeacherOrAdmin(actor);
+
   // 获取所有测试用例结果
   const testcaseResults = await prisma.testcaseResult.findMany({
     include: {
@@ -207,6 +214,9 @@ export async function getDifficultProblemsData(): Promise<
 }
 
 export async function getDashboardStats() {
+  const actor = await getAuthenticatedActor();
+  assertTeacherOrAdmin(actor);
+
   const [problemData, difficultProblems] = await Promise.all([
     getProblemCompletionData(),
     getDifficultProblemsData(),

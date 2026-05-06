@@ -35,6 +35,10 @@ const data = {
           url: "/problemset",
         },
         {
+          title: "我的课程",
+          url: "/dashboard/student/courses",
+        },
+        {
           title: "个人设置",
           url: "/dashboard/management",
         },

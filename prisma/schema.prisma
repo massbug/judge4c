@@ -56,6 +56,10 @@ enum ProblemContentType {
   SOLUTION
 }
 
+enum CourseEnrollmentRole {
+  STUDENT
+}
+
 model User {
   id            String    @id @default(cuid())
   name          String?
@@ -71,6 +75,9 @@ model User {
   Authenticator Authenticator[]
   problems      Problem[]
   submissions   Submission[]
+  teachingCourses   Course[]           @relation("CourseTeacher")
+  courseEnrollments CourseEnrollment[]
+  createdAssignments Assignment[]      @relation("AssignmentCreator")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -89,6 +96,7 @@ model Problem {
   templates     Template[]
   testcases     Testcase[]
   submissions   Submission[]
+  assignmentProblems AssignmentProblem[]
 
   userId String?
 
@@ -135,12 +143,88 @@ model Submission {
 
   userId    String
   problemId String
+  assignmentId String?
 
   user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   problem Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  assignment Assignment? @relation(fields: [assignmentId], references: [id], onDelete: SetNull)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([assignmentId, userId, problemId])
+  @@index([assignmentId, problemId, status])
+  @@index([userId, problemId])
+  @@index([createdAt])
+}
+
+model Course {
+  id          String  @id @default(cuid())
+  title       String
+  description String?
+  archived    Boolean @default(false)
+  teacherId   String
+
+  teacher     User               @relation("CourseTeacher", fields: [teacherId], references: [id], onDelete: Cascade)
+  enrollments CourseEnrollment[]
+  assignments Assignment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([teacherId])
+}
+
+model CourseEnrollment {
+  id       String               @id @default(cuid())
+  role     CourseEnrollmentRole @default(STUDENT)
+  courseId String
+  userId   String
+
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([courseId, userId])
+  @@index([courseId])
+  @@index([userId])
+}
+
+model Assignment {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  opensAt     DateTime?
+  dueAt       DateTime?
+  published   Boolean  @default(false)
+  courseId    String
+  createdById String
+
+  course      Course              @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  createdBy   User                @relation("AssignmentCreator", fields: [createdById], references: [id], onDelete: Cascade)
+  problems    AssignmentProblem[]
+  submissions Submission[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([courseId])
+  @@index([createdById])
+}
+
+model AssignmentProblem {
+  assignmentId String
+  problemId    String
+  maxPoints    Int @default(100)
+  order        Int?
+
+  assignment Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  problem    Problem    @relation(fields: [problemId], references: [id], onDelete: Cascade)
+
+  @@id([assignmentId, problemId])
+  @@index([assignmentId])
+  @@index([problemId])
 }
 
 enum AnalysisStatus {

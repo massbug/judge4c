@@ -2,6 +2,7 @@
 
 import prisma from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { assertStudent } from "./course-auth";
 
 export async function getStudentDashboardData() {
   try {
@@ -29,6 +30,12 @@ export async function getStudentDashboardData() {
     if (!currentUser) {
       throw new Error("用户不存在");
     }
+    assertStudent({
+      id: currentUser.id,
+      role: currentUser.role,
+      name: currentUser.name,
+      email: currentUser.email,
+    });
 
     // 获取所有已发布的题目（包含英文标题）
     const allProblems = await prisma.problem.findMany({

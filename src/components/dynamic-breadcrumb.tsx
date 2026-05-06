@@ -45,6 +45,8 @@ export function DynamicBreadcrumb() {
         teacher: "教师平台",
         student: "学生平台",
         usermanagement: "用户管理",
+        courses: "课程",
+        assignments: "作业",
         userdashboard: "用户仪表板",
         protected: "受保护",
         app: "应用",
