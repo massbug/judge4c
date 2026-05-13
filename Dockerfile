@@ -2,12 +2,11 @@
 
 # Upgrade to Node.js v20 or higher to resolve the `ReferenceError: File is not defined` issue
 # Reference: https://github.com/vercel/next.js/discussions/56032
-FROM node:22-alpine AS base
+FROM node:22-bookworm-slim AS base
+RUN apt-get update && apt-get install -y --no-install-recommends openssl ca-certificates && rm -rf /var/lib/apt/lists/*
 
 # Install dependencies only when needed
 FROM base AS deps
-# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
-RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 # Copy the prisma folder before installing dependencies
@@ -48,7 +47,7 @@ FROM base AS runner
 WORKDIR /app
 
 # Install curl tool to ensure the health check works correctly
-RUN apk add --no-cache curl
+RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
 
 ENV NODE_ENV=production
 # Uncomment the following line in case you want to disable telemetry during runtime.

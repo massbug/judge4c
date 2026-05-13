@@ -10,6 +10,12 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      redis:
+        condition: service_healthy
+      inngest:
+        condition: service_healthy
+      soketi:
+        condition: service_started
       lsp-c:
         condition: service_healthy
       lsp-cpp:
@@ -40,6 +46,18 @@ services:
       - AI_API_KEY=${AI_API_KEY}
       - AI_BASE_URL=${AI_BASE_URL}
       - AI_MODEL=${AI_MODEL}
+      - SOKETI_DEFAULT_APP_ID=${SOKETI_DEFAULT_APP_ID}
+      - SOKETI_DEFAULT_APP_SECRET=${SOKETI_DEFAULT_APP_SECRET}
+      - NEXT_PUBLIC_SOKETI_DEFAULT_APP_KEY=${NEXT_PUBLIC_SOKETI_DEFAULT_APP_KEY}
+      - INNGEST_EVENT_KEY=${INNGEST_EVENT_KEY}
+      - INNGEST_SIGNING_KEY=${INNGEST_SIGNING_KEY}
+      - INNGEST_DEV=http://inngest:8288
+      - SOKETI_HOST=soketi
+      - SOKETI_PORT=6001
+      - SOKETI_USE_TLS=false
+      - NEXT_PUBLIC_SOKETI_HOST=localhost
+      - NEXT_PUBLIC_SOKETI_PORT=6001
+      - NEXT_PUBLIC_SOKETI_USE_TLS=false
       # Remote Docker configuration (activate only for remote Docker):
       # - DOCKER_HOST_MODE=${DOCKER_HOST_MODE}         # Options: "remote" or leave empty for local
       # - DOCKER_REMOTE_PROTOCOL=${DOCKER_REMOTE_PROTOCOL} # Example: "https" or "http" or "ssh"
@@ -90,14 +108,94 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
     ports:
       - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - judge4c
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres -d postgres" ]
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
       interval: 5s
       timeout: 2s
       retries: 20
 
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - judge4c
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  inngest:
+    image: inngest/inngest
+    container_name: inngest
+    restart: always
+    command: "inngest start -u http://host.docker.internal:3000/api/inngest"
+    ports:
+      - "8288:8288"
+      - "8289:8289"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      - INNGEST_EVENT_KEY=${INNGEST_EVENT_KEY}
+      - INNGEST_SIGNING_KEY=${INNGEST_SIGNING_KEY}
+      - INNGEST_POSTGRES_URI=${INNGEST_POSTGRES_URI}
+      - INNGEST_REDIS_URI=${INNGEST_REDIS_URI}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - judge4c
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8288/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  soketi:
+    image: quay.io/soketi/soketi:latest-16-debian
+    container_name: soketi
+    restart: always
+    ports:
+      - "6001:6001"
+    networks:
+      - judge4c
+    environment:
+      - SOKETI_DEBUG=1
+      - SOKETI_DEFAULT_APP_ID=${SOKETI_DEFAULT_APP_ID}
+      - SOKETI_DEFAULT_APP_KEY=${NEXT_PUBLIC_SOKETI_DEFAULT_APP_KEY}
+      - SOKETI_DEFAULT_APP_SECRET=${SOKETI_DEFAULT_APP_SECRET}
+      - SOKETI_ADAPTER_DRIVER=redis
+      - SOKETI_ADAPTER_REDIS_HOST=redis
+      - SOKETI_ADAPTER_REDIS_PORT=6379
+      - SOKETI_DB_REDIS_HOST=redis
+      - SOKETI_DB_REDIS_PORT=6379
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD", "node", "-e", "require('http').get('http://localhost:6001/ready', (res) => process.exit(res.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
 networks:
   judge4c:
     name: judge4c
+
+volumes:
+  postgres_data:
+  redis_data:

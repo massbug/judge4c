@@ -144,6 +144,29 @@
     "WA": "Wrong Answer",
     "SE": "System Error"
   },
+  "AnalysisCard": {
+    "Title": "Code Analysis",
+    "CompletedDescription": "Detailed evaluation of your code submission",
+    "PreparingDescription": "Preparing your detailed evaluation",
+    "Analyzing": "Analyzing your code...",
+    "Processing": "Processing your submission",
+    "ProcessingHint": "This may take a few moments...",
+    "FailedTitle": "Analysis Failed",
+    "FailedDescription": "We couldn't analyze your code. Please try again later.",
+    "UpdateFailed": "Analysis Update Failed",
+    "UpdateFailedDescription": "Failed to fetch analysis data.",
+    "OverallScore": "Overall Score",
+    "Feedback": "Feedback",
+    "Score": "Score",
+    "NotAvailable": "N/A",
+    "Kinds": {
+      "Overall": "overall",
+      "Style": "style",
+      "Readability": "readability",
+      "Efficiency": "efficiency",
+      "Correctness": "correctness"
+    }
+  },
   "SubmissionsTable": {
     "Index": "Index",
     "Status": "Status",

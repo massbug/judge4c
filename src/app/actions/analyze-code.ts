@@ -5,16 +5,24 @@ import prisma from "@/lib/prisma";
 import { generateText, tool } from "ai";
 import { model } from "@/lib/ai";
 import { Complexity } from "@/types/complexity";
+import { Locale } from "@/generated/client";
 
 interface analyzeCodeProps {
   content: string;
   submissionId: string;
+  locale: Locale;
 }
 
 export const analyzeCode = async ({
   content,
   submissionId,
+  locale,
 }: analyzeCodeProps) => {
+  const outputLanguageInstruction =
+    locale === "zh"
+      ? "The `feedback` field must be written in Simplified Chinese."
+      : "The `feedback` field must be written in English.";
+
   const analysis = await prisma.codeAnalysis.create({
     data: {
       submissionId,
@@ -32,6 +40,7 @@ export const analyzeCode = async ({
     await generateText({
       model,
       system: `You are an AI assistant that rigorously analyzes code for time and space complexity, and assesses overall code quality.
+${outputLanguageInstruction}
 
 **Time/Space Complexity MUST be one of these values:**
 - O(1)

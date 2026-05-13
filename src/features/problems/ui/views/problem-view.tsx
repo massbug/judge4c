@@ -6,6 +6,7 @@ import { SolutionPanel } from "@/features/problems/solution/components/panel";
 import { SubmissionPanel } from "@/features/problems/submission/components/panel";
 import { DescriptionPanel } from "@/features/problems/description/components/panel";
 import { ProblemFlexLayout } from "@/features/problems/components/problem-flexlayout";
+import { SubmissionRealtimeListener } from "@/features/problems/submission/components/realtime-listener";
 
 interface ProblemViewProps {
   problemId: string;
@@ -25,6 +26,7 @@ export const ProblemView = ({ problemId, submissionId }: ProblemViewProps) => {
 
   return (
     <div className="relative flex h-full w-full">
+      <SubmissionRealtimeListener problemId={problemId} />
       <ProblemFlexLayout components={components} />
     </div>
   );

@@ -131,8 +131,8 @@ export async function getDifficultProblemsData(): Promise<
   const actor = await getAuthenticatedActor();
   assertTeacherOrAdmin(actor);
 
-  // 获取所有测试用例结果
-  const testcaseResults = await prisma.testcaseResult.findMany({
+  // 获取所有用例级判题结果
+  const judgeRuns = await prisma.judgeRun.findMany({
     include: {
       testcase: {
         include: {
@@ -143,9 +143,13 @@ export async function getDifficultProblemsData(): Promise<
           },
         },
       },
-      submission: {
+      judge: {
         include: {
-          user: true,
+          submission: {
+            include: {
+              user: true,
+            },
+          },
         },
       },
     },
@@ -163,14 +167,14 @@ export async function getDifficultProblemsData(): Promise<
     }
   >();
 
-  testcaseResults.forEach((result) => {
+  judgeRuns.forEach((result) => {
     const problemId = result.testcase.problemId;
     const problemTitle =
       result.testcase.problem.localizations?.find((loc) => loc.type === "TITLE")
         ?.content || "无标题";
     const problemDisplayId = result.testcase.problem.displayId;
-    const userId = result.submission.userId;
-    const isWrong = !result.isCorrect;
+    const userId = result.judge.submission.userId;
+    const isWrong = result.status !== "ACCEPTED";
 
     if (!problemStats.has(problemId)) {
       problemStats.set(problemId, {

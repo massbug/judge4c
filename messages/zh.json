@@ -144,6 +144,29 @@
     "WA": "解答错误",
     "SE": "系统错误"
   },
+  "AnalysisCard": {
+    "Title": "代码分析",
+    "CompletedDescription": "你的代码提交详细评估",
+    "PreparingDescription": "正在准备详细评估结果",
+    "Analyzing": "正在分析你的代码...",
+    "Processing": "正在处理本次提交",
+    "ProcessingHint": "可能需要几秒钟，请稍候...",
+    "FailedTitle": "分析失败",
+    "FailedDescription": "暂时无法完成代码分析，请稍后重试。",
+    "UpdateFailed": "分析状态更新失败",
+    "UpdateFailedDescription": "获取分析数据失败。",
+    "OverallScore": "综合评分",
+    "Feedback": "反馈建议",
+    "Score": "分数",
+    "NotAvailable": "暂无",
+    "Kinds": {
+      "Overall": "综合",
+      "Style": "风格",
+      "Readability": "可读性",
+      "Efficiency": "效率",
+      "Correctness": "正确性"
+    }
+  },
   "SubmissionsTable": {
     "Index": "序号",
     "Status": "状态",

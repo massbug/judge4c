@@ -27,6 +27,12 @@ export const DetailTable = async ({ submissionId }: DetailTableProps) => {
       id: submissionId,
     },
   });
+  const judge = await prisma.judge.findUnique({
+    where: { submissionId },
+    select: {
+      compileOutput: true,
+    },
+  });
 
   if (!submission)
     return (
@@ -59,9 +65,9 @@ export const DetailTable = async ({ submissionId }: DetailTableProps) => {
           <ViewSolutionButton />
         </div>
         <div className="flex flex-col gap-4">
-          {submission.message && (
+          {(submission.message || judge?.compileOutput) && (
             <MdxRenderer
-              source={`\`\`\`shell\n${submission.message}\n\`\`\``}
+              source={`\`\`\`shell\n${submission.message ?? judge?.compileOutput ?? ""}\n\`\`\``}
             />
           )}
           <DetailForm submissionId={submissionId} />

@@ -21,10 +21,12 @@ export interface ChartDataPoint {
 
 interface CodeAnalysisRadarChartProps {
   chartData: ChartDataPoint[];
+  radarName: string;
 }
 
 export function CodeAnalysisRadarChart({
   chartData,
+  radarName,
 }: CodeAnalysisRadarChartProps) {
   return (
     <ChartContainer config={{}} className="mx-auto aspect-square max-w-[345px]">
@@ -34,7 +36,7 @@ export function CodeAnalysisRadarChart({
         <PolarGrid />
         <PolarRadiusAxis domain={[0, 100]} axisLine={false} tick={false} />
         <Radar
-          name="Score"
+          name={radarName}
           dataKey="score"
           stroke="rgb(95, 134, 196)"
           fill="rgba(95, 134, 196, 0.1)"

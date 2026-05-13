@@ -7,7 +7,7 @@ const dockerConfigData: Prisma.DockerConfigCreateInput[] = [
     language: "c",
     image: "gcc",
     tag: "latest",
-    workingDir: "/src",
+    workingDir: "/workspace",
     compileOutputLimit: 1 * 1024 * 1024,
     runOutputLimit: 1 * 1024 * 1024,
   },
@@ -15,7 +15,7 @@ const dockerConfigData: Prisma.DockerConfigCreateInput[] = [
     language: "cpp",
     image: "gcc",
     tag: "latest",
-    workingDir: "/src",
+    workingDir: "/workspace",
     compileOutputLimit: 1 * 1024 * 1024,
     runOutputLimit: 1 * 1024 * 1024,
   },
@@ -1711,25 +1711,1272 @@ int main() {
       ],
     },
   },
+  {
+    displayId: 1003,
+    difficulty: "EASY",
+    isPublished: true,
+    isTrim: true,
+    localizations: {
+      create: [
+        {
+          locale: "en",
+          type: "TITLE",
+          content: "Palindrome Number",
+        },
+        {
+          locale: "zh",
+          type: "TITLE",
+          content: "回文数",
+        },
+        {
+          locale: "en",
+          type: "DESCRIPTION",
+          content: `Given an integer \`x\`, return \`true\` if \`x\` is a palindrome, and \`false\` otherwise.
+
+A palindrome number reads the same backward as forward.
+
+## Examples
+
+\`\`\`shell
+Input: x = 121
+Output: true
+\`\`\`
+
+\`\`\`shell
+Input: x = -121
+Output: false
+\`\`\`
+
+## Constraints
+
+\`\`\`math
+-2^{31} <= x <= 2^{31} - 1
+\`\`\``,
+        },
+        {
+          locale: "zh",
+          type: "DESCRIPTION",
+          content: `给你一个整数 \`x\`，如果 \`x\` 是回文整数，返回 \`true\`；否则返回 \`false\`。
+
+回文数是指正序（从左到右）和倒序（从右到左）读都一样的整数。
+
+## 示例
+
+\`\`\`shell
+输入: x = 121
+输出: true
+\`\`\`
+
+\`\`\`shell
+输入: x = -121
+输出: false
+\`\`\`
+
+## 约束
+
+\`\`\`math
+-2^{31} <= x <= 2^{31} - 1
+\`\`\``,
+        },
+        {
+          locale: "en",
+          type: "SOLUTION",
+          content: `Reverse half of the digits and compare.
+
+- Negative numbers are never palindromes.
+- Numbers ending with 0 are not palindromes unless the number is 0 itself.
+- Build a reversed half and compare with the remaining half.`,
+        },
+        {
+          locale: "zh",
+          type: "SOLUTION",
+          content: `可以通过“反转一半数字”来判断。
+
+- 负数一定不是回文数。
+- 末尾为 0 的数不可能是回文（除非它本身是 0）。
+- 逐步反转后半段，最后与前半段比较即可。`,
+        },
+      ],
+    },
+    templates: {
+      create: [
+        {
+          language: "c",
+          content: `#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+bool isPalindrome(int x) {
+  return false;
+}
+
+int main() {
+  char line[256];
+  while (fgets(line, sizeof(line), stdin)) {
+    int x = atoi(line);
+    printf("%s\\n", isPalindrome(x) ? "true" : "false");
+  }
+  return 0;
+}`,
+        },
+        {
+          language: "cpp",
+          content: `#include <iostream>
+
+using namespace std;
+
+class Solution {
+public:
+  bool isPalindrome(int x) {
+    return false;
+  }
+};
+
+int main() {
+  string line;
+  while (getline(cin, line)) {
+    int x = stoi(line);
+    Solution sol;
+    cout << (sol.isPalindrome(x) ? "true" : "false") << "\\n";
+  }
+  return 0;
+}`,
+        },
+      ],
+    },
+    testcases: {
+      create: [
+        {
+          inputs: {
+            create: [
+              {
+                index: 0,
+                name: "x",
+                value: "121",
+              },
+            ],
+          },
+          expectedOutput: "true",
+        },
+        {
+          inputs: {
+            create: [
+              {
+                index: 0,
+                name: "x",
+                value: "-121",
+              },
+            ],
+          },
+          expectedOutput: "false",
+        },
+        {
+          inputs: {
+            create: [
+              {
+                index: 0,
+                name: "x",
+                value: "10",
+              },
+            ],
+          },
+          expectedOutput: "false",
+        },
+        {
+          inputs: {
+            create: [
+              {
+                index: 0,
+                name: "x",
+                value: "0",
+              },
+            ],
+          },
+          expectedOutput: "true",
+        },
+      ],
+    },
+  },
+  {
+    displayId: 1004,
+    difficulty: "EASY",
+    isPublished: true,
+    isTrim: true,
+    localizations: {
+      create: [
+        {
+          locale: "en",
+          type: "TITLE",
+          content: "Valid Parentheses",
+        },
+        {
+          locale: "zh",
+          type: "TITLE",
+          content: "有效的括号",
+        },
+        {
+          locale: "en",
+          type: "DESCRIPTION",
+          content: `Given a string \`s\` containing just the characters \`()[]{}\`, determine if the input string is valid.
+
+An input string is valid if:
+
+1. Open brackets are closed by the same type of brackets.
+2. Open brackets are closed in the correct order.
+3. Every close bracket has a corresponding open bracket.
+
+## Example
+
+\`\`\`shell
+Input: s = "()[]{}"
+Output: true
+\`\`\``,
+        },
+        {
+          locale: "zh",
+          type: "DESCRIPTION",
+          content: `给定一个只包括 \`()[]{}\` 的字符串 \`s\`，判断字符串是否有效。
+
+有效字符串需满足：
+
+1. 左括号必须用相同类型的右括号闭合。
+2. 左括号必须以正确的顺序闭合。
+3. 每个右括号都能找到对应的左括号。
+
+## 示例
+
+\`\`\`shell
+输入: s = "()[]{}"
+输出: true
+\`\`\``,
+        },
+        {
+          locale: "en",
+          type: "SOLUTION",
+          content: `Use a stack:
+
+- Push opening brackets.
+- On a closing bracket, check whether the top matches.
+- At the end, stack must be empty.`,
+        },
+        {
+          locale: "zh",
+          type: "SOLUTION",
+          content: `使用栈来处理：
+
+- 遇到左括号入栈。
+- 遇到右括号时，检查栈顶是否能匹配。
+- 扫描结束后栈为空才是有效字符串。`,
+        },
+      ],
+    },
+    templates: {
+      create: [
+        {
+          language: "c",
+          content: `#include <stdbool.h>
+#include <stdio.h>
+#include <string.h>
+
+bool isValid(char *s) {
+  return false;
+}
+
+int main() {
+  char line[4096];
+  while (fgets(line, sizeof(line), stdin)) {
+    line[strcspn(line, "\\n")] = 0;
+    printf("%s\\n", isValid(line) ? "true" : "false");
+  }
+  return 0;
+}`,
+        },
+        {
+          language: "cpp",
+          content: `#include <iostream>
+#include <string>
+
+using namespace std;
+
+class Solution {
+public:
+  bool isValid(string s) {
+    return false;
+  }
+};
+
+int main() {
+  string s;
+  while (getline(cin, s)) {
+    Solution sol;
+    cout << (sol.isValid(s) ? "true" : "false") << "\\n";
+  }
+  return 0;
+}`,
+        },
+      ],
+    },
+    testcases: {
+      create: [
+        {
+          inputs: {
+            create: [
+              {
+                index: 0,
+                name: "s",
+                value: "()",
+              },
+            ],
+          },
+          expectedOutput: "true",
+        },
+        {
+          inputs: {
+            create: [
+              {
+                index: 0,
+                name: "s",
+                value: "()[]{}",
+              },
+            ],
+          },
+          expectedOutput: "true",
+        },
+        {
+          inputs: {
+            create: [
+              {
+                index: 0,
+                name: "s",
+                value: "(]",
+              },
+            ],
+          },
+          expectedOutput: "false",
+        },
+        {
+          inputs: {
+            create: [
+              {
+                index: 0,
+                name: "s",
+                value: "([)]",
+              },
+            ],
+          },
+          expectedOutput: "false",
+        },
+        {
+          inputs: {
+            create: [
+              {
+                index: 0,
+                name: "s",
+                value: "{[]}",
+              },
+            ],
+          },
+          expectedOutput: "true",
+        },
+      ],
+    },
+  },
+  {
+    displayId: 1005,
+    difficulty: "EASY",
+    isPublished: true,
+    isTrim: true,
+    localizations: {
+      create: [
+        {
+          locale: "en",
+          type: "TITLE",
+          content: "Climbing Stairs",
+        },
+        {
+          locale: "zh",
+          type: "TITLE",
+          content: "爬楼梯",
+        },
+        {
+          locale: "en",
+          type: "DESCRIPTION",
+          content: `You are climbing a staircase. It takes \`n\` steps to reach the top.
+
+Each time you can either climb 1 or 2 steps. In how many distinct ways can you climb to the top?
+
+## Example
+
+\`\`\`shell
+Input: n = 3
+Output: 3
+Explanation: [1+1+1], [1+2], [2+1]
+\`\`\`
+
+## Constraints
+
+\`\`\`math
+1 <= n <= 45
+\`\`\``,
+        },
+        {
+          locale: "zh",
+          type: "DESCRIPTION",
+          content: `假设你正在爬楼梯。需要 \`n\` 阶你才能到达楼顶。
+
+每次你可以爬 1 阶或 2 阶。请问有多少种不同的方法可以爬到楼顶？
+
+## 示例
+
+\`\`\`shell
+输入: n = 3
+输出: 3
+解释: [1+1+1], [1+2], [2+1]
+\`\`\`
+
+## 约束
+
+\`\`\`math
+1 <= n <= 45
+\`\`\``,
+        },
+        {
+          locale: "en",
+          type: "SOLUTION",
+          content: `This is a classic dynamic programming problem:
+
+- Let \`dp[i]\` be the number of ways to reach step \`i\`.
+- Transition: \`dp[i] = dp[i - 1] + dp[i - 2]\`.
+- Space can be optimized to two variables.`,
+        },
+        {
+          locale: "zh",
+          type: "SOLUTION",
+          content: `这是经典的动态规划问题：
+
+- 设 \`dp[i]\` 表示到达第 \`i\` 阶的方法数。
+- 状态转移为 \`dp[i] = dp[i - 1] + dp[i - 2]\`。
+- 实现时可以用两个变量将空间优化到 \`O(1)\`。`,
+        },
+      ],
+    },
+    templates: {
+      create: [
+        {
+          language: "c",
+          content: `#include <stdio.h>
+#include <stdlib.h>
+
+int climbStairs(int n) {
+  return 0;
+}
+
+int main() {
+  char line[256];
+  while (fgets(line, sizeof(line), stdin)) {
+    int n = atoi(line);
+    printf("%d\\n", climbStairs(n));
+  }
+  return 0;
+}`,
+        },
+        {
+          language: "cpp",
+          content: `#include <iostream>
+
+using namespace std;
+
+class Solution {
+public:
+  int climbStairs(int n) {
+    return 0;
+  }
+};
+
+int main() {
+  string line;
+  while (getline(cin, line)) {
+    int n = stoi(line);
+    Solution sol;
+    cout << sol.climbStairs(n) << "\\n";
+  }
+  return 0;
+}`,
+        },
+      ],
+    },
+    testcases: {
+      create: [
+        {
+          inputs: {
+            create: [
+              {
+                index: 0,
+                name: "n",
+                value: "2",
+              },
+            ],
+          },
+          expectedOutput: "2",
+        },
+        {
+          inputs: {
+            create: [
+              {
+                index: 0,
+                name: "n",
+                value: "3",
+              },
+            ],
+          },
+          expectedOutput: "3",
+        },
+        {
+          inputs: {
+            create: [
+              {
+                index: 0,
+                name: "n",
+                value: "5",
+              },
+            ],
+          },
+          expectedOutput: "8",
+        },
+        {
+          inputs: {
+            create: [
+              {
+                index: 0,
+                name: "n",
+                value: "10",
+              },
+            ],
+          },
+          expectedOutput: "89",
+        },
+      ],
+    },
+  },
+  {
+    displayId: 1006,
+    difficulty: "MEDIUM",
+    isPublished: true,
+    isTrim: true,
+    localizations: {
+      create: [
+        {
+          locale: "en",
+          type: "TITLE",
+          content: "Maximum Subarray",
+        },
+        {
+          locale: "zh",
+          type: "TITLE",
+          content: "最大子数组和",
+        },
+        {
+          locale: "en",
+          type: "DESCRIPTION",
+          content: `Given an integer array \`nums\`, find the contiguous subarray (containing at least one number) which has the largest sum, and return its sum.
+
+## Example
+
+\`\`\`shell
+Input: nums = [-2,1,-3,4,-1,2,1,-5,4]
+Output: 6
+\`\`\``,
+        },
+        {
+          locale: "zh",
+          type: "DESCRIPTION",
+          content: `给你一个整数数组 \`nums\`，请你找出一个具有最大和的连续子数组（子数组最少包含一个元素），返回其最大和。
+
+## 示例
+
+\`\`\`shell
+输入: nums = [-2,1,-3,4,-1,2,1,-5,4]
+输出: 6
+\`\`\``,
+        },
+        {
+          locale: "en",
+          type: "SOLUTION",
+          content: `Use Kadane's algorithm:
+
+- \`current\` = best subarray sum ending at current index.
+- \`best\` = global maximum.
+- Transition: \`current = max(nums[i], current + nums[i])\`.`,
+        },
+        {
+          locale: "zh",
+          type: "SOLUTION",
+          content: `使用 Kadane 算法：
+
+- \`current\` 表示“以当前位置结尾”的最大子数组和。
+- \`best\` 表示全局最大值。
+- 转移为 \`current = max(nums[i], current + nums[i])\`。`,
+        },
+      ],
+    },
+    templates: {
+      create: [
+        {
+          language: "c",
+          content: `#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int maxSubArray(int *nums, int numsSize) {
+  return 0;
+}
+
+int *parseIntArray(char *line, int *len) {
+  line[strcspn(line, "\\n")] = 0;
+  char *p = line;
+  while (*p && (*p == '[' || *p == ' ' || *p == ']'))
+    p++;
+
+  int capacity = 16;
+  int *arr = malloc(capacity * sizeof(int));
+  *len = 0;
+  char *token = strtok(p, ",");
+  while (token) {
+    if (*len >= capacity) {
+      capacity *= 2;
+      arr = realloc(arr, capacity * sizeof(int));
+    }
+    arr[(*len)++] = atoi(token);
+    token = strtok(NULL, ",");
+  }
+  return arr;
+}
+
+int main() {
+  char line[4096];
+  while (fgets(line, sizeof(line), stdin)) {
+    int numsSize = 0;
+    int *nums = parseIntArray(line, &numsSize);
+    printf("%d\\n", maxSubArray(nums, numsSize));
+    free(nums);
+  }
+  return 0;
+}`,
+        },
+        {
+          language: "cpp",
+          content: `#include <iostream>
+#include <sstream>
+#include <string>
+#include <vector>
+
+using namespace std;
+
+class Solution {
+public:
+  int maxSubArray(vector<int> &nums) {
+    return 0;
+  }
+};
+
+vector<int> parseVector(const string &line) {
+  vector<int> result;
+  stringstream ss(line);
+  char c;
+  int num;
+  while (ss >> c) {
+    if (isdigit(c) || c == '-' || c == '+') {
+      ss.putback(c);
+      ss >> num;
+      result.push_back(num);
+    }
+  }
+  return result;
+}
+
+int main() {
+  string line;
+  while (getline(cin, line)) {
+    vector<int> nums = parseVector(line);
+    Solution sol;
+    cout << sol.maxSubArray(nums) << "\\n";
+  }
+  return 0;
+}`,
+        },
+      ],
+    },
+    testcases: {
+      create: [
+        {
+          inputs: {
+            create: [
+              {
+                index: 0,
+                name: "nums",
+                value: "[-2,1,-3,4,-1,2,1,-5,4]",
+              },
+            ],
+          },
+          expectedOutput: "6",
+        },
+        {
+          inputs: {
+            create: [
+              {
+                index: 0,
+                name: "nums",
+                value: "[1]",
+              },
+            ],
+          },
+          expectedOutput: "1",
+        },
+        {
+          inputs: {
+            create: [
+              {
+                index: 0,
+                name: "nums",
+                value: "[5,4,-1,7,8]",
+              },
+            ],
+          },
+          expectedOutput: "23",
+        },
+      ],
+    },
+  },
+  {
+    displayId: 1007,
+    difficulty: "EASY",
+    isPublished: true,
+    isTrim: true,
+    localizations: {
+      create: [
+        {
+          locale: "en",
+          type: "TITLE",
+          content: "Binary Search",
+        },
+        {
+          locale: "zh",
+          type: "TITLE",
+          content: "二分查找",
+        },
+        {
+          locale: "en",
+          type: "DESCRIPTION",
+          content: `Given a sorted array of integers \`nums\` and an integer \`target\`, return the index of \`target\` if it exists, otherwise return \`-1\`.
+
+You must write an algorithm with \`O(log n)\` runtime complexity.`,
+        },
+        {
+          locale: "zh",
+          type: "DESCRIPTION",
+          content: `给定一个按升序排列的整数数组 \`nums\`，和一个目标值 \`target\`。如果 \`target\` 存在于数组中，返回它的下标；否则返回 \`-1\`。
+
+算法时间复杂度必须是 \`O(log n)\`。`,
+        },
+        {
+          locale: "en",
+          type: "SOLUTION",
+          content: `Maintain \`left\` and \`right\` pointers and repeatedly compare \`nums[mid]\` with \`target\`.
+
+Shrink the interval until found or empty.`,
+        },
+        {
+          locale: "zh",
+          type: "SOLUTION",
+          content: `维护 \`left\` 和 \`right\` 两个指针，通过 \`mid\` 与 \`target\` 比较不断缩小区间。
+
+找到就返回下标，区间为空则返回 \`-1\`。`,
+        },
+      ],
+    },
+    templates: {
+      create: [
+        {
+          language: "c",
+          content: `#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int search(int *nums, int numsSize, int target) {
+  return -1;
+}
+
+int *parseIntArray(char *line, int *len) {
+  line[strcspn(line, "\\n")] = 0;
+  char *p = line;
+  while (*p && (*p == '[' || *p == ' ' || *p == ']'))
+    p++;
+
+  int capacity = 16;
+  int *arr = malloc(capacity * sizeof(int));
+  *len = 0;
+  char *token = strtok(p, ",");
+  while (token) {
+    if (*len >= capacity) {
+      capacity *= 2;
+      arr = realloc(arr, capacity * sizeof(int));
+    }
+    arr[(*len)++] = atoi(token);
+    token = strtok(NULL, ",");
+  }
+  return arr;
+}
+
+int main() {
+  char line[4096];
+  while (fgets(line, sizeof(line), stdin)) {
+    int numsSize = 0;
+    int *nums = parseIntArray(line, &numsSize);
+    if (!fgets(line, sizeof(line), stdin))
+      break;
+    int target = atoi(line);
+    printf("%d\\n", search(nums, numsSize, target));
+    free(nums);
+  }
+  return 0;
+}`,
+        },
+        {
+          language: "cpp",
+          content: `#include <iostream>
+#include <sstream>
+#include <string>
+#include <vector>
+
+using namespace std;
+
+class Solution {
+public:
+  int search(vector<int> &nums, int target) {
+    return -1;
+  }
+};
+
+vector<int> parseVector(const string &line) {
+  vector<int> result;
+  stringstream ss(line);
+  char c;
+  int num;
+  while (ss >> c) {
+    if (isdigit(c) || c == '-' || c == '+') {
+      ss.putback(c);
+      ss >> num;
+      result.push_back(num);
+    }
+  }
+  return result;
+}
+
+int main() {
+  string line;
+  while (getline(cin, line)) {
+    vector<int> nums = parseVector(line);
+    if (!getline(cin, line))
+      break;
+    int target = stoi(line);
+    Solution sol;
+    cout << sol.search(nums, target) << "\\n";
+  }
+  return 0;
+}`,
+        },
+      ],
+    },
+    testcases: {
+      create: [
+        {
+          inputs: {
+            create: [
+              {
+                index: 0,
+                name: "nums",
+                value: "[-1,0,3,5,9,12]",
+              },
+              {
+                index: 1,
+                name: "target",
+                value: "9",
+              },
+            ],
+          },
+          expectedOutput: "4",
+        },
+        {
+          inputs: {
+            create: [
+              {
+                index: 0,
+                name: "nums",
+                value: "[-1,0,3,5,9,12]",
+              },
+              {
+                index: 1,
+                name: "target",
+                value: "2",
+              },
+            ],
+          },
+          expectedOutput: "-1",
+        },
+      ],
+    },
+  },
+  {
+    displayId: 1008,
+    difficulty: "MEDIUM",
+    isPublished: true,
+    isTrim: true,
+    localizations: {
+      create: [
+        {
+          locale: "en",
+          type: "TITLE",
+          content: "Longest Substring Without Repeating Characters",
+        },
+        {
+          locale: "zh",
+          type: "TITLE",
+          content: "无重复字符的最长子串",
+        },
+        {
+          locale: "en",
+          type: "DESCRIPTION",
+          content: `Given a string \`s\`, find the length of the longest substring without repeating characters.
+
+## Example
+
+\`\`\`shell
+Input: s = "abcabcbb"
+Output: 3
+\`\`\``,
+        },
+        {
+          locale: "zh",
+          type: "DESCRIPTION",
+          content: `给定一个字符串 \`s\`，请你找出其中不含有重复字符的最长子串的长度。
+
+## 示例
+
+\`\`\`shell
+输入: s = "abcabcbb"
+输出: 3
+\`\`\``,
+        },
+        {
+          locale: "en",
+          type: "SOLUTION",
+          content: `Use sliding window:
+
+- Expand right pointer.
+- If duplicate appears, move left pointer until valid.
+- Keep maximum window length.`,
+        },
+        {
+          locale: "zh",
+          type: "SOLUTION",
+          content: `使用滑动窗口：
+
+- 右指针不断扩展窗口。
+- 出现重复字符时移动左指针直到窗口重新合法。
+- 全程维护最大窗口长度。`,
+        },
+      ],
+    },
+    templates: {
+      create: [
+        {
+          language: "c",
+          content: `#include <stdio.h>
+#include <string.h>
+
+int lengthOfLongestSubstring(char *s) {
+  return 0;
+}
+
+int main() {
+  char line[4096];
+  while (fgets(line, sizeof(line), stdin)) {
+    line[strcspn(line, "\\n")] = 0;
+    printf("%d\\n", lengthOfLongestSubstring(line));
+  }
+  return 0;
+}`,
+        },
+        {
+          language: "cpp",
+          content: `#include <iostream>
+#include <string>
+
+using namespace std;
+
+class Solution {
+public:
+  int lengthOfLongestSubstring(string s) {
+    return 0;
+  }
+};
+
+int main() {
+  string s;
+  while (getline(cin, s)) {
+    Solution sol;
+    cout << sol.lengthOfLongestSubstring(s) << "\\n";
+  }
+  return 0;
+}`,
+        },
+      ],
+    },
+    testcases: {
+      create: [
+        {
+          inputs: {
+            create: [
+              {
+                index: 0,
+                name: "s",
+                value: "abcabcbb",
+              },
+            ],
+          },
+          expectedOutput: "3",
+        },
+        {
+          inputs: {
+            create: [
+              {
+                index: 0,
+                name: "s",
+                value: "bbbbb",
+              },
+            ],
+          },
+          expectedOutput: "1",
+        },
+        {
+          inputs: {
+            create: [
+              {
+                index: 0,
+                name: "s",
+                value: "pwwkew",
+              },
+            ],
+          },
+          expectedOutput: "3",
+        },
+      ],
+    },
+  },
+  {
+    displayId: 1009,
+    difficulty: "EASY",
+    isPublished: true,
+    isTrim: true,
+    localizations: {
+      create: [
+        {
+          locale: "en",
+          type: "TITLE",
+          content: "Best Time to Buy and Sell Stock",
+        },
+        {
+          locale: "zh",
+          type: "TITLE",
+          content: "买卖股票的最佳时机",
+        },
+        {
+          locale: "en",
+          type: "DESCRIPTION",
+          content: `You are given an array \`prices\` where \`prices[i]\` is the price of a given stock on the \`i\`th day.
+
+You want to maximize your profit by choosing a single day to buy one stock and choosing a different day in the future to sell that stock.
+
+Return the maximum profit you can achieve. If no profit is possible, return \`0\`.`,
+        },
+        {
+          locale: "zh",
+          type: "DESCRIPTION",
+          content: `给定一个数组 \`prices\`，其中 \`prices[i]\` 表示第 \`i\` 天的股票价格。
+
+你只能选择某一天买入这只股票，并在未来某一天卖出。请你计算能获得的最大利润。
+
+如果无法获得任何利润，返回 \`0\`。`,
+        },
+        {
+          locale: "en",
+          type: "SOLUTION",
+          content: `Track the minimum price seen so far and update the answer with \`price - minPrice\` at each step.`,
+        },
+        {
+          locale: "zh",
+          type: "SOLUTION",
+          content: `遍历数组时维护“历史最低价格”，并用当前价格减去最低价格更新最大利润。`,
+        },
+      ],
+    },
+    templates: {
+      create: [
+        {
+          language: "c",
+          content: `#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int maxProfit(int *prices, int pricesSize) {
+  return 0;
+}
+
+int *parseIntArray(char *line, int *len) {
+  line[strcspn(line, "\\n")] = 0;
+  char *p = line;
+  while (*p && (*p == '[' || *p == ' ' || *p == ']'))
+    p++;
+
+  int capacity = 16;
+  int *arr = malloc(capacity * sizeof(int));
+  *len = 0;
+  char *token = strtok(p, ",");
+  while (token) {
+    if (*len >= capacity) {
+      capacity *= 2;
+      arr = realloc(arr, capacity * sizeof(int));
+    }
+    arr[(*len)++] = atoi(token);
+    token = strtok(NULL, ",");
+  }
+  return arr;
+}
+
+int main() {
+  char line[4096];
+  while (fgets(line, sizeof(line), stdin)) {
+    int pricesSize = 0;
+    int *prices = parseIntArray(line, &pricesSize);
+    printf("%d\\n", maxProfit(prices, pricesSize));
+    free(prices);
+  }
+  return 0;
+}`,
+        },
+        {
+          language: "cpp",
+          content: `#include <iostream>
+#include <sstream>
+#include <string>
+#include <vector>
+
+using namespace std;
+
+class Solution {
+public:
+  int maxProfit(vector<int> &prices) {
+    return 0;
+  }
+};
+
+vector<int> parseVector(const string &line) {
+  vector<int> result;
+  stringstream ss(line);
+  char c;
+  int num;
+  while (ss >> c) {
+    if (isdigit(c) || c == '-' || c == '+') {
+      ss.putback(c);
+      ss >> num;
+      result.push_back(num);
+    }
+  }
+  return result;
+}
+
+int main() {
+  string line;
+  while (getline(cin, line)) {
+    vector<int> prices = parseVector(line);
+    Solution sol;
+    cout << sol.maxProfit(prices) << "\\n";
+  }
+  return 0;
+}`,
+        },
+      ],
+    },
+    testcases: {
+      create: [
+        {
+          inputs: {
+            create: [
+              {
+                index: 0,
+                name: "prices",
+                value: "[7,1,5,3,6,4]",
+              },
+            ],
+          },
+          expectedOutput: "5",
+        },
+        {
+          inputs: {
+            create: [
+              {
+                index: 0,
+                name: "prices",
+                value: "[7,6,4,3,1]",
+              },
+            ],
+          },
+          expectedOutput: "0",
+        },
+      ],
+    },
+  },
 ];
 
 export async function main() {
   for (const dockerConfig of dockerConfigData) {
-    await prisma.dockerConfig.create({
-      data: dockerConfig,
+    await prisma.dockerConfig.upsert({
+      where: { language: dockerConfig.language },
+      update: {
+        image: dockerConfig.image,
+        tag: dockerConfig.tag,
+        workingDir: dockerConfig.workingDir,
+        compileOutputLimit: dockerConfig.compileOutputLimit,
+        runOutputLimit: dockerConfig.runOutputLimit,
+      },
+      create: dockerConfig,
     });
   }
 
   for (const languageServerConfig of languageServerConfigData) {
-    await prisma.languageServerConfig.create({
-      data: languageServerConfig,
+    await prisma.languageServerConfig.upsert({
+      where: { language: languageServerConfig.language },
+      update: {
+        protocol: languageServerConfig.protocol,
+        hostname: languageServerConfig.hostname,
+        port: languageServerConfig.port,
+        path: languageServerConfig.path,
+      },
+      create: languageServerConfig,
     });
   }
 
   for (const problem of problemData) {
-    await prisma.problem.create({
-      data: problem,
+    const existingProblem = await prisma.problem.findUnique({
+      where: { displayId: problem.displayId },
+      select: { id: true },
     });
+
+    if (!existingProblem) {
+      await prisma.problem.create({
+        data: problem,
+      });
+    }
   }
 
   // Seed demo users for course/assignment MVP

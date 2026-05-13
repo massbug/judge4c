@@ -1,5 +1,7 @@
 import { ProblemView } from "@/features/problems/ui/views/problem-view";
 
+export const dynamic = "force-dynamic";
+
 interface PageProps {
   params: Promise<{ problemId: string }>;
   searchParams: Promise<{

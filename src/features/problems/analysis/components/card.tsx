@@ -19,6 +19,7 @@ import {
 } from "@/features/problems/analysis/components/radar-chart";
 import type { AnalysisStatus, CodeAnalysis } from "@/generated/client";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { useTranslations } from "next-intl";
 
 interface AnalysisCardProps {
   submissionId: string;
@@ -28,6 +29,7 @@ const ACTIVE_STATUSES: AnalysisStatus[] = ["PENDING", "QUEUED", "PROCESSING"];
 const FINAL_STATUSES: AnalysisStatus[] = ["COMPLETED", "FAILED"];
 
 export const AnalysisCard = ({ submissionId }: AnalysisCardProps) => {
+  const t = useTranslations("AnalysisCard");
   const [analysis, setAnalysis] = useState<CodeAnalysis | null>(null);
 
   const fetchAnalysis = useCallback(() => {
@@ -36,11 +38,11 @@ export const AnalysisCard = ({ submissionId }: AnalysisCardProps) => {
         setAnalysis(analysis);
       })
       .catch((error) => {
-        toast.error("Analysis Update Failed", {
-          description: error.message || "Failed to fetch analysis data.",
+        toast.error(t("UpdateFailed"), {
+          description: error.message || t("UpdateFailedDescription"),
         });
       });
-  }, [submissionId]);
+  }, [submissionId, t]);
 
   useEffect(() => {
     if (!analysis) {
@@ -68,7 +70,7 @@ export const AnalysisCard = ({ submissionId }: AnalysisCardProps) => {
         <CardContent className="p-6">
           <div className="flex flex-col items-center justify-center space-y-4 min-h-64">
             <Loader2Icon className="h-8 w-8 animate-spin text-primary" />
-            <p className="text-muted-foreground">Analyzing your code...</p>
+            <p className="text-muted-foreground">{t("Analyzing")}</p>
           </div>
         </CardContent>
       </Card>
@@ -80,15 +82,15 @@ export const AnalysisCard = ({ submissionId }: AnalysisCardProps) => {
       <Card className="w-full max-w-2xl mx-auto shadow-lg rounded-xl overflow-hidden border-0 bg-background/50 backdrop-blur-sm">
         <CardHeader className="items-center pb-2 space-y-1 px-6 pt-6">
           <CardTitle className="text-2xl font-bold bg-gradient-to-r from-primary to-foreground bg-clip-text text-transparent">
-            Code Analysis
+            {t("Title")}
           </CardTitle>
         </CardHeader>
         <CardContent className="p-6">
           <Alert variant="destructive">
             <TerminalIcon className="h-4 w-4" />
-            <AlertTitle>Analysis Failed</AlertTitle>
+            <AlertTitle>{t("FailedTitle")}</AlertTitle>
             <AlertDescription>
-              We couldn&apos;t analyze your code. Please try again later.
+              {t("FailedDescription")}
             </AlertDescription>
           </Alert>
         </CardContent>
@@ -101,10 +103,10 @@ export const AnalysisCard = ({ submissionId }: AnalysisCardProps) => {
       <Card className="w-full max-w-2xl mx-auto shadow-lg rounded-xl overflow-hidden border-0 bg-background/50 backdrop-blur-sm">
         <CardHeader className="items-center pb-2 space-y-1 px-6 pt-6">
           <CardTitle className="text-2xl font-bold bg-gradient-to-r from-primary to-foreground bg-clip-text text-transparent">
-            Code Analysis
+            {t("Title")}
           </CardTitle>
           <CardDescription className="text-muted-foreground">
-            Preparing your detailed evaluation
+            {t("PreparingDescription")}
           </CardDescription>
         </CardHeader>
         <CardContent className="p-6">
@@ -115,10 +117,10 @@ export const AnalysisCard = ({ submissionId }: AnalysisCardProps) => {
             </div>
             <div className="space-y-2 text-center">
               <p className="text-muted-foreground">
-                Processing your submission
+                {t("Processing")}
               </p>
               <p className="text-sm text-muted-foreground/60">
-                This may take a few moments...
+                {t("ProcessingHint")}
               </p>
             </div>
           </div>
@@ -130,27 +132,27 @@ export const AnalysisCard = ({ submissionId }: AnalysisCardProps) => {
   // Transform the data into a format suitable for the RadarChart
   const chartData: ChartDataPoint[] = [
     {
-      kind: "overall",
+      kind: t("Kinds.Overall"),
       score: analysis.overallScore ?? 0,
       fullMark: 100,
     },
     {
-      kind: "style",
+      kind: t("Kinds.Style"),
       score: analysis.styleScore ?? 0,
       fullMark: 100,
     },
     {
-      kind: "readability",
+      kind: t("Kinds.Readability"),
       score: analysis.readabilityScore ?? 0,
       fullMark: 100,
     },
     {
-      kind: "efficiency",
+      kind: t("Kinds.Efficiency"),
       score: analysis.efficiencyScore ?? 0,
       fullMark: 100,
     },
     {
-      kind: "correctness",
+      kind: t("Kinds.Correctness"),
       score: analysis.correctnessScore ?? 0,
       fullMark: 100,
     },
@@ -160,22 +162,22 @@ export const AnalysisCard = ({ submissionId }: AnalysisCardProps) => {
     <Card className="w-full max-w-2xl mx-auto shadow-lg rounded-xl overflow-hidden border-0 bg-background/50 backdrop-blur-sm animate-fade-in">
       <CardHeader className="items-center pb-2 space-y-1 px-6 pt-6">
         <CardTitle className="text-2xl font-bold bg-gradient-to-r from-primary to-foreground bg-clip-text text-transparent">
-          Code Analysis
+          {t("Title")}
         </CardTitle>
         <CardDescription className="text-muted-foreground">
-          Detailed evaluation of your code submission
+          {t("CompletedDescription")}
         </CardDescription>
       </CardHeader>
       <CardContent className="p-0">
-        <CodeAnalysisRadarChart chartData={chartData} />
+        <CodeAnalysisRadarChart chartData={chartData} radarName={t("Score")} />
       </CardContent>
 
       <CardFooter className="flex-col items-start gap-4 p-6 pt-0">
         <div className="w-full space-y-3">
           <div className="flex justify-between text-sm font-medium">
-            <span className="text-muted-foreground">Overall Score</span>
+            <span className="text-muted-foreground">{t("OverallScore")}</span>
             <span className="text-primary">
-              {analysis.overallScore ?? "N/A"}
+              {analysis.overallScore ?? t("NotAvailable")}
               <span className="text-muted-foreground">/100</span>
             </span>
           </div>
@@ -191,7 +193,7 @@ export const AnalysisCard = ({ submissionId }: AnalysisCardProps) => {
         </div>
 
         <div className="text-muted-foreground bg-muted/40 p-4 rounded-lg w-full border">
-          <h3 className="font-medium mb-2 text-foreground">Feedback</h3>
+          <h3 className="font-medium mb-2 text-foreground">{t("Feedback")}</h3>
           <p className="whitespace-pre-wrap leading-relaxed">
             {analysis.feedback}
           </p>

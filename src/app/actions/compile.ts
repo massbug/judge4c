@@ -1,9 +1,15 @@
 import "server-only";
 
 import Docker from "dockerode";
-import prisma from "@/lib/prisma";
 import { createLimitedStream, docker } from "./docker";
-import { type DockerConfig, Language, Status } from "@/generated/client";
+import {
+  type DockerConfig,
+  JudgeStatus,
+  Language,
+  Status,
+} from "@/generated/client";
+import { updateSubmissionStatus } from "@/lib/submission-status";
+import { updateJudgeBySubmission } from "@/lib/judge-trace";
 
 const getCompileCmdForLanguage = (language: Language) => {
   switch (language) {
@@ -37,15 +43,15 @@ const executeCompilation = async (
         const exitCode = (await compileExec.inspect()).ExitCode;
 
         if (exitCode === 0) {
+          await updateJudgeBySubmission(submissionId, JudgeStatus.COMPILING);
           resolve(Status.CS);
         } else {
-          await prisma.submission.update({
-            where: {
-              id: submissionId,
-            },
-            data: {
-              message: stderr,
-            },
+          await updateSubmissionStatus(submissionId, Status.CE, {
+            message: stderr,
+          });
+          await updateJudgeBySubmission(submissionId, JudgeStatus.COMPILATION_ERROR, {
+            compileOutput: stderr,
+            endTime: new Date(),
           });
           resolve(Status.CE);
         }
@@ -66,14 +72,8 @@ export const compile = async (
 ): Promise<Status> => {
   const { compileOutputLimit } = config;
 
-  await prisma.submission.update({
-    where: {
-      id: submissionId,
-    },
-    data: {
-      status: Status.CP,
-    },
-  });
+  await updateJudgeBySubmission(submissionId, JudgeStatus.COMPILING);
+  await updateSubmissionStatus(submissionId, Status.CP);
 
   const compileCmd = getCompileCmdForLanguage(language);
 
@@ -89,14 +89,9 @@ export const compile = async (
     compileOutputLimit
   );
 
-  await prisma.submission.update({
-    where: {
-      id: submissionId,
-    },
-    data: {
-      status,
-    },
-  });
+  if (status !== Status.CE) {
+    await updateSubmissionStatus(submissionId, status);
+  }
 
   return status;
 };

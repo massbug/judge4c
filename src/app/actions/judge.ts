@@ -1,20 +1,22 @@
 "use server";
 
-import { run } from "./run";
-import Docker from "dockerode";
 import prisma from "@/lib/prisma";
-import { compile } from "./compile";
 import { auth, signIn } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
-import { Language, Status } from "@/generated/client";
+import { Language, Locale, Status } from "@/generated/client";
 import { analyzeCode } from "@/app/actions/analyze-code";
-import { createContainer, createTarStream, prepareEnvironment } from "./docker";
+import { inngest } from "@/inngest/client";
+import {
+  createSubmissionWithStatus,
+  updateSubmissionStatus,
+} from "@/lib/submission-status";
 
 export const judge = async (
   problemId: string,
   language: Language,
   content: string,
-  assignmentId?: string
+  assignmentId?: string,
+  locale: Locale = "zh"
 ): Promise<Status> => {
   const session = await auth();
   const userId = session?.user?.id;
@@ -22,8 +24,6 @@ export const judge = async (
     await signIn();
     return Status.SE;
   }
-
-  let container: Docker.Container | null = null;
 
   try {
     const actor = await prisma.user.findUnique({
@@ -39,16 +39,14 @@ export const judge = async (
       message: string,
       options?: { assignmentId?: string | null }
     ) => {
-      await prisma.submission.create({
-        data: {
-          language,
-          content,
-          status: Status.SE,
-          message,
-          userId,
-          problemId,
-          assignmentId: options?.assignmentId ?? null,
-        },
+      await createSubmissionWithStatus({
+        language,
+        content,
+        status: Status.SE,
+        message,
+        userId,
+        problemId,
+        assignmentId: options?.assignmentId ?? null,
       });
     };
 
@@ -163,102 +161,45 @@ export const judge = async (
       return Status.SE;
     }
 
-    const dockerPrepared = await prepareEnvironment(
-      dockerConfig.image,
-      dockerConfig.tag
-    );
-
-    if (!dockerPrepared) {
-      console.error(
-        "Docker image not found:",
-        dockerConfig.image,
-        ":",
-        dockerConfig.tag
-      );
-      await prisma.submission.create({
-        data: {
-          language,
-          content,
-          status: Status.SE,
-          message: `Docker image not found: ${dockerConfig.image}:${dockerConfig.tag}`,
-          userId,
-          problemId,
-          assignmentId: validatedAssignmentId,
-        },
-      });
-      return Status.SE;
-    }
-
-    const submission = await prisma.submission.create({
-      data: {
-        language,
-        content,
-        status: Status.PD,
-        userId,
-        problemId,
-        assignmentId: validatedAssignmentId,
-      },
+    const submission = await createSubmissionWithStatus({
+      language,
+      content,
+      status: Status.QD,
+      userId,
+      problemId,
+      assignmentId: validatedAssignmentId,
     });
 
     const executeAnalyzeCode = async () => {
       await analyzeCode({
         content,
         submissionId: submission.id,
+        locale,
       });
     }
 
-    executeAnalyzeCode()
+    executeAnalyzeCode();
 
-    // Upload code to the container
-    const tarStream = createTarStream(
-      getFileNameForLanguage(language),
-      content
-    );
+    try {
+      await inngest.send({
+        name: "submissions/create",
+        data: {
+          submissionId: submission.id,
+        },
+      });
+    } catch (inngestError) {
+      console.error("Failed to enqueue judge event:", inngestError);
+      await updateSubmissionStatus(submission.id, Status.SE, {
+        message: "Failed to enqueue judge event",
+      });
+      return Status.SE;
+    }
 
-    container = await createContainer(dockerConfig, problem.memoryLimit);
-    await container.putArchive(tarStream, { path: dockerConfig.workingDir });
-
-    // Compile the code
-    const compileStatus = await compile(
-      container,
-      language,
-      submission.id,
-      dockerConfig
-    );
-
-    if (compileStatus !== "CS") return compileStatus;
-
-    const runStatus = await run(
-      container,
-      language,
-      submission.id,
-      dockerConfig,
-      problem,
-      testcases
-    );
-
-    return runStatus;
+    return Status.QD;
   } catch (error) {
     console.error("Error in judge:", error);
     return Status.SE;
   } finally {
     revalidatePath(`/problems/${problemId}`);
-    if (container) {
-      try {
-        await container.kill();
-        await container.remove();
-      } catch (error) {
-        console.error("Container cleanup failed:", error);
-      }
-    }
-  }
-};
-
-const getFileNameForLanguage = (language: Language) => {
-  switch (language) {
-    case Language.c:
-      return "main.c";
-    case Language.cpp:
-      return "main.cpp";
   }
 };
