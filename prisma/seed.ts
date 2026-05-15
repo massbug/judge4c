@@ -2999,12 +2999,12 @@ export async function main() {
         where: { email },
         update: {
           name: `学生${index + 1}`,
-          role: "GUEST",
+          role: "STUDENT",
         },
         create: {
           name: `学生${index + 1}`,
           email,
-          role: "GUEST",
+          role: "STUDENT",
         },
       })
     )

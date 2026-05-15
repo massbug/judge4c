@@ -84,7 +84,7 @@ export const judge = async (
       const canAccessAssignment =
         actor.role === "ADMIN" ||
         (actor.role === "TEACHER" && isTeacherOwner) ||
-        (actor.role === "GUEST" && isStudentEnrolled);
+        (actor.role === "STUDENT" && isStudentEnrolled);
 
       if (!canAccessAssignment) {
         await createSystemErrorSubmission("No permission for assignment", {
@@ -100,7 +100,7 @@ export const judge = async (
         return Status.SE;
       }
 
-      if (!assignment.published && actor.role === "GUEST") {
+      if (!assignment.published && actor.role === "STUDENT") {
         await createSystemErrorSubmission("Assignment is not published", {
           assignmentId: assignment.id,
         });

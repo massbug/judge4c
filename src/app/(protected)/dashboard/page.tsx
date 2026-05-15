@@ -94,7 +94,7 @@ export default async function DashboardPage() {
     // 教师统计
     const [totalStudents, totalProblems, totalSubmissions, recentSubmissions] =
       await Promise.all([
-        prisma.user.count({ where: { role: "GUEST" } }),
+        prisma.user.count({ where: { role: "STUDENT" } }),
         prisma.problem.count({ where: { isPublished: true } }),
         prisma.submission.count(),
         prisma.submission.findMany({
@@ -204,8 +204,8 @@ export default async function DashboardPage() {
               icon: Target,
             },
             {
-              label: "用户管理",
-              href: "/dashboard/usermanagement/guest",
+              label: "学生管理",
+              href: "/dashboard/usermanagement/student",
               icon: Users,
             },
             {
@@ -246,8 +246,8 @@ export default async function DashboardPage() {
           ],
           actions: [
             {
-              label: "用户管理",
-              href: "/dashboard/usermanagement/guest",
+              label: "学生管理",
+              href: "/dashboard/usermanagement/student",
               icon: Users,
             },
             {
@@ -311,7 +311,7 @@ export default async function DashboardPage() {
 
   const config = getRoleConfig();
   const completionRate =
-    fullUser.role === "GUEST"
+    fullUser.role === "STUDENT"
       ? (stats.totalProblems || 0) > 0
         ? ((stats.completedProblems || 0) / (stats.totalProblems || 1)) * 100
         : 0
@@ -349,7 +349,7 @@ export default async function DashboardPage() {
       </div>
 
       {/* 学生进度条 */}
-      {fullUser.role === "GUEST" && (
+      {fullUser.role === "STUDENT" && (
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">

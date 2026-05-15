@@ -5,5 +5,5 @@ export default async function StudentCoursesLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <ProtectedLayout roles={["GUEST"]}>{children}</ProtectedLayout>;
+  return <ProtectedLayout roles={["STUDENT"]}>{children}</ProtectedLayout>;
 }

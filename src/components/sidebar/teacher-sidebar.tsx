@@ -26,8 +26,8 @@ const data = {
       isActive: true,
       items: [
         {
-          title: "用户管理",
-          url: "/dashboard/usermanagement/guest",
+          title: "学生管理",
+          url: "/dashboard/usermanagement/student",
         },
         {
           title: "题目管理",

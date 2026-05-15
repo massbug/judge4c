@@ -6,10 +6,10 @@ import { Role } from "@/generated/client";
 import { revalidatePath } from "next/cache";
 import type { User } from "@/generated/client";
 
-type UserType = "admin" | "teacher" | "guest";
+type ResourceType = "admin" | "teacher" | "student";
 
 export async function createUser(
-  userType: UserType,
+  resourceType: ResourceType,
   data: Omit<User, "id" | "createdAt" | "updatedAt"> & { password?: string }
 ) {
   let password = data.password;
@@ -17,13 +17,13 @@ export async function createUser(
     password = await bcrypt.hash(password, 10);
   }
 
-  const role = userType.toUpperCase() as Role;
+  const role = resourceType.toUpperCase() as Role;
   await prisma.user.create({ data: { ...data, password, role } });
-  revalidatePath(`/usermanagement/${userType}`);
+  revalidatePath(`/usermanagement/${resourceType}`);
 }
 
 export async function updateUser(
-  userType: UserType,
+  resourceType: ResourceType,
   id: string,
   data: Partial<Omit<User, "id" | "createdAt" | "updatedAt">>
 ) {
@@ -38,10 +38,10 @@ export async function updateUser(
   }
 
   await prisma.user.update({ where: { id }, data: updateData });
-  revalidatePath(`/usermanagement/${userType}`);
+  revalidatePath(`/usermanagement/${resourceType}`);
 }
 
-export async function deleteUser(userType: UserType, id: string) {
+export async function deleteUser(resourceType: ResourceType, id: string) {
   await prisma.user.delete({ where: { id } });
-  revalidatePath(`/usermanagement/${userType}`);
+  revalidatePath(`/usermanagement/${resourceType}`);
 }

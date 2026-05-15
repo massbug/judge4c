@@ -26,7 +26,7 @@ const adminData = {
       isActive: true,
       items: [
         { title: "管理员管理", url: "/dashboard/usermanagement/admin" },
-        { title: "用户管理", url: "/dashboard/usermanagement/guest" },
+        { title: "学生管理", url: "/dashboard/usermanagement/student" },
         { title: "教师管理", url: "/dashboard/usermanagement/teacher" },
         { title: "题目管理", url: "/dashboard/usermanagement/problem" },
       ],

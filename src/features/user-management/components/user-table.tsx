@@ -78,7 +78,7 @@ import {
 } from "@/app/(protected)/dashboard/usermanagement/actions/problemActions";
 
 export interface UserConfig {
-  userType: string;
+  resourceType: string;
   title: string;
   apiPath: string;
   columns: Array<{
@@ -154,7 +154,7 @@ const addProblemSchema = z.object({
 });
 
 export function UserTable(props: UserTableProps) {
-  const isProblem = props.config.userType === "problem";
+  const isProblem = props.config.resourceType === "problem";
   const router = useRouter();
   const problemData = isProblem ? (props.data as Problem[]) : undefined;
 
@@ -324,7 +324,7 @@ export function UserTable(props: UserTableProps) {
         createdAt: "",
         image: null,
         emailVerified: null,
-        role: Role.GUEST,
+        role: Role.STUDENT,
       },
     });
     React.useEffect(() => {
@@ -336,7 +336,7 @@ export function UserTable(props: UserTableProps) {
           createdAt: "",
           image: null,
           emailVerified: null,
-          role: Role.GUEST,
+          role: Role.STUDENT,
         });
       }
     }, [open, form]);
@@ -354,19 +354,19 @@ export function UserTable(props: UserTableProps) {
           ...data,
           image: data.image ?? null,
           emailVerified: data.emailVerified ?? null,
-          role: data.role ?? Role.GUEST,
+          role: data.role ?? Role.STUDENT,
         };
         if (!submitData.name) submitData.name = "";
         if (!submitData.createdAt)
           submitData.createdAt = new Date().toISOString();
         else
           submitData.createdAt = new Date(submitData.createdAt).toISOString();
-        if (props.config.userType === "admin")
+        if (props.config.resourceType === "admin")
           await createUser("admin", submitData);
-        else if (props.config.userType === "teacher")
+        else if (props.config.resourceType === "teacher")
           await createUser("teacher", submitData);
-        else if (props.config.userType === "guest")
-          await createUser("guest", submitData);
+        else if (props.config.resourceType === "student")
+          await createUser("student", submitData);
         onOpenChange(false);
         toast.success("添加成功", { duration: 1500 });
         router.refresh();
@@ -610,7 +610,7 @@ export function UserTable(props: UserTableProps) {
         name: user.name ?? "",
         email: user.email ?? "",
         password: "",
-        role: user.role ?? Role.GUEST,
+        role: user.role ?? Role.STUDENT,
         createdAt: user.createdAt
           ? new Date(user.createdAt).toISOString().slice(0, 16)
           : "",
@@ -625,7 +625,7 @@ export function UserTable(props: UserTableProps) {
           name: user.name ?? "",
           email: user.email ?? "",
           password: "",
-          role: user.role ?? Role.GUEST,
+          role: user.role ?? Role.STUDENT,
           createdAt: user.createdAt
             ? new Date(user.createdAt).toISOString().slice(0, 16)
             : "",
@@ -644,15 +644,15 @@ export function UserTable(props: UserTableProps) {
             : new Date().toISOString(),
           image: data.image ?? null,
           emailVerified: data.emailVerified ?? null,
-          role: data.role ?? Role.GUEST,
+          role: data.role ?? Role.STUDENT,
         };
         const id = typeof submitData.id === "string" ? submitData.id : "";
-        if (props.config.userType === "admin")
+        if (props.config.resourceType === "admin")
           await updateUser("admin", id, submitData);
-        else if (props.config.userType === "teacher")
+        else if (props.config.resourceType === "teacher")
           await updateUser("teacher", id, submitData);
-        else if (props.config.userType === "guest")
-          await updateUser("guest", id, submitData);
+        else if (props.config.resourceType === "student")
+          await updateUser("student", id, submitData);
         onOpenChange(false);
         toast.success("修改成功", { duration: 1500 });
       } catch {
@@ -710,7 +710,7 @@ export function UserTable(props: UserTableProps) {
                 </div>
               ))}
               {/* 编辑时显示角色选择 */}
-              {props.config.userType !== "problem" && (
+              {props.config.resourceType !== "problem" && (
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="role" className="text-right">
                     角色
@@ -725,18 +725,18 @@ export function UserTable(props: UserTableProps) {
                       <SelectValue placeholder="请选择角色" />
                     </SelectTrigger>
                     <SelectContent>
-                      {props.config.userType === "guest" && (
+                      {props.config.resourceType === "student" && (
                         <>
-                          <SelectItem value="GUEST">学生</SelectItem>
+                          <SelectItem value="STUDENT">学生</SelectItem>
                           <SelectItem value="TEACHER">老师</SelectItem>
                         </>
                       )}
-                      {(props.config.userType === "teacher" ||
-                        props.config.userType === "admin") && (
+                      {(props.config.resourceType === "teacher" ||
+                        props.config.resourceType === "admin") && (
                         <>
                           <SelectItem value="ADMIN">管理员</SelectItem>
                           <SelectItem value="TEACHER">老师</SelectItem>
-                          <SelectItem value="GUEST">学生</SelectItem>
+                          <SelectItem value="STUDENT">学生</SelectItem>
                         </>
                       )}
                     </SelectContent>
@@ -1068,10 +1068,10 @@ export function UserTable(props: UserTableProps) {
                         await deleteProblem((row.original as Problem).id);
                       } else {
                         await deleteUser(
-                          props.config.userType as
+                          props.config.resourceType as
                             | "admin"
                             | "teacher"
-                            | "guest",
+                            | "student",
                           (row.original as User).id
                         );
                       }
@@ -1113,7 +1113,7 @@ export function UserTable(props: UserTableProps) {
                     await deleteProblem((pendingDeleteItem as Problem).id);
                   } else {
                     await deleteUser(
-                      props.config.userType as "admin" | "teacher" | "guest",
+                      props.config.resourceType as "admin" | "teacher" | "student",
                       (pendingDeleteItem as User).id
                     );
                   }

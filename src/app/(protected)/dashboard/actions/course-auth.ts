@@ -41,7 +41,7 @@ export function assertTeacherOrAdmin(actor: AuthenticatedActor) {
 }
 
 export function assertStudent(actor: AuthenticatedActor) {
-  if (actor.role !== "GUEST") {
+  if (actor.role !== "STUDENT") {
     throw new Error("仅学生可访问");
   }
 }

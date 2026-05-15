@@ -12,7 +12,7 @@ interface User {
   email: string;
   emailVerified?: Date | null;
   image: string | null;
-  role: "GUEST" | "USER" | "ADMIN" | "TEACHER";
+  role: "STUDENT" | "ADMIN" | "TEACHER";
   createdAt: Date;
   updatedAt: Date;
 }

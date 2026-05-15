@@ -19,7 +19,7 @@ export const editProblemSchema = z.object({
 });
 
 export const problemConfig = {
-  userType: "problem",
+  resourceType: "problem",
   title: "题目列表",
   apiPath: "/api/problem",
   columns: [

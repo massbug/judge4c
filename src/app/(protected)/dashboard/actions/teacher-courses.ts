@@ -130,7 +130,7 @@ export async function enrollStudents(courseId: string, studentIds: string[]) {
   const students = await prisma.user.findMany({
     where: {
       id: { in: uniqueStudentIds },
-      role: "GUEST",
+      role: "STUDENT",
     },
     select: { id: true },
   });
@@ -197,7 +197,7 @@ export async function listAvailableStudents() {
   assertTeacherOrAdmin(actor);
 
   return prisma.user.findMany({
-    where: { role: "GUEST" },
+    where: { role: "STUDENT" },
     orderBy: { createdAt: "desc" },
     select: {
       id: true,

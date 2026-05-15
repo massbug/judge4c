@@ -95,14 +95,14 @@ export const basePagination = {
 
 // 创建用户配置的工厂函数
 export function createUserConfig(
-  userType: string,
+  resourceType: string,
   title: string,
   addLabel: string,
   namePlaceholder: string,
   emailPlaceholder: string
 ) {
   return {
-    userType,
+    resourceType,
     title,
     apiPath: "/api/user",
     columns: baseColumns,

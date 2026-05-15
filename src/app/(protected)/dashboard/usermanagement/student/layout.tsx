@@ -1,6 +1,6 @@
 import GenericLayout from "../components/GenericLayout";
 
-export default function GuestLayout({
+export default function StudentLayout({
   children,
 }: {
   children: React.ReactNode;

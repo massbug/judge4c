@@ -47,16 +47,16 @@ export default async function Layout({ children }: LayoutProps) {
         return <AdminSidebar user={user} />;
       case "TEACHER":
         return <TeacherSidebar user={user} />;
-      case "GUEST":
+      case "STUDENT":
       default:
-        // 学生（GUEST）需要查询错题数据
+        // 学生（STUDENT）需要查询错题数据
         return <AppSidebar user={user} wrongProblems={[]} />;
     }
   };
 
   // 只有学生才需要查询错题数据
   let wrongProblemsData: WrongProblem[] = [];
-  if (fullUser.role === "GUEST") {
+  if (fullUser.role === "STUDENT") {
     // 查询未完成（未AC）题目的最新一次提交
     const wrongProblems = await prisma.problem.findMany({
       where: {
@@ -98,7 +98,7 @@ export default async function Layout({ children }: LayoutProps) {
 
   return (
     <SidebarProvider>
-      {fullUser.role === "GUEST" ? (
+      {fullUser.role === "STUDENT" ? (
         <AppSidebar user={user} wrongProblems={wrongProblemsData} />
       ) : (
         renderSidebar()

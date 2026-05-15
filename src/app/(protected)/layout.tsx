@@ -6,7 +6,7 @@ interface LayoutProps {
 
 const Layout = ({ children }: LayoutProps) => {
   return (
-    <ProtectedLayout roles={["ADMIN", "TEACHER", "GUEST"]}>
+    <ProtectedLayout roles={["ADMIN", "TEACHER", "STUDENT"]}>
       {children}
     </ProtectedLayout>
   );

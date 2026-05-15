@@ -10,7 +10,7 @@ generator client {
 
 enum Role {
   ADMIN
-  GUEST
+  STUDENT
   TEACHER
 }
 
@@ -90,7 +90,7 @@ model User {
   password      String?
   emailVerified DateTime?
   image         String?
-  role          Role      @default(GUEST)
+  role          Role      @default(STUDENT)
 
   accounts      Account[]
   sessions      Session[]
