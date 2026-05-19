@@ -24,7 +24,7 @@ export default async function ProtectedLayout({
   });
 
   if (!user || !allowedRoles.includes(user.role)) {
-    redirect("/sign-in");
+    redirect("/unauthorized");
   }
 
   return <div className="w-full h-full">{children}</div>;
