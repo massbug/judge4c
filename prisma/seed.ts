@@ -1,4 +1,5 @@
 import { PrismaClient, Prisma } from "@/generated/client";
+import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
@@ -24,14 +25,16 @@ const dockerConfigData: Prisma.DockerConfigCreateInput[] = [
 const languageServerConfigData: Prisma.LanguageServerConfigCreateInput[] = [
   {
     language: "c",
-    protocol: "wss",
-    hostname: "lsp-c.litchi.icu",
+    protocol: "ws",
+    hostname: "localhost",
+    port: 4594,
     path: "/clangd",
   },
   {
     language: "cpp",
-    protocol: "wss",
-    hostname: "lsp-cpp.litchi.icu",
+    protocol: "ws",
+    hostname: "localhost",
+    port: 4595,
     path: "/clangd",
   },
 ];
@@ -2980,35 +2983,69 @@ export async function main() {
   }
 
   // Seed demo users for course/assignment MVP
-  const teacher = await prisma.user.upsert({
-    where: { email: "teacher@judge4c.local" },
-    update: {
-      name: "课程教师",
-      role: "TEACHER",
-    },
-    create: {
-      name: "课程教师",
-      email: "teacher@judge4c.local",
-      role: "TEACHER",
-    },
-  });
+  const teacherPasswordHash = await bcrypt.hash("teacher123456#", 10);
+  const studentPasswordHash = await bcrypt.hash("student123456#", 10);
+  const adminPasswordHash = await bcrypt.hash("admin123456#", 10);
 
-  const students = await Promise.all(
-    ["student1@judge4c.local", "student2@judge4c.local"].map((email, index) =>
+  const teachers = await Promise.all(
+    [
+      "teacher1@example.com",
+      "teacher2@example.com",
+      "teacher3@example.com",
+    ].map((email, index) =>
       prisma.user.upsert({
         where: { email },
         update: {
-          name: `学生${index + 1}`,
-          role: "STUDENT",
+          name: `课程教师${index + 1}`,
+          role: "TEACHER",
+          password: teacherPasswordHash,
         },
         create: {
-          name: `学生${index + 1}`,
+          name: `课程教师${index + 1}`,
           email,
-          role: "STUDENT",
+          role: "TEACHER",
+          password: teacherPasswordHash,
         },
       })
     )
   );
+
+  const students = await Promise.all(
+    Array.from({ length: 9 }, (_, index) => `student${index + 1}@example.com`).map(
+      (email, index) =>
+        prisma.user.upsert({
+          where: { email },
+          update: {
+            name: `学生${index + 1}`,
+            role: "STUDENT",
+            password: studentPasswordHash,
+          },
+          create: {
+            name: `学生${index + 1}`,
+            email,
+            role: "STUDENT",
+            password: studentPasswordHash,
+          },
+        })
+    )
+  );
+
+  await prisma.user.upsert({
+    where: { email: "admin@example.com" },
+    update: {
+      name: "系统管理员",
+      role: "ADMIN",
+      password: adminPasswordHash,
+    },
+    create: {
+      name: "系统管理员",
+      email: "admin@example.com",
+      role: "ADMIN",
+      password: adminPasswordHash,
+    },
+  });
+
+  const teacher = teachers[0];
 
   const selectedProblems = await prisma.problem.findMany({
     orderBy: { displayId: "asc" },
