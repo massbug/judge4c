@@ -12,6 +12,34 @@
     "LogIn": "登录",
     "LogOut": "登出"
   },
+  "Sidebar": {
+    "platform": "平台",
+    "appTagline": "编程学习平台",
+    "teachingTagline": "教学平台"
+  },
+  "Breadcrumb": {
+    "home": "首页",
+    "dashboard": "仪表板",
+    "management": "管理面板",
+    "profile": "用户信息",
+    "changePassword": "修改密码",
+    "problems": "题目",
+    "problem": "题目",
+    "problemset": "题目集",
+    "admin": "管理后台",
+    "teacher": "教师平台",
+    "student": "学生平台",
+    "usermanagement": "账号管理",
+    "courses": "课程",
+    "assignments": "作业",
+    "userdashboard": "用户仪表板",
+    "protected": "受保护",
+    "app": "应用",
+    "auth": "认证",
+    "signIn": "登录",
+    "signUp": "注册",
+    "detail": "详情"
+  },
   "Banner": {
     "Text": "如果喜欢该项目不妨收藏一下"
   },

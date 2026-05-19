@@ -9,6 +9,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 interface BreadcrumbItem {
   label: string;
@@ -17,13 +18,14 @@ interface BreadcrumbItem {
 
 export function DynamicBreadcrumb() {
   const pathname = usePathname();
+  const t = useTranslations("Breadcrumb");
 
   const generateBreadcrumbs = (): BreadcrumbItem[] => {
     const segments = pathname.split("/").filter(Boolean);
     const breadcrumbs: BreadcrumbItem[] = [];
 
     // 添加首页
-    breadcrumbs.push({ label: "首页", href: "/" });
+    breadcrumbs.push({ label: t("home"), href: "/" });
 
     let currentPath = "";
 
@@ -35,29 +37,30 @@ export function DynamicBreadcrumb() {
 
       // 路径映射
       const pathMap: Record<string, string> = {
-        dashboard: "仪表板",
-        management: "管理面板",
-        profile: "用户信息",
-        "change-password": "修改密码",
-        problems: "题目",
-        problemset: "题目集",
-        admin: "管理后台",
-        teacher: "教师平台",
-        student: "学生平台",
-        usermanagement: "账号管理",
-        courses: "课程",
-        assignments: "作业",
-        userdashboard: "用户仪表板",
-        protected: "受保护",
-        app: "应用",
-        auth: "认证",
-        "sign-in": "登录",
-        "sign-up": "注册",
+        dashboard: t("dashboard"),
+        management: t("management"),
+        profile: t("profile"),
+        "change-password": t("changePassword"),
+        problems: t("problems"),
+        problem: t("problem"),
+        problemset: t("problemset"),
+        admin: t("admin"),
+        teacher: t("teacher"),
+        student: t("student"),
+        usermanagement: t("usermanagement"),
+        courses: t("courses"),
+        assignments: t("assignments"),
+        userdashboard: t("userdashboard"),
+        protected: t("protected"),
+        app: t("app"),
+        auth: t("auth"),
+        "sign-in": t("signIn"),
+        "sign-up": t("signUp"),
       };
 
       // 如果是数字，可能是题目ID，显示为"题目详情"
       if (/^\d+$/.test(segment)) {
-        label = "详情";
+        label = t("detail");
       } else if (pathMap[segment]) {
         label = pathMap[segment];
       } else {

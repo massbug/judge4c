@@ -12,6 +12,34 @@
     "LogIn": "LogIn",
     "LogOut": "LogOut"
   },
+  "Sidebar": {
+    "platform": "Platform",
+    "appTagline": "Programming Learning",
+    "teachingTagline": "Teaching Platform"
+  },
+  "Breadcrumb": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "management": "Management",
+    "profile": "Profile",
+    "changePassword": "Change Password",
+    "problems": "Problems",
+    "problem": "Problem",
+    "problemset": "Problemset",
+    "admin": "Admin",
+    "teacher": "Teacher",
+    "student": "Student",
+    "usermanagement": "Account Management",
+    "courses": "Courses",
+    "assignments": "Assignments",
+    "userdashboard": "User Dashboard",
+    "protected": "Protected",
+    "app": "App",
+    "auth": "Auth",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "detail": "Detail"
+  },
   "Banner": {
     "Text": "Star this project if you like it."
   },

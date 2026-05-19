@@ -17,6 +17,7 @@ import { NavUser } from "@/components/nav-user";
 import { NavProjects } from "@/components/nav-projects";
 import { NavSecondary } from "@/components/nav-secondary";
 import { Command, LifeBuoy, Send, Shield } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 const data = {
   navMain: [
@@ -100,6 +101,7 @@ interface AppSidebarProps {
 }
 
 export function AppSidebar({ user, wrongProblems, ...props }: AppSidebarProps) {
+  const t = useTranslations("Sidebar");
   const userInfo = {
     name: user.name ?? "",
     email: user.email ?? "",
@@ -118,7 +120,7 @@ export function AppSidebar({ user, wrongProblems, ...props }: AppSidebarProps) {
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">Judge4c</span>
-                  <span className="truncate text-xs">Programming Learning</span>
+                  <span className="truncate text-xs">{t("appTagline")}</span>
                 </div>
               </a>
             </SidebarMenuButton>

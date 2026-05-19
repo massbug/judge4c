@@ -16,6 +16,7 @@ import { siteConfig } from "@/config/site";
 import { NavMain } from "@/components/nav-main";
 import { NavUser } from "@/components/nav-user";
 import { NavSecondary } from "@/components/nav-secondary";
+import { useTranslations } from "next-intl";
 
 const data = {
   navMain: [
@@ -66,6 +67,7 @@ export function TeacherSidebar({
   user,
   ...props
 }: TeacherSidebarProps & React.ComponentProps<typeof Sidebar>) {
+  const t = useTranslations("Sidebar");
   const userInfo = {
     name: user.name ?? "",
     email: user.email ?? "",
@@ -84,7 +86,7 @@ export function TeacherSidebar({
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">Judge4c 教师端</span>
-                  <span className="truncate text-xs">Teaching Platform</span>
+                  <span className="truncate text-xs">{t("teachingTagline")}</span>
                 </div>
               </a>
             </SidebarMenuButton>
