@@ -3,6 +3,7 @@ import { z } from "zod";
 export const problemSchema = z.object({
   id: z.string(),
   displayId: z.number(),
+  title: z.string().optional(),
   difficulty: z.string(),
   createdAt: z.string(),
 });
@@ -23,13 +24,19 @@ export const problemConfig = {
   title: "题目列表",
   apiPath: "/api/problem",
   columns: [
-    { key: "id", label: "ID", sortable: true },
     {
       key: "displayId",
       label: "题目编号",
       sortable: true,
       searchable: true,
       placeholder: "搜索编号",
+    },
+    {
+      key: "title",
+      label: "题目标题",
+      sortable: true,
+      searchable: true,
+      placeholder: "搜索标题",
     },
     {
       key: "difficulty",

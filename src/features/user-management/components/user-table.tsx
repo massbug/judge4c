@@ -65,6 +65,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslations } from "next-intl";
 import { Difficulty, Role } from "@/generated/client";
 import type { User, Problem } from "@/generated/client";
 import {
@@ -110,7 +111,11 @@ export interface UserConfig {
 
 type UserTableProps =
   | { config: UserConfig; data: User[] }
-  | { config: UserConfig; data: Problem[] };
+  | { config: UserConfig; data: ProblemRow[] };
+
+type ProblemRow = Pick<Problem, "id" | "displayId" | "difficulty"> & {
+  title: string;
+};
 
 type UserForm = {
   id?: string;
@@ -154,13 +159,14 @@ const addProblemSchema = z.object({
 });
 
 export function UserTable(props: UserTableProps) {
+  const tDifficulty = useTranslations("Difficulty");
   const isProblem = props.config.resourceType === "problem";
   const router = useRouter();
-  const problemData = isProblem ? (props.data as Problem[]) : undefined;
+  const problemData = isProblem ? (props.data as ProblemRow[]) : undefined;
 
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  const [editingUser, setEditingUser] = useState<User | Problem | null>(null);
+  const [editingUser, setEditingUser] = useState<User | ProblemRow | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteBatch, setDeleteBatch] = useState(false);
   const [rowSelection, setRowSelection] = useState({});
@@ -174,15 +180,15 @@ export function UserTable(props: UserTableProps) {
   const [pageInput, setPageInput] = useState(pagination.pageIndex + 1);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [pendingDeleteItem, setPendingDeleteItem] = useState<
-    User | Problem | null
+    User | ProblemRow | null
   >(null);
   useEffect(() => {
     setPageInput(pagination.pageIndex + 1);
   }, [pagination.pageIndex]);
 
   // 表格列
-  const tableColumns = React.useMemo<ColumnDef<User | Problem>[]>(() => {
-    const columns: ColumnDef<User | Problem>[] = [
+  const tableColumns = React.useMemo<ColumnDef<User | ProblemRow>[]>(() => {
+    const columns: ColumnDef<User | ProblemRow>[] = [
       {
         id: "select",
         header: ({ table }) => (
@@ -206,13 +212,20 @@ export function UserTable(props: UserTableProps) {
       },
     ];
     props.config.columns.forEach((col) => {
-      const column: ColumnDef<User | Problem> = {
+      const column: ColumnDef<User | ProblemRow> = {
         accessorKey: col.key,
         header: col.label,
         cell: ({ row }) => {
           // 类型安全分流
           if (col.key === "displayId" && isProblem) {
-            return (row.original as Problem).displayId;
+            return (row.original as ProblemRow).displayId;
+          }
+          if (col.key === "title" && isProblem) {
+            return (row.original as ProblemRow).title;
+          }
+          if (col.key === "difficulty" && isProblem) {
+            const difficulty = String(row.getValue(col.key)) as Difficulty;
+            return tDifficulty(difficulty);
           }
           if (col.key === "createdAt" || col.key === "updatedAt") {
             const value = row.getValue(col.key);
@@ -250,7 +263,7 @@ export function UserTable(props: UserTableProps) {
               onClick={() => {
                 if (isProblem) {
                   // 如果是problem类型，跳转到编辑路由，使用displayId
-                  const problem = item as Problem;
+                  const problem = item as ProblemRow;
                   router.push(`/dashboard/admin/problems/${problem.id}/edit`);
                 } else {
                   // 如果是用户类型，打开编辑弹窗
@@ -280,7 +293,7 @@ export function UserTable(props: UserTableProps) {
       },
     });
     return columns;
-  }, [props.config, router, isProblem]);
+  }, [props.config, router, isProblem, tDifficulty]);
 
   const table = useReactTable({
     data: props.data,
@@ -761,7 +774,7 @@ export function UserTable(props: UserTableProps) {
   }
 
   // 用ref保证获取最新data
-  const dataRef = React.useRef<User[] | Problem[]>(props.data);
+  const dataRef = React.useRef<User[] | ProblemRow[]>(props.data);
   React.useEffect(() => {
     dataRef.current = props.data;
   }, [props.data]);
@@ -798,6 +811,7 @@ export function UserTable(props: UserTableProps) {
                     createdAt: "创建时间",
                     actions: "操作",
                     displayId: "题目编号",
+                    title: "题目标题",
                     difficulty: "难度",
                   };
                   return (
@@ -1065,7 +1079,7 @@ export function UserTable(props: UserTableProps) {
                       table.getFilteredSelectedRowModel().rows;
                     for (const row of selectedRows) {
                       if (isProblem) {
-                        await deleteProblem((row.original as Problem).id);
+                        await deleteProblem((row.original as ProblemRow).id);
                       } else {
                         await deleteUser(
                           props.config.resourceType as
@@ -1110,7 +1124,7 @@ export function UserTable(props: UserTableProps) {
               onClick={async () => {
                 if (pendingDeleteItem) {
                   if (isProblem) {
-                    await deleteProblem((pendingDeleteItem as Problem).id);
+                    await deleteProblem((pendingDeleteItem as ProblemRow).id);
                   } else {
                     await deleteUser(
                       props.config.resourceType as "admin" | "teacher" | "student",
