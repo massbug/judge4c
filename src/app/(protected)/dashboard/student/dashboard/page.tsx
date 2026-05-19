@@ -94,6 +94,12 @@ export default function StudentDashboard() {
     errorPieChartData,
   } = data;
   const COLORS = ["#4CAF50", "#FFC107"];
+  const EMPTY_CHART_COLOR = "#E5E7EB";
+  const hasCompletionRecord = completionData.completed > 0;
+  const hasErrorChartData = errorPieChartData.some((item) => item.value > 0);
+  const normalizedErrorPieChartData = hasErrorChartData
+    ? errorPieChartData
+    : [{ name: "暂无数据", value: 1 }];
 
   return (
     <div className="container mx-auto p-6 space-y-6">
@@ -144,6 +150,11 @@ export default function StudentDashboard() {
                   </PieChart>
                 </ResponsiveContainer>
               </div>
+              {!hasCompletionRecord && (
+                <div className="text-center text-xs text-muted-foreground">
+                  暂无完成记录
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -166,7 +177,7 @@ export default function StudentDashboard() {
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie
-                      data={errorPieChartData}
+                      data={normalizedErrorPieChartData}
                       cx="50%"
                       cy="50%"
                       innerRadius={60}
@@ -175,14 +186,18 @@ export default function StudentDashboard() {
                       paddingAngle={5}
                       dataKey="value"
                     >
-                      {errorPieChartData.map(
+                      {normalizedErrorPieChartData.map(
                         (
                           entry: { name: string; value: number },
                           index: number
                         ) => (
                           <Cell
                             key={`cell-${index}`}
-                            fill={COLORS[index % COLORS.length]}
+                            fill={
+                              hasErrorChartData
+                                ? COLORS[index % COLORS.length]
+                                : EMPTY_CHART_COLOR
+                            }
                           />
                         )
                       )}
@@ -190,6 +205,11 @@ export default function StudentDashboard() {
                   </PieChart>
                 </ResponsiveContainer>
               </div>
+              {!hasErrorChartData && (
+                <div className="text-center text-xs text-muted-foreground">
+                  暂无作答数据
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
