@@ -16,9 +16,11 @@ export const CodePanel = ({ problemId }: CodePanelProps) => {
     <PanelLayout isScroll={false}>
       <div className="h-full flex flex-col">
         <CodeToolbar className="border-b" />
-        <Suspense fallback={<CodeContentSkeleton />}>
-          <CodeContent problemId={problemId} />
-        </Suspense>
+        <div className="min-h-0 flex-1">
+          <Suspense fallback={<CodeContentSkeleton />}>
+            <CodeContent problemId={problemId} />
+          </Suspense>
+        </div>
         <CodeFooter />
       </div>
     </PanelLayout>

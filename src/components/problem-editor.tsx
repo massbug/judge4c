@@ -41,6 +41,7 @@ export const ProblemEditor = ({
         language={language}
         value={value}
         path={path}
+        className="h-full"
         languageServerConfigs={languageServerConfigs}
         onEditorReady={setEditor}
         onLspWebSocketReady={setLspWebSocket}
@@ -55,6 +56,7 @@ export const ProblemEditor = ({
       language={language}
       original={value}
       modified={optimizedCode}
+      className="h-full"
       onEditorReady={setDiffEditor}
     />
   ) : (
@@ -62,6 +64,7 @@ export const ProblemEditor = ({
       language={language}
       value={value}
       path={path}
+      className="h-full"
       languageServerConfigs={languageServerConfigs}
       onEditorReady={setEditor}
       onLspWebSocketReady={setLspWebSocket}
