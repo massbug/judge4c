@@ -3,14 +3,10 @@ import {
   BookOpen,
   CheckCircle,
   Clock,
-  TrendingUp,
   AlertCircle,
-  BarChart3,
   Target,
   Activity,
-  GraduationCapIcon,
 } from "lucide-react";
-import Link from "next/link";
 import {
   Card,
   CardContent,
@@ -22,7 +18,6 @@ import prisma from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 
 interface Stats {
@@ -206,28 +201,6 @@ export default async function DashboardPage() {
               color: "text-purple-600",
             },
           ],
-          actions: [
-            {
-              label: "管理员管理",
-              href: "/dashboard/management",
-              icon: Target,
-            },
-            {
-              label: "学生管理",
-              href: "/dashboard/usermanagement/student",
-              icon: Users,
-            },
-            {
-              label: "教师管理",
-              href: "/dashboard/usermanagement/teacher",
-              icon: GraduationCapIcon,
-            },
-            {
-              label: "题目管理",
-              href: "/dashboard/usermanagement/problem",
-              icon: BookOpen,
-            },
-          ],
         };
       case "TEACHER":
         return {
@@ -251,28 +224,6 @@ export default async function DashboardPage() {
               value: stats.totalSubmissions,
               icon: Activity,
               color: "text-purple-600",
-            },
-          ],
-          actions: [
-            {
-              label: "学生管理",
-              href: "/dashboard/usermanagement/student",
-              icon: Users,
-            },
-            {
-              label: "题目管理",
-              href: "/dashboard/usermanagement/problem",
-              icon: BookOpen,
-            },
-            {
-              label: "完成情况",
-              href: "/dashboard/teacher/dashboard",
-              icon: BarChart3,
-            },
-            {
-              label: "课程管理",
-              href: "/dashboard/teacher/courses",
-              icon: BookOpen,
             },
           ],
         };
@@ -299,20 +250,6 @@ export default async function DashboardPage() {
               icon: Activity,
               color: "text-purple-600",
             },
-          ],
-          actions: [
-            {
-              label: "我的进度",
-              href: "/dashboard/student/dashboard",
-              icon: TrendingUp,
-            },
-            {
-              label: "我的课程",
-              href: "/dashboard/student/courses",
-              icon: GraduationCapIcon,
-            },
-            { label: "开始做题", href: "/problemset", icon: BookOpen },
-            { label: "个人设置", href: "/dashboard/management", icon: Target },
           ],
         };
     }
@@ -378,26 +315,6 @@ export default async function DashboardPage() {
           </CardContent>
         </Card>
       )}
-
-      {/* 快速操作 */}
-      <Card>
-        <CardHeader>
-          <CardTitle>快速操作</CardTitle>
-          <CardDescription>常用功能快速访问</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-4 md:grid-cols-4">
-            {config.actions.map((action, index) => (
-              <Link key={index} href={action.href}>
-                <Button variant="outline" className="w-full justify-start">
-                  <action.icon className="mr-2 h-4 w-4" />
-                  {action.label}
-                </Button>
-              </Link>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
 
       {/* 最近活动 */}
       <Card>

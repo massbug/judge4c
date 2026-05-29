@@ -10,15 +10,17 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
-  DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { signOut } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { BadgeCheck, ChevronsUpDown, UserPen, LogOut } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { ChevronsUpDown, LogOut } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { SettingsButton } from "@/components/settings-button";
+import { DashboardButton } from "@/components/dashboard-button";
+import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 
 export function NavUser({
   user,
@@ -30,21 +32,14 @@ export function NavUser({
   };
 }) {
   const { isMobile } = useSidebar();
-  const router = useRouter();
+  const t = useTranslations("UserAvatar");
+  const avatarFallback = user.name?.charAt(0) || user.email?.charAt(0) || "U";
 
   async function handleLogout() {
     await signOut({
       callbackUrl: "/sign-in",
       redirect: true,
     });
-  }
-
-  function handleAccount() {
-    if (user && user.email) {
-      router.replace("/dashboard/management");
-    } else {
-      router.replace("/sign-in");
-    }
   }
 
   return (
@@ -58,7 +53,9 @@ export function NavUser({
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                <AvatarFallback className="rounded-lg">
+                  {avatarFallback}
+                </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">{user.name}</span>
@@ -77,7 +74,9 @@ export function NavUser({
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                  <AvatarFallback className="rounded-lg">
+                    {avatarFallback}
+                  </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">{user.name}</span>
@@ -87,19 +86,13 @@ export function NavUser({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem onClick={handleAccount}>
-                <BadgeCheck />
-                账号
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => router.push("/sign-in")}>
-                <UserPen />
-                切换用户
-              </DropdownMenuItem>
+              <DashboardButton />
+              <SettingsButton />
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleLogout}>
               <LogOut />
-              登出
+              {t("LogOut")}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

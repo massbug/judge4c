@@ -14,7 +14,6 @@ import { User } from "next-auth";
 import { siteConfig } from "@/config/site";
 import { NavMain } from "@/components/nav-main";
 import { NavUser } from "@/components/nav-user";
-import { NavProjects } from "@/components/nav-projects";
 import { NavSecondary } from "@/components/nav-secondary";
 import { Command, LifeBuoy, Send, Shield } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -28,16 +27,16 @@ const data = {
       isActive: true,
       items: [
         {
-          title: "我的进度",
-          url: "/dashboard/student/dashboard",
-        },
-        {
           title: "开始做题",
           url: "/problemset",
         },
         {
           title: "我的课程",
           url: "/dashboard/student/courses",
+        },
+        {
+          title: "我的进度",
+          url: "/dashboard/student/dashboard",
         },
         {
           title: "个人设置",
@@ -93,14 +92,9 @@ const data = {
 
 interface AppSidebarProps {
   user: User;
-  wrongProblems: {
-    id: string;
-    name: string;
-    status: string;
-  }[];
 }
 
-export function AppSidebar({ user, wrongProblems, ...props }: AppSidebarProps) {
+export function AppSidebar({ user, ...props }: AppSidebarProps) {
   const t = useTranslations("Sidebar");
   const userInfo = {
     name: user.name ?? "",
@@ -129,7 +123,6 @@ export function AppSidebar({ user, wrongProblems, ...props }: AppSidebarProps) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavProjects projects={wrongProblems} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
