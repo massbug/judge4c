@@ -15,6 +15,7 @@ import type { Monaco } from "@monaco-editor/react";
 import { DEFAULT_EDITOR_OPTIONS } from "@/config/editor";
 import { useMonacoTheme } from "@/hooks/use-monaco-theme";
 import { LanguageServerConfig } from "@/generated/client";
+import { useSettingsStore } from "@/stores/useSettingsStore";
 import type { MessageTransports } from "vscode-languageclient";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { MonacoLanguageClient } from "monaco-languageclient";
@@ -72,6 +73,7 @@ export const CoreEditor = ({
   className,
 }: CoreEditorProps) => {
   const { theme } = useMonacoTheme();
+  const { editorSettings } = useSettingsStore();
 
   const [isEditorMounted, setIsEditorMounted] = useState(false);
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
@@ -159,7 +161,20 @@ export const CoreEditor = ({
       onMount={handleOnMount}
       onChange={handleOnChange}
       onValidate={handleOnValidate}
-      options={DEFAULT_EDITOR_OPTIONS}
+      options={{
+        ...DEFAULT_EDITOR_OPTIONS,
+        fontSize: editorSettings.fontSize,
+        lineHeight: Math.round(editorSettings.fontSize * 1.5),
+        wordWrap: editorSettings.wordWrap ? "on" : "off",
+        minimap: {
+          ...DEFAULT_EDITOR_OPTIONS.minimap,
+          enabled: editorSettings.minimap,
+        },
+        stickyScroll: {
+          ...DEFAULT_EDITOR_OPTIONS.stickyScroll,
+          enabled: editorSettings.stickyScroll,
+        },
+      }}
       loading={<Loading />}
       className={className}
     />

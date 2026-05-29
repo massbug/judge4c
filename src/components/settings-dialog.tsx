@@ -30,7 +30,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useSettingsStore } from "@/stores/useSettingsStore";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import AppearanceSettings from "@/components/appearance-settings";
-import { CodeXml, Globe, Paintbrush, Settings } from "lucide-react";
+import { CodeEditorSettings } from "@/components/code-editor-settings";
+import { CodeXml, Globe, Paintbrush } from "lucide-react";
 
 export const SettingsDialog = () => {
   const t = useTranslations("SettingsDialog");
@@ -39,7 +40,6 @@ export const SettingsDialog = () => {
       { id: "Appearance", name: t("nav.Appearance"), icon: Paintbrush },
       { id: "Language", name: t("nav.Language"), icon: Globe },
       { id: "CodeEditor", name: t("nav.CodeEditor"), icon: CodeXml },
-      { id: "Advanced", name: t("nav.Advanced"), icon: Settings },
     ],
   };
   const { isDialogOpen, activeSetting, setDialogOpen, setActiveSetting } =
@@ -99,6 +99,7 @@ export const SettingsDialog = () => {
               <div className="flex flex-col gap-4">
                 {activeSetting === "Appearance" && <AppearanceSettings />}
                 {activeSetting === "Language" && <LocaleSwitcher />}
+                {activeSetting === "CodeEditor" && <CodeEditorSettings />}
               </div>
             </ScrollArea>
           </main>

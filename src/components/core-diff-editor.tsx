@@ -9,6 +9,7 @@ import { shikiToMonaco } from "@shikijs/monaco";
 import type { Monaco } from "@monaco-editor/react";
 import { DEFAULT_EDITOR_OPTIONS } from "@/config/editor";
 import { useMonacoTheme } from "@/hooks/use-monaco-theme";
+import { useSettingsStore } from "@/stores/useSettingsStore";
 
 const MonacoEditor = dynamic(
   async () => {
@@ -38,6 +39,7 @@ export const CoreDiffEditor = ({
   className,
 }: CoreDiffEditorProps) => {
   const { theme } = useMonacoTheme();
+  const { editorSettings } = useSettingsStore();
 
   const editorRef = useRef<editor.IStandaloneDiffEditor | null>(null);
 
@@ -62,7 +64,21 @@ export const CoreDiffEditor = ({
       modified={modified}
       beforeMount={handleBeforeMount}
       onMount={handleOnMount}
-      options={{ ...DEFAULT_EDITOR_OPTIONS, readOnly: true }}
+      options={{
+        ...DEFAULT_EDITOR_OPTIONS,
+        readOnly: true,
+        fontSize: editorSettings.fontSize,
+        lineHeight: Math.round(editorSettings.fontSize * 1.5),
+        wordWrap: editorSettings.wordWrap ? "on" : "off",
+        minimap: {
+          ...DEFAULT_EDITOR_OPTIONS.minimap,
+          enabled: editorSettings.minimap,
+        },
+        stickyScroll: {
+          ...DEFAULT_EDITOR_OPTIONS.stickyScroll,
+          enabled: editorSettings.stickyScroll,
+        },
+      }}
       loading={<Loading />}
       className={className}
     />

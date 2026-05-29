@@ -75,6 +75,15 @@
     "showPassword": "显示密码",
     "hidePassword": "隐藏密码"
   },
+  "CodeEditorSettings": {
+    "fontSize": "字体大小",
+    "wordWrap": "超长行换行显示",
+    "wordWrapDescription": "一行代码显示不下时，自动换到下一行显示。",
+    "minimap": "小地图",
+    "minimapDescription": "在编辑器右侧显示代码缩略导航。",
+    "stickyScroll": "粘性滚动",
+    "stickyScrollDescription": "滚动时固定显示当前所在的代码结构。"
+  },
   "DetailsPage": {
     "BackButton": "所有提交记录",
     "Time": "提交于",
@@ -129,8 +138,7 @@
     "nav": {
       "Appearance": "外观",
       "Language": "语言",
-      "CodeEditor": "代码编辑器",
-      "Advanced": "高级设置"
+      "CodeEditor": "代码编辑器"
     }
   },
   "SignInForm": {

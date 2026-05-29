@@ -75,6 +75,15 @@
     "showPassword": "Show password",
     "hidePassword": "Hide password"
   },
+  "CodeEditorSettings": {
+    "fontSize": "Font size",
+    "wordWrap": "Wrap long lines",
+    "wordWrapDescription": "Move code to the next line when it does not fit in one line.",
+    "minimap": "Minimap",
+    "minimapDescription": "Show a code overview on the right side of the editor.",
+    "stickyScroll": "Sticky scroll",
+    "stickyScrollDescription": "Keep the current code scope visible while scrolling."
+  },
   "DetailsPage": {
     "BackButton": "All Submissions",
     "Time": "Submitted on",
@@ -129,8 +138,7 @@
     "nav": {
       "Appearance": "Appearance",
       "Language": "Language",
-      "CodeEditor": "CodeEditor",
-      "Advanced": "Advanced"
+      "CodeEditor": "CodeEditor"
     }
   },
   "SignInForm": {
