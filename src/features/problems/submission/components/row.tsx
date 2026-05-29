@@ -51,6 +51,9 @@ export const SubmissionTableRow = ({
     if (detailTab) {
       model.doAction(Actions.selectTab("detail"));
     } else {
+      const submissionTab = model.getNodeById("submission");
+      const targetNodeId = submissionTab?.getParent()?.getId() ?? model.getRoot().getId();
+
       model.doAction(
         Actions.addNode(
           {
@@ -59,7 +62,7 @@ export const SubmissionTableRow = ({
             name: "Details",
             component: "detail",
           },
-          "1",
+          targetNodeId,
           DockLocation.CENTER,
           -1
         )
