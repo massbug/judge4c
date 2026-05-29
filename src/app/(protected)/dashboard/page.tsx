@@ -130,16 +130,21 @@ export default async function DashboardPage() {
     // 学生统计
     const [
       totalProblems,
-      completedProblems,
+      completedProblemRows,
       totalSubmissions,
       recentSubmissions,
     ] = await Promise.all([
       prisma.problem.count({ where: { isPublished: true } }),
-      prisma.submission.count({
+      prisma.submission.findMany({
         where: {
           userId: user.id,
           status: "AC",
+          problem: {
+            isPublished: true,
+          },
         },
+        distinct: ["problemId"],
+        select: { problemId: true },
       }),
       prisma.submission.count({ where: { userId: user.id } }),
       prisma.submission.findMany({
@@ -160,7 +165,11 @@ export default async function DashboardPage() {
       }),
     ]);
 
-    stats = { totalProblems, completedProblems, totalSubmissions };
+    stats = {
+      totalProblems,
+      completedProblems: completedProblemRows.length,
+      totalSubmissions,
+    };
     recentActivity = recentSubmissions.map((sub) => ({
       type: "我的提交",
       title: `题目 ${sub.problem.displayId}`,

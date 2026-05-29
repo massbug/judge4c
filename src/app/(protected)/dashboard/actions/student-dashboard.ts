@@ -65,7 +65,12 @@ export async function getStudentDashboardData() {
 
     // 获取当前学生的所有提交记录（包含题目英文标题）
     const userSubmissions = await prisma.submission.findMany({
-      where: { userId: userId },
+      where: {
+        userId: userId,
+        problem: {
+          isPublished: true,
+        },
+      },
       include: {
         problem: {
           select: {
