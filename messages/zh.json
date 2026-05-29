@@ -213,7 +213,8 @@
   },
   "Testcase": {
     "Table": {
-      "Case": "样例"
+      "Case": "样例",
+      "Empty": "该题目暂无测试用例。"
     }
   },
   "WorkspaceEditorHeader": {

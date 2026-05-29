@@ -11,7 +11,7 @@ interface TestcasePanelProps {
 
 export const TestcasePanel = ({ problemId }: TestcasePanelProps) => {
   return (
-    <PanelLayout>
+    <PanelLayout isScroll={false}>
       <Suspense fallback={<TestcaseContentSkeleton />}>
         <TestcaseContent problemId={problemId} />
       </Suspense>

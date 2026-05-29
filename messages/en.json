@@ -213,7 +213,8 @@
   },
   "Testcase": {
     "Table": {
-      "Case": "Case"
+      "Case": "Case",
+      "Empty": "No test cases found for this problem."
     }
   },
   "WorkspaceEditorHeader": {
