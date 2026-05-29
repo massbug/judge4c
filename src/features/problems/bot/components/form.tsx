@@ -3,6 +3,7 @@
 import { toast } from "sonner";
 import { useCallback } from "react";
 import { useChat } from "@ai-sdk/react";
+import { MarkerSeverity } from "monaco-editor";
 import {
   ChatBubble,
   ChatBubbleMessage,
@@ -17,25 +18,66 @@ import { TooltipButton } from "@/components/tooltip-button";
 import { useProblemEditorStore } from "@/stores/problem-editor";
 import { MdxComponents } from "@/components/content/mdx-components";
 import { ChatMessageList } from "@/components/ui/chat/chat-message-list";
+import type { Locale } from "@/generated/client";
 
 interface BotFormProps {
   description: string;
+  locale: Locale;
+  problemId: string;
+  submissionId?: string;
 }
 
-export const BotForm = ({ description }: BotFormProps) => {
+export const BotForm = ({
+  description,
+  locale,
+  problemId,
+  submissionId,
+}: BotFormProps) => {
   const t = useTranslations("Bot");
-  const { problem, language, value } = useProblemEditorStore();
+  const { problem, language, value, markers } = useProblemEditorStore();
 
-  const { messages, input, handleInputChange, setMessages, handleSubmit } =
-    useChat({
-      initialMessages: [
-        {
-          id: problem?.problemId || "",
-          role: "system",
-          content: `Problem description:\n${description}`,
-        },
-      ],
-    });
+  const { messages, input, handleInputChange, handleSubmit, status } = useChat({
+    initialMessages: [
+      {
+        id: problem?.problemId || "",
+        role: "system",
+        content: `Problem description:\n${description}`,
+      },
+    ],
+    body: {
+      locale,
+      problemId,
+      submissionId,
+    },
+    maxSteps: 3,
+    onToolCall: async ({ toolCall }) => {
+      if (toolCall.toolName === "getCurrentCode") {
+        return {
+          language,
+          code: value,
+        };
+      }
+
+      if (toolCall.toolName === "getEditorDiagnostics") {
+        const diagnostics = markers.map((marker) => ({
+          severity: getMarkerSeverityLabel(marker.severity),
+          message: marker.message,
+          source: marker.source,
+          code: marker.code,
+          startLineNumber: marker.startLineNumber,
+          startColumn: marker.startColumn,
+          endLineNumber: marker.endLineNumber,
+          endColumn: marker.endColumn,
+        }));
+
+        return {
+          errors: diagnostics.filter((item) => item.severity === "error"),
+          warnings: diagnostics.filter((item) => item.severity === "warning"),
+          diagnostics,
+        };
+      }
+    },
+  });
 
   const handleFormSubmit = useCallback(
     (e: React.FormEvent) => {
@@ -46,16 +88,9 @@ export const BotForm = ({ description }: BotFormProps) => {
         return;
       }
 
-      const currentCodeMessage = {
-        id: problem?.problemId || "",
-        role: "system" as const,
-        content: `Current code:\n\`\`\`${language}\n${value}\n\`\`\``,
-      };
-
-      setMessages((prev) => [...prev, currentCodeMessage]);
       handleSubmit();
     },
-    [handleSubmit, input, language, problem?.problemId, setMessages, value]
+    [handleSubmit, input]
   );
 
   return (
@@ -72,20 +107,30 @@ export const BotForm = ({ description }: BotFormProps) => {
                     (message) =>
                       message.role === "user" || message.role === "assistant"
                   )
-                  .map((message) => (
-                    <ChatBubble
-                      key={message.id}
-                      layout="ai"
-                      className="border-b pb-4"
-                    >
-                      <ChatBubbleMessage layout="ai">
-                        <MdxPreview
-                          source={message.content}
-                          components={{ ...MdxComponents, pre: PreDetail }}
-                        />
-                      </ChatBubbleMessage>
-                    </ChatBubble>
-                  ))}
+                  .map((message) => {
+                    const isEmptyAssistantMessage =
+                      message.role === "assistant" &&
+                      !message.content.trim() &&
+                      status !== "ready";
+
+                    return (
+                      <ChatBubble
+                        key={message.id}
+                        layout="ai"
+                        className="border-b pb-4"
+                      >
+                        <ChatBubbleMessage
+                          layout="ai"
+                          isLoading={isEmptyAssistantMessage}
+                        >
+                          <MdxPreview
+                            source={message.content}
+                            components={{ ...MdxComponents, pre: PreDetail }}
+                          />
+                        </ChatBubbleMessage>
+                      </ChatBubble>
+                    );
+                  })}
               </ChatMessageList>
             </ScrollArea>
           </div>
@@ -130,4 +175,19 @@ export const BotForm = ({ description }: BotFormProps) => {
       </footer>
     </div>
   );
+};
+
+const getMarkerSeverityLabel = (severity: MarkerSeverity) => {
+  switch (severity) {
+    case MarkerSeverity.Error:
+      return "error";
+    case MarkerSeverity.Warning:
+      return "warning";
+    case MarkerSeverity.Info:
+      return "info";
+    case MarkerSeverity.Hint:
+      return "hint";
+    default:
+      return "unknown";
+  }
 };

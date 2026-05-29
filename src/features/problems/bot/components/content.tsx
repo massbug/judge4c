@@ -23,10 +23,14 @@ const getLocalizedDescription = (
 
 interface BotContentProps {
   problemId: string;
+  submissionId?: string;
 }
 
-export const BotContent = async ({ problemId }: BotContentProps) => {
-  const locale = await getLocale();
+export const BotContent = async ({
+  problemId,
+  submissionId,
+}: BotContentProps) => {
+  const locale = (await getLocale()) as Locale;
 
   const descriptions = await prisma.problemLocalization.findMany({
     where: {
@@ -35,9 +39,16 @@ export const BotContent = async ({ problemId }: BotContentProps) => {
     },
   });
 
-  const description = getLocalizedDescription(descriptions, locale as Locale);
+  const description = getLocalizedDescription(descriptions, locale);
 
-  return <BotForm description={description} />;
+  return (
+    <BotForm
+      description={description}
+      locale={locale}
+      problemId={problemId}
+      submissionId={submissionId}
+    />
+  );
 };
 
 export const BotContentSkeleton = () => {

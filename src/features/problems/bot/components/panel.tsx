@@ -7,13 +7,14 @@ import { PanelLayout } from "@/features/problems/layouts/panel-layout";
 
 interface BotPanelProps {
   problemId: string;
+  submissionId?: string;
 }
 
-export const BotPanel = ({ problemId }: BotPanelProps) => {
+export const BotPanel = ({ problemId, submissionId }: BotPanelProps) => {
   return (
     <PanelLayout isScroll={false}>
       <Suspense fallback={<BotContentSkeleton />}>
-        <BotContent problemId={problemId} />
+        <BotContent problemId={problemId} submissionId={submissionId} />
       </Suspense>
     </PanelLayout>
   );

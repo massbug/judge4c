@@ -22,7 +22,7 @@ export const ProblemView = ({ problemId, submissionId }: ProblemViewProps) => {
     detail: <DetailPanel submissionId={submissionId} />,
     code: <CodePanel problemId={problemId} />,
     testcase: <TestcasePanel problemId={problemId} />,
-    bot: <BotPanel problemId={problemId} />,
+    bot: <BotPanel problemId={problemId} submissionId={submissionId} />,
   };
 
   return (
