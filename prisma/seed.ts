@@ -3128,7 +3128,6 @@ export async function main() {
       data: selectedProblems.map((problem, index) => ({
         assignmentId: assignment.id,
         problemId: problem.id,
-        maxPoints: 100,
         order: index + 1,
       })),
       skipDuplicates: true,

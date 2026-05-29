@@ -59,12 +59,10 @@ export default function TeacherCourseDetailPage() {
   const [assignmentTitle, setAssignmentTitle] = useState("");
   const [assignmentDescription, setAssignmentDescription] = useState("");
   const [assignmentDueAt, setAssignmentDueAt] = useState("");
-  const [selectedProblems, setSelectedProblems] = useState<
-    Record<string, number>
-  >({});
+  const [selectedProblems, setSelectedProblems] = useState<string[]>([]);
 
   const selectedProblemIds = useMemo(
-    () => Object.keys(selectedProblems),
+    () => selectedProblems,
     [selectedProblems]
   );
 
@@ -123,14 +121,13 @@ export default function TeacherCourseDetailPage() {
           published: true,
           problems: selectedProblemIds.map((problemId, index) => ({
             problemId,
-            maxPoints: selectedProblems[problemId] ?? 100,
             order: index + 1,
           })),
         });
         setAssignmentTitle("");
         setAssignmentDescription("");
         setAssignmentDueAt("");
-        setSelectedProblems({});
+        setSelectedProblems([]);
         await loadData();
       } catch (e) {
         setError(e instanceof Error ? e.message : "创建作业失败");
@@ -147,11 +144,9 @@ export default function TeacherCourseDetailPage() {
   const toggleProblem = (problemId: string, checked: boolean) => {
     setSelectedProblems((prev) => {
       if (!checked) {
-        const next = { ...prev };
-        delete next[problemId];
-        return next;
+        return prev.filter((id) => id !== problemId);
       }
-      return { ...prev, [problemId]: prev[problemId] ?? 100 };
+      return prev.includes(problemId) ? prev : [...prev, problemId];
     });
   };
 
@@ -220,7 +215,7 @@ export default function TeacherCourseDetailPage() {
       <Card>
         <CardHeader>
           <CardTitle>创建作业</CardTitle>
-          <CardDescription>选择题目并设置每题分值</CardDescription>
+          <CardDescription>选择题目后发布给课程学生练习</CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
           <Input
@@ -242,34 +237,22 @@ export default function TeacherCourseDetailPage() {
             {problems.map((problem) => {
               const selected = selectedProblemIds.includes(problem.id);
               return (
-                <div key={problem.id} className="space-y-2 rounded border p-2">
-                  <label className="flex items-center gap-2 text-sm">
-                    <Checkbox
-                      checked={selected}
-                      onCheckedChange={(checked) =>
-                        toggleProblem(problem.id, checked === true)
-                      }
-                    />
-                    <span>
-                      #{problem.displayId}{" "}
-                      {problem.localizations[0]?.content || "未命名题目"} (
-                      {problem.difficulty})
-                    </span>
-                  </label>
-                  {selected ? (
-                    <Input
-                      type="number"
-                      min={1}
-                      value={selectedProblems[problem.id] ?? 100}
-                      onChange={(e) =>
-                        setSelectedProblems((prev) => ({
-                          ...prev,
-                          [problem.id]: Number(e.target.value || 100),
-                        }))
-                      }
-                    />
-                  ) : null}
-                </div>
+                <label
+                  key={problem.id}
+                  className="flex items-center gap-2 rounded border p-2 text-sm"
+                >
+                  <Checkbox
+                    checked={selected}
+                    onCheckedChange={(checked) =>
+                      toggleProblem(problem.id, checked === true)
+                    }
+                  />
+                  <span>
+                    #{problem.displayId}{" "}
+                    {problem.localizations[0]?.content || "未命名题目"} (
+                    {problem.difficulty})
+                  </span>
+                </label>
               );
             })}
           </div>

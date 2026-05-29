@@ -35,7 +35,7 @@ export default function StudentCoursesPage() {
       <Card>
         <CardHeader>
           <CardTitle>我的课程</CardTitle>
-          <CardDescription>进入课程查看作业、截止时间和成绩</CardDescription>
+          <CardDescription>进入课程查看作业、截止时间和通过情况</CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
           {error ? <p className="text-sm text-red-500">{error}</p> : null}

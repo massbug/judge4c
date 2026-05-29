@@ -275,7 +275,6 @@ model Assignment {
 model AssignmentProblem {
   assignmentId String
   problemId    String
-  maxPoints    Int @default(100)
   order        Int?
 
   assignment Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)

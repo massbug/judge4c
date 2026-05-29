@@ -118,9 +118,9 @@ export default function TeacherAssignmentDetailPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>班级成绩概览</CardTitle>
+          <CardTitle>班级通过情况</CardTitle>
           <CardDescription>
-            满分 {stats.maxScore} 分 · 共 {stats.problemCount} 题
+            共 {stats.problemCount} 题 · {stats.totalTestcases} 个测试点
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
@@ -133,8 +133,8 @@ export default function TeacherAssignmentDetailPage() {
                   {student.name || "未命名"} ({student.email})
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  总分 {student.totalScore}/{student.maxScore} · 完成率{" "}
-                  {student.completionPercent}%
+                  通过测试点 {student.passedTestcaseCount}/{student.totalTestcases} ·
+                  通过题目 {student.solvedCount}/{student.problemCount}
                 </p>
               </div>
             ))
@@ -144,7 +144,7 @@ export default function TeacherAssignmentDetailPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>每题 AC 覆盖率</CardTitle>
+          <CardTitle>每题通过情况</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2">
           {stats.perProblemCoverage.map((item) => (
@@ -153,7 +153,10 @@ export default function TeacherAssignmentDetailPage() {
                 #{item.displayId} {item.title}
               </p>
               <p className="text-sm text-muted-foreground">
-                {item.solvedUsers}/{item.totalUsers} 人通过 · 覆盖率 {item.acCoverage}%
+                {item.testcaseCount > 0
+                  ? `每人 ${item.testcaseCount} 个测试点`
+                  : "未配置测试点"}{" "}
+                · {item.solvedUsers}/{item.totalUsers} 人全通过
               </p>
             </div>
           ))}

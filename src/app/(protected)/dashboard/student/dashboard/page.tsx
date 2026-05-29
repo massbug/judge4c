@@ -47,7 +47,7 @@ export default function StudentDashboard() {
         setLoading(true);
         const dashboardData = await getStudentDashboardData();
         console.log("获取到的数据:", dashboardData);
-        console.log("完成情况:", dashboardData.completionData);
+        console.log("通过情况:", dashboardData.completionData);
         console.log("错误情况:", dashboardData.errorData);
         console.log("易错题:", dashboardData.difficultProblems);
         setData(dashboardData);
@@ -106,22 +106,18 @@ export default function StudentDashboard() {
       <h1 className="text-3xl font-bold mb-6">学生仪表板</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* 题目完成比例模块 */}
+        {/* 题目通过情况模块 */}
         <Card>
           <CardHeader>
-            <CardTitle>题目完成比例</CardTitle>
+            <CardTitle>题目通过情况</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               <div className="flex justify-between items-center">
                 <span>
-                  已完成题目：{completionData.completed}/{completionData.total}
-                </span>
-                <span className="text-green-500">
-                  {completionData.percentage}%
+                  已通过题目：{completionData.completed}/{completionData.total}
                 </span>
               </div>
-              <Progress value={completionData.percentage} className="h-2" />
               <div className="h-[200px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>

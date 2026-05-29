@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 import {
   Card,
   CardContent,
@@ -49,17 +48,15 @@ export default function StudentAssignmentDetailPage() {
         </CardHeader>
         <CardContent className="space-y-2">
           <p className="text-sm">
-            总分：{summary.totalScore}/{summary.maxScore}
+            通过测试点：{summary.passedTestcaseCount}/{summary.totalTestcases}
           </p>
           <p className="text-sm">
-            完成：{summary.solvedCount}/{summary.problemCount}
+            通过题目：{summary.solvedCount}/{summary.problemCount}
           </p>
-          <Progress value={summary.completionPercent} className="w-full" />
           <p className="text-xs text-muted-foreground">
-            完成率 {summary.completionPercent}%
             {summary.assignment.dueAt
-              ? ` · 截止 ${new Date(summary.assignment.dueAt).toLocaleString()}`
-              : ""}
+              ? `截止 ${new Date(summary.assignment.dueAt).toLocaleString()}`
+              : "暂无截止时间"}
           </p>
           {error ? <p className="text-sm text-red-500">{error}</p> : null}
         </CardContent>
@@ -68,7 +65,7 @@ export default function StudentAssignmentDetailPage() {
       <Card>
         <CardHeader>
           <CardTitle>题目列表</CardTitle>
-          <CardDescription>进入题目后会自动按本作业统计提交与得分</CardDescription>
+          <CardDescription>进入题目后会自动按本作业统计提交与测试点</CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
           {summary.rows.map((row) => (
@@ -81,8 +78,10 @@ export default function StudentAssignmentDetailPage() {
                   #{row.displayId} {row.title}
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  得分 {row.earnedPoints}/{row.maxPoints} · 状态 {row.bestStatus} ·
-                  提交 {row.attempts} 次
+                  {row.testcaseCount > 0
+                    ? `通过测试点 ${row.passedTestcaseCount}/${row.testcaseCount}`
+                    : "未配置测试点"}{" "}
+                  · 状态 {row.bestStatus} · 提交 {row.attempts} 次
                 </p>
               </div>
               <Button asChild variant={row.solved ? "secondary" : "outline"}>

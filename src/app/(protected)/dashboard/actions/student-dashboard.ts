@@ -103,7 +103,7 @@ export async function getStudentDashboardData() {
       }))
     );
 
-    // 计算题目完成情况
+    // 计算题目通过情况
     const completedProblems = new Set<string | number>();
     const attemptedProblems = new Set<string | number>();
     const wrongSubmissions = new Map<string | number, number>(); // problemId -> count
@@ -121,10 +121,10 @@ export async function getStudentDashboardData() {
     });
 
     console.log("尝试过的题目数:", attemptedProblems.size);
-    console.log("完成的题目数:", completedProblems.size);
+    console.log("通过的题目数:", completedProblems.size);
     console.log("错误提交统计:", Object.fromEntries(wrongSubmissions));
 
-    // 题目完成比例数据
+    // 题目通过情况数据
     const completionData = {
       total: allProblems.length,
       completed: completedProblems.size,
@@ -134,10 +134,10 @@ export async function getStudentDashboardData() {
           : 0,
     };
 
-    // 错题比例数据 - 基于已完成的题目计算
+    // 错题比例数据 - 基于已通过的题目计算
     const wrongProblems = new Set<string | number>();
 
-    // 统计在已完成的题目中，哪些题目曾经有过错误提交
+    // 统计在已通过的题目中，哪些题目曾经有过错误提交
     userSubmissions.forEach((submission) => {
       if (
         submission.status !== "AC" &&
@@ -148,8 +148,8 @@ export async function getStudentDashboardData() {
     });
 
     const errorData = {
-      total: completedProblems.size, // 已完成的题目总数
-      wrong: wrongProblems.size, // 在已完成的题目中有过错误的题目数
+      total: completedProblems.size, // 已通过的题目总数
+      wrong: wrongProblems.size, // 在已通过的题目中有过错误的题目数
       percentage:
         completedProblems.size > 0
           ? Math.round((wrongProblems.size / completedProblems.size) * 100)
@@ -181,9 +181,9 @@ export async function getStudentDashboardData() {
       errorData,
       difficultProblems,
       pieChartData: [
-        { name: "已完成", value: completionData.completed },
+        { name: "已通过", value: completionData.completed },
         {
-          name: "未完成",
+          name: "未通过",
           value: completionData.total - completionData.completed,
         },
       ],
@@ -194,7 +194,7 @@ export async function getStudentDashboardData() {
     };
 
     console.log("=== 返回的数据 ===");
-    console.log("完成情况:", completionData);
+    console.log("通过情况:", completionData);
     console.log("错误情况:", errorData);
     console.log("易错题数量:", difficultProblems.length);
     console.log("=== 数据获取完成 ===");

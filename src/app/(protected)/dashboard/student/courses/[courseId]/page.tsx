@@ -62,7 +62,7 @@ export default function StudentCourseDetailPage() {
       <Card>
         <CardHeader>
           <CardTitle>作业列表</CardTitle>
-          <CardDescription>点击进入作业查看得分并开始做题</CardDescription>
+          <CardDescription>点击进入作业查看测试点通过情况并开始做题</CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
           {error ? <p className="text-sm text-red-500">{error}</p> : null}

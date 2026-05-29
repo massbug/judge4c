@@ -10,7 +10,6 @@ import {
 
 interface AssignmentProblemInput {
   problemId: string;
-  maxPoints: number;
   order?: number;
 }
 
@@ -31,14 +30,6 @@ interface UpdateAssignmentInput {
   dueAt?: string | null;
   published?: boolean;
   problems?: AssignmentProblemInput[];
-}
-
-function normalizePoints(points: number) {
-  const normalized = Number(points);
-  if (!Number.isFinite(normalized) || normalized <= 0) {
-    throw new Error("分值必须是正整数");
-  }
-  return Math.round(normalized);
 }
 
 async function validateProblems(problems: AssignmentProblemInput[]) {
@@ -101,7 +92,6 @@ export async function createAssignment(input: CreateAssignmentInput) {
       problems: {
         create: input.problems.map((item, index) => ({
           problemId: item.problemId,
-          maxPoints: normalizePoints(item.maxPoints),
           order: item.order ?? index + 1,
         })),
       },
@@ -185,7 +175,6 @@ export async function updateAssignment(
       data: input.problems.map((item, index) => ({
         assignmentId,
         problemId: item.problemId,
-        maxPoints: normalizePoints(item.maxPoints),
         order: item.order ?? index + 1,
       })),
       skipDuplicates: true,
@@ -239,7 +228,6 @@ export async function getAssignmentDetail(assignmentId: string) {
         orderBy: [{ order: "asc" }, { problem: { displayId: "asc" } }],
         select: {
           problemId: true,
-          maxPoints: true,
           order: true,
           problem: {
             select: {

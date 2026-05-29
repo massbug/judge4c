@@ -43,11 +43,11 @@ const ITEMS_PER_PAGE = 5; // 每页显示的题目数量
 
 const chartConfig = {
   completed: {
-    label: "已完成",
+    label: "已通过",
     color: "#4CAF50", // 使用更鲜明的颜色
   },
   uncompleted: {
-    label: "未完成",
+    label: "未通过",
     color: "#FFA726", // 使用更鲜明的颜色
   },
 } satisfies ChartConfig;
@@ -114,11 +114,11 @@ export default function TeacherDashboard() {
       <h1 className="text-3xl font-bold mb-6">教师仪表板</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* 题目完成情况模块 */}
+        {/* 题目通过情况模块 */}
         <Card className="min-h-[450px]">
           <CardHeader>
-            <CardTitle>题目完成情况</CardTitle>
-            <CardDescription>各题目完成及未完成人数图表</CardDescription>
+            <CardTitle>题目通过情况</CardTitle>
+            <CardDescription>各题目通过及未通过人数图表</CardDescription>
           </CardHeader>
           <CardContent>
             {chartData.length === 0 ? (
@@ -158,7 +158,7 @@ export default function TeacherDashboard() {
                     />
                     <Bar
                       dataKey="completedPercent"
-                      name="已完成"
+                      name="已通过"
                       fill={chartConfig.completed.color}
                       radius={[4, 4, 0, 0]}
                     >
@@ -171,7 +171,7 @@ export default function TeacherDashboard() {
                     </Bar>
                     <Bar
                       dataKey="uncompletedPercent"
-                      name="未完成"
+                      name="未通过"
                       fill={chartConfig.uncompleted.color}
                       radius={[4, 4, 0, 0]}
                     >
@@ -217,10 +217,10 @@ export default function TeacherDashboard() {
           </CardContent>
           <CardFooter className="flex-col items-start gap-2 text-sm">
             <div className="flex gap-2 leading-none font-medium">
-              完成度趋势 <TrendingUp className="h-4 w-4" />
+              通过趋势 <TrendingUp className="h-4 w-4" />
             </div>
             <div className="text-muted-foreground leading-none">
-              显示各题目完成情况（已完成/未完成）
+              显示各题目通过情况（已通过/未通过）
             </div>
           </CardFooter>
         </Card>

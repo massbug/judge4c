@@ -18,7 +18,6 @@ import prisma from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 
 interface Stats {
   totalUsers?: number;
@@ -239,7 +238,7 @@ export default async function DashboardPage() {
               color: "text-blue-600",
             },
             {
-              label: "已完成",
+              label: "已通过",
               value: stats.completedProblems,
               icon: CheckCircle,
               color: "text-green-600",
@@ -256,13 +255,6 @@ export default async function DashboardPage() {
   };
 
   const config = getRoleConfig();
-  const completionRate =
-    fullUser.role === "STUDENT"
-      ? (stats.totalProblems || 0) > 0
-        ? ((stats.completedProblems || 0) / (stats.totalProblems || 1)) * 100
-        : 0
-      : 0;
-
   return (
     <div className="space-y-6 p-6">
       {/* 欢迎区域 */}
@@ -294,7 +286,7 @@ export default async function DashboardPage() {
         ))}
       </div>
 
-      {/* 学生进度条 */}
+      {/* 学生通过情况 */}
       {fullUser.role === "STUDENT" && (
         <Card>
           <CardHeader>
@@ -303,14 +295,14 @@ export default async function DashboardPage() {
               学习进度
             </CardTitle>
             <CardDescription>
-              已完成 {stats.completedProblems || 0} / {stats.totalProblems || 0}{" "}
+              已通过 {stats.completedProblems || 0} / {stats.totalProblems || 0}{" "}
               道题目
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Progress value={completionRate} className="w-full" />
-            <p className="mt-2 text-sm text-muted-foreground">
-              完成率: {completionRate.toFixed(1)}%
+            <p className="text-sm text-muted-foreground">
+              已通过 {stats.completedProblems || 0} / {stats.totalProblems || 0}{" "}
+              道题目
             </p>
           </CardContent>
         </Card>

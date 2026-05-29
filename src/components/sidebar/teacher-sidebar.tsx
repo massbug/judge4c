@@ -35,7 +35,7 @@ const data = {
           url: "/dashboard/usermanagement/problem",
         },
         {
-          title: "完成情况",
+          title: "通过情况",
           url: "/dashboard/teacher/dashboard",
         },
         {

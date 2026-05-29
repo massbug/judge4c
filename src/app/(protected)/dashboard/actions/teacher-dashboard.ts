@@ -59,7 +59,7 @@ export async function getProblemCompletionData(): Promise<
 
   const locale = await getLocale();
 
-  // 按题目分组统计完成情况（统计独立用户数）
+  // 按题目分组统计通过情况（统计独立用户数）
   const problemStats = new Map<
     string,
     {
@@ -77,7 +77,7 @@ export async function getProblemCompletionData(): Promise<
     const problemTitle = title;
     const problemDisplayId = submission.problem.displayId;
     const userId = submission.userId;
-    const isCompleted = submission.status === Status.AC; // 只有 Accepted 才算完成
+    const isCompleted = submission.status === Status.AC; // 只有 Accepted 才算通过
 
     if (!problemStats.has(problemId)) {
       problemStats.set(problemId, {
