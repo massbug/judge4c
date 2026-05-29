@@ -108,6 +108,7 @@ export const BotForm = ({
                       message.role === "user" || message.role === "assistant"
                   )
                   .map((message) => {
+                    const isUserMessage = message.role === "user";
                     const isEmptyAssistantMessage =
                       message.role === "assistant" &&
                       !message.content.trim() &&
@@ -116,17 +117,26 @@ export const BotForm = ({
                     return (
                       <ChatBubble
                         key={message.id}
-                        layout="ai"
-                        className="border-b pb-4"
+                        variant={isUserMessage ? "sent" : "received"}
+                        className={isUserMessage ? "self-end" : "max-w-full"}
                       >
                         <ChatBubbleMessage
-                          layout="ai"
+                          variant={isUserMessage ? "sent" : "received"}
                           isLoading={isEmptyAssistantMessage}
+                          className={
+                            isUserMessage
+                              ? "max-w-[85%] rounded-2xl px-3 py-2"
+                              : "w-full rounded-none bg-transparent p-0"
+                          }
                         >
-                          <MdxPreview
-                            source={message.content}
-                            components={{ ...MdxComponents, pre: PreDetail }}
-                          />
+                          {isUserMessage ? (
+                            message.content
+                          ) : (
+                            <MdxPreview
+                              source={message.content}
+                              components={{ ...MdxComponents, pre: PreDetail }}
+                            />
+                          )}
                         </ChatBubbleMessage>
                       </ChatBubble>
                     );
