@@ -12,7 +12,11 @@ interface DetailPanelProps {
 
 export const DetailPanel = ({ submissionId }: DetailPanelProps) => {
   if (!submissionId) {
-    return <DetailContentSkeleton />;
+    return (
+      <PanelLayout isScroll={false}>
+        <DetailContentSkeleton />
+      </PanelLayout>
+    );
   }
 
   return (

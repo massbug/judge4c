@@ -2,6 +2,7 @@ import { TestcasePanel } from "@/features/problems/testcase/panel";
 import { BotPanel } from "@/features/problems/bot/components/panel";
 import { CodePanel } from "@/features/problems/code/components/panel";
 import { DetailPanel } from "@/features/problems/detail/components/panel";
+import { DetailTabSync } from "@/features/problems/detail/components/tab-sync";
 import { SolutionPanel } from "@/features/problems/solution/components/panel";
 import { SubmissionPanel } from "@/features/problems/submission/components/panel";
 import { DescriptionPanel } from "@/features/problems/description/components/panel";
@@ -26,6 +27,7 @@ export const ProblemView = ({ problemId, submissionId }: ProblemViewProps) => {
 
   return (
     <div className="relative flex h-full w-full">
+      <DetailTabSync submissionId={submissionId} />
       <SubmissionRealtimeListener problemId={problemId} />
       <ProblemFlexLayout components={components} />
     </div>
