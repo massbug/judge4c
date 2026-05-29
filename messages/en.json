@@ -8,6 +8,7 @@
     }
   },
   "UserAvatar": {
+    "Dashboard": "Dashboard",
     "Settings": "Settings",
     "LogIn": "LogIn",
     "LogOut": "LogOut"

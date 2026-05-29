@@ -8,6 +8,7 @@
     }
   },
   "UserAvatar": {
+    "Dashboard": "仪表板",
     "Settings": "设置",
     "LogIn": "登录",
     "LogOut": "登出"
