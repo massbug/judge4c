@@ -12,7 +12,6 @@ import { useTranslations } from "next-intl";
 import MdxPreview from "@/components/mdx-preview";
 import { Textarea } from "@/components/ui/textarea";
 import { BotIcon, SendHorizonal } from "lucide-react";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { PreDetail } from "@/components/content/pre-detail";
 import { TooltipButton } from "@/components/tooltip-button";
 import { useProblemEditorStore } from "@/stores/problem-editor";
@@ -100,49 +99,47 @@ export const BotForm = ({
       ) ? (
         <div className="relative flex-1">
           <div className="absolute h-full w-full">
-            <ScrollArea className="h-full [&>[data-radix-scroll-area-viewport]>div:min-w-0 [&>[data-radix-scroll-area-viewport]>div]:!block">
-              <ChatMessageList>
-                {messages
-                  .filter(
-                    (message) =>
-                      message.role === "user" || message.role === "assistant"
-                  )
-                  .map((message) => {
-                    const isUserMessage = message.role === "user";
-                    const isEmptyAssistantMessage =
-                      message.role === "assistant" &&
-                      !message.content.trim() &&
-                      status !== "ready";
+            <ChatMessageList>
+              {messages
+                .filter(
+                  (message) =>
+                    message.role === "user" || message.role === "assistant"
+                )
+                .map((message) => {
+                  const isUserMessage = message.role === "user";
+                  const isEmptyAssistantMessage =
+                    message.role === "assistant" &&
+                    !message.content.trim() &&
+                    status !== "ready";
 
-                    return (
-                      <ChatBubble
-                        key={message.id}
+                  return (
+                    <ChatBubble
+                      key={message.id}
+                      variant={isUserMessage ? "sent" : "received"}
+                      className={isUserMessage ? "self-end" : "max-w-full"}
+                    >
+                      <ChatBubbleMessage
                         variant={isUserMessage ? "sent" : "received"}
-                        className={isUserMessage ? "self-end" : "max-w-full"}
+                        isLoading={isEmptyAssistantMessage}
+                        className={
+                          isUserMessage
+                            ? "max-w-[85%] rounded-2xl px-3 py-2"
+                            : "w-full rounded-none bg-transparent p-0"
+                        }
                       >
-                        <ChatBubbleMessage
-                          variant={isUserMessage ? "sent" : "received"}
-                          isLoading={isEmptyAssistantMessage}
-                          className={
-                            isUserMessage
-                              ? "max-w-[85%] rounded-2xl px-3 py-2"
-                              : "w-full rounded-none bg-transparent p-0"
-                          }
-                        >
-                          {isUserMessage ? (
-                            message.content
-                          ) : (
-                            <MdxPreview
-                              source={message.content}
-                              components={{ ...MdxComponents, pre: PreDetail }}
-                            />
-                          )}
-                        </ChatBubbleMessage>
-                      </ChatBubble>
-                    );
-                  })}
-              </ChatMessageList>
-            </ScrollArea>
+                        {isUserMessage ? (
+                          message.content
+                        ) : (
+                          <MdxPreview
+                            source={message.content}
+                            components={{ ...MdxComponents, pre: PreDetail }}
+                          />
+                        )}
+                      </ChatBubbleMessage>
+                    </ChatBubble>
+                  );
+                })}
+            </ChatMessageList>
           </div>
         </div>
       ) : (
