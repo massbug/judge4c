@@ -75,8 +75,13 @@ export const getAnalysis = async (
     );
   }
 
-  const analysis = await prisma.codeAnalysis.findUnique({
-    where: { submissionId: submissionId },
+  const analysis = await prisma.codeAnalysis.findFirst({
+    where: {
+      submissionId,
+      submission: {
+        userId: session.user.id,
+      },
+    },
   });
 
   if (!analysis) {

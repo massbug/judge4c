@@ -46,7 +46,7 @@ export const SubmissionContent = async ({
 
   return userId ? (
     <div className="px-3">
-      <SubmissionTable problemId={problemId} />
+      <SubmissionTable problemId={problemId} userId={userId} />
     </div>
   ) : (
     <LoginPromptCard />

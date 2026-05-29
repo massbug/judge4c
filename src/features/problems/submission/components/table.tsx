@@ -11,13 +11,17 @@ import { SubmissionTableRow } from "@/features/problems/submission/components/ro
 
 interface SubmissionTableProps {
   problemId: string;
+  userId: string;
 }
 
-export const SubmissionTable = async ({ problemId }: SubmissionTableProps) => {
+export const SubmissionTable = async ({
+  problemId,
+  userId,
+}: SubmissionTableProps) => {
   const t = await getTranslations("SubmissionsTable");
 
   const submissions = await prisma.submission.findMany({
-    where: { problemId },
+    where: { problemId, userId },
     orderBy: { createdAt: "desc" },
   });
 

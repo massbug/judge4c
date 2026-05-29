@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { Locale } from "@/generated/client";
 import { Label } from "@/components/ui/label";
@@ -22,17 +23,17 @@ export const DetailTable = async ({ submissionId }: DetailTableProps) => {
   const t = await getTranslations("DetailsPage");
   const s = await getTranslations("StatusMessage");
   const locale = (await getLocale()) as Locale;
-  const submission = await prisma.submission.findUnique({
-    where: {
-      id: submissionId,
-    },
-  });
-  const judge = await prisma.judge.findUnique({
-    where: { submissionId },
-    select: {
-      compileOutput: true,
-    },
-  });
+  const session = await auth();
+  const userId = session?.user?.id;
+
+  const submission = userId
+    ? await prisma.submission.findFirst({
+        where: {
+          id: submissionId,
+          userId,
+        },
+      })
+    : null;
 
   if (!submission)
     return (
@@ -40,6 +41,13 @@ export const DetailTable = async ({ submissionId }: DetailTableProps) => {
         No Submission
       </div>
     );
+
+  const judge = await prisma.judge.findUnique({
+    where: { submissionId },
+    select: {
+      compileOutput: true,
+    },
+  });
 
   const createdAt = new Date(submission.createdAt);
   const submittedDisplay = formatSubmissionDate(createdAt, locale);
