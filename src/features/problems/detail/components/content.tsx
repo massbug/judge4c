@@ -9,7 +9,7 @@ interface DetailContentProps {
 
 export const DetailContent = ({ submissionId }: DetailContentProps) => {
   return (
-    <ScrollArea className="h-full">
+    <ScrollArea className="min-h-0 flex-1">
       <DetailTable submissionId={submissionId} />
       <AnalysisContent submissionId={submissionId} />
       <ScrollBar orientation="horizontal" />

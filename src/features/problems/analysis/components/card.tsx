@@ -20,6 +20,8 @@ import {
 import type { AnalysisStatus, CodeAnalysis } from "@/generated/client";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useTranslations } from "next-intl";
+import MdxPreview from "@/components/mdx-preview";
+import { MdxComponents } from "@/components/content/mdx-components";
 
 interface AnalysisCardProps {
   submissionId: string;
@@ -192,12 +194,11 @@ export const AnalysisCard = ({ submissionId }: AnalysisCardProps) => {
           </div>
         </div>
 
-        <div className="text-muted-foreground bg-muted/40 p-4 rounded-lg w-full border">
-          <h3 className="font-medium mb-2 text-foreground">{t("Feedback")}</h3>
-          <p className="whitespace-pre-wrap leading-relaxed">
-            {analysis.feedback}
-          </p>
-        </div>
+        <MdxPreview
+          source={analysis.feedback ?? t("NotAvailable")}
+          components={MdxComponents}
+          className="w-full"
+        />
       </CardFooter>
     </Card>
   );

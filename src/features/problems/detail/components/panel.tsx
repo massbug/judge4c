@@ -21,10 +21,12 @@ export const DetailPanel = ({ submissionId }: DetailPanelProps) => {
 
   return (
     <PanelLayout isScroll={false}>
-      <DetailHeader />
-      <Suspense fallback={<DetailContentSkeleton />}>
-        <DetailContent submissionId={submissionId} />
-      </Suspense>
+      <div className="flex h-full min-h-0 flex-col">
+        <DetailHeader />
+        <Suspense fallback={<DetailContentSkeleton />}>
+          <DetailContent submissionId={submissionId} />
+        </Suspense>
+      </div>
     </PanelLayout>
   );
 };
