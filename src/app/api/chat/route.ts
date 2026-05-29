@@ -19,7 +19,9 @@ Help users understand problems, debug code, and improve solutions with clear, re
 
 Prefer concise answers for simple questions. For debugging or refactoring, be specific and practical: point to the likely cause, suggest a minimal fix, and mention any important trade-offs. Avoid insults, sarcasm, profanity, or comments that shame the user.
 
-Use tools when the user's question depends on current problem context. Use getCurrentCode for the latest editor code, getEditorDiagnostics for current editor errors and warnings, getProblemDescription for the statement, getProblemSolution for the official solution, getTestcases for configured test cases, getSubmissionHistory for the user's submissions, and getSubmissionDetail for one submission's code and judge result.
+Use tools when the user's question depends on current problem context. Use getCurrentCode for the latest editor code, getEditorDiagnostics for current editor errors and warnings, getProblemDescription for the statement, getProblemSolution for the official solution, getTestcases for configured test cases, getSubmissionHistory for the user's submissions, getSubmissionDetail for one submission's code and judge result, and getCodeAnalysis for code analysis scores, complexity, and feedback.
+
+When the user asks about overall score, scoring details, code analysis feedback, time complexity, space complexity, or any analysis metric, call getCodeAnalysis before answering.
 
 When providing code, keep it directly relevant to the user's question and avoid unnecessary rewrites. If the user is working on an algorithmic problem, do not reveal the full solution immediately unless they ask for it; start with hints or targeted guidance.
 
@@ -102,6 +104,48 @@ Reply in the user's language.`;
           });
 
           return { submissions };
+        },
+      }),
+      getCodeAnalysis: tool({
+        description:
+          "Get code analysis scores, complexity, and feedback for one of the current user's submissions.",
+        parameters: z.object({
+          submissionId: z
+            .string()
+            .optional()
+            .describe("Defaults to the submission currently open in the URL."),
+        }),
+        execute: async ({ submissionId: requestedSubmissionId }) => {
+          if (!userId) return { error: "User is not authenticated." };
+
+          const targetSubmissionId = requestedSubmissionId ?? submissionId;
+          if (!targetSubmissionId) return { error: "Missing submission id." };
+
+          const analysis = await prisma.codeAnalysis.findFirst({
+            where: {
+              submissionId: targetSubmissionId,
+              submission: {
+                userId,
+              },
+            },
+            select: {
+              id: true,
+              submissionId: true,
+              status: true,
+              timeComplexity: true,
+              spaceComplexity: true,
+              overallScore: true,
+              styleScore: true,
+              readabilityScore: true,
+              efficiencyScore: true,
+              correctnessScore: true,
+              feedback: true,
+              createdAt: true,
+              updatedAt: true,
+            },
+          });
+
+          return analysis ?? { error: "Code analysis not found." };
         },
       }),
       getSubmissionDetail: tool({
